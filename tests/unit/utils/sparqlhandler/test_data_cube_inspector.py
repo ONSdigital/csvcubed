@@ -934,7 +934,7 @@ def test_load_pandas_df_from_standard_shape_csv_url():
         / "inspector-load-dataframe"
         / "standard-shape"
         / "standard-shape-out"
-        / "standard-shape.csv-metadata.json"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
@@ -963,7 +963,7 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
         / "inspector-load-dataframe"
         / "pivoted-shape"
         / "pivoted-shape-out"
-        / "pivoted-shape.csv-metadata.json"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()

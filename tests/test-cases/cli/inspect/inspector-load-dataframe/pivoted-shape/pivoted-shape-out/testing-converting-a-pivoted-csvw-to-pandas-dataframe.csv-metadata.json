@@ -181,155 +181,10 @@
     ],
     "rdfs:seeAlso": [
         {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/another-measure",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure"
-                }
-            ],
-            "http://purl.org/linked-data/cube#measure": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 7
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim1",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1"
-                }
-            ],
-            "http://purl.org/linked-data/cube#dimension": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 1
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#MeasureProperty"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Another Measure"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "http://www.w3.org/2001/XMLSchema#time"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#MeasureProperty"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Some Measure"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "http://www.w3.org/2001/XMLSchema#time"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim2",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Class",
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2",
-            "@type": [
-                "http://purl.org/linked-data/cube#CodedProperty",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DimensionProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#ComponentProperty"
-            ],
-            "http://purl.org/linked-data/cube#codeList": [
-                {
-                    "@id": "dim2.csv#code-list"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Dim2"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim2"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1",
-            "@type": [
-                "http://purl.org/linked-data/cube#CodedProperty",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DimensionProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#ComponentProperty"
-            ],
-            "http://purl.org/linked-data/cube#codeList": [
-                {
-                    "@id": "dim1.csv#code-list"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Dim1"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim1"
-                }
-            ]
-        },
-        {
             "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/unit",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://purl.org/linked-data/cube#ComponentSpecification"
             ],
             "http://purl.org/linked-data/cube#attribute": [
@@ -354,114 +209,82 @@
             ]
         },
         {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/some-measure",
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#CodedProperty",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://purl.org/linked-data/cube#codeList": [
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                    "@id": "dim1.csv#code-list"
                 }
             ],
-            "http://purl.org/linked-data/cube#measure": [
+            "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                    "@language": "en",
+                    "@value": "Dim1"
                 }
             ],
-            "http://purl.org/linked-data/cube#order": [
+            "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
-                    "@value": 4
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim1"
                 }
             ]
         },
         {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/measure-type",
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#CodedProperty",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://purl.org/linked-data/cube#codeList": [
                 {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
+                    "@id": "dim2.csv#code-list"
                 }
             ],
-            "http://purl.org/linked-data/cube#dimension": [
+            "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
+                    "@language": "en",
+                    "@value": "Dim2"
                 }
             ],
-            "http://purl.org/linked-data/cube#order": [
+            "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
-                    "@value": 6
-                },
-                {
-                    "@value": 2
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#csvcubed-build-activity",
-            "@type": [
-                "http://www.w3.org/ns/prov#Activity",
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
-            ],
-            "http://www.w3.org/ns/prov#used": [
-                {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim2",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
-                }
-            ],
-            "http://purl.org/linked-data/cube#dimension": [
-                {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 5
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim2"
                 }
             ]
         },
         {
             "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#structure",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://purl.org/linked-data/cube#DataStructureDefinition"
             ],
             "http://purl.org/linked-data/cube#component": [
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/unit"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/measure-type"
                 },
                 {
                     "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/another-measure"
                 },
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/some-measure"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim2"
                 },
                 {
                     "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim1"
                 },
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim2"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/some-measure"
                 },
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/measure-type"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/unit"
                 }
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
@@ -469,19 +292,19 @@
                     "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
                 },
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure"
                 },
                 {
                     "@id": "http://purl.org/linked-data/cube#measureType"
                 },
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure"
-                },
-                {
                     "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1"
                 },
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                },
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure"
                 }
             ],
             "http://purl.org/linked-data/cube#sliceKey": [
@@ -493,10 +316,10 @@
         {
             "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dataset",
             "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DataSet",
-                "http://www.w3.org/ns/dcat#Dataset",
                 "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#Attachable"
             ],
             "http://purl.org/dc/terms/identifier": [
@@ -507,13 +330,13 @@
             "http://purl.org/dc/terms/issued": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-03-31T17:01:10.633164"
+                    "@value": "2023-03-31T17:33:01.600425"
                 }
             ],
             "http://purl.org/dc/terms/modified": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-03-31T17:01:10.633164"
+                    "@value": "2023-03-31T17:33:01.600425"
                 }
             ],
             "http://purl.org/dc/terms/title": [
@@ -540,17 +363,10 @@
             ]
         },
         {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim1",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Class",
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
-            ]
-        },
-        {
             "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#slice/cross-measures",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://purl.org/linked-data/cube#SliceKey"
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
@@ -559,6 +375,190 @@
                 },
                 {
                     "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/some-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim2",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/measure-type",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                },
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim2",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Another Measure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#time"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/some-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Some Measure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#time"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/another-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#measure/another-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#class/dim1",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#component/dim1",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#dimension/dim1"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
                 }
             ]
         },
@@ -599,8 +599,8 @@
         {
             "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#unit/some-unit",
             "@type": [
-                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
                 "http://qudt.org/schema/qudt/Unit"
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
@@ -613,8 +613,8 @@
         {
             "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#unit/some-other-unit",
             "@type": [
-                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
                 "http://qudt.org/schema/qudt/Unit"
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [

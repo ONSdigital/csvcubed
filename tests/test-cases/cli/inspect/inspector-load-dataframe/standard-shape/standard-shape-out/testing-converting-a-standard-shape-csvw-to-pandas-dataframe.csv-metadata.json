@@ -125,117 +125,37 @@
     ],
     "rdfs:seeAlso": [
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#structure",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim1",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#DataStructureDefinition"
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#CodedProperty"
             ],
-            "http://purl.org/linked-data/cube#component": [
+            "http://purl.org/linked-data/cube#codeList": [
                 {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/an-attribute-resource"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim1"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/units"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/some-measure"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim3"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/an-attribute-literal"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim2"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/measure-type"
+                    "@id": "dim1.csv#code-list"
                 }
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-literal"
-                },
-                {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
-                },
-                {
-                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource"
-                },
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim1"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/measure-type",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
+                    "@language": "en",
+                    "@value": "Dim1"
                 }
             ],
-            "http://purl.org/linked-data/cube#dimension": [
+            "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 8
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim2",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2"
-                }
-            ],
-            "http://purl.org/linked-data/cube#dimension": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 2
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim1"
                 }
             ]
         },
         {
             "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2",
             "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
                 "http://purl.org/linked-data/cube#DimensionProperty",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentProperty",
                 "http://purl.org/linked-data/cube#CodedProperty"
             ],
@@ -257,77 +177,21 @@
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://purl.org/linked-data/cube#AttributeProperty"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "An attribute resource"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim1",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/2000/01/rdf-schema#Class"
-            ]
-        },
-        {
             "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim2",
             "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/2000/01/rdf-schema#Class"
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim3",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#csvcubed-build-activity",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://www.w3.org/ns/prov#Activity"
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://www.w3.org/ns/prov#used": [
                 {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3"
-                }
-            ],
-            "http://purl.org/linked-data/cube#dimension": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 3
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/some-measure",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure"
-                }
-            ],
-            "http://purl.org/linked-data/cube#measure": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 7
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
                 }
             ]
         },
@@ -363,9 +227,9 @@
             "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-literal",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#AttributeProperty",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://purl.org/linked-data/cube#AttributeProperty"
+                "http://purl.org/linked-data/cube#ComponentProperty"
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
@@ -376,34 +240,6 @@
             "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
                     "@id": "http://www.w3.org/2001/XMLSchema#nonPositiveInteger"
-                }
-            ]
-        },
-        {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/an-attribute-resource",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#attribute": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource"
-                }
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource"
-                }
-            ],
-            "http://purl.org/linked-data/cube#componentRequired": [
-                {
-                    "@value": false
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 4
                 }
             ]
         },
@@ -436,6 +272,89 @@
             ]
         },
         {
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#CodedProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "dim3.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Dim3"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim3"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim1",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "An attribute resource"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim3",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/an-attribute-resource",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
             "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim1",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
@@ -459,66 +378,119 @@
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#structure",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#MeasureProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#ComponentProperty"
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#DataStructureDefinition"
             ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
+            "http://purl.org/linked-data/cube#component": [
                 {
-                    "@language": "en",
-                    "@value": "Some Measure"
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim3"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/measure-type"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/an-attribute-literal"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/an-attribute-resource"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim1"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/units"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim2"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/some-measure"
                 }
             ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
+            "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "http://www.w3.org/2001/XMLSchema#short"
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim1"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-literal"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
                 }
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim3",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/measure-type",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/2000/01/rdf-schema#Class"
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 8
+                }
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim3",
             "@type": [
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#DimensionProperty",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://purl.org/linked-data/cube#CodedProperty"
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
             ],
-            "http://purl.org/linked-data/cube#codeList": [
+            "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "dim3.csv#code-list"
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3"
                 }
             ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
+            "http://purl.org/linked-data/cube#dimension": [
                 {
-                    "@language": "en",
-                    "@value": "Dim3"
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim3"
                 }
             ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
+            "http://purl.org/linked-data/cube#order": [
                 {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim3"
+                    "@value": 3
                 }
             ]
         },
         {
             "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dataset",
             "@type": [
+                "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/ns/dcat#Dataset",
-                "http://purl.org/linked-data/cube#DataSet",
                 "http://www.w3.org/ns/dcat#Resource",
-                "http://purl.org/linked-data/cube#Attachable"
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/ns/dcat#Dataset"
             ],
             "http://purl.org/dc/terms/identifier": [
                 {
@@ -528,13 +500,13 @@
             "http://purl.org/dc/terms/issued": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-03-31T17:00:38.388580"
+                    "@value": "2023-03-31T17:33:38.529550"
                 }
             ],
             "http://purl.org/dc/terms/modified": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-03-31T17:00:38.388580"
+                    "@value": "2023-03-31T17:33:38.529550"
                 }
             ],
             "http://purl.org/dc/terms/title": [
@@ -561,40 +533,68 @@
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#csvcubed-build-activity",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/dim2",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/ns/prov#Activity"
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
             ],
-            "http://www.w3.org/ns/prov#used": [
+            "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim2"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
                 }
             ]
         },
         {
-            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#dimension/dim1",
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure",
             "@type": [
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#MeasureProperty",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://purl.org/linked-data/cube#CodedProperty"
-            ],
-            "http://purl.org/linked-data/cube#codeList": [
-                {
-                    "@id": "dim1.csv#code-list"
-                }
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
                     "@language": "en",
-                    "@value": "Dim1"
+                    "@value": "Some Measure"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
-                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#class/dim1"
+                    "@id": "http://www.w3.org/2001/XMLSchema#short"
+                }
+            ]
+        },
+        {
+            "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#component/some-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#measure/some-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
                 }
             ]
         },
