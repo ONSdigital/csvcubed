@@ -133,7 +133,6 @@ class VirtualConfigurations:
 
     {
         "type": "attribute",
-        "label": "I'm an attribute",
         "data_type": "int",
     }
     """
