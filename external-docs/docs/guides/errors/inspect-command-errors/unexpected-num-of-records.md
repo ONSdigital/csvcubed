@@ -1,4 +1,4 @@
-# Error - Expected `x` record(s), but found `y` record(s). 
+# Error - Expected `x` record(s), but found `y` record(s)
 
 ## When it occurs
 

@@ -2,9 +2,9 @@
 
 ## When it occurs
 
-There are measure columns defined in a pivoted shape cube.  
+There are measure columns defined in a pivoted shape cube.
 
-An example cube structre which would result in this error looks like this:
+An example cube structure which would result in this error looks like this:
 
 | Location  | Median Commute Distance / miles | Another Observed Value | Measure             | Unit    |
 |-----------|---------------------------------|------------------------|---------------------|---------|
@@ -13,7 +13,7 @@ An example cube structre which would result in this error looks like this:
 
 But the cube's config could take the following form:
 
-With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+With the following [qube-config.json](../../configuration/qube-config/index.md) column mapping configuration:
 
 ```json
 "columns": {

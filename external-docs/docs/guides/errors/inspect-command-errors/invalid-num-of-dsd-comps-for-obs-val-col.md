@@ -1,4 +1,4 @@
-# Error - Invalid number of components for observation value column.
+# Error - Invalid number of components for observation value column
 
 ## When it occurs
 

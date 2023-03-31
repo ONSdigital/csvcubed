@@ -1,4 +1,4 @@
-# Error - Failed to load table schema `<table-schema-file-path>` into RDF graph.
+# Error - Failed to load table schema `<table-schema-file-path>` into RDF graph
 
 ## When it occurs
 

@@ -6,7 +6,7 @@ This page is designed to help you inspect an existing CSV-W.
 
 <iframe src="https://share.descript.com/embed/Umk1wrKpSMV" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites
+## Prerequisites
 
 You should have already [installed csvcubed](./installation.md), [designed your CSV input](./designing-csv.md) and [built your CSV-W](./build.md).
 
@@ -20,7 +20,7 @@ csvcubed inspect sweden-at-eurovision-no-missing.csv-metadata.json
 
 All being well we get the below output. A detailed explanation of this output is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.
 
-```
+```text
 - This file is a data cube.
 
 - The data cube has the following catalog metadata:
@@ -39,6 +39,7 @@ All being well we get the below output. A detailed explanation of this output is
         - Comment: None
         - Description: None
 
+
  - The data cube has the following column component information:
      - Dataset Label: Sweden at Eurovision
      - Columns:
@@ -51,6 +52,7 @@ All being well we get the below output. A detailed explanation of this output is
          Measure     Measures      True                http://purl.org/linked-data/cube#measureType
             Unit        Units      True http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
      - Columns where suppress output is true: None
+
 
 - The data cube has the following code list information:
         - Number of Code Lists: 4
@@ -108,7 +110,7 @@ csvcubed inspect language.csv-metadata.json
 
 All being well we get the below output. A detailed explanation of this output is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.
 
-```
+```text
 - This file is a code list.
 
 - The code list has the following catalog metadata:

@@ -1,5 +1,7 @@
 site_name: csvcubed
 site_url: https://gss-cogs.github.io/csvcubed-docs/external
+repo_url: https://github.com/GSS-Cogs/csvcubed
+repo_name: GSS-Cogs/csvcubed
 nav:
   - Home:
       - index.md
@@ -22,10 +24,23 @@ nav:
         - guides/configuration/index.md
         - By convention: guides/configuration/convention.md
         - Explicit configuration:
-          - guides/configuration/qube-config.md
-          - Templates: guides/configuration/templates.md
-          - Units: guides/configuration/units.md
-          - Code Lists: guides/configuration/code-list-config.md
+          - guides/configuration/qube-config/index.md
+          - Metadata: guides/configuration/qube-config/metadata.md
+          - Column definitions:
+            - guides/configuration/qube-config/columns/index.md
+            - Dimension columns: guides/configuration/qube-config/columns/dimensions.md
+            - Observations columns: guides/configuration/qube-config/columns/observations.md
+            - Measures columns: guides/configuration/qube-config/columns/measures.md
+            - Units columns: guides/configuration/qube-config/columns/units.md
+            - Attribute columns:
+              - guides/configuration/qube-config/columns/attributes/index.md
+              - Resource attributes: guides/configuration/qube-config/columns/attributes/attribute-resources.md
+              - Literal attributes: guides/configuration/qube-config/columns/attributes/attribute-literals.md
+              - Attribute values: guides/configuration/qube-config/columns/attributes/attribute-values.md
+          - Using templates: guides/configuration/qube-config/templates.md
+          - Measure definitions: guides/configuration/qube-config/measure-definitions.md
+          - Unit definitions: guides/configuration/qube-config/unit-definitions.md
+          - Code Lists: guides/configuration/qube-config/code-list-config.md
       - Shape your data:
         - guides/shape-data/index.md
         - Standard shape: guides/shape-data/standard-shape.md
@@ -47,24 +62,18 @@ nav:
       - glossary/index.md
 theme:
   name: material
-  palette:
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-    - scheme: slate
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
   features:
     - search.highlight
     - navigation.instant
     # - navigation.expand
+#    - toc.integrate
     - navigation.sections
     - navigation.indexes
     - navigation.top
-    - toc.integrate
+    - navigation.tracking
 markdown_extensions:
+  - admonition
+  - def_list
   - pymdownx.highlight:
       anchor_linenums: true
       linenums: true

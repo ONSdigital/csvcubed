@@ -1,4 +1,4 @@
-# Error - Only 1 primary key is supported but detected `y`primary keys for the table with url `z`.
+# Error - Only 1 primary key is supported but detected `y` primary keys for the table with URL `z`
 
 ## When it occurs
 

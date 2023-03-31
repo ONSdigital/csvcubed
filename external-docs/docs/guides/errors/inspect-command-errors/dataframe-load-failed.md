@@ -1,4 +1,4 @@
-# Error - Failed to load CSV data set to pandas dataframe.
+# Error - Failed to load CSV data set to pandas dataframe
 
 ## When it occurs
 
