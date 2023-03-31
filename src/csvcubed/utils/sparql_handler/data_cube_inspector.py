@@ -18,6 +18,7 @@ from csvcubedmodels.rdf.namespaces import XSD
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColumnDefinition,
@@ -220,18 +221,11 @@ class DataCubeInspector:
         """
         TODO: This and maybe change API function name.
         """
-        from csvcubed.models.cube.qb.components.constants import (
-            ACCEPTED_DATATYPE_MAPPING,
-        )
-
         cols = self.get_column_component_info(csv_url)
         dict_of_types = {}
         for col in cols:
             is_attribute_literal = (
                 col.column_type == EndUserColumnType.Attribute
-                # Attribute Resources need to have the value_url set to point
-                # at the resource.
-                # http://example.com/my-attribute-values/{+column_name}
                 and col.column_definition.value_url is None
             )
 
