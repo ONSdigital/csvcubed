@@ -102,7 +102,7 @@ def test_get_table_identifiers_for_concept_scheme_error():
 
 def test_get_primary_csv_url():
     """
-    TODO:
+    Testing that the csv_url for the primary CSV defined in the code list CSV-W is correctly retrieved.
     """
     path_to_cube = (
         _test_case_base_dir

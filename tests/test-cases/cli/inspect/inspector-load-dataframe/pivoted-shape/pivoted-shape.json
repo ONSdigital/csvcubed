@@ -1,0 +1,32 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Testing converting a pivoted CSVW to pandas dataframe",
+    "columns": {
+        "Dim1": {
+            "type": "dimension"
+        },
+        "Obs1": {
+            "type": "observations",
+            "data_type": "time",
+            "unit": {
+                "label": "Some Unit"
+            },
+            "measure": {
+                "label": "Some Measure"
+            }
+        },
+        "Dim2": {
+            "type": "dimension"
+        },
+        "Obs2": {
+            "type": "observations",
+            "data_type": "boolean",
+            "unit": {
+                "label": "Some Other Unit"
+            },
+            "measure": {
+                "label": "Another Measure"
+            }
+        }
+    }
+}

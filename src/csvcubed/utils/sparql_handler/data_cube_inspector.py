@@ -219,7 +219,7 @@ class DataCubeInspector:
 
     def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
-        TODO: This and maybe change API function name.
+        Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = {}

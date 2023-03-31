@@ -910,7 +910,7 @@ def test_get_columns_for_component_attribute_pivoted():
 
 def test_get_primary_csv_url():
     """
-    TODO:
+    Testing that the csv_url for the primary CSV defined in the data cube CSV-W is correctly retrieved.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -923,26 +923,56 @@ def test_get_primary_csv_url():
     assert csv_url == "energy-trends-uk-total-energy.csv"
 
 
-def test_load_pandas_df_from_csv_url():
+def test_load_pandas_df_from_standard_shape_csv_url():
     """
-    TODO: might even need to change test title too.
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a standard shape CSVW and that a distinction is made between
+    attribute reasource and attribute literal columns.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "single-unit_single-measure"
-        / "energy-trends-uk-total-energy.csv-metadata.json"
+        / "inspector-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
+        / "standard-shape.csv-metadata.json"
     )
-
-    # csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
 
     dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
 
     assert isinstance(dataframe, pd.DataFrame)
-    assert dataframe["Period"].dtype == "string"
-    assert dataframe["Region"].dtype == "string"
-    assert dataframe["Fuel"].dtype == "string"
-    assert dataframe["Measure Type"].dtype == "string"
-    assert dataframe["Value"].dtype == "float64"
+    assert dataframe["Dim1"].dtype == "string"
+    assert dataframe["Dim2"].dtype == "string"
+    assert dataframe["Dim1"].dtype == "string"
+    assert dataframe["Attr Resource"].dtype == "string"
+    assert dataframe["Attr Literal"].dtype == "Int64"
+    assert dataframe["Units"].dtype == "string"
+    assert dataframe["Measures"].dtype == "string"
+    assert dataframe["Obs"].dtype == "short"
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_from_pivoted_shape_csv_url():
+    """
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a pivoted shape CSVW.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "pivoted-shape.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe["Dim1"].dtype == "string"
+    assert dataframe["Obs1"].dtype == "string"
+    assert dataframe["Dim2"].dtype == "string"
+    assert dataframe["Obs2"].dtype == "bool"
     assert not any(validation_errors)
