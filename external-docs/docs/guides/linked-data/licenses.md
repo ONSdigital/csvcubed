@@ -4,7 +4,7 @@ Licensing your data is an important part of publishing open data. Setting the li
 
 ## Available Licenses
 
-| License                                                                                                 | URI (use this in your [qube-config.json metadata configuration](../configuration/qube-config.md#metadata)) |
+| License                                                                                                 | URI (use this in your [qube-config.json metadata configuration](../configuration/qube-config/index.md#metadata)) |
 |:--------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
 | [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) | <https://creativecommons.org/licenses/by/4.0/> |
 | [Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/) | <https://creativecommons.org/licenses/by-sa/4.0/> |

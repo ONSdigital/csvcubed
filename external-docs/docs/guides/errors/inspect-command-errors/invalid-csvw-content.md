@@ -1,4 +1,4 @@
-# Error - Invalid CSV-W file content.
+# Error - Invalid CSV-W file content
 
 ## When it occurs
 

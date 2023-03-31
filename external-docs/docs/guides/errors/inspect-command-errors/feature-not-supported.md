@@ -1,4 +1,4 @@
-# Error - This feature is not yet supported: `<explanation>`.
+# Error - This feature is not yet supported: `<explanation>`
 
 ## When it occurs
 

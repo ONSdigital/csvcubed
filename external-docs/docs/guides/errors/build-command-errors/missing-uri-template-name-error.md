@@ -1,12 +1,12 @@
-# Error - missing uri template name
+# Error - missing URI template name
 
 ## When it occurs
 
-You are referencing a column name in a uri template but that column does not exist.
+You are referencing a column name in a URI template but that column does not exist.
 
 ## How to fix
 
-The columns names in your config directly inform what you can validly reference in your uri templates.
+The columns names in your config directly inform what you can validly reference in your URI templates.
 
 For example, this:
 

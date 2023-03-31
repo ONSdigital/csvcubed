@@ -6,7 +6,7 @@ This page is designed to help you build a CSV-W from a properly structured CSV f
 
 <iframe src="https://share.descript.com/embed/6tk6GM5GAAd" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites
+## Prerequisites
 
 This page assumes that you have already [installed csvcubed](./installation.md) and have [designed your CSV input](./designing-csv.md). We suggest you follow along with the [example dataset](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv). Save this file to your terminal's current working directory.
 
@@ -51,9 +51,9 @@ The key files are:
 * `sweden_at_eurovision_no_missing.csv` - contains all of the observations.
 * `sweden_at_eurovision_no_missing.csv-metadata.json` - contains metadata describing the structure of your CSV-W cube.
 * For each dimension you will have:
-    * `<dimension_name>.csv` - a code list containing the unique values of that dimension.
-    * `<dimension_name>.table.json` - schema describing the code list CSV.
-    * `<dimension_name>.csv-metadata.json` - catalogue metadata describing the code list.
+  * `<dimension_name>.csv` - a code list containing the unique values of that dimension.
+  * `<dimension_name>.table.json` - schema describing the code list CSV.
+  * `<dimension_name>.csv-metadata.json` - catalogue metadata describing the code list.
 
 ## Passing configuration
 
