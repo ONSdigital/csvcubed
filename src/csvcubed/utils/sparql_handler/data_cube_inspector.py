@@ -233,9 +233,14 @@ class DataCubeInspector:
                 col.column_type == EndUserColumnType.Observations
                 or is_attribute_literal
             ):
-                col_data_type = col.column_definition.data_type.removeprefix(
-                    _XSD_BASE_URI
-                )
+                if col.column_definition.data_type is not None:
+                    col_data_type = col.column_definition.data_type.removeprefix(
+                        _XSD_BASE_URI
+                    )
+                else:
+                    raise ValueError(
+                        "Expected a defined datatype but got 'None' instead."
+                    )
                 if col_data_type in ACCEPTED_DATATYPE_MAPPING.keys():
                     dict_of_types[
                         col.column_definition.title
