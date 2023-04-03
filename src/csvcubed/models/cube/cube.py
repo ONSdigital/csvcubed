@@ -20,7 +20,6 @@ from csvcubed.models.cube.validationerrors import (
     MissingColumnDefinitionError,
     UriTemplateNameError,
 )
-from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.log import log_exception
 from csvcubed.utils.uri import csvw_column_name_safe
@@ -35,12 +34,12 @@ _logger = logging.getLogger(__name__)
 TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
 
 QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=QbColumnStructuralDefinition)
-"""Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
+"""Anything which inherits from :class:`ColumnarQbDataStructureDefinition
     <csvcubed.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 
 @dataclass
-class Cube(Generic[TMetadata], PydanticModel):
+class Cube(Generic[TMetadata]):
     metadata: TMetadata
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
@@ -72,7 +71,6 @@ class Cube(Generic[TMetadata], PydanticModel):
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
         try:
-            errors += self.pydantic_validation()
             errors += self._validate_columns()
         except Exception as e:
             log_exception(_logger, e)

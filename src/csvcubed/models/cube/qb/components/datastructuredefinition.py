@@ -10,13 +10,12 @@ from typing import List, Optional
 
 import pandas as pd
 
-from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.validatedmodel import ValidatedModel
 from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass
-class QbStructuralDefinition(PydanticModel, ValidatedModel, ABC):
+class QbStructuralDefinition(ValidatedModel, ABC):
     """
     Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
     components.
