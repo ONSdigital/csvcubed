@@ -4,6 +4,7 @@ CLI
 The *Command Line Interface* containing the stepdefinitions for the behave tests.
 """
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -129,7 +130,11 @@ def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
             stdout=stdout_file,
             stderr=stderr_file,
             # Attempting to ensure that we get consistently formatted outputs on windows.
-            encoding="utf-16",
+            env={
+                **os.environ,
+                "PYTHONUTF8": "1",
+            },
+            encoding="utf_8",
         )
 
     status_code = process.wait()
