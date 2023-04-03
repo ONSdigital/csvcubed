@@ -114,7 +114,7 @@ def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
 
     # Use temp files not a PIPE, a PIPE has a tiny buffer than
-    # can deadlock or result in eroneous resource exhaustion behaviour
+    # can deadlock or result in erroneous resource exhaustion behaviour
     # where encountering some of our larger outputs (jsonSchemaErrors result
     # in large writes to stdout)
     Path(tmp_dir_path / "buffer").mkdir()
@@ -129,7 +129,7 @@ def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
             stdout=stdout_file,
             stderr=stderr_file,
             # Attempting to ensure that we get consistently formatted outputs on windows.
-            encoding="utf-8",
+            encoding="utf-16",
         )
 
     status_code = process.wait()
