@@ -5,9 +5,12 @@ Code List Inspector
 This module contains the `CodeListInspector` class which allows API-style access to information
 about code lists contained within an RDF graph.
 """
+import os
 from dataclasses import dataclass
 from functools import cached_property
-from typing import List, Optional
+from pathlib import Path
+from typing import Dict, List, Optional
+from urllib.parse import urljoin
 
 from csvcubedmodels.rdf.namespaces import SKOS
 
@@ -17,6 +20,7 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
 )
 from csvcubed.utils.iterables import first
+from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 
 
@@ -100,3 +104,26 @@ class CodeListInspector:
             )
 
         return result
+
+    def dereference_code_list_uri_to_label(
+        self, concept_scheme_uri: str
+    ) -> Dict[str, str]:
+
+        # get the CSV we need to access
+        csv_url = self.get_table_identifiers_for_concept_scheme(
+            concept_scheme_uri
+        ).csv_url
+
+        absolute_csv_url = Path(
+            os.path.normpath(
+                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+            )
+            .removeprefix("file:\\")
+            .removeprefix("file:")
+        )
+
+        (dataframe, _) = read_csv(absolute_csv_url)
+
+        result_dict = dict(zip(dataframe["Uri Identifier"], dataframe["Label"]))
+
+        return result_dict

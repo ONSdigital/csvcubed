@@ -98,3 +98,22 @@ def test_get_table_identifiers_for_concept_scheme_error():
     assert (
         "Could not find code list table identifiers for ConceptScheme URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
     ) in str(exception.value)
+
+
+def test_dereference_code_list_uri_to_label():
+    """"""
+    path_to_cube = (
+        _test_case_base_dir
+        / "code-list-with-uri-identifier-as-identifier/category.csv-metadata.json"
+    )
+    code_list_inspector = get_code_list_inspector(path_to_cube)
+
+    concept_scheme_uri = "category.csv#code-list"
+
+    result = code_list_inspector.dereference_code_list_uri_to_label(concept_scheme_uri)
+
+    assert len(result) == 3
+    assert (
+        result["boosting-productivity-pay-jobs-and-living-standards"]
+        == "Boosting productivity, pay, jobs and living standards by growing the private sector"
+    )
