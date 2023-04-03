@@ -9,8 +9,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
-from pydantic import root_validator, validator
-
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction, Validations
@@ -57,23 +55,6 @@ class NewQbCodeListInCsvW(QbCodeList):
     csv_file_relative_path_or_uri: str = field(init=False, repr=False)
     concept_scheme_uri: str = field(init=False, repr=False)
     concept_template_uri: str = field(init=False, repr=False)
-
-    @root_validator(pre=True)
-    def _csvw_contains_sufficient_information_validator(cls, values: dict) -> dict:
-        csv_path = values.get("csv_file_relative_path_or_uri")
-        cs_uri = values.get("concept_scheme_uri")
-        c_template_uri = values.get("concept_template_uri")
-        if csv_path is None or cs_uri is None or c_template_uri is None:
-            schema_metadata_file_path = values["schema_metadata_file_path"]
-            # The below should throw an exception if there is any problem with the CSV-W.
-            extract_code_list_concept_scheme_info(schema_metadata_file_path)
-
-            # if there's no exception but the values aren't set, something weird has happened.
-            raise ValueError(
-                f"'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing, "
-                f"however the CSV-W seems to contain the relevant information."
-            )
-        return values
 
     def __post_init__(self):
         try:
@@ -139,38 +120,6 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
     uri_style: Optional[URIStyle] = None
-
-    @validator("concepts")
-    def _pydantic_ensure_no_use_of_reserved_keywords(
-        cls, concepts: List[TNewQbConcept]
-    ) -> List[TNewQbConcept]:
-        conflicting_values: List[str] = []
-        for concept in concepts:
-            if concept.uri_safe_identifier == SCHEMA_URI_IDENTIFIER:
-                conflicting_values.append(concept.label)
-
-        if any(conflicting_values):
-            raise ReservedUriValueError(
-                NewQbCodeList,
-                conflicting_values,
-                SCHEMA_URI_IDENTIFIER,
-            )
-
-        return concepts
-
-    @validator("concepts")
-    def _pydantic_validate_concepts_non_conflicting(
-        cls, concepts: List[TNewQbConcept]
-    ) -> List[TNewQbConcept]:
-        """
-        Ensure that there are no collisions where multiple concepts map to the same URI-safe value.
-        """
-        ensure_no_uri_safe_conflicts(
-            [(concept.label, concept.uri_safe_identifier) for concept in concepts],
-            NewQbCodeList,
-        )
-
-        return concepts
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {

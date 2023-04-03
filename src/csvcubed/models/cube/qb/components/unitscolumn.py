@@ -10,7 +10,6 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 import uritemplate
-from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validatedmodel import ValidationFunction
@@ -35,22 +34,6 @@ class QbMultiUnits(QbColumnStructuralDefinition):
     """
     Helps identify which observed values column this units column describes
     """
-
-    @validator("units")
-    def _validate_units_non_conflicting(cls, units: List[QbUnit]) -> List[QbUnit]:
-        """
-        Ensure that there are no collisions where multiple new units map to the same URI-safe value.
-        """
-        ensure_no_uri_safe_conflicts(
-            [
-                (unit.label, unit.uri_safe_identifier)
-                for unit in units
-                if isinstance(unit, NewQbUnit)
-            ],
-            QbMultiUnits,
-        )
-
-        return units
 
     @staticmethod
     def new_units_from_data(

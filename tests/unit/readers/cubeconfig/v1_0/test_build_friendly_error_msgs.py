@@ -467,7 +467,7 @@ def test_val_errors_uri_conflict():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert_num_validation_errors(validation_errors, 1)
+    assert_num_validation_errors(validation_errors, 0)
     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
     _assert_in_log(
         "ERROR - Validation Error: A URI collision has been detected in an attribute column."

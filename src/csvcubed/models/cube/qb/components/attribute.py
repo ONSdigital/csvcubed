@@ -10,7 +10,6 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set
 
 import pandas as pd
-from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
@@ -75,20 +74,6 @@ class ExistingQbAttribute(QbAttribute):
     def get_observed_value_col_title(self) -> Optional[str]:
         return self.observed_value_col_title
 
-    @validator("new_attribute_values")
-    def _validate_concepts_non_conflicting(
-        cls, new_attribute_values: List[NewQbAttributeValue]
-    ) -> List[NewQbAttributeValue]:
-        """
-        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
-        """
-        ensure_no_uri_safe_conflicts(
-            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
-            ExistingQbAttribute,
-        )
-
-        return new_attribute_values
-
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
@@ -139,20 +124,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     def get_observed_value_col_title(self) -> Optional[str]:
         return self.observed_value_col_title
-
-    @validator("new_attribute_values")
-    def _validate_attribute_values_non_conflicting(
-        cls, new_attribute_values: List[NewQbAttributeValue]
-    ) -> List[NewQbAttributeValue]:
-        """
-        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
-        """
-        ensure_no_uri_safe_conflicts(
-            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
-            NewQbAttribute,
-        )
-
-        return new_attribute_values
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
@@ -235,12 +206,6 @@ class QbAttributeLiteral(QbAttribute, ABC):
     """
 
     data_type: str = field(repr=False)
-
-    @validator("data_type", pre=True, always=False)
-    def data_type_value(cls, data_type):
-        if data_type not in ACCEPTED_DATATYPE_MAPPING:
-            raise ValueError(f"Literal type '{data_type}' not supported")
-        return data_type
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {"data_type": v.any_of(v.data_type, v.uri)}

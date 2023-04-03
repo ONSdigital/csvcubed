@@ -4,7 +4,7 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from typing import Generic, Iterable, List, Optional, Set, Tuple, Type, TypeVar
+from typing import Dict, Generic, Iterable, List, Optional, Set, Tuple, Type, TypeVar
 
 import pandas as pd
 import uritemplate
@@ -20,7 +20,9 @@ from csvcubed.models.cube.validationerrors import (
     MissingColumnDefinitionError,
     UriTemplateNameError,
 )
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils import validations as v
 from csvcubed.utils.log import log_exception
 from csvcubed.utils.uri import csvw_column_name_safe
 
@@ -39,7 +41,7 @@ QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=QbColumnStructuralDefinit
 
 
 @dataclass
-class Cube(Generic[TMetadata]):
+class Cube(Generic[TMetadata], ValidatedModel):
     metadata: TMetadata
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
@@ -71,6 +73,7 @@ class Cube(Generic[TMetadata]):
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
         try:
+            errors += ValidatedModel.validate(self)
             errors += self._validate_columns()
         except Exception as e:
             log_exception(_logger, e)
@@ -187,6 +190,14 @@ class Cube(Generic[TMetadata]):
         }
 
         return template_to_name_map.items()
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "metadata": v.validated_model(CatalogMetadataBase),
+            "data": v.optional(v.is_instance_of(pd.DataFrame)),
+            "columns": v.list(v.validated_model(CsvColumn)),
+            "uri_style": v.enum(URIStyle),
+        }
 
 
 QbCube = Cube[CatalogMetadata]
