@@ -6,6 +6,7 @@ The *Command Line Interface* containing the stepdefinitions for the behave tests
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Tuple
 
@@ -128,6 +129,8 @@ def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
             cwd=tmp_dir_path.resolve(),
             stdout=stdout_file,
             stderr=stderr_file,
+            # Attempting to ensure that we get consistently formatted outputs on windows.
+            encoding="utf-8",
         )
 
     status_code = process.wait()
