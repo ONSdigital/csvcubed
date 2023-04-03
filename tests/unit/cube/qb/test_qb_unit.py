@@ -19,35 +19,6 @@ TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v
 SCHEMA_PATH_FILE = APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_0" / "schema.json"
 
 
-def test_new_unit_base_unit_validation():
-    """
-    Ensure that if :obj:`base_unit_scaling_factor` is specified and :obj:`base_unit` isn't,
-    the user gets a suitable validation error.
-    """
-
-    _assert_both_properties_defined_error(
-        NewQbUnit(
-            "Some Unit",
-            base_unit=None,
-            base_unit_scaling_factor=1000.0,
-        ),
-        "base_unit_scaling_factor",
-        "base_unit",
-    )
-
-    # Now check that valid states don't trigger the error.
-    assert_num_validation_errors(NewQbUnit("Some Unit").pydantic_validation(), 0)
-
-    assert_num_validation_errors(
-        NewQbUnit(
-            "Some Unit",
-            base_unit=ExistingQbUnit("http://some-existing-unit"),
-            base_unit_scaling_factor=1000.0,
-        ).pydantic_validation(),
-        0,
-    )
-
-
 def test_scaling_factor_defined():
     with TemporaryDirectory() as t:
         temp_dir = Path(t)

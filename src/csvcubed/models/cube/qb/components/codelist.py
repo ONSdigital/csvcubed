@@ -21,9 +21,6 @@ from csvcubed.models.validationerror import (
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.utils.validators.file import (
-    validate_file_exists as pydantic_validate_file_exists,
-)
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
@@ -63,10 +60,6 @@ class NewQbCodeListInCsvW(QbCodeList):
     csv_file_relative_path_or_uri: str = field(init=False, repr=False)
     concept_scheme_uri: str = field(init=False, repr=False)
     concept_template_uri: str = field(init=False, repr=False)
-
-    _schema_metadata_file_path_validator = pydantic_validate_file_exists(
-        "schema_metadata_file_path"
-    )
 
     @root_validator(pre=True)
     def _csvw_contains_sufficient_information_validator(cls, values: dict) -> dict:
