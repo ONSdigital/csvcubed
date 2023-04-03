@@ -95,6 +95,7 @@ jobs:
   publish_test_results:
     needs: [test_in_environments]
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - uses: actions/download-artifact@v3
         with:
