@@ -23,11 +23,17 @@ def step_impl(context, arguments: str):
     context.csvcubed_log_location = Path(dirs.user_log_dir)
 
 
-@then("the csvcubed CLI should succeed")
+@then("the csvcubed build CLI should succeed")
 def step_impl(context):
     (status_code, response) = context.csvcubed_cli_result
     assert status_code == 0, (status_code, response)
     assert "Build Complete" in response, response
+
+
+@then("the csvcubed CLI should succeed")
+def step_impl(context):
+    (status_code, response) = context.csvcubed_cli_result
+    assert status_code == 0, (status_code, response)
 
 
 @then("the csvcubed CLI should fail with status code {status_code}")
@@ -116,7 +122,6 @@ def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     stderr_path = Path(tmp_dir_path / "buffer" / "stderr")
 
     with open(stdout_path, "w") as stdout_file, open(stderr_path, "w") as stderr_file:
-
         process = subprocess.Popen(
             command,
             shell=True,

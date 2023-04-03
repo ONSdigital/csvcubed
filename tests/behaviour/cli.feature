@@ -17,7 +17,7 @@ Feature: Test the csvcubed Command Line Interface.
     And the file at "out/title-of-the-code-list.csv-metadata.json" should exist
     And the file at "out/title-of-the-code-list.table.json" should exist
     And the file at "out/validation-errors.json" should exist
-    And the csvcubed CLI should succeed
+    And the csvcubed build CLI should succeed
     And the validation-errors.json file should contain
     """
     "offending_value": "http://purl.org/dc/aboutdcmi#DCMI"
@@ -63,11 +63,30 @@ Feature: Test the csvcubed Command Line Interface.
     Then the file at "testout/title-of-the-code-list.csv" should exist
     And the file at "testout/title-of-the-code-list.csv-metadata.json" should exist
     And the file at "testout/title-of-the-code-list.table.json" should exist
-    And the csvcubed CLI should succeed
+    And the csvcubed build CLI should succeed
     Then remove test log files
 
   Scenario: The csvcubed code-list build command will fail when there is a validation error.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_error.json"
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --fail-when-validation-error"
     Then the csvcubed CLI should fail with status code 1
+    Then remove test log files
+
+  Scenario: Test csvcubed inspect cube end-to-end
+    Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
+    And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
+    And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
+    And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-sub-type.table.json"
+    And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"
+    When the csvcubed CLI is run with "inspect cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
+    Then the csvcubed CLI should succeed
+    Then remove test log files
+
+
+  Scenario: Test csvcubed inspect code list end-to-end
+    Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.csv-metadata.json"
+    And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
+    And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.csv"
+    When the csvcubed CLI is run with "inspect cli/inspect/multi-unit_multi-measure/alcohol-content.csv-metadata.json"
+    Then the csvcubed CLI should succeed
     Then remove test log files
