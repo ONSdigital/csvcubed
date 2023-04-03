@@ -20,7 +20,6 @@ from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
@@ -104,8 +103,6 @@ class ExistingQbAttribute(QbAttribute):
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
-
-    _attribute_uri_validator = pydantic_validate_uri("attribute_uri")
 
     def validate_data(
         self,

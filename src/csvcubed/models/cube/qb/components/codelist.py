@@ -21,7 +21,6 @@ from csvcubed.models.validationerror import (
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
@@ -43,8 +42,6 @@ class ExistingQbCodeList(QbCodeList):
     """
 
     concept_scheme_uri: str
-
-    _concept_scheme_uri_validator = pydantic_validate_uri("concept_scheme_uri")
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {"concept_scheme_uri": v.uri}

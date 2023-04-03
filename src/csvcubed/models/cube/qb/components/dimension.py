@@ -25,7 +25,6 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .codelist import NewQbCodeList, QbCodeList
 
@@ -61,10 +60,6 @@ class ExistingQbDimension(QbDimension):
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
-
-    _dimension_uri_validator = pydantic_validate_uri("dimension_uri")
-
-    _range_uri_validator = pydantic_validate_uri("range_uri", is_optional=True)
 
     def validate_data(
         self,
