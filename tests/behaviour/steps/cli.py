@@ -6,7 +6,6 @@ The *Command Line Interface* containing the stepdefinitions for the behave tests
 import json
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 from typing import Tuple
 
