@@ -5,7 +5,7 @@ Data Cube Inspector
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
-
+import os
 from dataclasses import dataclass
 from functools import cache, cached_property
 from pathlib import Path
@@ -253,12 +253,12 @@ class DataCubeInspector:
             else:
                 dict_of_types[col.column_definition.title] = "string"
 
-        absolute_csv_url = path_to_file_uri_for_rdflib(
-            Path(
+        absolute_csv_url = Path(
+            os.path.normpath(
                 urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
-                .removeprefix("file:\\")
-                .removeprefix("file:")
             )
+            .removeprefix("file:\\")
+            .removeprefix("file:")
         )
         return read_csv(Path(absolute_csv_url), dtype=dict_of_types)
 
