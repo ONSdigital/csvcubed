@@ -260,7 +260,7 @@ class DataCubeInspector:
                 .removeprefix("file:")
             )
         )
-        return read_csv(absolute_csv_url, dtype=dict_of_types)
+        return read_csv(Path(absolute_csv_url), dtype=dict_of_types)
 
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
