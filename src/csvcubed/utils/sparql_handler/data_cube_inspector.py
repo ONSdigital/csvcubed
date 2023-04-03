@@ -35,6 +35,7 @@ from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
@@ -252,10 +253,12 @@ class DataCubeInspector:
             else:
                 dict_of_types[col.column_definition.title] = "string"
 
-        absolute_csv_url = Path(
-            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
-            .removeprefix("file:\\")
-            .removeprefix("file:")
+        absolute_csv_url = path_to_file_uri_for_rdflib(
+            Path(
+                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+                .removeprefix("file:\\")
+                .removeprefix("file:")
+            )
         )
         return read_csv(absolute_csv_url, dtype=dict_of_types)
 
