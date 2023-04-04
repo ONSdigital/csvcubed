@@ -208,6 +208,7 @@ class IsPivotedShapeMeasureResult:
 
     csv_url: str
     measure: str
+    label: str
     is_pivoted_shape: bool
 
 
@@ -624,6 +625,7 @@ def map_is_pivoted_shape_for_measures_in_data_set(
         return IsPivotedShapeMeasureResult(
             csv_url=str(row_result["csvUrl"]),
             measure=str(row_result["measure"]),
+            label=str(row_result["label"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
         )
 

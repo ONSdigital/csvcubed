@@ -3,7 +3,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 PREFIX qb: <http://purl.org/linked-data/cube#>
 
-SELECT ?csvUrl ?measure (max(?isPivoted) as ?isPivotedShape)
+SELECT ?csvUrl ?measure ?label (max(?isPivoted) as ?isPivotedShape)
 WHERE {
     ?dsd a qb:DataStructureDefinition;
          qb:component/qb:measure ?measure.
@@ -13,6 +13,7 @@ WHERE {
     [] csvw:url ?csvUrl;
        csvw:tableSchema/csvw:column/rdf:rest*/rdf:first [ csvw:propertyUrl ?measureColumnPropertyUrl ].
 
+    ?measure rdfs:label ?label.
     BIND((STRENDS(str(?measureColumnPropertyUrl), str(?measure)) || STRENDS(str(?measure), str(?measureColumnPropertyUrl))) as ?isPivoted).
 }
-GROUP BY ?csvUrl ?measure
+GROUP BY ?csvUrl ?measure ?label

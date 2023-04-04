@@ -122,7 +122,12 @@ class CodeListInspector:
             .removeprefix("file:")
         )
 
-        (dataframe, _) = read_csv(absolute_csv_url)
+        (dataframe, _) = read_csv(absolute_csv_url, usecols=["Uri Identifier", "Label"])
+
+        if any(dataframe["Uri Identifier"].duplicated()):
+            raise ValueError("Duplicate URIs in `Uri Identifier` column")
+        elif any(dataframe["Label"].duplicated()):
+            raise ValueError("Duplicate labels in `Label` column")
 
         result_dict = dict(zip(dataframe["Uri Identifier"], dataframe["Label"]))
 

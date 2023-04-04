@@ -92,5 +92,7 @@ def test_duplicate_column_title_warning():
     }
 
 
+# TODO: Add test for usecols argument
+
 if __name__ == "__main__":
     pytest.main()

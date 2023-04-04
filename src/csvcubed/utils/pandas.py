@@ -22,7 +22,11 @@ SPECIFIED_NA_VALUES = {
 
 
 def read_csv(
-    csv_path: Path, keep_default_na=False, na_values=SPECIFIED_NA_VALUES, dtype=None
+    csv_path: Path,
+    keep_default_na=False,
+    na_values=SPECIFIED_NA_VALUES,
+    dtype=None,
+    usecols=None,
 ) -> Tuple[pd.DataFrame, List[ValidationError]]:
     """
     :returns: a tuple of
@@ -31,7 +35,11 @@ def read_csv(
     """
 
     df = pd.read_csv(
-        csv_path, keep_default_na=keep_default_na, na_values=na_values, dtype=dtype
+        csv_path,
+        keep_default_na=keep_default_na,
+        na_values=na_values,
+        dtype=dtype,
+        usecols=usecols,
     )
     if not isinstance(df, pd.DataFrame):
         _logger.debug(
