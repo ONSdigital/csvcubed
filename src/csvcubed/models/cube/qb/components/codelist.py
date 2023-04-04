@@ -124,10 +124,44 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "metadata": v.validated_model(CatalogMetadata),
-            "concepts": v.list(v.validated_model(NewQbConcept)),
+            "concepts": v.all_of(
+                v.list(v.validated_model(NewQbConcept)),
+                self._ensure_no_use_of_reserved_keywords(self.concepts),
+                self._validate_concepts_non_conflicting(self.concepts),
+            ),
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "uri_style": v.optional(v.enum(URIStyle)),
         }
+
+    def _ensure_no_use_of_reserved_keywords(
+        self, concepts: List[TNewQbConcept]
+    ) -> List[TNewQbConcept]:
+        conflicting_values: List[str] = []
+        for concept in concepts:
+            if concept.uri_safe_identifier == SCHEMA_URI_IDENTIFIER:
+                conflicting_values.append(concept.label)
+
+        if any(conflicting_values):
+            raise ReservedUriValueError(
+                component=NewQbCodeList,
+                conflicting_values=conflicting_values,
+                reserved_identifier=SCHEMA_URI_IDENTIFIER,
+            )
+
+        return concepts
+
+    def _validate_concepts_non_conflicting(
+        self, concepts: List[TNewQbConcept]
+    ) -> List[TNewQbConcept]:
+        """
+        Ensure that there are no collisions where multiple concepts map to the same URI-safe value.
+        """
+        ensure_no_uri_safe_conflicts(
+            [(concept.label, concept.uri_safe_identifier) for concept in concepts],
+            NewQbCodeList,
+        )
+
+        return concepts
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf

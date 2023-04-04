@@ -1,5 +1,5 @@
 """
-Constants that are relevant to more than one qb component. 
+Constants that are relevant to more than one qb component.
 """
 
 # A mapping of accepted datatypes from their csvw representation
@@ -7,6 +7,7 @@ Constants that are relevant to more than one qb component.
 # Please see:
 # - https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dtypes.html
 # - https://numpy.org/doc/stable/reference/arrays.dtypes.html
+# - https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes
 ACCEPTED_DATATYPE_MAPPING = {
     "anyURI": "string",
     "boolean": "bool",
@@ -30,4 +31,5 @@ ACCEPTED_DATATYPE_MAPPING = {
     "dateTime": "string",
     "dateTimeStamp": "string",
     "time": "string",
+    "number": "double",
 }

@@ -18,7 +18,7 @@ from ...validationerror import ValidationError
 from .components.datastructuredefinition import QbColumnStructuralDefinition
 
 TQbColumnStructuralDefinition = TypeVar(
-    "QbColumnStructuralDefinition", bound=QbColumnStructuralDefinition, covariant=True
+    "TQbColumnStructuralDefinition", bound=QbColumnStructuralDefinition, covariant=True
 )
 """
 An instance of a class which inherits from :obj:`~.components.datastructuredefinition.QbColumnStructureDefinition`.
