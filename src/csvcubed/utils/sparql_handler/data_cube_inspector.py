@@ -5,10 +5,8 @@ Data Cube Inspector
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
-import os
 from dataclasses import dataclass
 from functools import cache, cached_property
-from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
 
@@ -42,6 +40,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
+from csvcubed.utils.uri import get_absolute_file_path
 
 _XSD_BASE_URI: str = XSD[""].toPython()
 
@@ -220,6 +219,8 @@ class DataCubeInspector:
     def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
+        Returns DuplicateColumnTitleError in the event of two instances of the
+        same columns being defined.
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = {}
@@ -233,14 +234,15 @@ class DataCubeInspector:
                 col.column_type == EndUserColumnType.Observations
                 or is_attribute_literal
             ):
-                if col.column_definition.data_type is not None:
-                    col_data_type = col.column_definition.data_type.removeprefix(
-                        _XSD_BASE_URI
-                    )
-                else:
+                if col.column_definition.data_type is None:
                     raise ValueError(
                         "Expected a defined datatype but got 'None' instead."
                     )
+
+                col_data_type = col.column_definition.data_type.removeprefix(
+                    _XSD_BASE_URI
+                )
+
                 if col_data_type in ACCEPTED_DATATYPE_MAPPING.keys():
                     dict_of_types[
                         col.column_definition.title
@@ -252,14 +254,10 @@ class DataCubeInspector:
             else:
                 dict_of_types[col.column_definition.title] = "string"
 
-        absolute_csv_url = Path(
-            os.path.normpath(
-                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
-            )
-            .removeprefix("file:\\")
-            .removeprefix("file:")
+        absolute_csv_url = get_absolute_file_path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
-        return read_csv(Path(absolute_csv_url), dtype=dict_of_types)
+        return read_csv(absolute_csv_url, dtype=dict_of_types)
 
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:

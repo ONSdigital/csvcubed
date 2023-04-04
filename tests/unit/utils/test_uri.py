@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from csvcubed.utils.uri import (
@@ -51,6 +53,15 @@ def test_ensure_all_look_like_uri():
     ensure_values_in_lists_looks_like_uris(
         ["http://some-domain.org/", "http://some-other-domain.org/"]
     )
+
+
+def test_get_absolute_file_path():
+    """
+    #TODO:
+    """
+    x = "sss"
+    assert isinstance(x, type(Path))
+    assert not x.startswith(tuple[str("file:\\"), str("file:")])
 
 
 if __name__ == "__main__":

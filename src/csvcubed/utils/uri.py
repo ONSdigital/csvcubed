@@ -5,8 +5,10 @@ URI
 Functions to help when working with URIs.
 """
 import logging
+import os
 import re
-from urllib.parse import urlparse
+from pathlib import Path
+from urllib.parse import urljoin, urlparse
 
 import rdflib
 from unidecode import unidecode
@@ -112,3 +114,13 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
             raise ValueError(f"'{value}' does not look like a URI.")
 
     _logger.debug("Values %s all look like URIs.", values)
+
+
+def get_absolute_file_path(file_uri: str) -> Path:
+    """
+    Returns a normalised file path from a URI. Will work on both Windows and
+    Linux/Unix.
+    """
+    return Path(
+        os.path.normpath(file_uri).removeprefix("file:\\").removeprefix("file:")
+    )
