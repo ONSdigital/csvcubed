@@ -13,9 +13,7 @@ from csvcubed.models.cube.cube import (
     UriTemplateNameError,
 )
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
-    ReservedUriValueError,
     UndefinedAttributeValueUrisError,
     UndefinedMeasureUrisError,
     UndefinedUnitUrisError,
@@ -36,6 +34,10 @@ from csvcubed.models.cube.qb.validationerrors import (
     NoUnitsDefinedError,
 )
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
+from csvcubed.models.validationerror import (
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
+)
 from csvcubed.utils.cli import _write_errors_to_log
 from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 

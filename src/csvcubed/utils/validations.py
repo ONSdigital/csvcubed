@@ -236,9 +236,12 @@ def all_of(*conditions: ValidationFunction) -> ValidationFunction:
     ) -> List[ValidateModelPropertiesError]:
         all_errors = []
         for condition in conditions:
-            errors = condition(value, property_path)
-            if any(errors):
-                all_errors += errors
+            try:
+                errors = condition(value, property_path)
+                if any(errors):
+                    all_errors += errors
+            except Exception as e:
+                "Hello!"
 
         if not any(all_errors):
             return []

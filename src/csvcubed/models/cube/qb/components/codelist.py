@@ -13,6 +13,7 @@ from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction, Validations
 from csvcubed.models.validationerror import (
+    ReservedUriValueError,
     ValidateModelPropertiesError,
     ValidationError,
 )
@@ -25,7 +26,6 @@ from ...uristyle import URIStyle
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .concept import DuplicatedQbConcept, NewQbConcept
 from .datastructuredefinition import SecondaryQbStructuralDefinition
-from .validationerrors import ReservedUriValueError
 
 
 @dataclass
@@ -126,42 +126,49 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
             "metadata": v.validated_model(CatalogMetadata),
             "concepts": v.all_of(
                 v.list(v.validated_model(NewQbConcept)),
-                self._ensure_no_use_of_reserved_keywords(self.concepts),
-                self._validate_concepts_non_conflicting(self.concepts),
+                self._ensure_no_use_of_reserved_keywords,
+                self._validate_concepts_non_conflicting,
             ),
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "uri_style": v.optional(v.enum(URIStyle)),
         }
 
+    @staticmethod
     def _ensure_no_use_of_reserved_keywords(
-        self, concepts: List[TNewQbConcept]
-    ) -> List[TNewQbConcept]:
+        concepts: List[TNewQbConcept], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         conflicting_values: List[str] = []
         for concept in concepts:
             if concept.uri_safe_identifier == SCHEMA_URI_IDENTIFIER:
                 conflicting_values.append(concept.label)
 
         if any(conflicting_values):
-            raise ReservedUriValueError(
-                component=NewQbCodeList,
-                conflicting_values=conflicting_values,
-                reserved_identifier=SCHEMA_URI_IDENTIFIER,
-            )
+            return [
+                ReservedUriValueError(
+                    message="",  # Message gets defined in __post_init__.
+                    component=NewQbCodeList,
+                    property_path=property_path,
+                    offending_value=concepts,
+                    conflicting_values=conflicting_values,
+                    reserved_identifier=SCHEMA_URI_IDENTIFIER,
+                )
+            ]
 
-        return concepts
+        return []
 
+    @staticmethod
     def _validate_concepts_non_conflicting(
-        self, concepts: List[TNewQbConcept]
-    ) -> List[TNewQbConcept]:
+        concepts: List[TNewQbConcept], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         """
         Ensure that there are no collisions where multiple concepts map to the same URI-safe value.
         """
-        ensure_no_uri_safe_conflicts(
+        return ensure_no_uri_safe_conflicts(
             [(concept.label, concept.uri_safe_identifier) for concept in concepts],
             NewQbCodeList,
+            property_path,
+            concepts,
         )
-
-        return concepts
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
