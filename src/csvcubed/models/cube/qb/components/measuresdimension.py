@@ -98,4 +98,27 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
         return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"measures": v.list(v.validated_model(QbMeasure))}
+        return {
+            "measures": v.all_of(
+                v.list(v.validated_model(QbMeasure)),
+                self._validate_measures_non_conflicting,
+            )
+        }
+
+    @staticmethod
+    def _validate_measures_non_conflicting(
+        measures: List[QbMeasure], property_path: List[str]
+    ) -> List[QbMeasure]:
+        """
+        Ensure that there are no collisions where multiple new measures map to the same URI-safe value.
+        """
+        return ensure_no_uri_safe_conflicts(
+            [
+                (meas.label, meas.uri_safe_identifier)
+                for meas in measures
+                if isinstance(meas, NewQbMeasure)
+            ],
+            QbMultiMeasureDimension,
+            property_path,
+            measures,
+        )

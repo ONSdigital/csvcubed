@@ -7,7 +7,7 @@ Represent Attributes in an RDF Data Cube.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, TypeVar
 
 import pandas as pd
 
@@ -15,7 +15,10 @@ from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_s
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validationerror import (
+    ValidateModelPropertiesError,
+    ValidationError,
+)
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.uri import uri_safe
@@ -101,11 +104,28 @@ class ExistingQbAttribute(QbAttribute):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "attribute_uri": v.uri,
-            "new_attribute_values": v.list(v.validated_model(NewQbAttributeValue)),
+            "new_attribute_values": v.all_of(
+                v.list(v.validated_model(NewQbAttributeValue)),
+                self._validate_attribute_values_non_conflicting,
+            ),
             "is_required": v.boolean,
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": v.optional(v.string),
         }
+
+    @staticmethod
+    def _validate_attribute_values_non_conflicting(
+        new_attribute_values: List[NewQbAttributeValue], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
+        """
+        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
+        """
+        return ensure_no_uri_safe_conflicts(
+            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
+            ExistingQbAttribute,
+            property_path,
+            new_attribute_values,
+        )
 
 
 @dataclass
@@ -189,7 +209,10 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         return {
             "label": v.string,
             "description": v.optional(v.string),
-            "new_attribute_values": v.list(v.validated_model(NewQbAttributeValue)),
+            "new_attribute_values": v.all_of(
+                v.list(v.validated_model(NewQbAttributeValue)),
+                self._validate_concepts_non_conflicting,
+            ),
             "parent_attribute_uri": v.optional(v.uri),
             "source_uri": v.optional(v.uri),
             "is_required": v.boolean,
@@ -197,6 +220,20 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": v.optional(v.string),
         }
+
+    @staticmethod
+    def _validate_concepts_non_conflicting(
+        new_attribute_values: List[NewQbAttributeValue], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
+        """
+        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
+        """
+        return ensure_no_uri_safe_conflicts(
+            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
+            NewQbAttribute,
+            property_path,
+            new_attribute_values,
+        )
 
 
 @dataclass

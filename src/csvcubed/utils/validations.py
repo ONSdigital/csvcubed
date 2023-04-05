@@ -236,24 +236,11 @@ def all_of(*conditions: ValidationFunction) -> ValidationFunction:
     ) -> List[ValidateModelPropertiesError]:
         all_errors = []
         for condition in conditions:
-            try:
-                errors = condition(value, property_path)
-                if any(errors):
-                    all_errors += errors
-            except Exception as e:
-                "Hello!"
+            errors = condition(value, property_path)
+            if any(errors):
+                all_errors += errors
 
-        if not any(all_errors):
-            return []
-        else:
-            return [
-                ValidateModelPropertiesError(
-                    f"The value '{truncate(str(value), 50)}' does not satisfy the condition for the variable.",
-                    property_path,
-                    value,
-                ),
-                *all_errors,
-            ]
+        return all_errors
 
     return validate
 

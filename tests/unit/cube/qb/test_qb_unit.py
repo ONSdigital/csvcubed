@@ -51,7 +51,7 @@ def test_scaling_factor_defined():
         cube, _, _ = deserialiser(data_file_path, config_file_path)
         amount_col = cube.columns[1]
 
-        assert_num_validation_errors(amount_col.pydantic_validation(), 0)
+        assert_num_validation_errors(amount_col.validate(), 0)
 
         assert isinstance(amount_col, QbColumn)
         assert isinstance(amount_col.structural_definition, QbObservationValue)
@@ -92,7 +92,7 @@ def test_scaling_factor_not_defined():
         cube, _, _ = deserialiser(data_file_path, config_file_path)
         amount_col = cube.columns[1]
 
-        assert_num_validation_errors(amount_col.pydantic_validation(), 0)
+        assert_num_validation_errors(amount_col.validate(), 0)
 
         assert isinstance(amount_col, QbColumn)
         assert isinstance(amount_col.structural_definition, QbObservationValue)

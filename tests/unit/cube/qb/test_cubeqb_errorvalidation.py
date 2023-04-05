@@ -670,8 +670,9 @@ def test_conflict_concept_uri_values_error():
     error = _get_single_validation_error_for_qube(qube)
     assert isinstance(error, ConflictingUriSafeValuesError)
     assert error.component_type == NewQbCodeList
-    assert error.path == [
-        "('columns', 0)",
+    assert error.property_path == [
+        "columns",
+        "0",
         "structural_definition",
         "code_list",
         "concepts",
