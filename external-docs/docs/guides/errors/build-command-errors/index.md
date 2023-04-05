@@ -24,7 +24,6 @@
 * [CSV Column Literal With URI Template](./csv-column-literal-with-uri-template.md)
 * [Column Validation Error](./column-validation.md)
 * [Label URI Collision Error](./label-uri-collision.md)
-* [Unknown Pydantic Validation Error](./unknown-pydantic-error.md)
 * [Missing URI Template Name Error](/.missing-uri-template-name-error.md)
 * [Attribute Not Linked Error](./attribute-not-linked.md)
 * [Duplicate Measure Error](./duplicate-measures.md)

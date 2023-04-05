@@ -102,15 +102,5 @@ def test_scaling_factor_not_defined():
         assert unit.base_unit_scaling_factor == EXISTING_UNIT_DEFAULT_SCALING_FACTOR
 
 
-def _assert_both_properties_defined_error(
-    unit: NewQbUnit, provided_variable_name: str, expected_variable_name: str
-) -> None:
-    errors = unit.pydantic_validation()
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
-    assert provided_variable_name in str(error)
-    assert expected_variable_name in str(error)
-
-
 if __name__ == "__main__":
     pytest.main()

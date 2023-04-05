@@ -152,7 +152,6 @@ If any additional test files are required (for either *unit* or *behaviour* test
 
 Some of the key packages we make use of include:
 
-* [pydantic](https://pydantic-docs.helpmanual.io/) - Adds validation to selected models allowing us to correct the user where they provide us with invalid or missing configuration.
 * [rdflib](https://rdflib.readthedocs.io) -  Allows us to read and write RDF in various formats as well as query it with SPARQL.
 * [pandas](https://pandas.pydata.org/) - Used mainly as a tool for input of tabular data and for writing to CSV.
 
@@ -182,38 +181,18 @@ We can see some of the helpful functionality we now have:
 
 ```python
 # Testing equality
-some_instance == some_other_instance 
+some_instance == some_other_instance
 >>> False
 # Testing string __repr__
-some_instance 
+some_instance
 >>> SomeClass(first_name='Csvw', surname='Lib')
 # Testing JSON serialisation
-some_instance.as_json() 
+some_instance.as_json()
 >>> '{"first_name": "Csvw", "surname": "Lib"}'
 # Testing json deserialisation.
-SomeClass.from_json('{"first_name": "Ronald", "surname": "Burgermeister"}') 
+SomeClass.from_json('{"first_name": "Ronald", "surname": "Burgermeister"}')
 >>> SomeClass(first_name='Ronald', surname='Burgermeister')
 ```
-
-### Pydantic
-
-We are using [pydantic](https://pydantic-docs.helpmanual.io/) in an atypical fashion. It is designed to be a tool which parses & validates input against the static type annotations, however it typically does this validation *when the class is instantiated*. This prescriptive approach therefore restrictis how you build you model  up. You're required to pass all *required* variables to the `__init__` function; you cannot only instantiate the class and then verify that it's valid later once you've finished making assignments.
-
-```python
-# With mainstream pydantic, you are forced to take this approach
-some_instance = SomeClassUsingPydantic(first_arg="value", second_arg="other value")
-
-# With mainstream pydantic, you can't use this approach
-some_instance = SomeClassUsingPydantic()
-some_instance.first_arg = "value"
-some_instance.second_arg = "other value"
-```
-
-This may not seem that tricky with a small class like this, but when models accumulate more and more fields, it's often nice to be able to take the latter approach to keep your code a bit easier to understand. Most importantly, it doesn't give out end-user the flexibility to write python in the style that's familiar to them; we don't want to make their life more difficult than is strictly necessary.
-
-So, in [csvqb.models.pydanticmodel.PydanticModel](https://github.com/GSS-Cogs/csvwlib/blob/b3e99d2fffd49a9f314e7d6a13e07ef04c27e7e8/csvqb/csvqb/models/pydanticmodel.py), we have taken an approach that only validates properties when the `pydantic_validation` function is called, when the user says they're ready to check. Ensure that your models extend from `PydanticModel`, that they have the [@dataclasses](#dataclasses) attribute and that you have used [static type annotations](#static-types) on all fields and you model can have `pydantic_validation` too!
-
-**N.B. due to some bugs in the mainstream version of pydantic, we are currently relying on [a custom fork](https://github.com/robons/pydantic/).**
 
 ### Serialisation to RDF
 
