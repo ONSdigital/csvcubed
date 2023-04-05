@@ -78,7 +78,7 @@ class ValidateModelPropertiesError(ValidationError):
 
 
 @dataclass
-class ReservedUriValueError(ValidateModelPropertiesError):
+class ReservedUriValueError(ValidateModelPropertiesError, HasErrorUrl):
     """
     An error which occurs when the user has defined a resource which would re-use a reserved URI value.
     """
@@ -101,7 +101,7 @@ class ReservedUriValueError(ValidateModelPropertiesError):
 
 
 @dataclass
-class ConflictingUriSafeValuesError(ValidateModelPropertiesError):
+class ConflictingUriSafeValuesError(ValidateModelPropertiesError, HasErrorUrl):
     """
     An error which happens when the user has multiple resources which would generate the same URI-safe value.
     This conflict must be resolved by the user before it is possible to continue.
