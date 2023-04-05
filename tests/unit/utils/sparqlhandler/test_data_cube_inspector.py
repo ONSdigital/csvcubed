@@ -902,3 +902,78 @@ def test_get_columns_for_component_attribute_pivoted():
     expected_titles = ["Imports Status", "Exports Status"]
 
     assert actual_titles == expected_titles
+
+
+def test_get_measure_uris_and_labels_pivoted_multi_measure():
+    path_to_json_file = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+    )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    result = data_cube_inspector.get_measure_uris_and_labels(csv_url)
+
+    assert len(result) == 2
+    assert result["qb-id-10003.csv#measure/some-other-measure"] == "Some Other Measure"
+    assert result["qb-id-10003.csv#measure/some-measure"] == "Some Measure"
+
+
+def test_get_measure_uris_and_labels_standard_multi_measure():
+    path_to_json_file = (
+        _test_case_base_dir
+        / "multi-unit_multi-measure"
+        / "out"
+        / "alcohol-bulletin.csv-metadata.json"
+    )
+    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+    )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    result = data_cube_inspector.get_measure_uris_and_labels(csv_url)
+
+    assert len(result) == 9
+    assert (
+        result["alcohol-bulletin.csv#measure/alcohol-duty-receipts"]
+        == "alcohol-duty-receipts"
+    )
+    assert (
+        result["alcohol-bulletin.csv#measure/beer-duty-receipts"]
+        == "beer-duty-receipts"
+    )
+    assert (
+        result["alcohol-bulletin.csv#measure/cider-duty-receipts"]
+        == "cider-duty-receipts"
+    )
+    assert result["alcohol-bulletin.csv#measure/clearances"] == "clearances"
+    assert (
+        result["alcohol-bulletin.csv#measure/clearances-of-alcohol"]
+        == "clearances-of-alcohol"
+    )
+    assert (
+        result["alcohol-bulletin.csv#measure/production-volume"] == "production-volume"
+    )
+    assert (
+        result["alcohol-bulletin.csv#measure/production-volume-alcohol"]
+        == "production-volume-alcohol"
+    )
+    assert (
+        result["alcohol-bulletin.csv#measure/spirits-duty-receipts"]
+        == "spirits-duty-receipts"
+    )
+    assert (
+        result["alcohol-bulletin.csv#measure/wine-duty-receipts"]
+        == "wine-duty-receipts"
+    )

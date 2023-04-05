@@ -7,8 +7,8 @@ one of more data cubes.
 """
 
 from dataclasses import dataclass
-from functools import cached_property, cache
-from typing import Dict, List, Optional, Tuple, Set
+from functools import cache, cached_property
+from typing import Dict, List, Optional, Set, Tuple
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
@@ -258,6 +258,24 @@ class DataCubeInspector:
             for c in self.get_column_component_info(csv_url)
             if c.column_type == column_type
         ]
+
+    def get_measure_uris_and_labels(self, csv_url: str) -> Dict[str, str]:
+        # sparql_results = select_is_pivoted_shape_for_measures_in_data_set(
+        #     self.csvw_inspector.rdf_graph, list(self._cube_table_identifiers.values())
+        # )
+        # map_csv_url_to_measures = group_by(sparql_results, lambda r: r.csv_url)
+
+        # results = map_csv_url_to_measures[csv_url]
+
+        # return {result.measure_uri: result.measure_label for result in results}
+        qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
+
+        results_dict = {}
+        for component in qube_components:
+            if component.property_type == "Measure":
+                results_dict[component.property] = component.property_label
+
+        return results_dict
 
 
 def _get_column_type_and_component(
