@@ -223,37 +223,7 @@ class DataCubeInspector:
         same columns being defined.
         """
         cols = self.get_column_component_info(csv_url)
-        dict_of_types = {}
-        for col in cols:
-            is_attribute_literal = (
-                col.column_type == EndUserColumnType.Attribute
-                and col.column_definition.value_url is None
-            )
-
-            if (
-                col.column_type == EndUserColumnType.Observations
-                or is_attribute_literal
-            ):
-                if col.column_definition.data_type is None:
-                    raise ValueError(
-                        "Expected a defined datatype but got 'None' instead."
-                    )
-
-                col_data_type = col.column_definition.data_type.removeprefix(
-                    _XSD_BASE_URI
-                )
-
-                if col_data_type in ACCEPTED_DATATYPE_MAPPING.keys():
-                    dict_of_types[
-                        col.column_definition.title
-                    ] = ACCEPTED_DATATYPE_MAPPING[col_data_type]
-                else:
-                    raise ValueError(
-                        f"Unhandled data type '{col.column_definition.data_type}'."
-                    )
-            else:
-                dict_of_types[col.column_definition.title] = "string"
-
+        dict_of_types = _get_data_types_of_all_cols(cols)
         absolute_csv_url = get_absolute_file_path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
@@ -378,3 +348,34 @@ def _figure_out_end_user_column_type(
         raise UnsupportedComponentPropertyTypeException(
             property_type=qube_c.property_type
         )
+
+
+def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
+    """ """
+    dict_of_types = {}
+    for col in cols:
+        is_attribute_literal = (
+            col.column_type == EndUserColumnType.Attribute
+            and col.column_definition.value_url is None
+        )
+
+        if col.column_type == EndUserColumnType.Observations or is_attribute_literal:
+            if col.column_definition.data_type is None:
+                raise ValueError(
+                    f"Expected a defined datatype in column '{col.column_definition.title}' but got 'None' instead."
+                )
+
+            col_data_type = col.column_definition.data_type.removeprefix(_XSD_BASE_URI)
+
+            if col_data_type in ACCEPTED_DATATYPE_MAPPING:
+                dict_of_types[col.column_definition.title] = ACCEPTED_DATATYPE_MAPPING[
+                    col_data_type
+                ]
+            else:
+                raise ValueError(
+                    f"Unhandled data type '{col.column_definition.data_type}' in column '{col.column_definition.title}'."
+                )
+        else:
+            dict_of_types[col.column_definition.title] = "string"
+
+    return dict_of_types

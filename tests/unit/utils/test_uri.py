@@ -6,6 +6,7 @@ from csvcubed.utils.uri import (
     csvw_column_name_safe,
     ensure_looks_like_uri,
     ensure_values_in_lists_looks_like_uris,
+    get_absolute_file_path,
     get_last_uri_part,
     looks_like_uri,
 )
@@ -57,11 +58,16 @@ def test_ensure_all_look_like_uri():
 
 def test_get_absolute_file_path():
     """
-    #TODO:
+    Testing the URI util function `get_absolute_file_path()` returns a normalised
+    path from a string URI which can be used to locate resources on windows as
+    well as unix/linux operating systems.
     """
-    x = "sss"
-    assert isinstance(x, type(Path))
-    assert not x.startswith(tuple[str("file:\\"), str("file:")])
+    csv_url = "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
+    absolute_csv_url = get_absolute_file_path(csv_url)
+    assert isinstance(absolute_csv_url, Path)
+    assert absolute_csv_url == Path(
+        "/workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
+    )
 
 
 if __name__ == "__main__":

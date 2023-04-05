@@ -972,6 +972,8 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "string"
+    # Expecting data type of Obs1 column to be "string" because the data type
+    # property has been defined as "time" in the json config file.
     assert dataframe["Obs1"].dtype == "string"
     assert dataframe["Dim2"].dtype == "string"
     assert dataframe["Obs2"].dtype == "bool"
