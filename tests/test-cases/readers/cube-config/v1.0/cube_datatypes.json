@@ -118,6 +118,11 @@
             "label": "time attribute",
             "data_type": "time"
         },
+        "Attr-number": {
+            "type": "attribute",
+            "label": "number attribute",
+            "data_type": "double"
+        },
         "Value": {"type": "observations", "data_type": "integer"},
         "Measure": {"type": "measures", "values": true},
         "Units": {"type": "units", "values": true}
