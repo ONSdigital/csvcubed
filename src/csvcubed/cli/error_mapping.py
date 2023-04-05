@@ -48,7 +48,6 @@ from csvcubed.models.cube.validationerrors import (
 from csvcubed.models.validationerror import (
     ConflictingUriSafeValuesError,
     ReservedUriValueError,
-    UnknownPydanticValidationError,
     ValidateModelPropertiesError,
     ValidationError,
 )
@@ -97,10 +96,6 @@ def friendly_error_mapping(error: ValidationError) -> str:
             "{error.reserved_identifier}'."
         ),
         ValidateModelPropertiesError: ("{error.message}"),
-        UnknownPydanticValidationError: (
-            "An error was encountered when validating the cube. The error occurred in '{error.path}' "
-            "and was reported as '{error.original_error}'"
-        ),
         UndefinedAttributeValueUrisError: (
             "The Attribute URI(s) {error.undefined_values} in {_get_description_for_component(error.component)} "
             "have not been defined in the list of valid attribute values."

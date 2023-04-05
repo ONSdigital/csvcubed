@@ -9,10 +9,7 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import ClassVar, Dict, List, Set, Type, Union
 
-from csvcubed.models.validationerror import (
-    PydanticThrowableSpecificValidationError,
-    SpecificValidationError,
-)
+from csvcubed.models.validationerror import SpecificValidationError
 
 from .datastructuredefinition import QbStructuralDefinition
 
