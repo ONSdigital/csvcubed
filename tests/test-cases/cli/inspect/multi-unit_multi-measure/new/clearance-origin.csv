@@ -1,0 +1,6 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description
+all,all,all,,0,
+ex-ship,ex-ship,ex-ship,,1,
+ex-warehouse,ex-warehouse,ex-warehouse,,2,
+ex-warehouse-and-ex-ship-clearances,ex-warehouse-and-ex-ship-clearances,ex-warehouse-and-ex-ship-clearances,,3,
+uk-origin,uk-origin,uk-origin,,4,
