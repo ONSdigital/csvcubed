@@ -4,7 +4,10 @@ URI Safe Validations
 """
 from typing import Dict, List, Set, Tuple, Type, Union
 
-from csvcubed.models.validationerror import ConflictingUriSafeValuesError
+from csvcubed.models.validationerror import (
+    ConflictingUriSafeValuesError,
+    ValidateModelPropertiesError,
+)
 
 
 def ensure_no_uri_safe_conflicts(
@@ -12,7 +15,7 @@ def ensure_no_uri_safe_conflicts(
     location: Union[Type, str],
     property_path: List[str],
     offending_value: List,
-) -> List[ConflictingUriSafeValuesError]:
+) -> List[ValidateModelPropertiesError]:
     """
     Accepts a list of tuples of `(label, uri_safe_identifier)` and identifies any duplicate mappings of
     `label` => `uri_safe_identifier`.

@@ -12,7 +12,10 @@ import pandas as pd
 import uritemplate
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validationerror import (
+    ValidateModelPropertiesError,
+    ValidationError,
+)
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.validations import ValidationFunction
@@ -108,7 +111,7 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
     @staticmethod
     def _validate_measures_non_conflicting(
         measures: List[QbMeasure], property_path: List[str]
-    ) -> List[QbMeasure]:
+    ) -> List[ValidateModelPropertiesError]:
         """
         Ensure that there are no collisions where multiple new measures map to the same URI-safe value.
         """
