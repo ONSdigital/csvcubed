@@ -930,7 +930,7 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
     path_to_json_file = (
         _test_case_base_dir
         / "multi-unit_multi-measure"
-        / "out"
+        / "new"
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
@@ -977,3 +977,23 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
         result["alcohol-bulletin.csv#measure/wine-duty-receipts"]
         == "wine-duty-receipts"
     )
+
+
+def test_get_attribute_value_uris_and_labels():
+    path_to_json_file = (
+        _test_case_base_dir
+        / "multi-attribute-resource-values"
+        / "multi-attribute.csv-metadata.json"
+    )
+    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+    )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+
+    pass

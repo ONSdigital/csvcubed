@@ -6,11 +6,17 @@ Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
+import os
 from dataclasses import dataclass
 from functools import cache, cached_property
+from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
+from urllib.parse import urljoin
+
+import uritemplate
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
+from csvcubed.inputs import pandas_input_to_columnar_str
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
@@ -24,6 +30,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
@@ -260,14 +267,6 @@ class DataCubeInspector:
         ]
 
     def get_measure_uris_and_labels(self, csv_url: str) -> Dict[str, str]:
-        # sparql_results = select_is_pivoted_shape_for_measures_in_data_set(
-        #     self.csvw_inspector.rdf_graph, list(self._cube_table_identifiers.values())
-        # )
-        # map_csv_url_to_measures = group_by(sparql_results, lambda r: r.csv_url)
-
-        # results = map_csv_url_to_measures[csv_url]
-
-        # return {result.measure_uri: result.measure_label for result in results}
         qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
 
         results_dict = {}
@@ -276,6 +275,52 @@ class DataCubeInspector:
                 results_dict[component.property] = component.property_label
 
         return results_dict
+
+    def get_attribute_value_uris_and_labels(self, csv_url: str) -> Dict[str, str]:
+        column_components = self.get_column_component_info(csv_url)
+
+        map_resource_attr_col_title_to_value_url = {
+            component.column_definition.name: component.column_definition.value_url
+            for component in column_components
+            if component.column_type == EndUserColumnType.Attribute
+            and component.column_definition.value_url is not None
+        }
+        map_col_name_to_title = {
+            col.column_definition.name: col.column_definition.title
+            for col in column_components
+        }
+
+        absolute_csv_url = Path(
+            os.path.normpath(
+                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+            )
+            .removeprefix("file:\\")
+            .removeprefix("file:")
+        )
+
+        (dataframe, _) = read_csv(
+            absolute_csv_url,
+            usecols=[
+                map_col_name_to_title[col_name]
+                for col_name in map_resource_attr_col_title_to_value_url.keys()
+            ],
+            dtype={
+                col_title: "string"
+                for col_title in map_resource_attr_col_title_to_value_url.keys()
+            },
+        )
+
+        attributes_list: Dict[str, List[str]] = {}
+
+        for name, value_url in map_resource_attr_col_title_to_value_url.items():
+            attribute_value_uris: List[str] = []
+            col_title: str = map_col_name_to_title[name]
+            for i in pandas_input_to_columnar_str(dataframe[col_title].unique()):
+                attribute_value_uri = uritemplate.expand(value_url, {name: i})
+                attribute_value_uris.append(attribute_value_uri)
+            attributes_list[name] = attribute_value_uris
+
+        return map_resource_attr_col_title_to_value_url
 
 
 def _get_column_type_and_component(

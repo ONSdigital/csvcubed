@@ -20,7 +20,17 @@
         },
         "Imports Status": {
             "type": "attribute",
-            "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+            "values": [
+                {
+                    "label": "Provisional"
+                },
+                {
+                    "label": "Final"
+                },
+                {
+                    "label": "Forecast"
+                }
+            ],
             "describes_observations": "Imports"
         },
         "Exports": {

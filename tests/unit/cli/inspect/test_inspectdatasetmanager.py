@@ -395,7 +395,7 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "multi-unit_multi-measure"
-        / "out"
+        / "new"
         / "alcohol-bulletin.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
@@ -451,7 +451,7 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "multi-unit_multi-measure"
-        / "out"
+        / "new"
         / "alcohol-bulletin.csv-metadata.json"
     )
 
@@ -545,7 +545,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "multi-unit_multi-measure"
-        / "out"
+        / "new"
         / "alcohol-bulletin.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
