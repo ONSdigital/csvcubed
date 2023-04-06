@@ -67,7 +67,7 @@ def test_get_absolute_file_path():
         windows_csv_url = "C:\\Users\\someone\\Code\\something"
         absolute_csv_url = file_uri_to_path(windows_csv_url)
         assert isinstance(absolute_csv_url, Path)
-        assert absolute_csv_url == WindowsPath("Users\\someone\\Code\\something")
+        assert absolute_csv_url == WindowsPath("Users\someone\Code\something")
     elif os.name == "posix":
         unix_csv_url = "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
         absolute_csv_url = file_uri_to_path(unix_csv_url)
