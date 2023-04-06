@@ -5,14 +5,18 @@ Data Cube Inspector
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
-
 from dataclasses import dataclass
-from functools import cached_property, cache
-from typing import Dict, List, Optional, Tuple, Set
+from functools import cache, cached_property
+from typing import Dict, List, Optional, Set, Tuple
+from urllib.parse import urljoin
+
+import pandas as pd
+from csvcubedmodels.rdf.namespaces import XSD
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColumnDefinition,
@@ -22,8 +26,10 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     UnitResult,
 )
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
@@ -34,6 +40,9 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
+from csvcubed.utils.uri import file_uri_to_path
+
+_XSD_BASE_URI: str = XSD[""].toPython()
 
 
 @dataclass
@@ -207,6 +216,19 @@ class DataCubeInspector:
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
 
+    def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
+        """
+        Get the pandas dataframe for the csv url of the cube wishing to be loaded.
+        Returns DuplicateColumnTitleError in the event of two instances of the
+        same columns being defined.
+        """
+        cols = self.get_column_component_info(csv_url)
+        dict_of_types = _get_data_types_of_all_cols(cols)
+        absolute_csv_url = file_uri_to_path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+        )
+        return read_csv(absolute_csv_url, dtype=dict_of_types)
+
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
         """
@@ -258,6 +280,17 @@ class DataCubeInspector:
             for c in self.get_column_component_info(csv_url)
             if c.column_type == column_type
         ]
+
+    def get_primary_csv_url(self) -> str:
+        """
+        Retrieves the csv_url for the primary CSV defined in the CSV-W.
+        This will only work if the primary file loaded into the graph was a
+        data cube.
+        """
+        primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
+        return self.get_cube_identifiers_for_data_set(
+            primary_catalog_metadata.dataset_uri
+        ).csv_url
 
 
 def _get_column_type_and_component(
@@ -315,3 +348,34 @@ def _figure_out_end_user_column_type(
         raise UnsupportedComponentPropertyTypeException(
             property_type=qube_c.property_type
         )
+
+
+def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
+    """ """
+    dict_of_types = {}
+    for col in cols:
+        is_attribute_literal = (
+            col.column_type == EndUserColumnType.Attribute
+            and col.column_definition.value_url is None
+        )
+
+        if col.column_type == EndUserColumnType.Observations or is_attribute_literal:
+            if col.column_definition.data_type is None:
+                raise ValueError(
+                    f"Expected a defined datatype in column '{col.column_definition.title}' but got 'None' instead."
+                )
+
+            col_data_type = col.column_definition.data_type.removeprefix(_XSD_BASE_URI)
+
+            if col_data_type in ACCEPTED_DATATYPE_MAPPING:
+                dict_of_types[col.column_definition.title] = ACCEPTED_DATATYPE_MAPPING[
+                    col_data_type
+                ]
+            else:
+                raise ValueError(
+                    f"Unhandled data type '{col.column_definition.data_type}' in column '{col.column_definition.title}'."
+                )
+        else:
+            dict_of_types[col.column_definition.title] = "string"
+
+    return dict_of_types

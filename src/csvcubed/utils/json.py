@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 
 from jsonschema import RefResolver
 
-from csvcubed.utils.uri import looks_like_uri
+from csvcubed.utils.uri import file_uri_to_path, looks_like_uri
 
 from .cache import session
 
@@ -36,11 +36,7 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
     else:
         url = urlparse(file_uri_or_path)
         if url.scheme == "file":
-            file_path = Path(
-                os.path.normpath(file_uri_or_path)
-                .removeprefix("file:\\")
-                .removeprefix("file:")
-            )
+            file_path = file_uri_to_path(file_uri_or_path)
             return _load_json_from_path(file_path)
         else:
             # Treat it as a URL

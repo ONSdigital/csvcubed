@@ -98,3 +98,16 @@ def test_get_table_identifiers_for_concept_scheme_error():
     assert (
         "Could not find code list table identifiers for ConceptScheme URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
     ) in str(exception.value)
+
+
+def test_get_primary_csv_url():
+    """
+    Testing that the csv_url for the primary CSV defined in the code list CSV-W is correctly retrieved.
+    """
+    path_to_cube = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    code_list_inspector = get_code_list_inspector(path_to_cube)
+    assert code_list_inspector.get_primary_csv_url() == "some-dimension.csv"

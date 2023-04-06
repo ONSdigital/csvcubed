@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
+from csvcubed.utils.uri import file_uri_to_path
 
 
 class ComponentField(Enum):
@@ -137,11 +138,7 @@ def _relative_path(path_uri: str, relative_to: Path) -> str:
 
     if len(url.fragment) > 0:
         fragment_part = "#" + url.fragment
-        file_path = Path(
-            os.path.normpath(path_uri.removesuffix(fragment_part))
-            .removeprefix("file:\\")
-            .removeprefix("file:")
-        )
+        file_path = file_uri_to_path(path_uri.removesuffix(fragment_part))
         relative_file_path: str = os.path.relpath(file_path, relative_to)
         return relative_file_path + fragment_part
 
