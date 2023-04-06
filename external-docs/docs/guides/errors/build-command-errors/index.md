@@ -33,3 +33,4 @@
 * [Hybrid Shape Error](./hybrid-shape-error.md)
 * [Pivoted Shape Measure Column Exists Error](./pivoted-shape-measure-col-exist.md)
 * [Pivoted Observation Value Column Without Measure Error](./pivoted-obs-val-col-without-measure.md)
+* [Attribute with No URI Template or Values](./attribute-no-uri-template-or-values.md)
