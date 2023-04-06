@@ -1,5 +1,5 @@
-from os.path import exists
-from pathlib import Path
+import os
+from pathlib import Path, PosixPath, WindowsPath
 
 import pytest
 
@@ -66,8 +66,14 @@ def test_get_absolute_file_path():
     csv_url = "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
     absolute_csv_url = get_absolute_file_path(csv_url)
     assert isinstance(absolute_csv_url, Path)
-    assert not exists(csv_url)
-    assert exists(absolute_csv_url)
+    if os.name == "nt":
+        assert absolute_csv_url == WindowsPath(
+            "workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
+        )
+    elif os.name == "posix":
+        assert absolute_csv_url == PosixPath(
+            "/workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
+        )
 
 
 if __name__ == "__main__":
