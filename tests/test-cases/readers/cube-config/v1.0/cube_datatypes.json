@@ -1,8 +1,15 @@
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "columns": {
-        "Dim-0": {"label": "Non Dimension", "type": "dimension", "code_list": true},
-        "Dim-1": {"type": "dimension", "label": "Period Dimension"},
+        "Dim-0": {
+            "label": "Non Dimension",
+            "type": "dimension",
+            "code_list": true
+        },
+        "Dim-1": {
+            "type": "dimension",
+            "label": "Period Dimension"
+        },
         "Dim-2": {
             "type": "dimension",
             "label": "Trade Direction Dimension",
@@ -121,10 +128,19 @@
         "Attr-number": {
             "type": "attribute",
             "label": "number attribute",
-            "data_type": "double"
+            "data_type": "number"
         },
-        "Value": {"type": "observations", "data_type": "integer"},
-        "Measure": {"type": "measures", "values": true},
-        "Units": {"type": "units", "values": true}
+        "Value": {
+            "type": "observations",
+            "data_type": "integer"
+        },
+        "Measure": {
+            "type": "measures",
+            "values": true
+        },
+        "Units": {
+            "type": "units",
+            "values": true
+        }
     }
 }
