@@ -228,7 +228,8 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
 
 def all_of(*conditions: ValidationFunction) -> ValidationFunction:
     """
-    TODO:
+    This function will validate if all arguments provided are instances of the types
+    specified. Returns any errors returned by the validation function.
     """
 
     def validate(

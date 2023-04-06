@@ -167,7 +167,23 @@ And there is also a helper method on the `NewQbCodeList` secondary structural de
 * `NewQbCodeList.from_data`
 
 These methods accept data straight from a pandas DataFrame's column and are designed to automatically generate resources, or references to resources from the DataFrame's data. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this aims to speed the adoption of the standards for new users by reducing cognitive load.
+### Validations
 
+The validations are done in house, so each class will validate every class variable before it is constructed, also hte parent classes will be validated. this way before a child class is created the parent class will be validated.
+In the example below, the class is inheriting from `NewQbCodelist` and the class validation is called before the child class validation is done:
+
+```python
+class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
+    """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
+
+    variant_of_uris: List[str] = field(default_factory=list)
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **NewQbCodeList._get_validations(self),
+            "variant_of_uris": v.list(v.uri),
+        }
+ ```
 ### The Works
 
 More thorough validations, including some checks on the cube's structure as a whole, as well as the validation of models against the data present can be performed with the following:
