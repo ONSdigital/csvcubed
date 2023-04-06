@@ -116,7 +116,7 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
     _logger.debug("Values %s all look like URIs.", values)
 
 
-def get_absolute_file_path(file_uri: str) -> Path:
+def file_uri_to_path(file_uri: str) -> Path:
     """
     Returns a normalised file path from a URI. Will work on both Windows and
     Linux/Unix.

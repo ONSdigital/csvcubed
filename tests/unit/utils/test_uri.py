@@ -7,7 +7,7 @@ from csvcubed.utils.uri import (
     csvw_column_name_safe,
     ensure_looks_like_uri,
     ensure_values_in_lists_looks_like_uris,
-    get_absolute_file_path,
+    file_uri_to_path,
     get_last_uri_part,
     looks_like_uri,
 )
@@ -63,14 +63,17 @@ def test_get_absolute_file_path():
     path from a string URI which can be used to locate resources on windows as
     well as unix/linux operating systems.
     """
-    csv_url = "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
-    absolute_csv_url = get_absolute_file_path(csv_url)
-    assert isinstance(absolute_csv_url, Path)
     if os.name == "nt":
+        windows_csv_url = "file:/C:/workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
+        absolute_csv_url = file_uri_to_path(windows_csv_url)
+        assert isinstance(absolute_csv_url, Path)
         assert absolute_csv_url == WindowsPath(
             "workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
         )
     elif os.name == "posix":
+        unix_csv_url = "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
+        absolute_csv_url = file_uri_to_path(unix_csv_url)
+        assert isinstance(absolute_csv_url, Path)
         assert absolute_csv_url == PosixPath(
             "/workspaces/csvcubed/tests/test-cases/cli/inspect/inspector-load-dataframe/pivoted-shape/pivoted-shape-out/testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv"
         )

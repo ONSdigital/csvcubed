@@ -40,7 +40,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
-from csvcubed.utils.uri import get_absolute_file_path
+from csvcubed.utils.uri import file_uri_to_path
 
 _XSD_BASE_URI: str = XSD[""].toPython()
 
@@ -224,7 +224,7 @@ class DataCubeInspector:
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = _get_data_types_of_all_cols(cols)
-        absolute_csv_url = get_absolute_file_path(
+        absolute_csv_url = file_uri_to_path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
         return read_csv(absolute_csv_url, dtype=dict_of_types)
