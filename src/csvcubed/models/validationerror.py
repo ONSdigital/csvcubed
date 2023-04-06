@@ -30,7 +30,7 @@ class SpecificValidationError(ValidationError, HasErrorUrl, ABC):
 class ValidateModelPropertiesError(ValidationError):
 
     """
-    This error will be returned with the name of the variable that has not been validated.
+    This error will be returned with the path of the offending value that has not been validated.
     """
 
     property_path: List[str]

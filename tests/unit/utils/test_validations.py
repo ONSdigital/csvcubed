@@ -954,7 +954,10 @@ def test_whole_object_in_parent_class():
 
 
 def test_validate_all_of_correct():
-    """fill this in"""
+    """
+    This test checks if the vaalidation that is using `all_of`
+    function to validate a varibale(correct) with multiple condition does pass
+    """
 
     test_instance = TestClass(test_upper_case_string="STRING")
 
@@ -964,13 +967,25 @@ def test_validate_all_of_correct():
 
 
 def test_validate_all_of_fail():
-    """fill this in"""
+    """
+    This test checks if the vaalidation that is using `all_of`
+    function to validate a varibale(incorrect) with multiple condition does pass
+    """
 
     test_instance = TestClass(test_upper_case_string="string")
 
     errors = test_instance.validate()
 
     assert any(errors)
+
+    # testing if the validation fails as expected when provided with an ingeter value
+
+    test_instance2 = TestClass(test_upper_case_string=5)
+
+    with pytest.raises(AttributeError) as exception:
+        _ = test_instance2.validate()
+
+    assert ("'int' object has no attribute 'upper'") in str(exception.value)
 
 
 if __name__ == "__main__":
