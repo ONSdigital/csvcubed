@@ -33,9 +33,6 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     # spatial_bound_uri: Optional[str] = field(default=None, repr=False)
     # temporal_bound_uri: Optional[str] = field(default=None, repr=False)
-    # _spatial_bound_uri_validator = validate_uri("spatial_bound_uri", is_optional=True)
-    # _temporal_bound_uri_validator = validate_uri("temporal_bound_uri", is_optional=True)
-    # TODO: ^ what about when pydatic validate function is commeneted out?
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {

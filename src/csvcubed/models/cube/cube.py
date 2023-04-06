@@ -70,7 +70,7 @@ class Cube(Generic[TMetadata], ValidatedModel):
         else:
             raise TypeError("The cube cannot be in both standard and pivoted shape")
 
-    def validate(self) -> List[ValidationError]:
+    def validate_all(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
         try:
             errors += ValidatedModel.validate(self)
