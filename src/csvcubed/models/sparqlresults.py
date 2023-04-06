@@ -264,6 +264,16 @@ class QubeComponentsResult:
     num_components: int
 
 
+@dataclass
+class ResourceURILabelResult:
+    """
+    TODO
+    """
+
+    resource_uri: str
+    resource_label: str
+
+
 def map_catalog_metadata_results(
     sparql_results: List[ResultRow],
 ) -> List[CatalogMetadataResult]:
@@ -625,6 +635,22 @@ def map_is_pivoted_shape_for_measures_in_data_set(
             csv_url=str(row_result["csvUrl"]),
             measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
+        )
+
+    return [map_row(row.asdict()) for row in sparql_results]
+
+
+def map_labels_for_resources(
+    sparql_results: List[ResultRow],
+) -> List[ResourceURILabelResult]:
+    """
+    TODO
+    """
+
+    def map_row(row_result: Dict[str, Any]) -> ResourceURILabelResult:
+        return ResourceURILabelResult(
+            resource_uri=str(row_result["resourceValUri"]),
+            resource_label=str(row_result["resourceLabel"]),
         )
 
     return [map_row(row.asdict()) for row in sparql_results]

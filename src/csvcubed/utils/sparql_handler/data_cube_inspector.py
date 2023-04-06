@@ -26,6 +26,7 @@ from csvcubed.models.sparqlresults import (
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
     QubeComponentsResult,
+    ResourceURILabelResult,
     UnitResult,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
@@ -39,6 +40,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
+    select_labels_for_resources,
     select_units,
 )
 
@@ -276,7 +278,9 @@ class DataCubeInspector:
 
         return results_dict
 
-    def get_attribute_value_uris_and_labels(self, csv_url: str) -> Dict[str, str]:
+    def get_attribute_value_uris_and_labels(
+        self, csv_url: str
+    ) -> Dict[str, List[ResourceURILabelResult]]:
         column_components = self.get_column_component_info(csv_url)
 
         map_resource_attr_col_title_to_value_url = {
@@ -310,7 +314,7 @@ class DataCubeInspector:
             },
         )
 
-        attributes_list: Dict[str, List[str]] = {}
+        attributes_dict: Dict[str, List[str]] = {}
 
         for name, value_url in map_resource_attr_col_title_to_value_url.items():
             attribute_value_uris: List[str] = []
@@ -318,9 +322,17 @@ class DataCubeInspector:
             for i in pandas_input_to_columnar_str(dataframe[col_title].unique()):
                 attribute_value_uri = uritemplate.expand(value_url, {name: i})
                 attribute_value_uris.append(attribute_value_uri)
-            attributes_list[name] = attribute_value_uris
+            attributes_dict[name] = attribute_value_uris
 
-        return map_resource_attr_col_title_to_value_url
+        results_dict: Dict[str, List[ResourceURILabelResult]] = {}
+
+        for col_name, uris in attributes_dict.items():
+            sparql_results = select_labels_for_resources(
+                rdf_graph=self.csvw_inspector.rdf_graph,
+                resource_uris=attributes_dict[col_name],
+            )
+            results_dict[col_name] = sparql_results
+        return results_dict
 
 
 def _get_column_type_and_component(

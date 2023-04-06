@@ -32,6 +32,7 @@ from csvcubed.models.sparqlresults import (
     MetadataDependenciesResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
+    ResourceURILabelResult,
     TableSchemaPropertiesResult,
     UnitResult,
     map_catalog_metadata_results,
@@ -40,6 +41,7 @@ from csvcubed.models.sparqlresults import (
     map_csvw_table_schemas_file_dependencies_result,
     map_data_set_dsd_csv_url_result,
     map_is_pivoted_shape_for_measures_in_data_set,
+    map_labels_for_resources,
     map_metadata_dependency_results,
     map_primary_key_col_names_by_csv_url_result,
     map_qube_components_sparql_result,
@@ -87,6 +89,8 @@ class SPARQLQueryName(Enum):
     )
 
     SELECT_COLUMN_DEFINITIONS = "select_column_definitions"
+
+    SELECT_LABELS_FOR_RESOURCES = "select_labels_for_resources"
 
 
 def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
@@ -252,6 +256,27 @@ def _cube_table_identifiers_to_values_binding(
             for uris in csv_dsd_dataset_uris
         ],
     )
+
+
+def _uris_to_values_binding(uris: List[str]) -> ValuesBinding:
+    return ValuesBinding(
+        variable_names=["resourceValUri"], rows=[[URIRef(uri)] for uri in uris]
+    )
+
+
+def select_labels_for_resources(
+    rdf_graph: rdflib.ConjunctiveGraph, resource_uris: List[str]
+) -> List[ResourceURILabelResult]:
+    """
+    TODO
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_LABELS_FOR_RESOURCES),
+        rdf_graph,
+        values_bindings=[_uris_to_values_binding(resource_uris)],
+    )
+
+    return map_labels_for_resources(results)
 
 
 def select_dsd_code_list_and_cols(

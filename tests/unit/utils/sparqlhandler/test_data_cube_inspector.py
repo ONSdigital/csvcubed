@@ -996,4 +996,34 @@ def test_get_attribute_value_uris_and_labels():
 
     result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
-    pass
+    assert len(result) == 2
+    assert result["imports_status"][0].resource_label == "Final"
+    assert (
+        result["imports_status"][0].resource_uri
+        == "multi-attribute.csv#attribute/imports-status/final"
+    )
+    assert result["imports_status"][1].resource_label == "Provisional"
+    assert (
+        result["imports_status"][1].resource_uri
+        == "multi-attribute.csv#attribute/imports-status/provisional"
+    )
+    assert result["imports_status"][2].resource_label == "Forecast"
+    assert (
+        result["imports_status"][2].resource_uri
+        == "multi-attribute.csv#attribute/imports-status/forecast"
+    )
+    assert result["exports_status"][0].resource_label == "Final"
+    assert (
+        result["exports_status"][0].resource_uri
+        == "multi-attribute.csv#attribute/imports-status/final"
+    )
+    assert result["exports_status"][1].resource_label == "Provisional"
+    assert (
+        result["exports_status"][1].resource_uri
+        == "multi-attribute.csv#attribute/imports-status/provisional"
+    )
+    assert result["exports_status"][2].resource_label == "Forecast"
+    assert (
+        result["exports_status"][2].resource_uri
+        == "multi-attribute.csv#attribute/imports-status/forecast"
+    )
