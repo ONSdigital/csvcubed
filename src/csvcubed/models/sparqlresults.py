@@ -640,7 +640,7 @@ def map_is_pivoted_shape_for_measures_in_data_set(
     return [map_row(row.asdict()) for row in sparql_results]
 
 
-def map_labels_for_resources(
+def map_labels_for_resource_uris(
     sparql_results: List[ResultRow],
 ) -> List[ResourceURILabelResult]:
     """

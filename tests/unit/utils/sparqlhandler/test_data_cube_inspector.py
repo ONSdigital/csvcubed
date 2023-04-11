@@ -7,6 +7,7 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     CubeTableIdentifiers,
     QubeComponentsResult,
+    ResourceURILabelResult,
     UnitResult,
 )
 from csvcubed.utils.iterables import first
@@ -996,7 +997,38 @@ def test_get_attribute_value_uris_and_labels():
 
     result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
+    expected_result = {
+        "imports-status": [
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/imports-status/provisional",
+                resource_label="Provisional",
+            ),
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/imports-status/final",
+                resource_label="Final",
+            ),
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/imports-status/forecast",
+                resource_label="Forecast",
+            ),
+        ],
+        "exports-status": [
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/exports-status/provisional",
+                resource_label="Provisional",
+            ),
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/exports-status/final",
+                resource_label="Final",
+            ),
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/exports-status/forecast",
+                resource_label="Forecast",
+            ),
+        ],
+    }
     assert len(result) == 2
+    assert result["imports_status"] == expected_result["imports-status"]
     assert result["imports_status"][0].resource_label == "Final"
     assert (
         result["imports_status"][0].resource_uri
@@ -1015,15 +1047,15 @@ def test_get_attribute_value_uris_and_labels():
     assert result["exports_status"][0].resource_label == "Final"
     assert (
         result["exports_status"][0].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/final"
+        == "multi-attribute.csv#attribute/exports_status/final"
     )
     assert result["exports_status"][1].resource_label == "Provisional"
     assert (
         result["exports_status"][1].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/provisional"
+        == "multi-attribute.csv#attribute/exports_status/provisional"
     )
     assert result["exports_status"][2].resource_label == "Forecast"
     assert (
         result["exports_status"][2].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/forecast"
+        == "multi-attribute.csv#attribute/exports_status/forecast"
     )
