@@ -1,4 +1,8 @@
+from urllib.parse import urljoin
+
+import pandas as pd
 import pytest
+from click import Path
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube_shape import CubeShape
@@ -1059,3 +1063,75 @@ def test_get_attribute_value_uris_and_labels():
         result["exports_status"][2].resource_uri
         == "multi-attribute.csv#attribute/exports_status/forecast"
     )
+
+
+def test_get_primary_csv_url():
+    """
+    Testing that the csv_url for the primary CSV defined in the data cube CSV-W is correctly retrieved.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    assert csv_url == "energy-trends-uk-total-energy.csv"
+
+
+def test_load_pandas_df_from_standard_shape_csv_url():
+    """
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a standard shape CSVW and that a distinction is made between
+    attribute reasource and attribute literal columns.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe["Dim1"].dtype == "string"
+    assert dataframe["Dim2"].dtype == "string"
+    assert dataframe["Dim1"].dtype == "string"
+    assert dataframe["Attr Resource"].dtype == "string"
+    assert dataframe["Attr Literal"].dtype == "Int64"
+    assert dataframe["Units"].dtype == "string"
+    assert dataframe["Measures"].dtype == "string"
+    assert dataframe["Obs"].dtype == "short"
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_from_pivoted_shape_csv_url():
+    """
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a pivoted shape CSVW.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe["Dim1"].dtype == "string"
+    # Expecting data type of Obs1 column to be "string" because the data type
+    # property has been defined as "time" in the json config file.
+    assert dataframe["Obs1"].dtype == "string"
+    assert dataframe["Dim2"].dtype == "string"
+    assert dataframe["Obs2"].dtype == "bool"
+    assert not any(validation_errors)

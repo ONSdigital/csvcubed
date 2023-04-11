@@ -13,9 +13,7 @@ from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureD
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
-    ReservedUriValueError,
     UndefinedAttributeValueUrisError,
     UndefinedMeasureUrisError,
     UndefinedUnitUrisError,
@@ -36,6 +34,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     NoMeasuresDefinedError,
     NoObservedValuesColumnDefinedError,
     NoUnitsDefinedError,
+    NoUriTemplateOrAttrValuesError,
     PivotedObsValColWithoutMeasureError,
     PivotedShapeMeasureColumnsExistError,
 )
@@ -48,7 +47,9 @@ from csvcubed.models.cube.validationerrors import (
     UriTemplateNameError,
 )
 from csvcubed.models.validationerror import (
-    UnknownPydanticValidationError,
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
+    ValidateModelPropertiesError,
     ValidationError,
 )
 
@@ -59,10 +60,13 @@ def friendly_error_mapping(error: ValidationError) -> str:
     """
     Given a validation error it returns an error message that is tailored to the qube-config.json interface so it's
     more user-friendly.
+
+    Note: adding any new error will require a test in 'test_build_friendly_error_msgs.py'
     """
 
     _map = {
         AttributeNotLinkedError: "Unable to tell which observed values column '{error.attribute_column_title}' describes. Please set the `describes_observations` property in this column's configuration.",
+        NoUriTemplateOrAttrValuesError: "The {error.csv_column_name} attribute column does not contain any values. Either add values to the column, or specify `cell_uri_template` in your `qube-config.json`.",
         BothMeasureTypesDefinedError: "Measures defined in multiple locations. Measures may only be defined in one location.",
         BothUnitTypesDefinedError: "Units defined in multiple locations. Units may only be defined in one location.",
         ColumnNotFoundInDataError: "Configuration found for column '{error.csv_column_title}' but no corresponding column found in CSV.",
@@ -93,10 +97,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
             "The URI value(s) {error.conflicting_values} conflict with the reserved value: "
             "{error.reserved_identifier}'."
         ),
-        UnknownPydanticValidationError: (
-            "An error was encountered when validating the cube. The error occurred in '{error.path}' "
-            "and was reported as '{error.original_error}'"
-        ),
+        ValidateModelPropertiesError: ("{error.message}"),
         UndefinedAttributeValueUrisError: (
             "The Attribute URI(s) {error.undefined_values} in {_get_description_for_component(error.component)} "
             "have not been defined in the list of valid attribute values."

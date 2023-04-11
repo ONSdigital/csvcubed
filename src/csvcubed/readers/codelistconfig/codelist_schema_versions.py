@@ -107,10 +107,11 @@ def _extract_and_validate_code_list_v1(
     code_list = NewQbCodeList(
         code_list_config.metadata, code_list_config.new_qb_concepts
     )
+
     return (
         code_list,
         code_list_schema_validation_errors,
-        code_list.pydantic_validation(),
+        code_list.validate(),  # type: ignore
     )
 
 

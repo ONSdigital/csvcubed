@@ -9,29 +9,23 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
-from pydantic import root_validator, validator
-
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction, Validations
 from csvcubed.models.validationerror import (
+    ReservedUriValueError,
     ValidateModelPropertiesError,
     ValidationError,
 )
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.utils.validators.file import (
-    validate_file_exists as pydantic_validate_file_exists,
-)
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .concept import DuplicatedQbConcept, NewQbConcept
 from .datastructuredefinition import SecondaryQbStructuralDefinition
-from .validationerrors import ReservedUriValueError
 
 
 @dataclass
@@ -47,8 +41,6 @@ class ExistingQbCodeList(QbCodeList):
 
     concept_scheme_uri: str
 
-    _concept_scheme_uri_validator = pydantic_validate_uri("concept_scheme_uri")
-
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {"concept_scheme_uri": v.uri}
 
@@ -63,27 +55,6 @@ class NewQbCodeListInCsvW(QbCodeList):
     csv_file_relative_path_or_uri: str = field(init=False, repr=False)
     concept_scheme_uri: str = field(init=False, repr=False)
     concept_template_uri: str = field(init=False, repr=False)
-
-    _schema_metadata_file_path_validator = pydantic_validate_file_exists(
-        "schema_metadata_file_path"
-    )
-
-    @root_validator(pre=True)
-    def _csvw_contains_sufficient_information_validator(cls, values: dict) -> dict:
-        csv_path = values.get("csv_file_relative_path_or_uri")
-        cs_uri = values.get("concept_scheme_uri")
-        c_template_uri = values.get("concept_template_uri")
-        if csv_path is None or cs_uri is None or c_template_uri is None:
-            schema_metadata_file_path = values["schema_metadata_file_path"]
-            # The below should throw an exception if there is any problem with the CSV-W.
-            extract_code_list_concept_scheme_info(schema_metadata_file_path)
-
-            # if there's no exception but the values aren't set, something weird has happened.
-            raise ValueError(
-                f"'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing, "
-                f"however the CSV-W seems to contain the relevant information."
-            )
-        return values
 
     def __post_init__(self):
         try:
@@ -150,45 +121,54 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
     uri_style: Optional[URIStyle] = None
 
-    @validator("concepts")
-    def _pydantic_ensure_no_use_of_reserved_keywords(
-        cls, concepts: List[TNewQbConcept]
-    ) -> List[TNewQbConcept]:
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "metadata": v.validated_model(CatalogMetadata),
+            "concepts": v.all_of(
+                v.list(v.validated_model(NewQbConcept)),
+                self._ensure_no_use_of_reserved_keywords,
+                self._validate_concepts_non_conflicting,
+            ),
+            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
+            "uri_style": v.optional(v.enum(URIStyle)),
+        }
+
+    @staticmethod
+    def _ensure_no_use_of_reserved_keywords(
+        concepts: List[TNewQbConcept], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         conflicting_values: List[str] = []
         for concept in concepts:
             if concept.uri_safe_identifier == SCHEMA_URI_IDENTIFIER:
                 conflicting_values.append(concept.label)
 
         if any(conflicting_values):
-            raise ReservedUriValueError(
-                NewQbCodeList,
-                conflicting_values,
-                SCHEMA_URI_IDENTIFIER,
-            )
+            return [
+                ReservedUriValueError(
+                    message="",  # Message gets defined in __post_init__.
+                    component=NewQbCodeList,
+                    property_path=property_path,
+                    offending_value=concepts,
+                    conflicting_values=conflicting_values,
+                    reserved_identifier=SCHEMA_URI_IDENTIFIER,
+                )
+            ]
 
-        return concepts
+        return []
 
-    @validator("concepts")
-    def _pydantic_validate_concepts_non_conflicting(
-        cls, concepts: List[TNewQbConcept]
-    ) -> List[TNewQbConcept]:
+    @staticmethod
+    def _validate_concepts_non_conflicting(
+        concepts: List[TNewQbConcept], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         """
         Ensure that there are no collisions where multiple concepts map to the same URI-safe value.
         """
-        ensure_no_uri_safe_conflicts(
+        return ensure_no_uri_safe_conflicts(
             [(concept.label, concept.uri_safe_identifier) for concept in concepts],
             NewQbCodeList,
+            property_path,
+            concepts,
         )
-
-        return concepts
-
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {
-            "metadata": v.validated_model(CatalogMetadata),
-            "concepts": v.list(v.validated_model(NewQbConcept)),
-            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
-            "uri_style": v.optional(v.enum(URIStyle)),
-        }
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf

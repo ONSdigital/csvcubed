@@ -12,7 +12,6 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.utils import validations as v
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
@@ -57,8 +56,6 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
     """Represents a QbConcept which is already defined at the given URI."""
 
     existing_concept_uri: str
-
-    _existing_concept_uri_validator = pydantic_validate_uri("existing_concept_uri")
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 

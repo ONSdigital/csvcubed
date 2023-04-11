@@ -92,6 +92,8 @@ def _generate_printables(
     catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable
     column_component_info_printable: str = (
         metadata_printer.column_component_info_printable
+        if csvw_type == CSVWType.QbDataSet
+        else ""
     )
     codelist_info_printable: str = (
         metadata_printer.codelist_info_printable

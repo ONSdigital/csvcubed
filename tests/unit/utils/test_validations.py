@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import pytest
 from rdflib.term import Identifier
@@ -83,6 +83,7 @@ class TestClass(ValidatedModel):
     test_uri: Optional[str] = None
     test_enum_value: Optional[TestEnum] = None
     test_any_of_value: Union[str, int, None] = None
+    test_upper_case_string: Optional[str] = None
     test_validated_model_class: Optional[OtherTestClass] = None
     test_data_type: Optional[str] = None
     test_validate_instance_of: Optional[Identifier] = None
@@ -105,11 +106,27 @@ class TestClass(ValidatedModel):
             "test_uri": v.optional(v.uri),
             "test_enum_value": v.optional(v.enum(TestEnum)),
             "test_any_of_value": v.optional(v.any_of(v.string, v.integer)),
+            "test_upper_case_string": v.optional(v.all_of(v.string, is_all_upper_case)),
             "test_validated_model_class": v.optional(v.validated_model(OtherTestClass)),
             "test_data_type": v.optional(v.data_type),
             "test_validate_instance_of": v.optional(v.is_instance_of(Identifier)),
             "test_unit_whole_obj": v.optional(v.validated_model(TestUnitClass)),
         }
+
+
+def is_all_upper_case(
+    value: str, property_path: List[str]
+) -> List[ValidateModelPropertiesError]:
+    if value.upper() == value:
+        return []
+
+    return [
+        ValidateModelPropertiesError(
+            f"'{value}' has lower case characters in it.",
+            property_path=property_path,
+            offending_value=value,
+        )
+    ]
 
 
 def test_validate_int_type_incorrect():
@@ -934,6 +951,41 @@ def test_whole_object_in_parent_class():
     )
     assert errors[0].property_path == ["test_unit_whole_obj"]
     assert errors[0].offending_value == test_instance.test_unit_whole_obj
+
+
+def test_validate_all_of_correct():
+    """
+    This test checks if the vaalidation that is using `all_of`
+    function to validate a varibale(correct) with multiple condition does pass
+    """
+
+    test_instance = TestClass(test_upper_case_string="STRING")
+
+    errors = test_instance.validate()
+
+    assert not any(errors)
+
+
+def test_validate_all_of_fail():
+    """
+    This test checks if the vaalidation that is using `all_of`
+    function to validate a varibale(incorrect) with multiple condition does pass
+    """
+
+    test_instance = TestClass(test_upper_case_string="string")
+
+    errors = test_instance.validate()
+
+    assert any(errors)
+
+    # testing if the validation fails as expected when provided with an ingeter value
+
+    test_instance2 = TestClass(test_upper_case_string=5)
+
+    with pytest.raises(AttributeError) as exception:
+        _ = test_instance2.validate()
+
+    assert ("'int' object has no attribute 'upper'") in str(exception.value)
 
 
 if __name__ == "__main__":

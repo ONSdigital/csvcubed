@@ -3,25 +3,17 @@ Catalog Metadata (DCAT)
 -----------------------
 """
 import json
-import logging
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, Optional, Union
 
 from csvcubedmodels.rdf import dcat
 
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelPropertiesError
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
-from csvcubed.utils.validators.uri import (
-    validate_uris_in_list as pydantic_validate_uris_in_list,
-)
-
-_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -41,18 +33,6 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     # spatial_bound_uri: Optional[str] = field(default=None, repr=False)
     # temporal_bound_uri: Optional[str] = field(default=None, repr=False)
-
-    _creator_uri_validator = pydantic_validate_uri("creator_uri", is_optional=True)
-    _publisher_uri_validator = pydantic_validate_uri("publisher_uri", is_optional=True)
-    _landing_page_uris_validator = pydantic_validate_uris_in_list(
-        "landing_page_uris", is_optional=True
-    )
-    _license_uri_validator = pydantic_validate_uri("license_uri", is_optional=True)
-    # _spatial_bound_uri_validator = validate_uri("spatial_bound_uri", is_optional=True)
-    # _temporal_bound_uri_validator = validate_uri("temporal_bound_uri", is_optional=True)
-    _public_contact_point_uri_validator = pydantic_validate_uri(
-        "public_contact_point_uri", is_optional=True
-    )
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {

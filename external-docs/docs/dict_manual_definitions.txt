@@ -1,6 +1,8 @@
 ABBA
 Agri-Food
 analysable
+AREACD
+AREANM
 Armagh
 Ashington
 Attribution-NoDerivatives
@@ -61,6 +63,7 @@ CSVs
 CSVW_METADATA_JSON_PATH
 Cyber
 Cymru
+Darlington
 dataframe
 Dataframe
 Deepcut
@@ -101,6 +104,7 @@ gregorian-instant
 gregorian-interval
 gsscogs
 Hadley
+Hartlepool
 Harwich
 Haslam
 Hillsborough

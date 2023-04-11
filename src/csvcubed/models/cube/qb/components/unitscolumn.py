@@ -10,11 +10,13 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 import uritemplate
-from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validatedmodel import ValidationFunction
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validationerror import (
+    ValidateModelPropertiesError,
+    ValidationError,
+)
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 
@@ -35,22 +37,6 @@ class QbMultiUnits(QbColumnStructuralDefinition):
     """
     Helps identify which observed values column this units column describes
     """
-
-    @validator("units")
-    def _validate_units_non_conflicting(cls, units: List[QbUnit]) -> List[QbUnit]:
-        """
-        Ensure that there are no collisions where multiple new units map to the same URI-safe value.
-        """
-        ensure_no_uri_safe_conflicts(
-            [
-                (unit.label, unit.uri_safe_identifier)
-                for unit in units
-                if isinstance(unit, NewQbUnit)
-            ],
-            QbMultiUnits,
-        )
-
-        return units
 
     @staticmethod
     def new_units_from_data(
@@ -130,6 +116,26 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "units": v.list(v.validated_model(QbUnit)),
+            "units": v.all_of(
+                v.list(v.validated_model(QbUnit)), self._validate_units_non_conflicting
+            ),
             "observed_value_col_title": v.optional(v.string),
         }
+
+    @staticmethod
+    def _validate_units_non_conflicting(
+        units: List[QbUnit], property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
+        """
+        Ensure that there are no collisions where multiple new units map to the same URI-safe value.
+        """
+        return ensure_no_uri_safe_conflicts(
+            [
+                (unit.label, unit.uri_safe_identifier)
+                for unit in units
+                if isinstance(unit, NewQbUnit)
+            ],
+            QbMultiUnits,
+            property_path,
+            units,
+        )

@@ -13,9 +13,7 @@ from csvcubed.models.cube.cube import (
     UriTemplateNameError,
 )
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
-    ReservedUriValueError,
     UndefinedAttributeValueUrisError,
     UndefinedMeasureUrisError,
     UndefinedUnitUrisError,
@@ -36,6 +34,11 @@ from csvcubed.models.cube.qb.validationerrors import (
     NoUnitsDefinedError,
 )
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
+from csvcubed.models.validationerror import (
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
+    ValidateModelPropertiesError,
+)
 from csvcubed.utils.cli import _write_errors_to_log
 from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
@@ -660,4 +663,29 @@ def test_hybrid_shape_error():
     assert isinstance(validation_errors[0], HybridShapeError)
     _assert_in_log(
         "Mutliple observation value columns have been at the same time as a standard shape measure column defined.",
+    )
+
+
+def test_validate_model_properties_error():
+    """
+    Test for:-
+        ValidateModelPropertiesError
+    """
+
+    config = Path(_test_case_dir, "unit_only_scaling_factor.json")
+    csv = Path(_test_case_dir, "unit_only_scaling_factor.csv")
+
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], ValidateModelPropertiesError)
+    _assert_in_log(
+        "ERROR - Validation Error: A value for si base unit conversion multiplier has been specified:",
     )

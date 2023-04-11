@@ -48,7 +48,7 @@ Column Mappings are defined using the `QbColumn` class:
     QbColumn("The CSV Column's Title", <A Columnar Structural Definition (QbColumnStructuralDefinition)>),
     # e.g.
     QbColumn(
-        "Product Name", 
+        "Product Name",
         ExistingQbDimension("http://gss-data.org.uk/def/trade/property/dimension/product"),
         csv_column_uri_template="http://gss-data.org.uk/def/trade/concept-scheme/sitc-sections/{+product_name}"
     )
@@ -128,11 +128,11 @@ A rough structure of `SecondaryQbStructuralDefinition`s is shown below. It can b
 
 ```text
 SecondaryQbStructuralDefinition
-├── QbAttributeValue        - Stored against the QbAttribute. Represents a (URI) value that an attribute can have.        
+├── QbAttributeValue        - Stored against the QbAttribute. Represents a (URI) value that an attribute can have.
 │   └── NewQbAttributeValue     - Define a new URI value which an attribute can hold.
 ├── QbCodeList              - Stored against the QbDimension. Holds a `skos:ConceptScheme` which lists the values the dimension can have.
 │   ├── ExistingQbCodeList      - Reuse a code-list defined elsewhere.
-│   ├── NewQbCodeList           - Define a new code-list. 
+│   ├── NewQbCodeList           - Define a new code-list.
 │   ├── CompositeQbCodeList     - Define a new code-list which is a composite of `skos:Concept`s defined in other code-lists.
 │   └── NewQbCodeListInCsvW     - Use a code-list which is already generated and stored in a CSV-W.
 ├── QbConcept               - Stored against the QbCodeList. It holds a concept contained in a `skos:ConceptScheme`.
@@ -167,13 +167,23 @@ And there is also a helper method on the `NewQbCodeList` secondary structural de
 * `NewQbCodeList.from_data`
 
 These methods accept data straight from a pandas DataFrame's column and are designed to automatically generate resources, or references to resources from the DataFrame's data. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this aims to speed the adoption of the standards for new users by reducing cognitive load.
+### Validations
 
-## Validations
+The validations are done in house, so each class will validate every class variable before it is constructed, also hte parent classes will be validated. this way before a child class is created the parent class will be validated.
+In the example below, the class is inheriting from `NewQbCodelist` and the class validation is called before the child class validation is done:
 
-Each of the classes discussed above extends from the [csvcubed.models.PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py) class. This adds [pydantic](https://pydantic-docs.helpmanual.io/) validation to csvcubed's models which ensures that all attributes have the correct type as described by their [static type annotations](https://docs.python.org/3/library/typing.html). Many of the models define [custom pydantic validators](https://pydantic-docs.helpmanual.io/usage/validators/) to add checks which are more specific than checking the overall type, e.g. `_attribute_uri_validator` inside the `ExistingQbAttribute` class in [csvcubed.models.cube.qb.components.attribute](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/cube/qb/components/attribute.py).
+```python
+class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
+    """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
 
-Pydantic validation can be performed on individual models by calling `pydantic_validation` (declared on [PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py)).
+    variant_of_uris: List[str] = field(default_factory=list)
 
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **NewQbCodeList._get_validations(self),
+            "variant_of_uris": v.list(v.uri),
+        }
+ ```
 ### The Works
 
 More thorough validations, including some checks on the cube's structure as a whole, as well as the validation of models against the data present can be performed with the following:

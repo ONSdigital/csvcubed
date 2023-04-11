@@ -118,3 +118,16 @@ def test_dereference_code_list_uri_to_label():
         result["boosting-productivity-pay-jobs-and-living-standards"]
         == "Boosting productivity, pay, jobs and living standards by growing the private sector"
     )
+
+
+def test_get_primary_csv_url():
+    """
+    Testing that the csv_url for the primary CSV defined in the code list CSV-W is correctly retrieved.
+    """
+    path_to_cube = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    code_list_inspector = get_code_list_inspector(path_to_cube)
+    assert code_list_inspector.get_primary_csv_url() == "some-dimension.csv"

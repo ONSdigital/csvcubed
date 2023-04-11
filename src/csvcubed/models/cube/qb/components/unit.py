@@ -17,10 +17,6 @@ from csvcubed.models.validatedmodel import (
 )
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validators.attributes import (
-    enforce_optional_attribute_dependencies as pydantic_enforce_optional_attribute_dependencies,
-)
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import SecondaryQbStructuralDefinition
@@ -36,8 +32,6 @@ class QbUnit(SecondaryQbStructuralDefinition, ABC):
 @dataclass
 class ExistingQbUnit(QbUnit):
     unit_uri: str
-
-    _unit_uri_validator = pydantic_validate_uri("unit_uri")
 
     def __eq__(self, other):
         return isinstance(other, ExistingQbUnit) and other.unit_uri == self.unit_uri
@@ -136,17 +130,6 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
                 )
             )
         return errors
-
-    optional_attribute_dependencies = pydantic_enforce_optional_attribute_dependencies(
-        {
-            "base_unit_scaling_factor": ["base_unit"],
-            "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"],
-        }
-    )
-
-    _qudt_quantity_kind_uri_validation = pydantic_validate_uri(
-        "qudt_quantity_kind_uri", is_optional=True
-    )
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf

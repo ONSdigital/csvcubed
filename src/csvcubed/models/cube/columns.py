@@ -7,15 +7,14 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from csvcubed.inputs import PandasDataTypes
-from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
 
 
 @dataclass
-class CsvColumn(PydanticModel, UriIdentifiable, ABC):
+class CsvColumn(UriIdentifiable, ValidatedModel, ABC):
     csv_column_title: str
 
     def get_identifier(self) -> str:
