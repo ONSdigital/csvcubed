@@ -15,7 +15,6 @@ from appdirs import AppDirs
 
 
 class CustomFormatter(logging.Formatter):
-
     grey = "\x1b[2;20m"
     light_grey = "\x1b[1;50m"
     yellow = "\x1b[33;20m"
@@ -41,9 +40,7 @@ class CustomFormatter(logging.Formatter):
 
 
 def start_logging(
-    log_dir_name: str,
-    selected_logging_level: Union[str, int, None],
-    root_logger_name: str = "csvcubed",
+    log_dir_name: str, selected_logging_level: Union[str, int, None]
 ) -> None:
     logging_level = _get_logging_level(selected_logging_level)
 
@@ -51,7 +48,7 @@ def start_logging(
     log_file_path = Path(dirs.user_log_dir) / "out.log"
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    logger = logging.getLogger(root_logger_name)
+    logger = logging.getLogger()
     logger.setLevel(logging_level)
 
     console_handler = logging.StreamHandler(sys.stderr)
