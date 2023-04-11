@@ -4,3 +4,4 @@ SELECT ?resourceValUri ?resourceLabel
 WHERE {
     ?resourceValUri rdfs:label ?resourceLabel.
 }
+ORDER BY ASC(?resourceValUri)

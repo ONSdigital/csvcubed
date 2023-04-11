@@ -985,6 +985,7 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
 
 
 def test_get_attribute_value_uris_and_labels():
+    """ """
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"
@@ -1004,10 +1005,6 @@ def test_get_attribute_value_uris_and_labels():
     expected_result = {
         "imports-status": [
             ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/imports-status/provisional",
-                resource_label="Provisional",
-            ),
-            ResourceURILabelResult(
                 resource_uri="multi-attribute.csv#attribute/imports-status/final",
                 resource_label="Final",
             ),
@@ -1015,12 +1012,12 @@ def test_get_attribute_value_uris_and_labels():
                 resource_uri="multi-attribute.csv#attribute/imports-status/forecast",
                 resource_label="Forecast",
             ),
-        ],
-        "exports-status": [
             ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/exports-status/provisional",
+                resource_uri="multi-attribute.csv#attribute/imports-status/provisional",
                 resource_label="Provisional",
             ),
+        ],
+        "exports-status": [
             ResourceURILabelResult(
                 resource_uri="multi-attribute.csv#attribute/exports-status/final",
                 resource_label="Final",
@@ -1028,6 +1025,10 @@ def test_get_attribute_value_uris_and_labels():
             ResourceURILabelResult(
                 resource_uri="multi-attribute.csv#attribute/exports-status/forecast",
                 resource_label="Forecast",
+            ),
+            ResourceURILabelResult(
+                resource_uri="multi-attribute.csv#attribute/exports-status/provisional",
+                resource_label="Provisional",
             ),
         ],
     }
@@ -1038,30 +1039,30 @@ def test_get_attribute_value_uris_and_labels():
         result["imports_status"][0].resource_uri
         == "multi-attribute.csv#attribute/imports-status/final"
     )
-    assert result["imports_status"][1].resource_label == "Provisional"
+    assert result["imports_status"][1].resource_label == "Forecast"
     assert (
         result["imports_status"][1].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/provisional"
+        == "multi-attribute.csv#attribute/imports-status/forecast"
     )
-    assert result["imports_status"][2].resource_label == "Forecast"
+    assert result["imports_status"][2].resource_label == "Provisional"
     assert (
         result["imports_status"][2].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/forecast"
+        == "multi-attribute.csv#attribute/imports-status/provisional"
     )
     assert result["exports_status"][0].resource_label == "Final"
     assert (
         result["exports_status"][0].resource_uri
-        == "multi-attribute.csv#attribute/exports_status/final"
+        == "multi-attribute.csv#attribute/exports-status/final"
     )
-    assert result["exports_status"][1].resource_label == "Provisional"
+    assert result["exports_status"][1].resource_label == "Forecast"
     assert (
         result["exports_status"][1].resource_uri
-        == "multi-attribute.csv#attribute/exports_status/provisional"
+        == "multi-attribute.csv#attribute/exports-status/forecast"
     )
-    assert result["exports_status"][2].resource_label == "Forecast"
+    assert result["exports_status"][2].resource_label == "Provisional"
     assert (
         result["exports_status"][2].resource_uri
-        == "multi-attribute.csv#attribute/exports_status/forecast"
+        == "multi-attribute.csv#attribute/exports-status/provisional"
     )
 
 
