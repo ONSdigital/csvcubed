@@ -22,6 +22,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
+from csvcubed.utils.uri import file_uri_to_path
 
 
 @dataclass
@@ -114,12 +115,8 @@ class CodeListInspector:
             concept_scheme_uri
         ).csv_url
 
-        absolute_csv_url = Path(
-            os.path.normpath(
-                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
-            )
-            .removeprefix("file:\\")
-            .removeprefix("file:")
+        absolute_csv_url = file_uri_to_path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
 
         (dataframe, _) = read_csv(absolute_csv_url, usecols=["Uri Identifier", "Label"])

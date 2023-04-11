@@ -308,12 +308,8 @@ class DataCubeInspector:
             }
             return (map_col_name_to_title, map_resource_attr_col_name_to_value_url)
 
-        absolute_csv_url = Path(
-            os.path.normpath(
-                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
-            )
-            .removeprefix("file:\\")
-            .removeprefix("file:")
+        absolute_csv_url = file_uri_to_path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
 
         (
