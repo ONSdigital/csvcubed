@@ -1,5 +1,8 @@
+# Error - unknown pydantic validation error
+
 ## When it occurs
 
+_**NOTE: Pydantic validations have been deprecated. Update csvcubed to the latest version to avoid this error.**_<br /><br />
 _When the cube columns are being validated and an unknown type of error arises._
 
 ## How to fix
