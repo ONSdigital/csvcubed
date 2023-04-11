@@ -22,10 +22,6 @@ from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureD
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
-from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError,
-    ReservedUriValueError,
-)
 from csvcubed.models.cube.qb.validationerrors import (
     AttributeNotLinkedError,
     BothMeasureTypesDefinedError,
@@ -42,6 +38,10 @@ from csvcubed.models.cube.qb.validationerrors import (
     NoUriTemplateOrAttrValuesError,
     PivotedObsValColWithoutMeasureError,
     PivotedShapeMeasureColumnsExistError,
+)
+from csvcubed.models.validationerror import (
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
 )
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from tests.unit.test_baseunit import *
@@ -671,8 +671,9 @@ def test_conflict_concept_uri_values_error():
     error = _get_single_validation_error_for_qube(qube)
     assert isinstance(error, ConflictingUriSafeValuesError)
     assert error.component_type == NewQbCodeList
-    assert error.path == [
-        "('columns', 0)",
+    assert error.property_path == [
+        "columns",
+        "0",
         "structural_definition",
         "code_list",
         "concepts",

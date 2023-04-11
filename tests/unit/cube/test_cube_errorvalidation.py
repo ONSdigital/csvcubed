@@ -23,7 +23,7 @@ def test_column_not_configured_error():
     metadata = CatalogMetadata("Some Dataset")
     columns = []
     cube = Cube(metadata, data, columns)
-    validation_errors = cube.validate()
+    validation_errors = cube.validate_all()
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
@@ -42,7 +42,7 @@ def test_column_title_wrong_error():
     metadata = CatalogMetadata("Some Dataset")
     columns: List[CsvColumn] = [SuppressedCsvColumn("Some Column Title")]
     cube = Cube(metadata, data, columns)
-    validation_errors = cube.validate()
+    validation_errors = cube.validate_all()
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
@@ -66,7 +66,7 @@ def test_two_column_same_title():
     ]
 
     cube = Cube(metadata, data, columns)
-    validation_errors = cube.validate()
+    validation_errors = cube.validate_all()
 
     assert len(validation_errors) == 1
     error = validation_errors[0]

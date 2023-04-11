@@ -13,9 +13,7 @@ from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureD
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
-    ReservedUriValueError,
     UndefinedAttributeValueUrisError,
     UndefinedMeasureUrisError,
     UndefinedUnitUrisError,
@@ -49,7 +47,9 @@ from csvcubed.models.cube.validationerrors import (
     UriTemplateNameError,
 )
 from csvcubed.models.validationerror import (
-    UnknownPydanticValidationError,
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
+    ValidateModelPropertiesError,
     ValidationError,
 )
 
@@ -60,6 +60,8 @@ def friendly_error_mapping(error: ValidationError) -> str:
     """
     Given a validation error it returns an error message that is tailored to the qube-config.json interface so it's
     more user-friendly.
+
+    Note: adding any new error will require a test in 'test_build_friendly_error_msgs.py'
     """
 
     _map = {
@@ -95,10 +97,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
             "The URI value(s) {error.conflicting_values} conflict with the reserved value: "
             "{error.reserved_identifier}'."
         ),
-        UnknownPydanticValidationError: (
-            "An error was encountered when validating the cube. The error occurred in '{error.path}' "
-            "and was reported as '{error.original_error}'"
-        ),
+        ValidateModelPropertiesError: ("{error.message}"),
         UndefinedAttributeValueUrisError: (
             "The Attribute URI(s) {error.undefined_values} in {_get_description_for_component(error.component)} "
             "have not been defined in the list of valid attribute values."

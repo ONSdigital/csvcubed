@@ -17,8 +17,8 @@ from csvcubed.utils.uri import csvw_column_name_safe
 from ...validationerror import ValidationError
 from .components.datastructuredefinition import QbColumnStructuralDefinition
 
-QbColumnStructuralDefinition = TypeVar(
-    "QbColumnStructuralDefinition", bound=QbColumnStructuralDefinition, covariant=True
+TQbColumnStructuralDefinition = TypeVar(
+    "TQbColumnStructuralDefinition", bound=QbColumnStructuralDefinition, covariant=True
 )
 """
 An instance of a class which inherits from :obj:`~.components.datastructuredefinition.QbColumnStructureDefinition`.
@@ -26,12 +26,12 @@ An instance of a class which inherits from :obj:`~.components.datastructuredefin
 
 
 @dataclass
-class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
+class QbColumn(CsvColumn, Generic[TQbColumnStructuralDefinition]):
     """
     A CSV column and the qb structural definition it relates to.
     """
 
-    structural_definition: QbColumnStructuralDefinition
+    structural_definition: TQbColumnStructuralDefinition
     csv_column_uri_template: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 

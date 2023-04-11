@@ -12,7 +12,6 @@ from typing import Dict, List, Set, Union
 from csvcubedmodels.rdf import InversePredicate, NewResource
 from rdflib.term import Identifier, Literal, URIRef
 
-from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.validatedmodel import (
     ValidatedModel,
     ValidationFunction,
@@ -50,7 +49,7 @@ class RdfSerialisationHint(Enum):
 
 
 @dataclass(unsafe_hash=True)
-class TripleFragmentBase(PydanticModel, ValidatedModel, ABC):
+class TripleFragmentBase(ValidatedModel, ABC):
     """
     Represents part of an RDF triple.
     """

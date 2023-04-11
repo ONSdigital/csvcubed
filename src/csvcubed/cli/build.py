@@ -69,7 +69,7 @@ def _extract_and_validate_cube(
         csv_path, config_path
     )
 
-    validation_errors += cube.validate()
+    validation_errors += cube.validate_all()
     validation_errors += validate_qb_component_constraints(cube)
 
     return cube, json_schema_validation_errors, validation_errors

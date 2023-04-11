@@ -226,6 +226,26 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
     return validate
 
 
+def all_of(*conditions: ValidationFunction) -> ValidationFunction:
+    """
+    This function will validates that the property matches all of the conditions
+    specified. Returns any errors returned by the validation function.
+    """
+
+    def validate(
+        value: Any, property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
+        all_errors = []
+        for condition in conditions:
+            errors = condition(value, property_path)
+            if any(errors):
+                all_errors += errors
+
+        return all_errors
+
+    return validate
+
+
 def enum(enum_type: Type[Enum]) -> ValidationFunction:
     """
     This function will validate if the argument provided is in fact an enum type and,

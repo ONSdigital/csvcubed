@@ -660,8 +660,7 @@ def test_load_catalog_metadata():
         config = json.load(f)
 
     catalog_metadata = metadata_from_dict(config)
-
-    validation_errors = catalog_metadata.pydantic_validation()
+    validation_errors = catalog_metadata.validate()
     assert_num_validation_errors(validation_errors, 0)
 
     assert (

@@ -1,5 +1,5 @@
 Feature: cube-config.json
-  As an external data publisher, 
+  As an external data publisher,
   I want to be able to create a cube from a tidy data csv, with or without a qube-config json file.
 
   Scenario: Output a cube and errors when created from both config and data
@@ -143,11 +143,11 @@ Feature: cube-config.json
       "creator_uri": "https://www.gov.uk/government/organisations/office-for-national-statistics",
       "publisher_uri": "http://statistics.data.gov.uk",
       "landing_page_uris": [],
-      "theme_uris": ["A Theme"],
+      "theme_uris": ["https://www.ons.gov.uk/economy/nationalaccounts/balanceofpayments"],
       "keywords": ["two"],
       "dataset_issued": "2022-03-04T17:00:00",
       "dataset_modified": "2022-03-04T18:00:00",
-      "license_uri": "the license",
+      "license_uri": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
       "public_contact_point_uri": None,
       "uri_safe_identifier_override": None
       }
@@ -666,4 +666,3 @@ Feature: cube-config.json
         qb:measureType <#measure/exports-monetary-value>;
         sdmxa:unitMeasure <#unit/pounds-millions>.
     """
-

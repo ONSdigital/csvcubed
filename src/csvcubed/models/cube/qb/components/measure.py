@@ -19,7 +19,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
-from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
@@ -53,8 +52,6 @@ class ExistingQbMeasure(QbMeasure):
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
-
-    _measure_uri_validator = pydantic_validate_uri("measure_uri")
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 

@@ -1,3 +1,3 @@
 """
-pydantic validators for attributes on models.
+Validators for attributes on models.
 """
