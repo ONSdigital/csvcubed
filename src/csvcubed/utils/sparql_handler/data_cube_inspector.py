@@ -344,15 +344,35 @@ class DataCubeInspector:
         }
 
         # TODO: Run query once for all columns
-        # results = select_labels_for_resource_uris(
-        #     self.csvw_inspector.rdf_graph, attributes_dict.values()
-        # )
-        results_dict: Dict[str, List[ResourceURILabelResult]] = {
-            col_name: select_labels_for_resource_uris(
-                self.csvw_inspector.rdf_graph, attributes_dict[col_name]
-            )
-            for col_name in attributes_dict.keys()
+
+        all_uris_to_look_up: List[str] = [
+            uri for uri_list in attributes_dict.values() for uri in uri_list
+        ]
+
+        map_uri_to_col_name: Dict[str, str] = {
+            uri: col_name
+            for col_name, uri_list in attributes_dict.items()
+            for uri in uri_list
         }
+
+        results = select_labels_for_resource_uris(
+            self.csvw_inspector.rdf_graph, all_uris_to_look_up
+        )
+
+        results_dict: Dict[str, List[ResourceURILabelResult]] = {}
+        for result in results:
+            col_name = map_uri_to_col_name[result.resource_uri]
+            results_for_col_name = results_dict.get(col_name, [])
+            results_dict[col_name] = results_for_col_name
+
+            results_for_col_name.append(result)
+
+        # results_dict: Dict[str, List[ResourceURILabelResult]] = {
+        #     col_name: select_labels_for_resource_uris(
+        #         self.csvw_inspector.rdf_graph, attributes_dict[col_name]
+        #     )
+        #     for col_name in attributes_dict.keys()
+        # }
         return results_dict
 
     def get_primary_csv_url(self) -> str:
