@@ -266,7 +266,7 @@ def _uris_to_values_binding(uris: List[str]) -> ValuesBinding:
 
 def select_labels_for_resource_uris(
     rdf_graph: rdflib.ConjunctiveGraph, resource_uris: List[str]
-) -> List[ResourceURILabelResult]:
+) -> Dict[str, str]:
     """
     TODO
     """

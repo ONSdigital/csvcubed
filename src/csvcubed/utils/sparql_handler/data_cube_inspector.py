@@ -288,25 +288,49 @@ class DataCubeInspector:
     def get_attribute_value_uris_and_labels(
         self, csv_url: str
     ) -> Dict[str, List[ResourceURILabelResult]]:
-        column_components = self.get_column_component_info(csv_url)
+        """
 
-        def map_column_name_to_title_to_attribute_value_url(
-            column_components: List[ColumnComponentInfo],
-        ) -> Tuple[Dict[str, str], Dict[str, str]]:
-            map_col_name_to_title = {
-                component.column_definition.name: component.column_definition.title
-                for component in column_components
-                if component.column_definition.name is not None
-                and component.column_definition.title is not None
+        Region, Number Bins, Obs Status
+        london, 250000, f
+        birmingham, 87000, p
+
+        get_attribute_value_uris_and_labels(csv_url)
+
+        {
+            "obs_status": [
+                ResourceURILabelResult(uri="this.csv#attribute/obs_status/f", label="Final"),
+                ResourceURILabelResult(uri="this.csv#attribute/obs_status/p", label="Provisional")
+            ]
+        }
+
+        I want this:
+        {
+            "obs_status": {
+                "this.csv#attribute/obs_status/f": "Final",
+                "this.csv#attribute/obs_status/p": "Provisional"
             }
-            map_resource_attr_col_name_to_value_url = {
-                component.column_definition.name: component.column_definition.value_url
-                for component in column_components
-                if component.column_type == EndUserColumnType.Attribute
-                and component.column_definition.name is not None
-                and component.column_definition.value_url is not None
-            }
-            return (map_col_name_to_title, map_resource_attr_col_name_to_value_url)
+        }
+
+        Region, Number Bins, Obs Status
+        london, 250000, Final
+        birmingham, 87000, Provisional
+
+        -----------
+
+        get_attribute_value_uris_and_labels(csv_url)
+
+        {
+            "obs_status": [
+                ResourceURILabelResult(uri="this.csv#attribute/obs_status/f", label="Final"),
+                ResourceURILabelResult(uri="this.csv#attribute/obs_status/f", label="Olaf"),
+                ResourceURILabelResult(uri="this.csv#attribute/obs_status/p", label="Provisional")
+            ]
+        }
+
+
+        """
+
+        column_components = self.get_column_component_info(csv_url)
 
         absolute_csv_url = file_uri_to_path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
@@ -317,7 +341,7 @@ class DataCubeInspector:
             map_resource_attr_col_name_to_value_url,
         ) = map_column_name_to_title_to_attribute_value_url(column_components)
 
-        (dataframe, _) = read_csv(
+        (dataframe, duplicate_cols) = read_csv(
             absolute_csv_url,
             usecols=[
                 map_col_name_to_title[col_name]
@@ -329,6 +353,8 @@ class DataCubeInspector:
             },
         )
 
+        # if len(duplicate_cols) > 0:
+        #     raise
         attributes_dict: Dict[str, List[str]] = {
             name: [
                 uritemplate.expand(value_url, {name: av})
@@ -338,8 +364,6 @@ class DataCubeInspector:
             ]
             for name, value_url in map_resource_attr_col_name_to_value_url.items()
         }
-
-        # TODO: Run query once for all columns
 
         all_uris_to_look_up: List[str] = [
             uri for uri_list in attributes_dict.values() for uri in uri_list
@@ -355,20 +379,14 @@ class DataCubeInspector:
             self.csvw_inspector.rdf_graph, all_uris_to_look_up
         )
 
-        results_dict: Dict[str, List[ResourceURILabelResult]] = {}
-        for result in results:
-            col_name = map_uri_to_col_name[result.resource_uri]
-            results_for_col_name = results_dict.get(col_name, [])
-            results_dict[col_name] = results_for_col_name
+        results_dict: Dict[str, Dict[str, str]] = {}
+        for key, value in results:
+            col_name = map_uri_to_col_name[key]
+            results_for_col_name = results_dict.get(col_name, {})
+            results_dict[col_name] = {key: value}
 
-            results_for_col_name.append(result)
+            # results_for_col_name.append(result)
 
-        # results_dict: Dict[str, List[ResourceURILabelResult]] = {
-        #     col_name: select_labels_for_resource_uris(
-        #         self.csvw_inspector.rdf_graph, attributes_dict[col_name]
-        #     )
-        #     for col_name in attributes_dict.keys()
-        # }
         return results_dict
 
     def get_primary_csv_url(self) -> str:
@@ -423,6 +441,25 @@ def _get_column_type_and_component(
         _figure_out_end_user_column_type(component_definition, cube_shape),
         component_definition,
     )
+
+
+def map_column_name_to_title_to_attribute_value_url(
+    column_components: List[ColumnComponentInfo],
+) -> Tuple[Dict[str, str], Dict[str, str]]:
+    map_col_name_to_title = {
+        component.column_definition.name: component.column_definition.title
+        for component in column_components
+        if component.column_definition.name is not None
+        and component.column_definition.title is not None
+    }
+    map_resource_attr_col_name_to_value_url = {
+        component.column_definition.name: component.column_definition.value_url
+        for component in column_components
+        if component.column_type == EndUserColumnType.Attribute
+        and component.column_definition.name is not None
+        and component.column_definition.value_url is not None
+    }
+    return (map_col_name_to_title, map_resource_attr_col_name_to_value_url)
 
 
 def _figure_out_end_user_column_type(

@@ -642,18 +642,22 @@ def map_is_pivoted_shape_for_measures_in_data_set(
 
 def map_labels_for_resource_uris(
     sparql_results: List[ResultRow],
-) -> List[ResourceURILabelResult]:
+) -> Dict[str, str]:
     """
     TODO
     """
 
-    def map_row(row_result: Dict[str, Any]) -> ResourceURILabelResult:
-        return ResourceURILabelResult(
-            resource_uri=str(row_result["resourceValUri"]),
-            resource_label=str(row_result["resourceLabel"]),
-        )
+    # def map_row(row_result: Dict[str, Any]) -> Dict[str, str]:
+    #     return ResourceURILabelResult(
+    #         resource_uri=str(row_result["resourceValUri"]),
+    #         resource_label=str(row_result["resourceLabel"]),
+    #     )
+    return {
+        str(row_result["resourceValUri"]): str(row_result["resourceLabel"])
+        for row_result in sparql_results
+    }
 
-    return [map_row(row.asdict()) for row in sparql_results]
+    # return [map_row(row.asdict()) for row in sparql_results]
 
 
 def map_column_definition_results(

@@ -910,6 +910,7 @@ def test_get_columns_for_component_attribute_pivoted():
 
 
 def test_get_measure_uris_and_labels_pivoted_multi_measure():
+    """TODO"""
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
@@ -932,6 +933,7 @@ def test_get_measure_uris_and_labels_pivoted_multi_measure():
 
 
 def test_get_measure_uris_and_labels_standard_multi_measure():
+    """TODO"""
     path_to_json_file = (
         _test_case_base_dir
         / "multi-unit_multi-measure"
@@ -985,7 +987,7 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
 
 
 def test_get_attribute_value_uris_and_labels():
-    """ """
+    """TODO"""
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"

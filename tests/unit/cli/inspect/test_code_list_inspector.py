@@ -44,7 +44,8 @@ def test_code_list_table_identifiers_error():
 
 def test_get_catalog_metadata_for_concept_scheme():
     """This test ensures when the get_catalog_metadata_for_concept_scheme() check passes and returns
-    the CatalogMetadataResult the objects dataset_uri does match with the expected concept_scheme_url."""
+    the CatalogMetadataResult the objects dataset_uri does match with the expected concept_scheme_url.
+    """
 
     path_to_cube = (
         _test_case_base_dir
@@ -82,7 +83,8 @@ def test_get_catalog_metadata_for_concept_scheme_error():
 
 def test_get_table_identifiers_for_concept_scheme_error():
     """This functions ensures when the given concept_scheme_url doent mach any of the
-    CodeListTableIdentifiers concept_scheme_url KeyError is thrown with the correct rror message."""
+    CodeListTableIdentifiers concept_scheme_url KeyError is thrown with the correct rror message.
+    """
 
     path_to_cube = (
         _test_case_base_dir / "itis-industry-no-skos-inscheme.csv-metadata.json"
@@ -100,7 +102,6 @@ def test_get_table_identifiers_for_concept_scheme_error():
     ) in str(exception.value)
 
 
-# TODO: Add test for duplicate URIs/labels
 def test_dereference_code_list_uri_to_label():
     """ """
     path_to_cube = (
@@ -118,6 +119,46 @@ def test_dereference_code_list_uri_to_label():
         result["boosting-productivity-pay-jobs-and-living-standards"]
         == "Boosting productivity, pay, jobs and living standards by growing the private sector"
     )
+
+
+def test_dereference_code_list_uri_to_label_duplicate_label():
+    """
+    This test checks that the function to dereference a code list's URIs to labels correctly
+    returns an error when there are duplicate labels in the input data set's `Label` column.
+    """
+    path_to_cube = (
+        _test_case_base_dir
+        / "code-list-with-uri-identifier-as-identifier/category-duplicate-labels.csv-metadata.json"
+    )
+    code_list_inspector = get_code_list_inspector(path_to_cube)
+
+    concept_scheme_uri = "category-duplicate-labels.csv#code-list"
+
+    with pytest.raises(ValueError) as exception:
+        result = code_list_inspector.dereference_code_list_uri_to_label(
+            concept_scheme_uri
+        )
+
+        assert ("Duplicate labels in `Label` column") in str(exception.value)
+
+
+def test_dereference_code_list_uri_to_label_duplicate_uri():
+    """
+    This test checks that the function to dereference a code list's URIs to labels correctly
+    returns an error when there are duplicate URIs in the input data set's `Uri Identifier` column.
+    """
+    path_to_cube = (
+        _test_case_base_dir
+        / "code-list-with-uri-identifier-as-identifier/category-duplicate-uris.csv-metadata.json"
+    )
+    code_list_inspector = get_code_list_inspector(path_to_cube)
+
+    concept_scheme_uri = "category-duplicate-uris.csv#code-list"
+
+    with pytest.raises(ValueError) as exception:
+        _ = code_list_inspector.dereference_code_list_uri_to_label(concept_scheme_uri)
+
+        assert ("Duplicate URIs in `Uri Identifier` column") in str(exception.value)
 
 
 def test_get_primary_csv_url():
