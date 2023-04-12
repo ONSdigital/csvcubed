@@ -910,7 +910,11 @@ def test_get_columns_for_component_attribute_pivoted():
 
 
 def test_get_measure_uris_and_labels_pivoted_multi_measure():
-    """TODO"""
+    """
+    This test checks that the measure URIs and labels can successfully be
+    retrieved from a pivoted shape multi measure data set, producing the expected
+    results and without errors.
+    """
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
@@ -933,7 +937,11 @@ def test_get_measure_uris_and_labels_pivoted_multi_measure():
 
 
 def test_get_measure_uris_and_labels_standard_multi_measure():
-    """TODO"""
+    """
+    This test checks that the measure URIs and labels can successfully be
+    retrieved from a standard shape multi measure data set, producing the expected
+    results and without errors.
+    """
     path_to_json_file = (
         _test_case_base_dir
         / "multi-unit_multi-measure"
@@ -987,7 +995,10 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
 
 
 def test_get_attribute_value_uris_and_labels():
-    """TODO"""
+    """
+    This test checks that retrieving the attribute value URIs and labels from a data cube
+    works successfully and produces the expected results.
+    """
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"

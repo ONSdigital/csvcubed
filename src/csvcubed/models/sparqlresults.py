@@ -267,7 +267,7 @@ class QubeComponentsResult:
 @dataclass
 class ResourceURILabelResult:
     """
-    TODO
+    Model to represent a resource attribute's URI and label.
     """
 
     resource_uri: str

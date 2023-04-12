@@ -276,6 +276,9 @@ class DataCubeInspector:
         ]
 
     def get_measure_uris_and_labels(self, csv_url: str) -> Dict[str, str]:
+        """
+        Returns a dictionary containing the measure URIs and labels from the input csv's qube components.
+        """
         qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
 
         results_dict = {}

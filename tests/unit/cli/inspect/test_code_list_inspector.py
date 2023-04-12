@@ -103,7 +103,10 @@ def test_get_table_identifiers_for_concept_scheme_error():
 
 
 def test_dereference_code_list_uri_to_label():
-    """ """
+    """
+    This test checks that the input code list's URI and labels are successfully returned
+    and match the expected results without errors.
+    """
     path_to_cube = (
         _test_case_base_dir
         / "code-list-with-uri-identifier-as-identifier/category.csv-metadata.json"
