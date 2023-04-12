@@ -652,12 +652,20 @@ def map_labels_for_resource_uris(
     #         resource_uri=str(row_result["resourceValUri"]),
     #         resource_label=str(row_result["resourceLabel"]),
     #     )
-    return {
-        str(row_result["resourceValUri"]): str(row_result["resourceLabel"])
-        for row_result in sparql_results
-    }
-
     # return [map_row(row.asdict()) for row in sparql_results]
+
+    # return {
+    #     str(row_result["resourceValUri"]): str(row_result["resourceLabel"])
+    #     for row_result in sparql_results
+    # }
+
+    results: Dict[str, str] = {}
+    for row in sparql_results:
+        if str(row["resourceValUri"]) in results:
+            raise KeyError(f"Duplicate URIs or multiple labels for URI in CSV-W")
+        else:
+            results[str(row["resourceValUri"])] = str(row["resourceLabel"])
+    return results
 
 
 def map_column_definition_results(

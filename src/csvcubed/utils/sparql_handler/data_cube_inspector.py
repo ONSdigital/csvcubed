@@ -29,7 +29,6 @@ from csvcubed.models.sparqlresults import (
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
     QubeComponentsResult,
-    ResourceURILabelResult,
     UnitResult,
 )
 from csvcubed.models.validationerror import ValidationError
@@ -290,7 +289,7 @@ class DataCubeInspector:
 
     def get_attribute_value_uris_and_labels(
         self, csv_url: str
-    ) -> Dict[str, List[ResourceURILabelResult]]:
+    ) -> Dict[str, Dict[str, str]]:
         """
 
         Region, Number Bins, Obs Status
@@ -356,9 +355,7 @@ class DataCubeInspector:
             },
         )
 
-        # if len(duplicate_cols) > 0:
-        #     raise
-        attributes_dict: Dict[str, List[str]] = {
+        map_col_name_to_attribute_value_uris: Dict[str, List[str]] = {
             name: [
                 uritemplate.expand(value_url, {name: av})
                 for av in pandas_input_to_columnar_str(
@@ -369,12 +366,14 @@ class DataCubeInspector:
         }
 
         all_uris_to_look_up: List[str] = [
-            uri for uri_list in attributes_dict.values() for uri in uri_list
+            uri
+            for uri_list in map_col_name_to_attribute_value_uris.values()
+            for uri in uri_list
         ]
 
         map_uri_to_col_name: Dict[str, str] = {
             uri: col_name
-            for col_name, uri_list in attributes_dict.items()
+            for col_name, uri_list in map_col_name_to_attribute_value_uris.items()
             for uri in uri_list
         }
 
@@ -383,12 +382,11 @@ class DataCubeInspector:
         )
 
         results_dict: Dict[str, Dict[str, str]] = {}
-        for key, value in results:
+        for key, value in results.items():
             col_name = map_uri_to_col_name[key]
             results_for_col_name = results_dict.get(col_name, {})
-            results_dict[col_name] = {key: value}
-
-            # results_for_col_name.append(result)
+            results_for_col_name[key] = value
+            results_dict[col_name] = results_for_col_name
 
         return results_dict
 

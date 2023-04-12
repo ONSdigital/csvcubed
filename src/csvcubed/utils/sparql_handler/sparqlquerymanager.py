@@ -32,7 +32,6 @@ from csvcubed.models.sparqlresults import (
     MetadataDependenciesResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
-    ResourceURILabelResult,
     TableSchemaPropertiesResult,
     UnitResult,
     map_catalog_metadata_results,

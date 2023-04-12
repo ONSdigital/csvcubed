@@ -11,7 +11,6 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     CubeTableIdentifiers,
     QubeComponentsResult,
-    ResourceURILabelResult,
     UnitResult,
 )
 from csvcubed.utils.iterables import first
@@ -1015,68 +1014,65 @@ def test_get_attribute_value_uris_and_labels():
 
     result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
-    expected_result = {
-        "imports-status": [
-            ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/imports-status/final",
-                resource_label="Final",
-            ),
-            ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/imports-status/forecast",
-                resource_label="Forecast",
-            ),
-            ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/imports-status/provisional",
-                resource_label="Provisional",
-            ),
-        ],
-        "exports-status": [
-            ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/exports-status/final",
-                resource_label="Final",
-            ),
-            ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/exports-status/forecast",
-                resource_label="Forecast",
-            ),
-            ResourceURILabelResult(
-                resource_uri="multi-attribute.csv#attribute/exports-status/provisional",
-                resource_label="Provisional",
-            ),
-        ],
-    }
     assert len(result) == 2
-    assert result["imports_status"] == expected_result["imports-status"]
-    assert result["imports_status"][0].resource_label == "Final"
-    assert (
-        result["imports_status"][0].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/final"
+    assert result["imports_status"] == {
+        "multi-attribute.csv#attribute/imports-status/final": "Final",
+        "multi-attribute.csv#attribute/imports-status/forecast": "Forecast",
+        "multi-attribute.csv#attribute/imports-status/provisional": "Provisional",
+    }
+    assert result["exports_status"] == {
+        "multi-attribute.csv#attribute/exports-status/final": "Final",
+        "multi-attribute.csv#attribute/exports-status/forecast": "Forecast",
+        "multi-attribute.csv#attribute/exports-status/provisional": "Provisional",
+    }
+
+
+def test_get_attribute_value_uris_and_labels_duplicate_uris():
+    """TODO"""
+    path_to_json_file = (
+        _test_case_base_dir
+        / "multi-attribute-resource-values"
+        / "multi-attribute-duplicate-uris.csv-metadata.json"
     )
-    assert result["imports_status"][1].resource_label == "Forecast"
-    assert (
-        result["imports_status"][1].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/forecast"
+    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
-    assert result["imports_status"][2].resource_label == "Provisional"
-    assert (
-        result["imports_status"][2].resource_uri
-        == "multi-attribute.csv#attribute/imports-status/provisional"
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    with pytest.raises(KeyError) as exception:
+        result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+
+        assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
+            exception.value
+        )
+
+
+def test_get_attribute_value_uris_and_labels_duplicate_labels():
+    """TODO"""
+    path_to_json_file = (
+        _test_case_base_dir
+        / "multi-attribute-resource-values"
+        / "multi-attribute-duplicate-labels.csv-metadata.json"
     )
-    assert result["exports_status"][0].resource_label == "Final"
-    assert (
-        result["exports_status"][0].resource_uri
-        == "multi-attribute.csv#attribute/exports-status/final"
+    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
-    assert result["exports_status"][1].resource_label == "Forecast"
-    assert (
-        result["exports_status"][1].resource_uri
-        == "multi-attribute.csv#attribute/exports-status/forecast"
-    )
-    assert result["exports_status"][2].resource_label == "Provisional"
-    assert (
-        result["exports_status"][2].resource_uri
-        == "multi-attribute.csv#attribute/exports-status/provisional"
-    )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    with pytest.raises(KeyError) as exception:
+        result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+
+        assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
+            exception.value
+        )
 
 
 def test_get_primary_csv_url():
