@@ -267,7 +267,11 @@ def select_labels_for_resource_uris(
     rdf_graph: rdflib.ConjunctiveGraph, resource_uris: List[str]
 ) -> Dict[str, str]:
     """
-    TODO
+    Queries a list of value uris and returns associated labels
+
+    Member of :file:`./sparqlquerymanager.py`
+
+    :return: `Dict[str, str]`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_LABELS_FOR_RESOURCE_URIS),

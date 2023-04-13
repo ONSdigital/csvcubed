@@ -1028,7 +1028,9 @@ def test_get_attribute_value_uris_and_labels():
 
 
 def test_get_attribute_value_uris_and_labels_duplicate_uris():
-    """TODO"""
+    """
+    Checks that the appropriate error is raised if the source file contains duplicate attribute value uris
+    """
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"
@@ -1052,7 +1054,9 @@ def test_get_attribute_value_uris_and_labels_duplicate_uris():
 
 
 def test_get_attribute_value_uris_and_labels_duplicate_labels():
-    """TODO"""
+    """
+    Checks that the appropriate error is raised if the source file contains multiple labels for a given attribute value uri
+    """
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"

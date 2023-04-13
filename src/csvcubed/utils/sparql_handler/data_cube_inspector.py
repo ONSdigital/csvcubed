@@ -6,10 +6,8 @@ Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
-import os
 from dataclasses import dataclass
 from functools import cache, cached_property
-from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
 
@@ -291,45 +289,7 @@ class DataCubeInspector:
         self, csv_url: str
     ) -> Dict[str, Dict[str, str]]:
         """
-
-        Region, Number Bins, Obs Status
-        london, 250000, f
-        birmingham, 87000, p
-
-        get_attribute_value_uris_and_labels(csv_url)
-
-        {
-            "obs_status": [
-                ResourceURILabelResult(uri="this.csv#attribute/obs_status/f", label="Final"),
-                ResourceURILabelResult(uri="this.csv#attribute/obs_status/p", label="Provisional")
-            ]
-        }
-
-        I want this:
-        {
-            "obs_status": {
-                "this.csv#attribute/obs_status/f": "Final",
-                "this.csv#attribute/obs_status/p": "Provisional"
-            }
-        }
-
-        Region, Number Bins, Obs Status
-        london, 250000, Final
-        birmingham, 87000, Provisional
-
-        -----------
-
-        get_attribute_value_uris_and_labels(csv_url)
-
-        {
-            "obs_status": [
-                ResourceURILabelResult(uri="this.csv#attribute/obs_status/f", label="Final"),
-                ResourceURILabelResult(uri="this.csv#attribute/obs_status/f", label="Olaf"),
-                ResourceURILabelResult(uri="this.csv#attribute/obs_status/p", label="Provisional")
-            ]
-        }
-
-
+        Returns a dictionary mapping attribute value uris to their human-readable labels
         """
 
         column_components = self.get_column_component_info(csv_url)
@@ -341,9 +301,9 @@ class DataCubeInspector:
         (
             map_col_name_to_title,
             map_resource_attr_col_name_to_value_url,
-        ) = map_column_name_to_title_to_attribute_value_url(column_components)
+        ) = _map_column_name_to_title_to_attribute_value_url(column_components)
 
-        (dataframe, duplicate_cols) = read_csv(
+        (dataframe, _) = read_csv(
             absolute_csv_url,
             usecols=[
                 map_col_name_to_title[col_name]
@@ -421,9 +381,11 @@ def _get_column_type_and_component(
     cube_shape: CubeShape,
     observations_columns: Set[ColumnDefinition],
 ) -> Tuple[EndUserColumnType, Optional[QubeComponentResult]]:
-    # We *assume* that all components which claim to be 'used' in a column express the same information about the
-    # column. i.e. if two or more components claim to be 'used' in the column, it shouldn't matter whether we pick the
-    # first or the second component, we should draw the same conclusions about the type of the column.
+    """
+    We *assume* that all components which claim to be 'used' in a column express the same information about the
+    column. i.e. if two or more components claim to be 'used' in the column, it shouldn't matter whether we pick the
+    first or the second component, we should draw the same conclusions about the type of the column.
+    """
     component_definition = first(
         qube_components, lambda q: column in q.real_columns_used_in
     )
@@ -444,9 +406,12 @@ def _get_column_type_and_component(
     )
 
 
-def map_column_name_to_title_to_attribute_value_url(
+def _map_column_name_to_title_to_attribute_value_url(
     column_components: List[ColumnComponentInfo],
 ) -> Tuple[Dict[str, str], Dict[str, str]]:
+    """
+    Returns dictionaries of column name to column title and resource attribute column name to value url
+    """
     map_col_name_to_title = {
         component.column_definition.name: component.column_definition.title
         for component in column_components

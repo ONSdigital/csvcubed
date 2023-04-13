@@ -644,20 +644,8 @@ def map_labels_for_resource_uris(
     sparql_results: List[ResultRow],
 ) -> Dict[str, str]:
     """
-    TODO
+    Maps resource value uris to labels
     """
-
-    # def map_row(row_result: Dict[str, Any]) -> Dict[str, str]:
-    #     return ResourceURILabelResult(
-    #         resource_uri=str(row_result["resourceValUri"]),
-    #         resource_label=str(row_result["resourceLabel"]),
-    #     )
-    # return [map_row(row.asdict()) for row in sparql_results]
-
-    # return {
-    #     str(row_result["resourceValUri"]): str(row_result["resourceLabel"])
-    #     for row_result in sparql_results
-    # }
 
     results: Dict[str, str] = {}
     for row in sparql_results:
