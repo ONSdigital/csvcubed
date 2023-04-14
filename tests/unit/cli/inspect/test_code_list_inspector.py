@@ -102,7 +102,7 @@ def test_get_table_identifiers_for_concept_scheme_error():
     ) in str(exception.value)
 
 
-def test_dereference_code_list_uri_to_label():
+def test_get_map_code_list_uri_to_label():
     """
     This test checks that the input code list's URI and labels are successfully returned
     and match the expected results without errors.
@@ -115,16 +115,15 @@ def test_dereference_code_list_uri_to_label():
 
     concept_scheme_uri = "category.csv#code-list"
 
-    result = code_list_inspector.dereference_code_list_uri_to_label(concept_scheme_uri)
+    result = code_list_inspector.get_map_code_list_uri_to_label(concept_scheme_uri)
+    assert result == {
+        "boosting-productivity-pay-jobs-and-living-standards": "Boosting productivity, pay, jobs and living standards by growing the private sector",
+        "spreading-opportunity-and-improving-public-services": "Spreading opportunity and improving public services",
+        "restoring-a-sense-of-community-local-pride-and-belonging": "Restoring a sense of community, local pride and belonging",
+    }
 
-    assert len(result) == 3
-    assert (
-        result["boosting-productivity-pay-jobs-and-living-standards"]
-        == "Boosting productivity, pay, jobs and living standards by growing the private sector"
-    )
 
-
-def test_dereference_code_list_uri_to_label_duplicate_label():
+def test_get_map_code_list_uri_to_label_duplicate_label():
     """
     This test checks that the function to dereference a code list's URIs to labels correctly
     returns an error when there are duplicate labels in the input data set's `Label` column.
@@ -138,14 +137,14 @@ def test_dereference_code_list_uri_to_label_duplicate_label():
     concept_scheme_uri = "category-duplicate-labels.csv#code-list"
 
     with pytest.raises(ValueError) as exception:
-        result = code_list_inspector.dereference_code_list_uri_to_label(
-            concept_scheme_uri
-        )
+        result = code_list_inspector.get_map_code_list_uri_to_label(concept_scheme_uri)
 
-        assert ("Duplicate labels in `Label` column") in str(exception.value)
+    assert (
+        "Duplicate labels 'Restoring a sense of community, local pride and be…' in `Label` column for category-duplicate-labels.csv"
+    ) in str(exception.value)
 
 
-def test_dereference_code_list_uri_to_label_duplicate_uri():
+def test_get_map_code_list_uri_to_label_duplicate_uri():
     """
     This test checks that the function to dereference a code list's URIs to labels correctly
     returns an error when there are duplicate URIs in the input data set's `Uri Identifier` column.
@@ -159,9 +158,11 @@ def test_dereference_code_list_uri_to_label_duplicate_uri():
     concept_scheme_uri = "category-duplicate-uris.csv#code-list"
 
     with pytest.raises(ValueError) as exception:
-        _ = code_list_inspector.dereference_code_list_uri_to_label(concept_scheme_uri)
+        _ = code_list_inspector.get_map_code_list_uri_to_label(concept_scheme_uri)
 
-        assert ("Duplicate URIs in `Uri Identifier` column") in str(exception.value)
+    assert (
+        "Duplicate URIs 'restoring-a-sense-of-community-local-pride-and-bel…' in `Uri Identifier` column for category-duplicate-uris.csv"
+    ) in str(exception.value)
 
 
 def test_get_primary_csv_url():

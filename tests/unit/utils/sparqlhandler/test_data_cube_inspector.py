@@ -78,15 +78,8 @@ def test_get_cube_identifiers_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result: CubeTableIdentifiers = data_cube_inspector.get_cube_identifiers_for_csv(
         csv_url
@@ -108,15 +101,7 @@ def test_get_cube_identifiers_for_data_set():
         / "qb-id-10004.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-
-    primary_catalog_metadata = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
-    )
-
-    data_set_uri = primary_catalog_metadata.dataset_uri
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        data_set_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -150,14 +135,8 @@ def test_detect_csvw_shape_pivoted():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     cube_shape: CubeShape = data_cube_inspector.get_shape_for_csv(csv_url)
 
@@ -174,14 +153,8 @@ def test_detect_csvw_shape_standard():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     cube_shape: CubeShape = data_cube_inspector.get_shape_for_csv(csv_url)
 
@@ -197,14 +170,8 @@ def test_get_code_lists_and_cols():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     results = {
         c.csv_url: c
@@ -225,14 +192,8 @@ def test_get_dsd_code_list_and_cols_without_codelist_labels():
     Should return expected code lists and column information.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result: CodelistsResult = data_cube_inspector.get_code_lists_and_cols(csv_url)
 
@@ -296,14 +257,8 @@ def test_get_dsd_qube_components_for_csv_multi_measure_pivoted():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result_qube_components: QubeComponentsResult = (
         data_cube_inspector.get_dsd_qube_components_for_csv(csv_url)
@@ -406,14 +361,9 @@ def test_get_dsd_qube_components_for_csv_single_measure_pivoted():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -501,14 +451,9 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -919,20 +864,15 @@ def test_get_measure_uris_and_labels_pivoted_multi_measure():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result = data_cube_inspector.get_measure_uris_and_labels(csv_url)
 
-    assert len(result) == 2
-    assert result["qb-id-10003.csv#measure/some-other-measure"] == "Some Other Measure"
-    assert result["qb-id-10003.csv#measure/some-measure"] == "Some Measure"
+    assert result == {
+        "qb-id-10003.csv#measure/some-measure": "Some Measure",
+        "qb-id-10003.csv#measure/some-other-measure": "Some Other Measure",
+    }
 
 
 def test_get_measure_uris_and_labels_standard_multi_measure():
@@ -943,18 +883,12 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
     """
     path_to_json_file = (
         _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "new"
+        / "multi-unit_multi-measure_with_labels"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result = data_cube_inspector.get_measure_uris_and_labels(csv_url)
 
@@ -1001,26 +935,22 @@ def test_get_attribute_value_uris_and_labels():
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"
-        / "multi-attribute.csv-metadata.json"
+        / "out"
+        / "multi-attribute-in.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
     assert len(result) == 2
-    assert result["imports_status"] == {
+    assert result["Imports Status"] == {
         "multi-attribute.csv#attribute/imports-status/final": "Final",
         "multi-attribute.csv#attribute/imports-status/forecast": "Forecast",
         "multi-attribute.csv#attribute/imports-status/provisional": "Provisional",
     }
-    assert result["exports_status"] == {
+    assert result["Exports Status"] == {
         "multi-attribute.csv#attribute/exports-status/final": "Final",
         "multi-attribute.csv#attribute/exports-status/forecast": "Forecast",
         "multi-attribute.csv#attribute/exports-status/provisional": "Provisional",
@@ -1036,21 +966,16 @@ def test_get_attribute_value_uris_and_labels_duplicate_uris():
         / "multi-attribute-resource-values"
         / "multi-attribute-duplicate-uris.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     with pytest.raises(KeyError) as exception:
         result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
-        assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
-            exception.value
-        )
+    assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
+        exception.value
+    )
 
 
 def test_get_attribute_value_uris_and_labels_duplicate_labels():
@@ -1062,14 +987,9 @@ def test_get_attribute_value_uris_and_labels_duplicate_labels():
         / "multi-attribute-resource-values"
         / "multi-attribute-duplicate-labels.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(path_to_json_file)
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
     with pytest.raises(KeyError) as exception:
         result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)

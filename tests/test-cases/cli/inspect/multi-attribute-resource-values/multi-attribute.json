@@ -47,6 +47,11 @@
             "type": "attribute",
             "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
             "describes_observations": "Exports"
+        },
+        "Existing Attribute": {
+            "type": "attribute",
+            "cell_uri_template": "http://example.org/status/{+existing_attribute}",
+            "describes_observations": "Exports"
         }
     }
 }

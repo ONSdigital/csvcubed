@@ -15,7 +15,6 @@ from csvcubed.models.cube.qb.components.attribute import (
 from csvcubed.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
     NewQbCodeList,
-    NewQbCodeListInCsvW,
     QbCodeList,
 )
 from csvcubed.models.cube.qb.components.dimension import (
@@ -345,14 +344,6 @@ class UriHelper:
             return SkosCodeListNewResourceUriGenerator(
                 code_list, self.cube.uri_style
             ).get_concept_uri(column_uri_fragment)
-        elif isinstance(code_list, NewQbCodeListInCsvW):
-            _logger.debug(
-                "valueUrl defined by legacy dataset-local code list %s",
-                code_list.concept_scheme_uri,
-            )
-            return re.sub(
-                r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
-            )
         else:
             raise TypeError(f"Unhandled codelist type {type(code_list)}")
 

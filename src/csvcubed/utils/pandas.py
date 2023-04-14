@@ -6,7 +6,7 @@ This file provides additional utilities for pandas type commands
 """
 import logging
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Set, Tuple, Union
 
 import pandas as pd
 
@@ -22,11 +22,11 @@ SPECIFIED_NA_VALUES = {
 
 
 def read_csv(
-    csv_path: Path,
-    keep_default_na=False,
-    na_values=SPECIFIED_NA_VALUES,
-    dtype=None,
-    usecols=None,
+    csv_path_or_url: Union[Path, str],
+    keep_default_na: bool = False,
+    na_values: Set[str] = SPECIFIED_NA_VALUES,
+    dtype: Dict[str, str] = None,
+    usecols: List[str] = None,
 ) -> Tuple[pd.DataFrame, List[ValidationError]]:
     """
     :returns: a tuple of
@@ -35,7 +35,7 @@ def read_csv(
     """
 
     df = pd.read_csv(
-        csv_path,
+        csv_path_or_url,
         keep_default_na=keep_default_na,
         na_values=na_values,
         dtype=dtype,
@@ -50,7 +50,7 @@ def read_csv(
         )
 
     # Read first row as values rather than headers, so we can check for duplicate column titles
-    col_title_counts = pd.read_csv(csv_path, header=None, nrows=1).iloc[0, :].value_counts()  # type: ignore
+    col_title_counts = pd.read_csv(csv_path_or_url, header=None, nrows=1).iloc[0, :].value_counts()  # type: ignore
     duplicate_titles = list(col_title_counts[col_title_counts > 1].keys())
 
     return df, [
