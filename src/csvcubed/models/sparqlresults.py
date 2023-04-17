@@ -659,7 +659,7 @@ def map_labels_for_resource_uris(
             else:
                 # same URI, multiple labels
                 ...
-            raise KeyError(f"Duplicate URIs or multiple labels for URI in CSV-W")
+            raise KeyError("Duplicate URIs or multiple labels for URI in CSV-W")
         else:
             results[new_uri] = new_label
     return results
