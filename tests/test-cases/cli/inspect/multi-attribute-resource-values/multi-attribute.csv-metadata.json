@@ -32,7 +32,7 @@
                         "titles": "Imports Status",
                         "name": "imports_status",
                         "aboutUrl": "multi-attribute.csv#obs/{year},{sector}@imports-monetary-value",
-                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+                        "propertyUrl": "multi-attribute.csv#attribute/imports-status",
                         "valueUrl": "multi-attribute.csv#attribute/imports-status/{+imports_status}",
                         "required": false
                     },
@@ -50,6 +50,14 @@
                         "aboutUrl": "multi-attribute.csv#obs/{year},{sector}@exports-monetary-value",
                         "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
                         "valueUrl": "multi-attribute.csv#attribute/exports-status/{+exports_status}",
+                        "required": false
+                    },
+                    {
+                        "titles": "Existing Attribute",
+                        "name": "existing_attribute",
+                        "aboutUrl": "multi-attribute.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "multi-attribute.csv#attribute/existing-attribute",
+                        "valueUrl": "http://example.org/status/{+existing_attribute}",
                         "required": false
                     },
                     {
@@ -199,9 +207,9 @@
         {
             "@id": "multi-attribute.csv#component/year",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
                 {
@@ -220,51 +228,204 @@
             ]
         },
         {
-            "@id": "multi-attribute.csv#component/measure-type",
+            "@id": "multi-attribute.csv#dimension/sector",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://purl.org/linked-data/cube#DimensionProperty"
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://purl.org/linked-data/cube#codeList": [
                 {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
+                    "@id": "sector.csv#code-list"
                 }
             ],
-            "http://purl.org/linked-data/cube#dimension": [
+            "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
+                    "@language": "en",
+                    "@value": "Sector"
                 }
             ],
-            "http://purl.org/linked-data/cube#order": [
+            "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
-                    "@value": 3
-                },
-                {
-                    "@value": 7
+                    "@id": "multi-attribute.csv#class/sector"
                 }
             ]
         },
         {
-            "@id": "multi-attribute.csv#csvcubed-build-activity",
+            "@id": "multi-attribute.csv#component/imports-monetary-value",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/ns/prov#Activity"
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
             ],
-            "http://www.w3.org/ns/prov#used": [
+            "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                    "@id": "multi-attribute.csv#measure/imports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "multi-attribute.csv#measure/imports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#measure/imports-monetary-value",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#MeasureProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Imports Monetary Value"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "https://purl.org/csv-cubed/resources/measures#sales-value"
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#structure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataStructureDefinition",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "multi-attribute.csv#component/unit"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/imports-status"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/exports-status"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/year"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/imports-monetary-value"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/sector"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/exports-monetary-value"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/existing-attribute"
+                },
+                {
+                    "@id": "multi-attribute.csv#component/measure-type"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-attribute.csv#measure/imports-monetary-value"
+                },
+                {
+                    "@id": "multi-attribute.csv#measure/exports-monetary-value"
+                },
+                {
+                    "@id": "multi-attribute.csv#dimension/sector"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                },
+                {
+                    "@id": "multi-attribute.csv#dimension/year"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "multi-attribute.csv#attribute/existing-attribute"
+                },
+                {
+                    "@id": "multi-attribute.csv#attribute/imports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#sliceKey": [
+                {
+                    "@id": "multi-attribute.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#component/sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-attribute.csv#dimension/sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "multi-attribute.csv#dimension/sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#class/sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#slice/cross-measures",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#SliceKey",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-attribute.csv#dimension/sector"
+                },
+                {
+                    "@id": "multi-attribute.csv#dimension/year"
                 }
             ]
         },
         {
             "@id": "multi-attribute.csv#dimension/year",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DimensionProperty",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#CodedProperty"
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
             ],
             "http://purl.org/linked-data/cube#codeList": [
                 {
@@ -289,161 +450,37 @@
             ]
         },
         {
-            "@id": "multi-attribute.csv#class/year",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Class",
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#dataset",
+            "@id": "multi-attribute.csv#component/measure-type",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/ns/dcat#Resource",
-                "http://purl.org/linked-data/cube#DataSet",
-                "http://www.w3.org/ns/dcat#Dataset",
-                "http://purl.org/linked-data/cube#Attachable"
-            ],
-            "http://purl.org/dc/terms/identifier": [
-                {
-                    "@value": "Multi Attribute"
-                }
-            ],
-            "http://purl.org/dc/terms/issued": [
-                {
-                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-04-04T11:09:03.509468"
-                }
-            ],
-            "http://purl.org/dc/terms/modified": [
-                {
-                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-04-04T11:09:03.509468"
-                }
-            ],
-            "http://purl.org/dc/terms/title": [
-                {
-                    "@language": "en",
-                    "@value": "Multi Attribute"
-                }
-            ],
-            "http://purl.org/linked-data/cube#structure": [
-                {
-                    "@id": "multi-attribute.csv#structure"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Multi Attribute"
-                }
-            ],
-            "http://www.w3.org/ns/prov#wasGeneratedBy": [
-                {
-                    "@id": "multi-attribute.csv#csvcubed-build-activity"
-                }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#measure/imports-monetary-value",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#MeasureProperty"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Imports Monetary Value"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
-                {
-                    "@id": "https://purl.org/csv-cubed/resources/measures#sales-value"
-                }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#structure",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DataStructureDefinition"
-            ],
-            "http://purl.org/linked-data/cube#component": [
-                {
-                    "@id": "multi-attribute.csv#component/exports-status"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/year"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/unit"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/exports-monetary-value"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/imports-status"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/measure-type"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/sector"
-                },
-                {
-                    "@id": "multi-attribute.csv#component/imports-monetary-value"
-                }
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "multi-attribute.csv#dimension/year"
-                },
-                {
-                    "@id": "multi-attribute.csv#measure/imports-monetary-value"
-                },
-                {
-                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-                },
-                {
-                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
-                },
-                {
                     "@id": "http://purl.org/linked-data/cube#measureType"
-                },
-                {
-                    "@id": "multi-attribute.csv#dimension/sector"
-                },
-                {
-                    "@id": "multi-attribute.csv#measure/exports-monetary-value"
                 }
             ],
-            "http://purl.org/linked-data/cube#sliceKey": [
+            "http://purl.org/linked-data/cube#dimension": [
                 {
-                    "@id": "multi-attribute.csv#slice/cross-measures"
+                    "@id": "http://purl.org/linked-data/cube#measureType"
                 }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#class/sector",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Class",
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                },
+                {
+                    "@value": 3
+                }
             ]
         },
         {
             "@id": "multi-attribute.csv#measure/exports-monetary-value",
             "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentProperty",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#MeasureProperty"
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
@@ -464,11 +501,77 @@
             ]
         },
         {
+            "@id": "multi-attribute.csv#component/imports-status",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "multi-attribute.csv#attribute/imports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-attribute.csv#attribute/imports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#attribute/existing-attribute",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#AttributeProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Existing Attribute"
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#component/exports-monetary-value",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-attribute.csv#measure/exports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "multi-attribute.csv#measure/exports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 8
+                }
+            ]
+        },
+        {
             "@id": "multi-attribute.csv#component/exports-status",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
             ],
             "http://purl.org/linked-data/cube#attribute": [
                 {
@@ -492,20 +595,27 @@
             ]
         },
         {
-            "@id": "multi-attribute.csv#component/imports-status",
+            "@id": "multi-attribute.csv#class/year",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#component/existing-attribute",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
             ],
             "http://purl.org/linked-data/cube#attribute": [
                 {
-                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                    "@id": "multi-attribute.csv#attribute/existing-attribute"
                 }
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                    "@id": "multi-attribute.csv#attribute/existing-attribute"
                 }
             ],
             "http://purl.org/linked-data/cube#componentRequired": [
@@ -515,78 +625,31 @@
             ],
             "http://purl.org/linked-data/cube#order": [
                 {
-                    "@value": 6
+                    "@value": 10
                 }
             ]
         },
         {
-            "@id": "multi-attribute.csv#component/imports-monetary-value",
+            "@id": "multi-attribute.csv#attribute/imports-status",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#AttributeProperty"
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
-                    "@id": "multi-attribute.csv#measure/imports-monetary-value"
-                }
-            ],
-            "http://purl.org/linked-data/cube#measure": [
-                {
-                    "@id": "multi-attribute.csv#measure/imports-monetary-value"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 5
-                }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#slice/cross-measures",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#SliceKey"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "multi-attribute.csv#dimension/sector"
-                },
-                {
-                    "@id": "multi-attribute.csv#dimension/year"
-                }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#component/sector",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "multi-attribute.csv#dimension/sector"
-                }
-            ],
-            "http://purl.org/linked-data/cube#dimension": [
-                {
-                    "@id": "multi-attribute.csv#dimension/sector"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 2
+                    "@language": "en",
+                    "@value": "Imports Status"
                 }
             ]
         },
         {
             "@id": "multi-attribute.csv#component/unit",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
             ],
             "http://purl.org/linked-data/cube#attribute": [
                 {
@@ -610,51 +673,63 @@
             ]
         },
         {
-            "@id": "multi-attribute.csv#component/exports-monetary-value",
+            "@id": "multi-attribute.csv#dataset",
             "@type": [
-                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://purl.org/linked-data/cube#DataSet",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://purl.org/linked-data/cube#Attachable"
             ],
-            "http://purl.org/linked-data/cube#componentProperty": [
+            "http://purl.org/dc/terms/identifier": [
                 {
-                    "@id": "multi-attribute.csv#measure/exports-monetary-value"
+                    "@value": "Multi Attribute In"
                 }
             ],
-            "http://purl.org/linked-data/cube#measure": [
+            "http://purl.org/dc/terms/issued": [
                 {
-                    "@id": "multi-attribute.csv#measure/exports-monetary-value"
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-04-14T15:43:11.815474"
                 }
             ],
-            "http://purl.org/linked-data/cube#order": [
+            "http://purl.org/dc/terms/modified": [
                 {
-                    "@value": 8
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-04-14T15:43:11.815474"
                 }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#dimension/sector",
-            "@type": [
-                "http://purl.org/linked-data/cube#ComponentProperty",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DimensionProperty",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#CodedProperty"
             ],
-            "http://purl.org/linked-data/cube#codeList": [
+            "http://purl.org/dc/terms/title": [
                 {
-                    "@id": "sector.csv#code-list"
+                    "@language": "en",
+                    "@value": "Multi Attribute In"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "multi-attribute.csv#structure"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
                     "@language": "en",
-                    "@value": "Sector"
+                    "@value": "Multi Attribute In"
                 }
             ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
+            "http://www.w3.org/ns/prov#wasGeneratedBy": [
                 {
-                    "@id": "multi-attribute.csv#class/sector"
+                    "@id": "multi-attribute.csv#csvcubed-build-activity"
+                }
+            ]
+        },
+        {
+            "@id": "multi-attribute.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
                 }
             ]
         },
@@ -693,6 +768,18 @@
             ]
         },
         {
+            "@id": "multi-attribute.csv#attribute/imports-status/provisional",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Provisional"
+                }
+            ]
+        },
+        {
             "@id": "multi-attribute.csv#attribute/imports-status/final",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource"
@@ -713,18 +800,6 @@
                 {
                     "@language": "en",
                     "@value": "Forecast"
-                }
-            ]
-        },
-        {
-            "@id": "multi-attribute.csv#attribute/imports-status/provisional",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Provisional"
                 }
             ]
         },

@@ -935,8 +935,7 @@ def test_get_attribute_value_uris_and_labels():
     path_to_json_file = (
         _test_case_base_dir
         / "multi-attribute-resource-values"
-        / "out"
-        / "multi-attribute-in.csv-metadata.json"
+        / "multi-attribute.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
 
@@ -946,14 +945,14 @@ def test_get_attribute_value_uris_and_labels():
 
     assert len(result) == 2
     assert result["Imports Status"] == {
-        "multi-attribute-in.csv#attribute/imports-status/final": "Final",
-        "multi-attribute-in.csv#attribute/imports-status/forecast": "Forecast",
-        "multi-attribute-in.csv#attribute/imports-status/provisional": "Provisional",
+        "multi-attribute.csv#attribute/imports-status/final": "Final",
+        "multi-attribute.csv#attribute/imports-status/forecast": "Forecast",
+        "multi-attribute.csv#attribute/imports-status/provisional": "Provisional",
     }
     assert result["Exports Status"] == {
-        "multi-attribute-in.csv#attribute/exports-status/final": "Final",
-        "multi-attribute-in.csv#attribute/exports-status/forecast": "Forecast",
-        "multi-attribute-in.csv#attribute/exports-status/provisional": "Provisional",
+        "multi-attribute.csv#attribute/exports-status/final": "Final",
+        "multi-attribute.csv#attribute/exports-status/forecast": "Forecast",
+        "multi-attribute.csv#attribute/exports-status/provisional": "Provisional",
     }
 
 
