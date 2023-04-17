@@ -970,7 +970,7 @@ def test_get_attribute_value_uris_and_labels_duplicate_uris():
     csv_url = data_cube_inspector.get_primary_csv_url()
 
     with pytest.raises(KeyError) as exception:
-        result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+        _ = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
     assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
         exception.value
@@ -991,7 +991,7 @@ def test_get_attribute_value_uris_and_labels_duplicate_labels():
     csv_url = data_cube_inspector.get_primary_csv_url()
 
     with pytest.raises(KeyError) as exception:
-        result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+        _ = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
         assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
             exception.value

@@ -137,7 +137,7 @@ def test_get_map_code_list_uri_to_label_duplicate_label():
     concept_scheme_uri = "category-duplicate-labels.csv#code-list"
 
     with pytest.raises(ValueError) as exception:
-        result = code_list_inspector.get_map_code_list_uri_to_label(concept_scheme_uri)
+        _ = code_list_inspector.get_map_code_list_uri_to_label(concept_scheme_uri)
 
     assert (
         "Duplicate labels 'Restoring a sense of community, local pride and be…' in `Label` column for category-duplicate-labels.csv"
