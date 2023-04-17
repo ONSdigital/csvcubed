@@ -946,14 +946,14 @@ def test_get_attribute_value_uris_and_labels():
 
     assert len(result) == 2
     assert result["Imports Status"] == {
-        "multi-attribute.csv#attribute/imports-status/final": "Final",
-        "multi-attribute.csv#attribute/imports-status/forecast": "Forecast",
-        "multi-attribute.csv#attribute/imports-status/provisional": "Provisional",
+        "multi-attribute-in.csv#attribute/imports-status/final": "Final",
+        "multi-attribute-in.csv#attribute/imports-status/forecast": "Forecast",
+        "multi-attribute-in.csv#attribute/imports-status/provisional": "Provisional",
     }
     assert result["Exports Status"] == {
-        "multi-attribute.csv#attribute/exports-status/final": "Final",
-        "multi-attribute.csv#attribute/exports-status/forecast": "Forecast",
-        "multi-attribute.csv#attribute/exports-status/provisional": "Provisional",
+        "multi-attribute-in.csv#attribute/exports-status/final": "Final",
+        "multi-attribute-in.csv#attribute/exports-status/forecast": "Forecast",
+        "multi-attribute-in.csv#attribute/exports-status/provisional": "Provisional",
     }
 
 

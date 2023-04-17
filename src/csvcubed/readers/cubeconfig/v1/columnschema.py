@@ -90,7 +90,6 @@ class NewDimension(SchemaBaseClass):
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
     ) -> Tuple[NewQbDimension, List[JsonSchemaValidationError]]:
-
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
             data=data,
@@ -247,7 +246,6 @@ class ExistingAttributeLiteral(SchemaBaseClass):
     describes_observations: Optional[str] = None
 
     def map_to_existing_qb_attribute(self) -> ExistingQbAttributeLiteral:
-
         return ExistingQbAttributeLiteral(
             attribute_uri=self.from_existing,
             is_required=self.required,
@@ -264,16 +262,37 @@ class ExistingAttributeResource(SchemaBaseClass):
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
+    """
+    if cell_uri_template and values is True:
+        set values to False
+        log a warning at this point to let the user know we've done this
+    elif cell_uri_template and are_attribute_values(values):
+        WTF are you doing?
+    """
+
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
     ) -> ExistingQbAttribute:
-
-        return ExistingQbAttribute(
-            self.from_existing,
-            new_attribute_values=_get_new_attribute_values(data, self.values),
-            is_required=self.required,
-            observed_value_col_title=self.describes_observations,
-        )
+        if self.cell_uri_template and self.values is True:
+            _logger.warning(
+                "Attribute values will not be created as `cell_uri_template` is set"
+            )
+            return ExistingQbAttribute(
+                self.from_existing,
+                is_required=self.required,
+                observed_value_col_title=self.describes_observations,
+            )
+        elif self.cell_uri_template and len(self.values) > 0:
+            raise ValueError(
+                "Conflict between `cell_uri_template` and explicit attribute values provided"
+            )
+        else:
+            return ExistingQbAttribute(
+                self.from_existing,
+                new_attribute_values=_get_new_attribute_values(data, self.values),
+                is_required=self.required,
+                observed_value_col_title=self.describes_observations,
+            )
 
 
 @dataclass
@@ -316,15 +335,32 @@ class NewAttributeResource(SchemaBaseClass):
     ) -> NewQbAttribute:
         label = self.label or column_title
 
-        return NewQbAttribute(
-            label=label,
-            description=self.description,
-            new_attribute_values=_get_new_attribute_values(data, self.values),
-            parent_attribute_uri=self.from_existing,
-            source_uri=self.definition_uri,
-            is_required=self.required,
-            observed_value_col_title=self.describes_observations,
-        )
+        if self.cell_uri_template and self.values is True:
+            _logger.warning(
+                "Attribute values will not be created as `cell_uri_template` is set"
+            )
+            return NewQbAttribute(
+                label=label,
+                description=self.description,
+                parent_attribute_uri=self.from_existing,
+                source_uri=self.definition_uri,
+                is_required=self.required,
+                observed_value_col_title=self.describes_observations,
+            )
+        elif self.cell_uri_template and len(self.values) > 0:
+            raise ValueError(
+                "Conflict between `cell_uri_template` and explicit attribute values provided"
+            )
+        else:
+            return NewQbAttribute(
+                label=label,
+                description=self.description,
+                new_attribute_values=_get_new_attribute_values(data, self.values),
+                parent_attribute_uri=self.from_existing,
+                source_uri=self.definition_uri,
+                is_required=self.required,
+                observed_value_col_title=self.describes_observations,
+            )
 
 
 @dataclass
@@ -366,7 +402,6 @@ class NewUnits(SchemaBaseClass):
             )
 
         elif isinstance(self.values, list):
-
             units = []
             for unit in self.values:
                 if not isinstance(unit, Unit):
@@ -532,6 +567,14 @@ def _get_new_attribute_values(
     data: PandasDataTypes,
     new_attribute_values: Union[bool, List[AttributeValue]],
 ) -> List[NewQbAttributeValue]:
+    """
+    if cell_uri_template and values is True:
+        set values to False
+        log a warning at this point to let the user know we've done this
+    elif cell_uri_template and are_attribute_values(values):
+        WTF are you doing?
+    """
+
     if isinstance(new_attribute_values, bool):
         if new_attribute_values:
             columnar_data: List[str] = [
