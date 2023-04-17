@@ -262,14 +262,6 @@ class ExistingAttributeResource(SchemaBaseClass):
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
-    """
-    if cell_uri_template and values is True:
-        set values to False
-        log a warning at this point to let the user know we've done this
-    elif cell_uri_template and are_attribute_values(values):
-        WTF are you doing?
-    """
-
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
     ) -> ExistingQbAttribute:
