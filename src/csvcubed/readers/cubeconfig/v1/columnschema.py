@@ -273,12 +273,12 @@ class ExistingAttributeResource(SchemaBaseClass):
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
     ) -> ExistingQbAttribute:
-        if self.cell_uri_template and self.values is True:
+        if self.cell_uri_template and isinstance(self.values, bool):
             _logger.warning(
                 "Attribute values will not be created as `cell_uri_template` is set"
             )
             return ExistingQbAttribute(
-                self.from_existing,
+                attribute_uri=self.from_existing,
                 is_required=self.required,
                 observed_value_col_title=self.describes_observations,
             )
@@ -288,7 +288,7 @@ class ExistingAttributeResource(SchemaBaseClass):
             )
         else:
             return ExistingQbAttribute(
-                self.from_existing,
+                attribute_uri=self.from_existing,
                 new_attribute_values=_get_new_attribute_values(data, self.values),
                 is_required=self.required,
                 observed_value_col_title=self.describes_observations,
@@ -335,7 +335,7 @@ class NewAttributeResource(SchemaBaseClass):
     ) -> NewQbAttribute:
         label = self.label or column_title
 
-        if self.cell_uri_template and self.values is True:
+        if self.cell_uri_template and isinstance(self.values, bool):
             _logger.warning(
                 "Attribute values will not be created as `cell_uri_template` is set"
             )
