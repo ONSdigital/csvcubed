@@ -400,8 +400,10 @@ class DataCubeInspector:
             for uri in uri_list
         }
 
+        uris_to_query = list(map_uri_to_col_name.keys())
+
         sparql_results = select_labels_for_resource_uris(
-            self.csvw_inspector.rdf_graph, map_uri_to_col_name.keys()
+            self.csvw_inspector.rdf_graph, uris_to_query
         )
 
         map_col_title_to_attr_val_uris_and_labels: Dict[str, Dict[str, str]] = {}

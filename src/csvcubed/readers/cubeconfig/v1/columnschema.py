@@ -274,7 +274,11 @@ class ExistingAttributeResource(SchemaBaseClass):
                 is_required=self.required,
                 observed_value_col_title=self.describes_observations,
             )
-        elif self.cell_uri_template and len(self.values) > 0:
+        elif (
+            self.cell_uri_template
+            and not isinstance(self.values, bool)
+            and len(self.values) > 0
+        ):
             raise ValueError(
                 "Conflict between `cell_uri_template` and explicit attribute values provided"
             )
@@ -339,7 +343,11 @@ class NewAttributeResource(SchemaBaseClass):
                 is_required=self.required,
                 observed_value_col_title=self.describes_observations,
             )
-        elif self.cell_uri_template and len(self.values) > 0:
+        elif (
+            self.cell_uri_template
+            and not isinstance(self.values, bool)
+            and len(self.values) > 0
+        ):
             raise ValueError(
                 "Conflict between `cell_uri_template` and explicit attribute values provided"
             )

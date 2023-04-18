@@ -6,9 +6,10 @@ This file provides additional utilities for pandas type commands
 """
 import logging
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 import pandas as pd
+from numpy import dtype
 
 from csvcubed.models.cube.validationerrors import DuplicateColumnTitleError
 from csvcubed.models.validationerror import ValidationError
@@ -25,8 +26,8 @@ def read_csv(
     csv_path_or_url: Union[Path, str],
     keep_default_na: bool = False,
     na_values: Set[str] = SPECIFIED_NA_VALUES,
-    dtype: Dict[str, str] = None,
-    usecols: List[str] = None,
+    dtype: Optional[Dict] = None,
+    usecols: Optional[List[str]] = None,
 ) -> Tuple[pd.DataFrame, List[ValidationError]]:
     """
     :returns: a tuple of
