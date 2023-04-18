@@ -993,9 +993,9 @@ def test_get_attribute_value_uris_and_labels_duplicate_labels():
     with pytest.raises(KeyError) as exception:
         _ = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
 
-        assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
-            exception.value
-        )
+    assert (
+        "Multiple Labels Diweddol and Final for URI 'multi-attribute.csv#attribute/imports-status/final'"
+    ) in str(exception.value)
 
 
 def test_get_primary_csv_url():
