@@ -568,11 +568,9 @@ def _get_new_attribute_values(
     new_attribute_values: Union[bool, List[AttributeValue]],
 ) -> List[NewQbAttributeValue]:
     """
-    if cell_uri_template and values is True:
-        set values to False
-        log a warning at this point to let the user know we've done this
-    elif cell_uri_template and are_attribute_values(values):
-        WTF are you doing?
+    Returns a list of new attribute value objects. If cell_uri_template is True, then the list is created with
+    the list comprehension. If cell_uri_template is not used (new_attribute_values is a list object)
+    then use _map_attribute_values.
     """
 
     if isinstance(new_attribute_values, bool):

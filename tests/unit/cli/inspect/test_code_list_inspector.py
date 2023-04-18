@@ -109,7 +109,8 @@ def test_get_map_code_list_uri_to_label():
     """
     path_to_cube = (
         _test_case_base_dir
-        / "code-list-with-uri-identifier-as-identifier/category.csv-metadata.json"
+        / "code-list-with-uri-identifier-as-identifier"
+        / "category.csv-metadata.json"
     )
     code_list_inspector = get_code_list_inspector(path_to_cube)
 
@@ -130,7 +131,8 @@ def test_get_map_code_list_uri_to_label_duplicate_label():
     """
     path_to_cube = (
         _test_case_base_dir
-        / "code-list-with-uri-identifier-as-identifier/category-duplicate-labels.csv-metadata.json"
+        / "code-list-with-uri-identifier-as-identifier"
+        / "category-duplicate-labels.csv-metadata.json"
     )
     code_list_inspector = get_code_list_inspector(path_to_cube)
 
@@ -151,7 +153,8 @@ def test_get_map_code_list_uri_to_label_duplicate_uri():
     """
     path_to_cube = (
         _test_case_base_dir
-        / "code-list-with-uri-identifier-as-identifier/category-duplicate-uris.csv-metadata.json"
+        / "code-list-with-uri-identifier-as-identifier"
+        / "category-duplicate-uris.csv-metadata.json"
     )
     code_list_inspector = get_code_list_inspector(path_to_cube)
 
