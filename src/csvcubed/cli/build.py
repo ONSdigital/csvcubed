@@ -29,6 +29,7 @@ def build(
     fail_when_validation_error_occurs: bool = False,
     validation_errors_file_name: Optional[str] = None,
 ) -> Tuple[QbCube, List[ValidationError]]:
+    """TODO : let's hope we see this"""
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
         config_path, csv_path
     )
