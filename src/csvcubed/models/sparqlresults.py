@@ -264,6 +264,16 @@ class QubeComponentsResult:
     num_components: int
 
 
+@dataclass
+class ResourceURILabelResult:
+    """
+    Model to represent a resource attribute's URI and label.
+    """
+
+    resource_uri: str
+    resource_label: str
+
+
 def map_catalog_metadata_results(
     sparql_results: List[ResultRow],
 ) -> List[CatalogMetadataResult]:
@@ -628,6 +638,22 @@ def map_is_pivoted_shape_for_measures_in_data_set(
         )
 
     return [map_row(row.asdict()) for row in sparql_results]
+
+
+def map_labels_for_resource_uris(
+    sparql_results: List[ResultRow],
+) -> Dict[str, str]:
+    """
+    Maps resource value uris to labels
+    """
+
+    results: Dict[str, str] = {}
+    for row in sparql_results:
+        if str(row["resourceValUri"]) in results:
+            raise KeyError("Duplicate URIs or multiple labels for URI in CSV-W")
+        else:
+            results[str(row["resourceValUri"])] = str(row["resourceLabel"])
+    return results
 
 
 def map_column_definition_results(

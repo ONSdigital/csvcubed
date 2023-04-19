@@ -18,10 +18,7 @@ from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
-from csvcubed.models.cube.qb.components.codelist import (
-    NewQbCodeList,
-    NewQbCodeListInCsvW,
-)
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension, QbDimension
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
@@ -132,23 +129,6 @@ class QbWriter(WriterBase):
 
                 code_list_writer = self._get_writer_for_code_list(code_list)
                 code_list_writer.write(output_folder)
-            elif isinstance(code_list, NewQbCodeListInCsvW):
-                # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
-                _logger.debug(
-                    "Copying legacy code list %s (with dependent files) to '%s' directory.",
-                    code_list,
-                    output_folder,
-                )
-
-                dependent_files = get_dependent_local_files(
-                    code_list.schema_metadata_file_path
-                )
-                files_relative_to = code_list.schema_metadata_file_path.parent
-                copy_files_to_directory_with_structure(
-                    [code_list.schema_metadata_file_path] + list(dependent_files),
-                    files_relative_to,
-                    output_folder,
-                )
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvw_column_definition(c) for c in self.cube.columns]
@@ -166,8 +146,7 @@ class QbWriter(WriterBase):
         columns = []
         for col in self.cube.get_columns_of_dsd_type(NewQbDimension):
             if col.structural_definition.code_list is not None and isinstance(
-                col.structural_definition.code_list,
-                (NewQbCodeList, NewQbCodeListInCsvW),
+                col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
 
@@ -184,21 +163,6 @@ class QbWriter(WriterBase):
                     {
                         "url": f"{code_list.metadata.uri_safe_identifier}.csv",
                         "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
-                        "suppressOutput": True,
-                    }
-                )
-            elif isinstance(code_list, NewQbCodeListInCsvW):
-                _logger.debug(
-                    "Referencing legacy dataset-local code list %s with assumed table schema.",
-                    code_list,
-                )
-
-                tables.append(
-                    {
-                        "url": code_list.csv_file_relative_path_or_uri,
-                        # n.b. the below tableSchema works for *both* standard and composite legacy code lists
-                        # due to the `notation` column supporting both `Notation` *and* `URI` as column titles.
-                        "tableSchema": "https://gss-cogs.github.io/family-schemas/codelist-schema.json",
                         "suppressOutput": True,
                     }
                 )
@@ -224,25 +188,6 @@ class QbWriter(WriterBase):
                         "reference": {
                             "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
                             "columnReference": "uri_identifier",
-                        },
-                    }
-                )
-            elif isinstance(code_list, NewQbCodeListInCsvW):
-                _logger.debug(
-                    "Configuring foreign key constraints for legacy dataset-local code list %s",
-                    code_list,
-                )
-
-                foreign_keys.append(
-                    {
-                        "columnReference": csvw_column_name_safe(
-                            col.uri_safe_identifier
-                        ),
-                        "reference": {
-                            "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": "notation",
-                            # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key
-                            # for their primary key. External users cannot create NewQbCodeListInCsvW.
                         },
                     }
                 )

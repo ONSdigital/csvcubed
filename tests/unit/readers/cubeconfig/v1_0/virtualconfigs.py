@@ -210,6 +210,17 @@ class VirtualConfigurations:
     }
     """
 
+    ATTRIBUTE_EXISTING_CELL_URI_TEMPLATE = {
+        "type": "attribute",
+        "cell_uri_template": "http://example.org/status/{+existing_attribute}",
+        "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+    }
+
+    ATTRIBUTE_NEW_CELL_URI_TEMPLATE = {
+        "type": "attribute",
+        "cell_uri_template": "http://example.org/status/{+existing_attribute}",
+    }
+
     MEASURE_NEW = {"type": "measures", "values": True}
     """
     Configuration for a new measure

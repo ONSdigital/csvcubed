@@ -7,17 +7,16 @@ Represent code lists in an RDF Data Cube.
 from abc import ABC
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
+from typing import Dict, Generic, List, Optional, Set, TypeVar
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validatedmodel import ValidationFunction, Validations
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import (
     ReservedUriValueError,
     ValidateModelPropertiesError,
     ValidationError,
 )
-from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
@@ -43,68 +42,6 @@ class ExistingQbCodeList(QbCodeList):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {"concept_scheme_uri": v.uri}
-
-
-@dataclass
-class NewQbCodeListInCsvW(QbCodeList):
-    """
-    Contains the reference to an existing skos:ConceptScheme defined in a CSV-W.
-    """
-
-    schema_metadata_file_path: Path
-    csv_file_relative_path_or_uri: str = field(init=False, repr=False)
-    concept_scheme_uri: str = field(init=False, repr=False)
-    concept_template_uri: str = field(init=False, repr=False)
-
-    def __post_init__(self):
-        try:
-            (
-                csv_url,
-                cs_uri,
-                concept_template_uri,
-            ) = extract_code_list_concept_scheme_info(self.schema_metadata_file_path)
-            self.csv_file_relative_path_or_uri = csv_url
-            self.concept_scheme_uri = cs_uri
-            self.concept_template_uri = concept_template_uri
-        except Exception:
-            # Validation errors will be highlighted later in custom validation function.
-            self.csv_file_relative_path_or_uri = None  # type: ignore
-            self.concept_scheme_uri = None  # type: ignore
-            self.concept_template_uri = None  # type: ignore
-
-    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
-        return Validations(
-            individual_property_validations={
-                "schema_metadata_file_path": v.file,
-                "csv_file_relative_path_or_uri": v.string,
-                "concept_scheme_uri": v.uri,
-                "concept_template_uri": v.string,
-            },
-            whole_object_validations=[self._validation_csvw_sufficient_information],
-        )
-
-    @staticmethod
-    def _validation_csvw_sufficient_information(
-        value: "NewQbCodeListInCsvW", property_path: List[str]
-    ):
-        errors: List[ValidateModelPropertiesError] = []
-
-        csv_path = value.csv_file_relative_path_or_uri
-        cs_uri = value.concept_scheme_uri
-        c_template_uri = value.concept_template_uri
-        if csv_path is None or cs_uri is None or c_template_uri is None:
-            schema_metadata_file_path = value.schema_metadata_file_path
-            extract_code_list_concept_scheme_info(schema_metadata_file_path)
-
-            errors.append(
-                ValidateModelPropertiesError(
-                    "'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
-                    property_path,
-                    value,
-                )
-            )
-
-        return errors
 
 
 TNewQbConcept = TypeVar("TNewQbConcept", bound=NewQbConcept, covariant=True)
