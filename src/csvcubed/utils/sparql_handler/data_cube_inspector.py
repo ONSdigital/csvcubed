@@ -280,7 +280,7 @@ class DataCubeInspector:
 
         results_dict = {}
         for component in qube_components:
-            if component.property_type == "Measure":
+            if component.property_type == ComponentPropertyType.Measure.value:
                 results_dict[component.property] = component.property_label
 
         return results_dict

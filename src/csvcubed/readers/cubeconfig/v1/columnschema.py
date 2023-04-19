@@ -18,7 +18,6 @@ from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.cli.build_code_list import get_code_list_versioned_deserialiser
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
-from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
@@ -45,17 +44,11 @@ from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
-from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
     LATEST_V1_CODELIST_SCHEMA_URL,
 )
-from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.file import code_list_config_json_exists
 from csvcubed.utils.uri import csvw_column_name_safe, looks_like_uri
-from csvcubed.utils.validators.schema import (
-    map_to_internal_validation_errors,
-    validate_dict_against_schema,
-)
 
 _logger = logging.getLogger(__name__)
 
@@ -265,23 +258,20 @@ class ExistingAttributeResource(SchemaBaseClass):
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
     ) -> ExistingQbAttribute:
-        if self.cell_uri_template and isinstance(self.values, bool):
-            _logger.warning(
-                "Attribute values will not be created as `cell_uri_template` is set"
-            )
-            return ExistingQbAttribute(
-                attribute_uri=self.from_existing,
-                is_required=self.required,
-                observed_value_col_title=self.describes_observations,
-            )
-        elif (
-            self.cell_uri_template
-            and not isinstance(self.values, bool)
-            and len(self.values) > 0
-        ):
-            raise ValueError(
-                "Conflict between `cell_uri_template` and explicit attribute values provided"
-            )
+        if self.cell_uri_template:
+            if isinstance(self.values, bool):
+                _logger.warning(
+                    "Attribute values will not be created as `cell_uri_template` is set"
+                )
+                return ExistingQbAttribute(
+                    attribute_uri=self.from_existing,
+                    is_required=self.required,
+                    observed_value_col_title=self.describes_observations,
+                )
+            elif not isinstance(self.values, bool):
+                raise ValueError(
+                    "Conflict between `cell_uri_template` and list of attribute values provided"
+                )
         else:
             return ExistingQbAttribute(
                 attribute_uri=self.from_existing,
@@ -331,26 +321,23 @@ class NewAttributeResource(SchemaBaseClass):
     ) -> NewQbAttribute:
         label = self.label or column_title
 
-        if self.cell_uri_template and isinstance(self.values, bool):
-            _logger.warning(
-                "Attribute values will not be created as `cell_uri_template` is set"
-            )
-            return NewQbAttribute(
-                label=label,
-                description=self.description,
-                parent_attribute_uri=self.from_existing,
-                source_uri=self.definition_uri,
-                is_required=self.required,
-                observed_value_col_title=self.describes_observations,
-            )
-        elif (
-            self.cell_uri_template
-            and not isinstance(self.values, bool)
-            and len(self.values) > 0
-        ):
-            raise ValueError(
-                "Conflict between `cell_uri_template` and explicit attribute values provided"
-            )
+        if self.cell_uri_template:
+            if isinstance(self.values, bool):
+                _logger.warning(
+                    "Attribute values will not be created as `cell_uri_template` is set"
+                )
+                return NewQbAttribute(
+                    label=label,
+                    description=self.description,
+                    parent_attribute_uri=self.from_existing,
+                    source_uri=self.definition_uri,
+                    is_required=self.required,
+                    observed_value_col_title=self.describes_observations,
+                )
+            elif not isinstance(self.values, bool):
+                raise ValueError(
+                    "Conflict between `cell_uri_template` and list of attribute values provided"
+                )
         else:
             return NewQbAttribute(
                 label=label,

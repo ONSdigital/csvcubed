@@ -649,21 +649,10 @@ def map_labels_for_resource_uris(
 
     results: Dict[str, str] = {}
     for row in sparql_results:
-        new_uri = str(row["resourceValUri"])
-        new_label = str(row["resourceLabel"])
-        existing_label = results.get(new_uri)
-        if existing_label is not None:
-            if new_label == existing_label:
-                # duplicate URI + label
-                raise KeyError(f"Duplicate URIs {new_uri} in CSV-W")
-            else:
-                # same URI, multiple labels
-                raise KeyError(
-                    f"Multiple Labels {new_label} and {existing_label} for URI '{new_uri}'"
-                )
-            # raise KeyError("Duplicate URIs or multiple labels for URI in CSV-W")
+        if str(row["resourceValUri"]) in results:
+            raise KeyError(f"Duplicate URIs or multiple labels for URI in CSV-W")
         else:
-            results[new_uri] = new_label
+            results[str(row["resourceValUri"])] = str(row["resourceLabel"])
     return results
 
 
