@@ -268,10 +268,9 @@ class ExistingAttributeResource(SchemaBaseClass):
                     is_required=self.required,
                     observed_value_col_title=self.describes_observations,
                 )
-            elif not isinstance(self.values, bool):
-                raise ValueError(
-                    "Conflict between `cell_uri_template` and list of attribute values provided"
-                )
+            raise ValueError(
+                "Conflict between `cell_uri_template` and list of attribute values provided"
+            )
         else:
             return ExistingQbAttribute(
                 attribute_uri=self.from_existing,
@@ -334,10 +333,10 @@ class NewAttributeResource(SchemaBaseClass):
                     is_required=self.required,
                     observed_value_col_title=self.describes_observations,
                 )
-            elif not isinstance(self.values, bool):
-                raise ValueError(
-                    "Conflict between `cell_uri_template` and list of attribute values provided"
-                )
+
+            raise ValueError(
+                "Conflict between `cell_uri_template` and list of attribute values provided"
+            )
         else:
             return NewQbAttribute(
                 label=label,
