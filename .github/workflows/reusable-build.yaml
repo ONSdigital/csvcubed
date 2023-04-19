@@ -21,6 +21,7 @@ jobs:
         # uses a version identifier derived from the Git hash for this commit.
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: |
+          git config --global --add safe.directory .
           revision="$(git rev-parse HEAD | tr \'[:lower:]\' \'[:upper:]\')"
           decimal_rev=$(echo "obase=10; ibase=16; $revision" | bc)
           poetry version "0.1.0-dev$decimal_rev"
