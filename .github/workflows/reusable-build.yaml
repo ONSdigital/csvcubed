@@ -34,6 +34,11 @@ jobs:
           python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
           python3 -m mkdocs build
 
+      - name: Generate Inspect API Docs
+        run: |
+          sphinx-apidoc -o source src/csvcubed/ --ext-autodoc
+          make html
+
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
         with:
@@ -41,3 +46,4 @@ jobs:
           path: |
             **/dist/*.whl
             **/external-docs/site/**/*
+            **/build/html/**
