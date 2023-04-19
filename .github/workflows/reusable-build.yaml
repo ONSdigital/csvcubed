@@ -36,8 +36,8 @@ jobs:
 
       - name: Generate Inspect API Docs
         run: |
-          sphinx-apidoc -o source src/csvcubed/ --ext-autodoc
-          make html
+          python3 -m sphinx-apidoc -o source src/csvcubed/ --ext-autodoc
+          python3 -m make html
 
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
