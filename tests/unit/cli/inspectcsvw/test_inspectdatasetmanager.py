@@ -7,7 +7,7 @@ from pandas import DataFrame
 from pandas.testing import assert_frame_equal
 from treelib import Tree
 
-from csvcubed.cli.inspect.inspectdatasetmanager import (
+from csvcubed.cli.inspectcsvw.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,

@@ -12,8 +12,8 @@ import click
 from csvcubed import __version__
 from csvcubed.cli.buildcsvw.build import build_csvw
 from csvcubed.cli.codelist.build_code_list import build_code_list
-from csvcubed.cli.csvw.pull import pull
-from csvcubed.cli.inspect.inspect import inspect
+from csvcubed.cli.inspectcsvw.inspect import inspect
+from csvcubed.cli.pullcsvw.pull import pull
 from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.utils.log import log_exception, start_logging
 

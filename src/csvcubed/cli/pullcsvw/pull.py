@@ -101,7 +101,12 @@ def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
     _logger.debug("Locating dependencies for '%s'", metadata_file_url)
     table_group = _get_table_group_for_metadata_file(metadata_file_url)
 
-    base_url = _get_context_base_url(table_group.get("@context")) or metadata_file_url
+    base_url = _get_context_base_url(table_group.get("@context"))
+    if base_url is None:
+        base_url = metadata_file_url
+    elif not looks_like_uri(base_url):
+        base_url = urljoin(metadata_file_url, base_url)
+    _logger.debug("Absolute base URL for document: '%s'", base_url)
 
     dependencies = set(_get_csv_w_spec_dependencies(table_group))
     dependencies |= _get_rdf_file_dependencies(metadata_file_url)

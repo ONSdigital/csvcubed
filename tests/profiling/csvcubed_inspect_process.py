@@ -14,7 +14,7 @@ from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
 @profile()
 def main(csvw_path: Path):
-    from csvcubed.cli.inspect.inspect import inspect
+    from csvcubed.cli.inspectcsvw.inspect import inspect
 
     inspect(csvw_path)
 

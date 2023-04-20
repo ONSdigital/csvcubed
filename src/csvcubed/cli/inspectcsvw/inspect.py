@@ -10,8 +10,8 @@ from os import linesep
 from pathlib import Path
 from typing import Tuple
 
-from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
-from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
+from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector

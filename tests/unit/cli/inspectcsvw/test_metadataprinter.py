@@ -3,7 +3,7 @@ from typing import Dict, List
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape

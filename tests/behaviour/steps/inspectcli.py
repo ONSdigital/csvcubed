@@ -4,8 +4,8 @@ from pathlib import Path
 from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
-from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
-from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
+from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
