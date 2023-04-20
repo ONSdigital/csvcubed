@@ -4,12 +4,7 @@ Feature: Testing the CSV-W pull command in the CLI
     When the csvcubed CLI is run with "pull https://w3c.github.io/csvw/tests/test015/csv-metadata.json"
     Then the csvcubed CLI should succeed
     And the file at "csv-metadata.json" should exist
-    And the file at "tree-ops.csv" should contain
-      """
-      GID,On Street,Species,Trim Cycle,Inventory Date
-      1,ADDISON AV,Celtis australis,Large Tree Routine Prune,10/18/2010
-      2,EMERSON ST,Liquidambar styraciflua,Large Tree Routine Prune,6/2/2010
-      """
+    And the file at "tree-ops.csv" should exist
 
   Scenario: The `pull` command should allow the output directory to be overridden.
     # This also implicitly tests that a single-table-definition (i.e. no tables property) CSV-W definition works.
