@@ -10,7 +10,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from pandas.testing import assert_frame_equal
 
-from csvcubed.cli.build.build import build as cli_build
+from csvcubed.cli.build.build import build_csvw as cli_build
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.utils.cache import session
 from tests.helpers.schema_mocking import mock_json_schemas

@@ -10,7 +10,7 @@ from pathlib import Path
 import click
 
 from csvcubed import __version__
-from csvcubed.cli.build.build import build
+from csvcubed.cli.build.build import build_csvw
 from csvcubed.cli.codelist.build_code_list import build_code_list
 from csvcubed.cli.csvw.pull import pull
 from csvcubed.cli.inspect.inspect import inspect
@@ -100,7 +100,7 @@ def build_command(
 
     _init_logging(log_level)
     try:
-        build(
+        build_csvw(
             config_path=config,
             output_directory=out,
             csv_path=csv,
