@@ -25,7 +25,7 @@ _logger = logging.getLogger(__name__)
 def build_csvw(
     csv_path: Path,
     config_path: Optional[Path] = None,
-    output_directory: Path = Path("..", "out").resolve(),
+    output_directory: Path = Path(".", "out").resolve(),
     fail_when_validation_error_occurs: bool = False,
     validation_errors_file_name: Optional[str] = None,
 ) -> Tuple[QbCube, List[ValidationError]]:
