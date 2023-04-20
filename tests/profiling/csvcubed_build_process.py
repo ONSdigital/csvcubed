@@ -10,7 +10,7 @@ from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
 @profile
 def main(csv_path: Path, qube_config_json_path: Path, tmp_dir: Path):
-    from csvcubed.cli.build import build
+    from csvcubed.cli.build.build import build
 
     build(
         csv_path=csv_path,

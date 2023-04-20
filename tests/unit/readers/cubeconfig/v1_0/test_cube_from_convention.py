@@ -7,7 +7,7 @@ from typing import List
 import pandas as pd
 import pytest
 
-from csvcubed.cli.build import build as cli_build
+from csvcubed.cli.build.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
 from csvcubed.models.cube.columns import SuppressedCsvColumn

@@ -16,7 +16,7 @@ from typing import List, Optional, Tuple, TypeVar, Union
 import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from csvcubed.cli.build_code_list import get_code_list_versioned_deserialiser
+from csvcubed.cli.codelist.build_code_list import get_code_list_versioned_deserialiser
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components.attribute import (
