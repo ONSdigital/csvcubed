@@ -13,7 +13,7 @@ from csvcubed.models.inspectdataframeresults import (
 )
 from csvcubed.models.sparqlresults import CodelistsResult
 from tests.helpers.inspectors_cache import get_data_cube_inspector
-from tests.unit.cli.inspect.test_inspectdatasetmanager import (
+from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
     expected_dataframe_pivoted_single_measure,
 )

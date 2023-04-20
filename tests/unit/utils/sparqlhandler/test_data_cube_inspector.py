@@ -16,7 +16,9 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
-from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
+from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
+    get_arguments_qb_dataset,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
