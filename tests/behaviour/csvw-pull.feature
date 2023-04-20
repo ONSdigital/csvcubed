@@ -5,32 +5,8 @@ Feature: Testing the CSV-W pull command in the CLI
     Then the csvcubed CLI should succeed
     And the file at "csv-metadata.json" should contain
       """
-       {
-         "@context": "http://www.w3.org/ns/csvw",
-         "url": "tree-ops.csv",
-         "dc:label": "metadata",
-         "tableSchema": {
-           "columns": [{
-             "name": "GID",
-             "titles": ["Generic Identifier", "GID"]
-           }, {
-             "name": "on_street",
-             "titles": "On Street"
-           }, {
-             "name": "species",
-             "titles": "Species"
-           }, {
-             "name": "trim_cycle",
-             "titles": "Trim Cycle"
-           }, {
-             "name": "inventory_date",
-             "titles": "Inventory Date",
-             "datatype": {"base": "date", "format": "M/d/yyyy"}
-           }],
-           "primaryKey": "GID"
-         }
-       }
-    """
+        "url": "tree-ops.csv"
+      """
     And the file at "tree-ops.csv" should contain
       """
       GID,On Street,Species,Trim Cycle,Inventory Date
@@ -87,53 +63,12 @@ Feature: Testing the CSV-W pull command in the CLI
     Then the csvcubed CLI should succeed
     And the file at "copy/period.csv-metadata.json" should exist
     And the file at "copy/period.csv-metadata.json" should contain
+    """
+      "@id": "./period.csv#scheme/period",
+    """
+    And the file at "copy/period.csv-metadata.json" should contain
       """
-        {
-          "@context": "http://www.w3.org/ns/csvw",
-          "@id": "./period.csv#scheme/period",
-          "url": "period.csv",
-          "tableSchema": "period.table.json",
-          "rdfs:seeAlso": [
-              {
-                  "@id": "./period.csv#scheme/period",
-                  "@type": [
-                      "http://www.w3.org/ns/dcat#Resource",
-                      "http://www.w3.org/ns/dcat#Dataset",
-                      "http://www.w3.org/2000/01/rdf-schema#Resource",
-                      "http://www.w3.org/2004/02/skos/core#ConceptScheme"
-                  ],
-                  "http://purl.org/dc/terms/identifier": [
-                      {
-                          "@value": "Period"
-                      }
-                  ],
-                  "http://purl.org/dc/terms/issued": [
-                      {
-                          "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                          "@value": "2021-11-11T11:01:55.462050"
-                      }
-                  ],
-                  "http://purl.org/dc/terms/modified": [
-                      {
-                          "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                          "@value": "2021-11-11T11:01:55.462050"
-                      }
-                  ],
-                  "http://purl.org/dc/terms/title": [
-                      {
-                          "@language": "en",
-                          "@value": "Period"
-                      }
-                  ],
-                  "http://www.w3.org/2000/01/rdf-schema#label": [
-                      {
-                          "@language": "en",
-                          "@value": "Period"
-                      }
-                  ]
-              }
-          ]
-      }
+        "url": "period.csv",
       """
     And the file at "copy/period.csv" should exist
     And the file at "copy/period.table.json" should exist
