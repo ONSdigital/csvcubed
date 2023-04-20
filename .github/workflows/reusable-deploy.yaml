@@ -48,6 +48,8 @@ jobs:
 
           cp -r ../build/html/* inspect-api
 
+          cp -r ../build/doctrees/* inspect-api
+
           touch .nojekyll
 
           git add *

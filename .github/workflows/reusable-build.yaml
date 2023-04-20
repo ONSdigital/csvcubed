@@ -48,3 +48,4 @@ jobs:
             **/dist/*.whl
             **/external-docs/site/**/*
             **/build/html/**/*
+            **/build/doctrees/**/*
