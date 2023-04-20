@@ -3,7 +3,7 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
-from csvcubed.cli.build.build import build_csvw as cli_build
+from csvcubed.cli.buildcsvw.build import build_csvw as cli_build
 from csvcubed.models.cube.cube import Cube
 from tests.unit.test_baseunit import get_test_cases_dir
 

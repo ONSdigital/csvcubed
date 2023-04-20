@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from memory_profiler import profile
 
-from csvcubed.cli.build.build import build_csvw
+from csvcubed.cli.buildcsvw.build import build_csvw
 from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
 # import the generate_maximaly_complex_scvfile function the create a csv file after that wun the build command in a temp directory(feed that directory to the inpect command bellow) then the inspect command will function.

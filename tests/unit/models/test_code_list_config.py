@@ -4,7 +4,7 @@ from typing import Dict, List
 
 import pandas as pd
 
-from csvcubed.cli.build.build import build_csvw as cli_build
+from csvcubed.cli.buildcsvw.build import build_csvw as cli_build
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,
