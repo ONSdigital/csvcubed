@@ -36,8 +36,7 @@ jobs:
 
       - name: Generate Inspect API Docs
         run: |
-          poetry shell
-          python3 -m sphinx.ext.apidoc -o source src/csvcubed/ --ext-autodoc
+          poetry run python3 -m sphinx.ext.apidoc -o source src/csvcubed/ --ext-autodoc
           make html
 
       - name: Archive package and documentation
