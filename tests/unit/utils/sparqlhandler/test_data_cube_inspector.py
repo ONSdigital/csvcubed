@@ -1029,14 +1029,14 @@ def test_load_pandas_df_from_standard_shape_csv_url():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, True)
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "string"
     assert dataframe["Dim2"].dtype == "string"
     assert dataframe["Dim1"].dtype == "string"
-    assert dataframe["Attr Resource"].dtype == "string"
-    assert dataframe["Attr Literal"].dtype == "Int64"
+    assert dataframe["AttrResource"].dtype == "string"
+    assert dataframe["AttrLiteral"].dtype == "Int64"
     assert dataframe["Units"].dtype == "string"
     assert dataframe["Measures"].dtype == "string"
     assert dataframe["Obs"].dtype == "short"
@@ -1058,7 +1058,7 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, False)
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "string"

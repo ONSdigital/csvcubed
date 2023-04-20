@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 import pandas as pd
 import uritemplate
 from csvcubedmodels.rdf.namespaces import XSD
+from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.inputs import pandas_input_to_columnar_str
@@ -315,18 +316,69 @@ class DataCubeInspector:
             primary_catalog_metadata.dataset_uri
         ).csv_url
 
-    def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
+    def get_dataframe(
+        self, csv_url: str, dereference_uris: bool = True
+    ) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
         """
         cols = self.get_column_component_info(csv_url)
-        dict_of_types = _get_data_types_of_all_cols(cols)
+        dict_of_types = _get_data_types_of_all_cols(cols, True)
         absolute_csv_url = file_uri_to_path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
-        return read_csv(absolute_csv_url, dtype=dict_of_types)
+
+        if dereference_uris:
+            (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
+            for col in cols:
+                if col.column_type.value == "Attribute":
+                    attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
+                    value_url = col.column_definition.value_url
+                    col_data = df[col.column_definition.title]
+                    col_values = col_data.values
+                    col_categories = col_values.categories
+                    col_uris = [
+                        uritemplate.expand(value_url, {col.column_definition.name: val})
+                        for val in col_values
+                    ]
+                    label = attribute_vals[col.column_definition.title][col_uris[0]]
+                    pass
+                elif col.column_type.value == "Measures":
+                    measures = self.get_measure_uris_and_labels(csv_url)
+                    value_url = col.column_definition.value_url
+                    col_data = df[col.column_definition.title]
+                    col_values = col_data.values
+                    col_categories = col_values.categories
+                    col_uris = [
+                        uritemplate.expand(value_url, {col.column_definition.name: val})
+                        for val in col_values
+                    ]
+                elif col.column_type.value == "Units":
+                    units = self.get_units()
+                    value_url = col.column_definition.value_url
+                    col_data = df[col.column_definition.title]
+                    col_values = col_data.values
+                    col_categories = col_values.categories
+                    col_uris = [
+                        uritemplate.expand(value_url, {col.column_definition.name: val})
+                        for val in col_values
+                    ]
+                elif col.column_type.value == "Dimension":
+                    code_lists = self.get_code_lists_and_cols(csv_url)
+                    value_url = col.column_definition.value_url
+                    col_data = df[col.column_definition.title]
+                    col_values = col_data.values
+                    col_categories = col_values.categories
+                    col_uris = [
+                        uritemplate.expand(value_url, {col.column_definition.name: val})
+                        for val in col_values
+                    ]
+
+            return df, _errors
+        else:
+            return read_csv(absolute_csv_url, dtype=dict_of_types)
 
     def _map_column_name_to_title_to_attribute_value_url(
         self, csv_url: str
@@ -419,6 +471,40 @@ class DataCubeInspector:
         return map_col_title_to_attr_val_uris_and_labels
 
 
+def _overwrite_labels_for_columns(
+    dataframe: pd.DataFrame,
+    affected_columns: List[ColumnComponentInfo],
+    map_label_to_new_value: Dict[str, str],
+    raise_missing_values_exceptions: bool,
+) -> None:
+    if dataframe.empty:
+        return
+
+    for column in affected_columns:
+        column_data = dataframe[column.column_definition.title]
+        assert column_data is not None
+        column_values = column_data.values
+        assert isinstance(column_values, Categorical)
+        new_category_labels: List[str] = []
+        for c in column_values.categories:
+            c = str(c)
+            new_category_label = map_label_to_new_value.get(c)
+            if new_category_label is None:
+                if raise_missing_values_exceptions:
+                    raise ValueError(
+                        f"Unable to find new category label for term '{c}' in column '{column.column_definition.title}'."
+                    )
+                else:
+                    # Can't raise exception here, just leave the value as-is.
+                    new_category_labels.append(c)
+            else:
+                new_category_labels.append(new_category_label)
+
+        dataframe[column.column_definition.title] = column_values.rename_categories(
+            new_category_labels
+        )
+
+
 def _get_column_type_and_component(
     column: ColumnDefinition,
     qube_components: List[QubeComponentResult],
@@ -478,7 +564,9 @@ def _figure_out_end_user_column_type(
         )
 
 
-def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
+def _get_data_types_of_all_cols(
+    cols: List[ColumnComponentInfo], dereference_uris: bool = False
+) -> Dict:
     """ """
     dict_of_types = {}
     for col in cols:
@@ -504,6 +592,9 @@ def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
                     f"Unhandled data type '{col.column_definition.data_type}' in column '{col.column_definition.title}'."
                 )
         else:
-            dict_of_types[col.column_definition.title] = "string"
+            if dereference_uris:
+                dict_of_types[col.column_definition.title] = "category"
+            else:
+                dict_of_types[col.column_definition.title] = "string"
 
     return dict_of_types

@@ -28,14 +28,14 @@
                         "required": true
                     },
                     {
-                        "titles": "Attr Resource",
+                        "titles": "AttrResource",
                         "name": "attr_resource",
                         "propertyUrl": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource",
                         "valueUrl": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-resource/{+attr_resource}",
                         "required": false
                     },
                     {
-                        "titles": "Attr Literal",
+                        "titles": "AttrLiteral",
                         "name": "attr_literal",
                         "propertyUrl": "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv#attribute/an-attribute-literal",
                         "datatype": "nonPositiveInteger",

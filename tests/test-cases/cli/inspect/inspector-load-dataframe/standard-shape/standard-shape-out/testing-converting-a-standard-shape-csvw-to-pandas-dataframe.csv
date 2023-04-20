@@ -1,2 +1,2 @@
-Dim1,Dim2,Dim3,Attr Resource,Attr Literal,Units,Measures,Obs
+Dim1,Dim2,Dim3,AttrResource,AttrLiteral,Units,Measures,Obs
 something,something-else,2023,final,-90,some-unit,some-measure,127
