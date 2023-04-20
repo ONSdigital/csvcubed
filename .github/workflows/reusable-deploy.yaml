@@ -44,6 +44,8 @@ jobs:
 
           cp -r ../external-docs/site/* external
 
+          git rm -rf inspect-api --ignore-unmatch
+
           mkdir inspect-api
 
           cp -r ../build/html/* inspect-api
