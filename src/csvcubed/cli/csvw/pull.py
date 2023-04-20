@@ -75,10 +75,7 @@ def _get_context_base_url(context: Union[Dict, List, None]) -> Optional[str]:
     if context is None:
         _logger.debug("No CSV-W context so no explicit document base URL")
         return None
-    elif not isinstance(context, list):
-        _logger.debug("Context does not contain explicit document base URL")
-        return None
-    elif len(context) != 2:
+    elif not (isinstance(context, list) and len(context) == 2):
         _logger.debug("Context does not contain explicit document base URL")
         return None
 
@@ -101,7 +98,7 @@ def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
     :return: A set containing all the URLs referenced by the CSV-W converted to absolute form.
     """
 
-    _logger.debug(f"Locating dependencies for '%s'", metadata_file_url)
+    _logger.debug("Locating dependencies for '%s'", metadata_file_url)
     table_group = _get_table_group_for_metadata_file(metadata_file_url)
 
     base_url = _get_context_base_url(table_group.get("@context")) or metadata_file_url
