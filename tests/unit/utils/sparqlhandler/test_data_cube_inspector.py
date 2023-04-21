@@ -1023,7 +1023,35 @@ def test_load_pandas_df_from_standard_shape_csv_url():
         _test_case_base_dir
         / "inspector-load-dataframe"
         / "standard-shape"
-        / "out"
+        / "standard-shape-out"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(
+        csv_url, dereference_uris=False
+    )
+
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe["Dim1"].dtype == "category"
+    assert dataframe["Dim2"].dtype == "category"
+    assert dataframe["Dim1"].dtype == "category"
+    assert dataframe["AttrResource"].dtype == "category"
+    assert dataframe["AttrLiteral"].dtype == "Int64"
+    assert dataframe["Units"].dtype == "category"
+    assert dataframe["Measures"].dtype == "category"
+    assert dataframe["Obs"].dtype == "short"
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_standard_shape_with_dereferencing():
+    """ """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
         / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
@@ -1033,15 +1061,41 @@ def test_load_pandas_df_from_standard_shape_csv_url():
         csv_url, dereference_uris=True
     )
 
-    assert isinstance(dataframe, pd.DataFrame)
-    assert dataframe["Dim1"].dtype == "string"
-    assert dataframe["Dim2"].dtype == "string"
-    assert dataframe["Dim1"].dtype == "string"
-    assert dataframe["AttrResource"].dtype == "string"
-    assert dataframe["AttrLiteral"].dtype == "Int64"
-    assert dataframe["Units"].dtype == "string"
-    assert dataframe["Measures"].dtype == "string"
-    assert dataframe["Obs"].dtype == "short"
+    assert dataframe["Dim1"][0] == "Something 1"
+    assert dataframe["Dim2"][0] == "Something Else 1"
+    assert dataframe["Dim3"][0] == 2021
+    assert dataframe["Measures"][0] == "Some Measure 1"
+    assert dataframe["Obs"][0] == 127
+    assert dataframe["Units"][0] == "Some Unit 1"
+    assert dataframe["AttrLiteral"][0] == -90
+    assert dataframe["AttrResource"][0] == "Final"
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_without_dereferencing():
+    """ """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(
+        csv_url, dereference_uris=False
+    )
+
+    assert dataframe["Dim1"][0] == "something-1"
+    assert dataframe["Dim2"][0] == "something-else-1"
+    assert dataframe["Dim3"][0] == "2021"
+    assert dataframe["Measures"][0] == "some-measure-1"
+    assert dataframe["Obs"][0] == 127
+    assert dataframe["Units"][0] == "some-unit-1"
+    assert dataframe["AttrLiteral"][0] == -90
+    assert dataframe["AttrResource"][0] == "final"
     assert not any(validation_errors)
 
 
@@ -1063,10 +1117,35 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
     dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, False)
 
     assert isinstance(dataframe, pd.DataFrame)
-    assert dataframe["Dim1"].dtype == "string"
+    assert dataframe["Dim1"].dtype == "category"
     # Expecting data type of Obs1 column to be "string" because the data type
     # property has been defined as "time" in the json config file.
     assert dataframe["Obs1"].dtype == "string"
-    assert dataframe["Dim2"].dtype == "string"
+    assert dataframe["Dim2"].dtype == "category"
     assert dataframe["Obs2"].dtype == "bool"
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_from_pivoted_shape_with_dereferencing():
+    """
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a pivoted shape CSVW.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, True)
+
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe["Dim1"][0] == "Value1"
+    assert dataframe["Dim2"][0] == "Value2"
+    assert dataframe["Obs1"][0] == "01:02:03"
+    assert dataframe["Obs2"][0] == True
     assert not any(validation_errors)

@@ -317,6 +317,20 @@ class DataCubeInspector:
             primary_catalog_metadata.dataset_uri
         ).csv_url
 
+    def dereference_uri_for_attribute(
+        self, col: ColumnComponentInfo, value_url: str, csv_url: str, col_categories
+    ):
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
+        new_category_labels = [
+            attribute_vals[col.column_definition.title][uri] for uri in col_uris
+        ]
+
+        return new_category_labels
+
     def get_dataframe(
         self, csv_url: str, dereference_uris: bool = True
     ) -> Tuple[pd.DataFrame, List[ValidationError]]:
@@ -326,7 +340,7 @@ class DataCubeInspector:
         same columns being defined.
         """
         cols = self.get_column_component_info(csv_url)
-        dict_of_types = _get_data_types_of_all_cols(cols, dereference_uris)
+        dict_of_types = _get_data_types_of_all_cols(cols)
         absolute_csv_url = file_uri_to_path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
@@ -340,18 +354,13 @@ class DataCubeInspector:
                 if isinstance(col_values, Categorical):
                     col_categories = col_values.categories
                 if col.column_type.value == "Attribute" and value_url is not None:
-                    col_uris = [
-                        uritemplate.expand(value_url, {col.column_definition.name: cat})
-                        for cat in col_categories
-                    ]
-                    attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-                    new_category_labels = [
-                        attribute_vals[col.column_definition.title][uri]
-                        for uri in col_uris
-                    ]
+                    new_category_labels = self.dereference_uri_for_attribute(
+                        col, value_url, csv_url, col_categories
+                    )
                     df[col.column_definition.title] = col_values.rename_categories(
                         new_category_labels
                     )
+
                 elif col.column_type.value == "Measures":
                     col_uris = [
                         uritemplate.expand(value_url, {col.column_definition.name: cat})
@@ -580,9 +589,7 @@ def _figure_out_end_user_column_type(
         )
 
 
-def _get_data_types_of_all_cols(
-    cols: List[ColumnComponentInfo], dereference_uris: bool = False
-) -> Dict:
+def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
     """ """
     dict_of_types = {}
     for col in cols:
@@ -608,9 +615,6 @@ def _get_data_types_of_all_cols(
                     f"Unhandled data type '{col.column_definition.data_type}' in column '{col.column_definition.title}'."
                 )
         else:
-            if dereference_uris:
-                dict_of_types[col.column_definition.title] = "category"
-            else:
-                dict_of_types[col.column_definition.title] = "string"
+            dict_of_types[col.column_definition.title] = "category"
 
     return dict_of_types
