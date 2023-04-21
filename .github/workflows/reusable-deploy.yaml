@@ -56,6 +56,10 @@ jobs:
 
           cp -r ../build/doctrees/* inspect-api/doctrees
 
+          mkdir source
+
+          cp -r ../source/* source
+
           touch .nojekyll
 
           git add *
