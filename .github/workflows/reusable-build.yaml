@@ -49,3 +49,4 @@ jobs:
             **/external-docs/site/**/*
             **/build/html/**/*
             **/build/doctrees/**/*
+            **/source/**/*
