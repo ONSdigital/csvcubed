@@ -5,7 +5,7 @@ from behave import Given, When, then
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
-from csvcubed.cli.build_code_list import build_code_list as _build_code_list
+from csvcubed.cli.codelist.build_code_list import build_code_list as _build_code_list
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,

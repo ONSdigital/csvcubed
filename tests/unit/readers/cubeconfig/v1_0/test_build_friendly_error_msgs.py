@@ -5,7 +5,7 @@ from pathlib import Path
 
 import appdirs
 
-from csvcubed.cli.build import _extract_and_validate_cube
+from csvcubed.cli.buildcsvw.build import _extract_and_validate_cube
 from csvcubed.models.cube.cube import (
     ColumnNotFoundInDataError,
     Cube,

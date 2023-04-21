@@ -82,7 +82,6 @@ Feature: Test the csvcubed Command Line Interface.
     Then the csvcubed CLI should succeed
     Then remove test log files
 
-
   Scenario: Test csvcubed inspect code list end-to-end
     Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.csv-metadata.json"
     And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"

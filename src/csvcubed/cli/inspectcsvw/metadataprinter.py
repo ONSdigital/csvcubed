@@ -13,7 +13,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from pandas import DataFrame
 
-from csvcubed.cli.inspect.inspectdatasetmanager import (
+from csvcubed.cli.inspectcsvw.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,

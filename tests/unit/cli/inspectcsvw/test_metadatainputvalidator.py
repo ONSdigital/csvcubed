@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
+from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
 from csvcubed.models.csvwtype import CSVWType
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir

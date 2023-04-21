@@ -13,9 +13,7 @@ from typing import Optional
 import pandas as pd
 
 from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.models.csvcubedexception import (
-    CsvToDataFrameLoadFailedException,
-)
+from csvcubed.models.csvcubedexception import CsvToDataFrameLoadFailedException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (

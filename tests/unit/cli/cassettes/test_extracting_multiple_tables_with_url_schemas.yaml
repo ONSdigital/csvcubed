@@ -1,0 +1,882 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://w3c.github.io/csvw/tests/test034/csv-metadata.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA52QMQ7CMAxFd05RZYZmYGNiY2SADTGEEkqhxFFsE6Dq3XEjgagEEjDGP+/5J80g
+        y9SUrt6qSaaWZlPbWQD2apiCAhzZC0m2UnsiP9E6xpjHcQ6h1A51geeohlmjprVxJZsyeaxT7ToZ
+        qDNixzdylAGHurtRwjnno94aMtoH2FnEChzm4kurH+ii2NuTeSEwDXrMAcE9IGTvgwRzJs9dbwps
+        JWql48cC8hbjqpuhnyr0qb9KoHUVhFEA+aOv9/agtPad+sB/qHvQU70etHe1ZRmmJwIAAA==
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '0'
+      Cache-Control:
+      - max-age=600
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '223'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 20 Apr 2023 14:53:35 GMT
+      ETag:
+      - W/"6362d785-227"
+      Last-Modified:
+      - Wed, 02 Nov 2022 20:48:05 GMT
+      Server:
+      - GitHub.com
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Fastly-Request-ID:
+      - 893efb3be45f5769e9f477d4ce10115aef9218a1
+      X-GitHub-Request-Id:
+      - C52C:F92D:2528AA1:2662207:644151ED
+      X-Served-By:
+      - cache-lon420109-LON
+      X-Timer:
+      - S1682002415.294710,VS0,VE113
+      expires:
+      - Thu, 20 Apr 2023 15:03:35 GMT
+      permissions-policy:
+      - interest-cohort=()
+      x-proxy-cache:
+      - MISS
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/ld+json, application/json;q=0.9, */*;q=0.1
+      Connection:
+      - close
+      Host:
+      - w3c.github.io
+      User-Agent:
+      - rdflib-6.2.0 (https://rdflib.github.io/; eikeon@eikeon.com)
+    method: GET
+    uri: https://w3c.github.io/csvw/tests/test034/csv-metadata.json
+  response:
+    body:
+      string: "{\n  \"@type\": \"TableGroup\",\n  \"@context\": [\"http://www.w3.org/ns/csvw\",
+        {\"@language\": \"en\"}],\n  \"tables\": [{\n    \"url\": \"gov.uk/data/professions.csv\",\n
+        \   \"tableSchema\": \"gov.uk/schema/professions.json\",\n    \"suppressOutput\":
+        true\n  }, {\n    \"url\": \"gov.uk/data/organizations.csv\",\n    \"tableSchema\":
+        \"gov.uk/schema/organizations.json\",\n    \"suppressOutput\": true\n  },
+        {\n    \"url\": \"senior-roles.csv\",\n    \"tableSchema\": \"gov.uk/schema/senior-roles.json\"\n
+        \ }, {\n    \"url\": \"junior-roles.csv\",\n    \"tableSchema\": \"gov.uk/schema/junior-roles.json\"\n
+        \ }]\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '0'
+      Cache-Control:
+      - max-age=600
+      Connection:
+      - close
+      Content-Length:
+      - '551'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 20 Apr 2023 14:53:35 GMT
+      ETag:
+      - '"6362d785-227"'
+      Last-Modified:
+      - Wed, 02 Nov 2022 20:48:05 GMT
+      Server:
+      - GitHub.com
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Fastly-Request-ID:
+      - f9e64dd876d592cf6025e178c8304b2c4456c926
+      X-GitHub-Request-Id:
+      - AF8C:E45A:FFEDCA:1086768:644151EF
+      X-Served-By:
+      - cache-lhr7327-LHR
+      X-Timer:
+      - S1682002415.489062,VS0,VE107
+      expires:
+      - Thu, 20 Apr 2023 15:03:35 GMT
+      permissions-policy:
+      - interest-cohort=()
+      x-origin-cache:
+      - HIT
+      x-proxy-cache:
+      - MISS
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/ld+json, application/json;q=0.9, */*;q=0.1
+      Connection:
+      - close
+      Host:
+      - www.w3.org
+      User-Agent:
+      - rdflib-6.2.0 (https://rdflib.github.io/; eikeon@eikeon.com)
+    method: GET
+    uri: http://www.w3.org/ns/csvw
+  response:
+    body:
+      string: ''
+    headers:
+      CF-RAY:
+      - 7bae37b9c92948b3-LHR
+      Cache-Control:
+      - max-age=3600
+      Connection:
+      - close
+      Date:
+      - Thu, 20 Apr 2023 14:53:35 GMT
+      Expires:
+      - Thu, 20 Apr 2023 15:53:35 GMT
+      Location:
+      - https://www.w3.org/ns/csvw
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cf_bm=bpyhRKaAPJjEcRslzVB1oOlWMZae1wH3HnTQH2nxpTs-1682002415-0-AbqjBBX+TSSlsonkWBBEnIl5kTysccLUr1V/RNr75sjCeTObp4EyhFPzK4ck7NHsyULTFvgCkiToJiQV4h1pTsw=;
+        path=/; expires=Thu, 20-Apr-23 15:23:35 GMT; domain=.w3.org; HttpOnly; SameSite=None
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      alt-svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/ld+json, application/json;q=0.9, */*;q=0.1
+      Connection:
+      - close
+      Host:
+      - www.w3.org
+      User-Agent:
+      - rdflib-6.2.0 (https://rdflib.github.io/; eikeon@eikeon.com)
+    method: GET
+    uri: https://www.w3.org/ns/csvw
+  response:
+    body:
+      string: "{\n  \"@context\": {\n    \"as\": \"https://www.w3.org/ns/activitystreams#\",\n
+        \   \"cc\": \"http://creativecommons.org/ns#\",\n    \"csvw\": \"http://www.w3.org/ns/csvw#\",\n
+        \   \"ctag\": \"http://commontag.org/ns#\",\n    \"dc\": \"http://purl.org/dc/terms/\",\n
+        \   \"dc11\": \"http://purl.org/dc/elements/1.1/\",\n    \"dcat\": \"http://www.w3.org/ns/dcat#\",\n
+        \   \"dcterms\": \"http://purl.org/dc/terms/\",\n    \"dctypes\": \"http://purl.org/dc/dcmitype/\",\n
+        \   \"dqv\": \"http://www.w3.org/ns/dqv#\",\n    \"duv\": \"https://www.w3.org/TR/vocab-duv#\",\n
+        \   \"foaf\": \"http://xmlns.com/foaf/0.1/\",\n    \"gr\": \"http://purl.org/goodrelations/v1#\",\n
+        \   \"grddl\": \"http://www.w3.org/2003/g/data-view#\",\n    \"ical\": \"http://www.w3.org/2002/12/cal/icaltzd#\",\n
+        \   \"ldp\": \"http://www.w3.org/ns/ldp#\",\n    \"ma\": \"http://www.w3.org/ns/ma-ont#\",\n
+        \   \"oa\": \"http://www.w3.org/ns/oa#\",\n    \"og\": \"http://ogp.me/ns#\",\n
+        \   \"org\": \"http://www.w3.org/ns/org#\",\n    \"owl\": \"http://www.w3.org/2002/07/owl#\",\n
+        \   \"prov\": \"http://www.w3.org/ns/prov#\",\n    \"qb\": \"http://purl.org/linked-data/cube#\",\n
+        \   \"rdf\": \"http://www.w3.org/1999/02/22-rdf-syntax-ns#\",\n    \"rdfa\":
+        \"http://www.w3.org/ns/rdfa#\",\n    \"rdfs\": \"http://www.w3.org/2000/01/rdf-schema#\",\n
+        \   \"rev\": \"http://purl.org/stuff/rev#\",\n    \"rif\": \"http://www.w3.org/2007/rif#\",\n
+        \   \"rr\": \"http://www.w3.org/ns/r2rml#\",\n    \"schema\": \"http://schema.org/\",\n
+        \   \"sd\": \"http://www.w3.org/ns/sparql-service-description#\",\n    \"sioc\":
+        \"http://rdfs.org/sioc/ns#\",\n    \"skos\": \"http://www.w3.org/2004/02/skos/core#\",\n
+        \   \"skosxl\": \"http://www.w3.org/2008/05/skos-xl#\",\n    \"v\": \"http://rdf.data-vocabulary.org/#\",\n
+        \   \"vcard\": \"http://www.w3.org/2006/vcard/ns#\",\n    \"void\": \"http://rdfs.org/ns/void#\",\n
+        \   \"wdr\": \"http://www.w3.org/2007/05/powder#\",\n    \"wrds\": \"http://www.w3.org/2007/05/powder-s#\",\n
+        \   \"xhv\": \"http://www.w3.org/1999/xhtml/vocab#\",\n    \"xml\": \"rdf:XMLLiteral\",\n
+        \   \"xsd\": \"http://www.w3.org/2001/XMLSchema#\",\n    \"json\": \"csvw:JSON\",\n
+        \   \"any\": \"xsd:anyAtomicType\",\n    \"anyAtomicType\": \"xsd:anyAtomicType\",\n
+        \   \"binary\": \"xsd:base64Binary\",\n    \"datetime\": \"xsd:dateTime\",\n
+        \   \"describedby\": \"wrds:describedby\",\n    \"html\": \"rdf:HTML\",\n
+        \   \"license\": \"xhv:license\",\n    \"maximum\": \"csvw:maxInclusive\",\n
+        \   \"minimum\": \"csvw:minInclusive\",\n    \"number\": \"xsd:double\",\n
+        \   \"role\": \"xhv:role\",\n    \"anyURI\": \"xsd:anyURI\",\n    \"base64Binary\":
+        \"xsd:base64Binary\",\n    \"boolean\": \"xsd:boolean\",\n    \"byte\": \"xsd:byte\",\n
+        \   \"date\": \"xsd:date\",\n    \"dateTime\": \"xsd:dateTime\",\n    \"dayTimeDuration\":
+        \"xsd:dayTimeDuration\",\n    \"dateTimeStamp\": \"xsd:dateTimeStamp\",\n
+        \   \"decimal\": \"xsd:decimal\",\n    \"double\": \"xsd:double\",\n    \"duration\":
+        \"xsd:duration\",\n    \"float\": \"xsd:float\",\n    \"gDay\": \"xsd:gDay\",\n
+        \   \"gMonth\": \"xsd:gMonth\",\n    \"gMonthDay\": \"xsd:gMonthDay\",\n    \"gYear\":
+        \"xsd:gYear\",\n    \"gYearMonth\": \"xsd:gYearMonth\",\n    \"hexBinary\":
+        \"xsd:hexBinary\",\n    \"int\": \"xsd:int\",\n    \"integer\": \"xsd:integer\",\n
+        \   \"language\": \"xsd:language\",\n    \"long\": \"xsd:long\",\n    \"Name\":
+        \"xsd:Name\",\n    \"NCName\": \"xsd:NCName\",\n    \"NMTOKEN\": \"xsd:NMTOKEN\",\n
+        \   \"negativeInteger\": \"xsd:negativeInteger\",\n    \"nonNegativeInteger\":
+        \"xsd:nonNegativeInteger\",\n    \"nonPositiveInteger\": \"xsd:nonPositiveInteger\",\n
+        \   \"normalizedString\": \"xsd:normalizedString\",\n    \"positiveInteger\":
+        \"xsd:positiveInteger\",\n    \"QName\": \"xsd:QName\",\n    \"short\": \"xsd:short\",\n
+        \   \"string\": \"xsd:string\",\n    \"time\": \"xsd:time\",\n    \"token\":
+        \"xsd:token\",\n    \"unsignedByte\": \"xsd:unsignedByte\",\n    \"unsignedInt\":
+        \"xsd:unsignedInt\",\n    \"unsignedLong\": \"xsd:unsignedLong\",\n    \"unsignedShort\":
+        \"xsd:unsignedShort\",\n    \"yearMonthDuration\": \"xsd:yearMonthDuration\",\n
+        \   \"Cell\": \"csvw:Cell\",\n    \"Column\": \"csvw:Column\",\n    \"Datatype\":
+        \"csvw:Datatype\",\n    \"Dialect\": \"csvw:Dialect\",\n    \"Direction\":
+        \"csvw:Direction\",\n    \"ForeignKey\": \"csvw:ForeignKey\",\n    \"NumericFormat\":
+        \"csvw:NumericFormat\",\n    \"Row\": \"csvw:Row\",\n    \"Schema\": \"csvw:Schema\",\n
+        \   \"Table\": \"csvw:Table\",\n    \"TableGroup\": \"csvw:TableGroup\",\n
+        \   \"TableReference\": \"csvw:TableReference\",\n    \"Transformation\":
+        \"csvw:Transformation\",\n    \"aboutUrl\": {\n      \"@id\": \"csvw:aboutUrl\",\n
+        \     \"@type\": \"csvw:uriTemplate\"\n    },\n    \"base\": {\n      \"@id\":
+        \"csvw:base\",\n      \"@language\": null\n    },\n    \"columnReference\":
+        {\n      \"@id\": \"csvw:columnReference\",\n      \"@language\": null,\n
+        \     \"@container\": \"@list\"\n    },\n    \"columns\": {\n      \"@id\":
+        \"csvw:column\",\n      \"@type\": \"@id\",\n      \"@container\": \"@list\"\n
+        \   },\n    \"commentPrefix\": {\n      \"@id\": \"csvw:commentPrefix\",\n
+        \     \"@language\": null\n    },\n    \"datatype\": {\n      \"@id\": \"csvw:datatype\",\n
+        \     \"@type\": \"@vocab\"\n    },\n    \"decimalChar\": {\n      \"@id\":
+        \"csvw:decimalChar\",\n      \"@language\": null\n    },\n    \"default\":
+        {\n      \"@id\": \"csvw:default\",\n      \"@language\": null\n    },\n    \"describes\":
+        {\n      \"@id\": \"csvw:describes\"\n    },\n    \"delimiter\": {\n      \"@id\":
+        \"csvw:delimiter\",\n      \"@language\": null\n    },\n    \"dialect\": {\n
+        \     \"@id\": \"csvw:dialect\",\n      \"@type\": \"@id\"\n    },\n    \"doubleQuote\":
+        {\n      \"@id\": \"csvw:doubleQuote\",\n      \"@type\": \"xsd:boolean\"\n
+        \   },\n    \"encoding\": {\n      \"@id\": \"csvw:encoding\",\n      \"@language\":
+        null\n    },\n    \"foreignKeys\": {\n      \"@id\": \"csvw:foreignKey\",\n
+        \     \"@type\": \"@id\"\n    },\n    \"format\": {\n      \"@id\": \"csvw:format\",\n
+        \     \"@language\": null\n    },\n    \"groupChar\": {\n      \"@id\": \"csvw:groupChar\",\n
+        \     \"@type\": \"NumericFormat,xsd:string\"\n    },\n    \"header\": {\n
+        \     \"@id\": \"csvw:header\",\n      \"@type\": \"xsd:boolean\"\n    },\n
+        \   \"headerRowCount\": {\n      \"@id\": \"csvw:headerRowCount\",\n      \"@type\":
+        \"xsd:nonNegativeInteger\"\n    },\n    \"lang\": {\n      \"@id\": \"csvw:lang\",\n
+        \     \"@language\": null\n    },\n    \"length\": {\n      \"@id\": \"csvw:length\",\n
+        \     \"@type\": \"xsd:nonNegativeInteger\"\n    },\n    \"lineTerminators\":
+        {\n      \"@id\": \"csvw:lineTerminators\",\n      \"@language\": null\n    },\n
+        \   \"maxExclusive\": {\n      \"@id\": \"csvw:maxExclusive\",\n      \"@type\":
+        \"xsd:integer\"\n    },\n    \"maxInclusive\": {\n      \"@id\": \"csvw:maxInclusive\",\n
+        \     \"@type\": \"xsd:integer\"\n    },\n    \"maxLength\": {\n      \"@id\":
+        \"csvw:maxLength\",\n      \"@type\": \"xsd:nonNegativeInteger\"\n    },\n
+        \   \"minExclusive\": {\n      \"@id\": \"csvw:minExclusive\",\n      \"@type\":
+        \"xsd:integer\"\n    },\n    \"minInclusive\": {\n      \"@id\": \"csvw:minInclusive\",\n
+        \     \"@type\": \"xsd:integer\"\n    },\n    \"minLength\": {\n      \"@id\":
+        \"csvw:minLength\",\n      \"@type\": \"xsd:nonNegativeInteger\"\n    },\n
+        \   \"name\": {\n      \"@id\": \"csvw:name\",\n      \"@language\": null\n
+        \   },\n    \"notes\": {\n      \"@id\": \"csvw:note\"\n    },\n    \"null\":
+        {\n      \"@id\": \"csvw:null\",\n      \"@language\": null\n    },\n    \"ordered\":
+        {\n      \"@id\": \"csvw:ordered\",\n      \"@type\": \"xsd:boolean\"\n    },\n
+        \   \"pattern\": {\n      \"@id\": \"csvw:pattern\",\n      \"@language\":
+        null\n    },\n    \"primaryKey\": {\n      \"@id\": \"csvw:primaryKey\",\n
+        \     \"@language\": null\n    },\n    \"propertyUrl\": {\n      \"@id\":
+        \"csvw:propertyUrl\",\n      \"@type\": \"csvw:uriTemplate\"\n    },\n    \"quoteChar\":
+        {\n      \"@id\": \"csvw:quoteChar\",\n      \"@language\": null\n    },\n
+        \   \"reference\": {\n      \"@id\": \"csvw:reference\",\n      \"@type\":
+        \"@id\"\n    },\n    \"referencedRows\": {\n      \"@id\": \"csvw:referencedRow\"\n
+        \   },\n    \"required\": {\n      \"@id\": \"csvw:required\",\n      \"@type\":
+        \"xsd:boolean\"\n    },\n    \"resource\": {\n      \"@id\": \"csvw:resource\",\n
+        \     \"@type\": \"xsd:anyURI\"\n    },\n    \"row\": {\n      \"@id\": \"csvw:row\",\n
+        \     \"@type\": \"@id\",\n      \"@container\": \"@set\"\n    },\n    \"rowTitles\":
+        {\n      \"@id\": \"csvw:rowTitle\",\n      \"@language\": null\n    },\n
+        \   \"rownum\": {\n      \"@id\": \"csvw:rownum\",\n      \"@type\": \"xsd:integer\"\n
+        \   },\n    \"scriptFormat\": {\n      \"@id\": \"csvw:scriptFormat\",\n      \"@type\":
+        \"xsd:anyURI\"\n    },\n    \"schemaReference\": {\n      \"@id\": \"csvw:schemaReference\",\n
+        \     \"@type\": \"xsd:anyURI\"\n    },\n    \"separator\": {\n      \"@id\":
+        \"csvw:separator\",\n      \"@language\": null\n    },\n    \"skipBlankRows\":
+        {\n      \"@id\": \"csvw:skipBlankRows\",\n      \"@type\": \"xsd:boolean\"\n
+        \   },\n    \"skipColumns\": {\n      \"@id\": \"csvw:skipColumns\",\n      \"@type\":
+        \"xsd:nonNegativeInteger\"\n    },\n    \"skipInitialSpace\": {\n      \"@id\":
+        \"csvw:skipInitialSpace\",\n      \"@type\": \"xsd:boolean\"\n    },\n    \"skipRows\":
+        {\n      \"@id\": \"csvw:skipRows\",\n      \"@type\": \"xsd:nonNegativeInteger\"\n
+        \   },\n    \"source\": {\n      \"@id\": \"csvw:source\",\n      \"@language\":
+        null\n    },\n    \"suppressOutput\": {\n      \"@id\": \"csvw:suppressOutput\",\n
+        \     \"@type\": \"xsd:boolean\"\n    },\n    \"tables\": {\n      \"@id\":
+        \"csvw:table\",\n      \"@type\": \"@id\",\n      \"@container\": \"@set\"\n
+        \   },\n    \"tableDirection\": {\n      \"@id\": \"csvw:tableDirection\",\n
+        \     \"@type\": \"@vocab\"\n    },\n    \"tableSchema\": {\n      \"@id\":
+        \"csvw:tableSchema\",\n      \"@type\": \"@id\"\n    },\n    \"targetFormat\":
+        {\n      \"@id\": \"csvw:targetFormat\",\n      \"@type\": \"xsd:anyURI\"\n
+        \   },\n    \"transformations\": {\n      \"@id\": \"csvw:transformations\",\n
+        \     \"@type\": \"@id\"\n    },\n    \"textDirection\": {\n      \"@id\":
+        \"csvw:textDirection\",\n      \"@type\": \"@vocab\"\n    },\n    \"titles\":
+        {\n      \"@id\": \"csvw:title\",\n      \"@container\": \"@language\"\n    },\n
+        \   \"trim\": {\n      \"@id\": \"csvw:trim\",\n      \"@type\": \"xsd:boolean\"\n
+        \   },\n    \"url\": {\n      \"@id\": \"csvw:url\",\n      \"@type\": \"xsd:anyURI\"\n
+        \   },\n    \"valueUrl\": {\n      \"@id\": \"csvw:valueUrl\",\n      \"@type\":
+        \"csvw:uriTemplate\"\n    },\n    \"virtual\": {\n      \"@id\": \"csvw:virtual\",\n
+        \     \"@type\": \"xsd:boolean\"\n    },\n    \"JSON\": \"csvw:JSON\",\n    \"uriTemplate\":
+        \"csvw:uriTemplate\"\n  },\n  \"@graph\": {\n    \"@context\": {\n      \"id\":
+        \"@id\",\n      \"type\": \"@type\",\n      \"dc:title\": {\n        \"@container\":
+        \"@language\"\n      },\n      \"dc:description\": {\n        \"@container\":
+        \"@language\"\n      },\n      \"dc:date\": {\n        \"@type\": \"xsd:date\"\n
+        \     },\n      \"rdfs:comment\": {\n        \"@container\": \"@language\"\n
+        \     },\n      \"rdfs:domain\": {\n        \"@type\": \"@id\"\n      },\n
+        \     \"rdfs:label\": {\n        \"@container\": \"@language\"\n      },\n
+        \     \"rdfs:range\": {\n        \"@type\": \"@id\"\n      },\n      \"rdfs:seeAlso\":
+        {\n        \"@type\": \"@id\"\n      },\n      \"rdfs:subClassOf\": {\n        \"@type\":
+        \"@id\"\n      },\n      \"rdfs:subPropertyOf\": {\n        \"@type\": \"@id\"\n
+        \     },\n      \"owl:equivalentClass\": {\n        \"@type\": \"@vocab\"\n
+        \     },\n      \"owl:equivalentProperty\": {\n        \"@type\": \"@vocab\"\n
+        \     },\n      \"owl:oneOf\": {\n        \"@container\": \"@list\",\n        \"@type\":
+        \"@vocab\"\n      },\n      \"owl:imports\": {\n        \"@type\": \"@id\"\n
+        \     },\n      \"owl:versionInfo\": {\n        \"@type\": \"@id\"\n      },\n
+        \     \"owl:inverseOf\": {\n        \"@type\": \"@vocab\"\n      },\n      \"owl:unionOf\":
+        {\n        \"@type\": \"@vocab\",\n        \"@container\": \"@list\"\n      },\n
+        \     \"rdfs_classes\": {\n        \"@reverse\": \"rdfs:isDefinedBy\",\n        \"@type\":
+        \"@id\"\n      },\n      \"rdfs_properties\": {\n        \"@reverse\": \"rdfs:isDefinedBy\",\n
+        \       \"@type\": \"@id\"\n      },\n      \"rdfs_datatypes\": {\n        \"@reverse\":
+        \"rdfs:isDefinedBy\",\n        \"@type\": \"@id\"\n      },\n      \"rdfs_instances\":
+        {\n        \"@reverse\": \"rdfs:isDefinedBy\",\n        \"@type\": \"@id\"\n
+        \     }\n    },\n    \"@id\": \"http://www.w3.org/ns/csvw#\",\n    \"@type\":
+        \"owl:Ontology\",\n    \"dc:title\": {\n      \"en\": \"CSVW Namespace Vocabulary
+        Terms\"\n    },\n    \"dc:description\": {\n      \"en\": \"This document
+        describes the RDFS vocabulary description used in the Metadata Vocabulary
+        for Tabular Data [[tabular-metadata]] along with the default JSON-LD Context.\"\n
+        \   },\n    \"dc:date\": \"2017-06-06\",\n    \"owl:imports\": [\n      \"http://www.w3.org/ns/prov\"\n
+        \   ],\n    \"owl:versionInfo\": \"https://github.com/w3c/csvw/commit/fcc9db20ba4de10e41e964eee1b5d01defa4c664\",\n
+        \   \"rdfs:seeAlso\": [\n      \"http://www.w3.org/TR/tabular-metadata\"\n
+        \   ],\n    \"rdfs_classes\": [\n      {\n        \"@id\": \"csvw:Cell\",\n
+        \       \"@type\": \"rdfs:Class\",\n        \"rdfs:label\": {\n          \"en\":
+        \"Cell\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"A Cell
+        represents a cell at the intersection of a Row and a Column within a Table.\"\n
+        \       }\n      },\n      {\n        \"@id\": \"csvw:Column\",\n        \"@type\":
+        \"rdfs:Class\",\n        \"rdfs:label\": {\n          \"en\": \"Column Description\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"A Column represents
+        a vertical arrangement of Cells within a Table.\"\n        }\n      },\n      {\n
+        \       \"@id\": \"csvw:Datatype\",\n        \"@type\": \"rdfs:Class\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"Datatype\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"Describes facets of a datatype.\"\n        }\n      },\n
+        \     {\n        \"@id\": \"csvw:Dialect\",\n        \"@type\": \"rdfs:Class\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"Dialect Description\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"A Dialect Description provides
+        hints to parsers about how to parse a linked file.\"\n        }\n      },\n
+        \     {\n        \"@id\": \"csvw:Direction\",\n        \"@type\": \"rdfs:Class\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"Direction\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"The class of table/text directions.\"\n        }\n
+        \     },\n      {\n        \"@id\": \"csvw:ForeignKey\",\n        \"@type\":
+        \"rdfs:Class\",\n        \"rdfs:label\": {\n          \"en\": \"Foreign Key
+        Definition\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"Describes
+        relationships between Columns in one or more Tables.\"\n        }\n      },\n
+        \     {\n        \"@id\": \"csvw:NumericFormat\",\n        \"@type\": \"rdfs:Class\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"Numeric Format\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"If the datatype is a numeric
+        type, the format property indicates the expected format for that number. Its
+        value must be either a single string or an object with one or more properties.\"\n
+        \       }\n      },\n      {\n        \"@id\": \"csvw:Row\",\n        \"@type\":
+        \"rdfs:Class\",\n        \"rdfs:label\": {\n          \"en\": \"Row\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"A Row represents a horizontal
+        arrangement of cells within a Table.\"\n        }\n      },\n      {\n        \"@id\":
+        \"csvw:Schema\",\n        \"@type\": \"rdfs:Class\",\n        \"rdfs:label\":
+        {\n          \"en\": \"Schema\"\n        },\n        \"rdfs:comment\": {\n
+        \         \"en\": \"A Schema is a definition of a tabular format that may
+        be common to multiple tables.\"\n        }\n      },\n      {\n        \"@id\":
+        \"csvw:Table\",\n        \"@type\": \"rdfs:Class\",\n        \"rdfs:label\":
+        {\n          \"en\": \"Annotated Table\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An annotated table is a table that is annotated with
+        additional metadata.\"\n        }\n      },\n      {\n        \"@id\": \"csvw:TableGroup\",\n
+        \       \"@type\": \"rdfs:Class\",\n        \"rdfs:label\": {\n          \"en\":
+        \"Group of Tables\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"A Group of Tables comprises a set of Annotated Tables and a set of annotations
+        that relate to those Tables.\"\n        }\n      },\n      {\n        \"@id\":
+        \"csvw:TableReference\",\n        \"@type\": \"rdfs:Class\",\n        \"rdfs:label\":
+        {\n          \"en\": \"Table Reference\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An object property that identifies a referenced table
+        and a set of referenced columns within that table.\"\n        }\n      },\n
+        \     {\n        \"@id\": \"csvw:Transformation\",\n        \"@type\": \"rdfs:Class\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"Transformation Definition\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"A Transformation
+        Definition is a definition of how tabular data can be transformed into another
+        format.\"\n        }\n      }\n    ],\n    \"rdfs_properties\": [\n      {\n
+        \       \"@id\": \"csvw:aboutUrl\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"about URL\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"A URI template property that MAY be used to indicate
+        what a cell contains information about.\"\n        },\n        \"rdfs:domain\":
+        {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n            \"csvw:Table\",\n
+        \           \"csvw:Schema\",\n            \"csvw:Column\"\n          ]\n        },\n
+        \       \"rdfs:range\": \"csvw:uriTemplate\"\n      },\n      {\n        \"@id\":
+        \"csvw:base\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"base\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An atomic property that contains a single string: a term defined in the
+        default context representing a built-in datatype URL, as listed above.\"\n
+        \       },\n        \"rdfs:domain\": \"csvw:Datatype\",\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:columnReference\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"column reference\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"A column reference property that holds either a single reference to a column
+        description object within this schema, or an array of references. These form
+        the referencing columns for the foreign key definition.\"\n        },\n        \"rdfs:domain\":
+        {\n          \"owl:unionOf\": [\n            \"csvw:ForeignKey\",\n            \"csvw:TableReference\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"xsd:string\"\n      },\n
+        \     {\n        \"@id\": \"csvw:column\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"column\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An array property of column descriptions as described
+        in section 5.6 Columns.\"\n        },\n        \"rdfs:domain\": \"csvw:Schema\",\n
+        \       \"rdfs:range\": \"csvw:Column\"\n      },\n      {\n        \"@id\":
+        \"csvw:commentPrefix\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"comment prefix\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that sets the comment prefix flag
+        to the single provided value, which MUST be a string.\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:string\"\n      },\n      {\n
+        \       \"@id\": \"csvw:datatype\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"datatype\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An object property that contains either a single string
+        that is the main datatype of the values of the cell or a datatype description
+        object. If the value of this property is a string, it MUST be one of the built-in
+        datatypes defined in section 5.11.1 Built-in Datatypes or an absolute URL;
+        if it is an object then it describes a more specialised datatype.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": {\n          \"owl:unionOf\":
+        [\n            \"csvw:Datatype\",\n            \"xsd:string\"\n          ]\n
+        \       }\n      },\n      {\n        \"@id\": \"csvw:decimalChar\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"decimal
+        character\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"A
+        string whose value is used to represent a decimal point within the number.\"\n
+        \       },\n        \"rdfs:domain\": \"csvw:NumericFormat\",\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:default\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"default\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An atomic property
+        holding a single string that is used to create a default value for the cell
+        in cases where the original string value is an empty string.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"xsd:string\"\n      },\n
+        \     {\n        \"@id\": \"csvw:describes\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"describes\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"From IANA describes: The relationship A 'describes'
+        B asserts that resource A provides a description of resource B. There are
+        no constraints on the format or representation of either A or B, neither are
+        there any further constraints on either resource.\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Row\"\n      },\n      {\n        \"@id\": \"csvw:delimiter\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"delimiter\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An atomic property
+        that sets the delimiter flag to the single provided value, which MUST be a
+        string.\"\n        },\n        \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:dialect\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"dialect\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An object property
+        that provides a single dialect description. If provided, dialect provides
+        hints to processors about how to parse the referenced files to create tabular
+        data models for the tables in the group.\"\n        },\n        \"rdfs:domain\":
+        {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n            \"csvw:Table\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"csvw:Dialect\"\n      },\n
+        \     {\n        \"@id\": \"csvw:doubleQuote\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"double quote\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"A boolean atomic property
+        that, if `true`, sets the escape character flag to `\\\"`.\"\n        },\n
+        \       \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:boolean\"\n
+        \     },\n      {\n        \"@id\": \"csvw:encoding\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"encoding\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An atomic property
+        that sets the encoding flag to the single provided string value, which MUST
+        be a defined in [[encoding]]. The default is \\\"utf-8\\\".\"\n        },\n
+        \       \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:string\"\n
+        \     },\n      {\n        \"@id\": \"csvw:foreignKey\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"foreign
+        key\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"For a
+        Table: a list of foreign keys on the table.\\n\\nFor a Schema: an array property
+        of foreign key definitions that define how the values from specified columns
+        within this table link to rows within this table or other tables.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:Table\",\n
+        \           \"csvw:Schema\"\n          ]\n        },\n        \"rdfs:range\":
+        \"csvw:ForeignKey\"\n      },\n      {\n        \"@id\": \"csvw:format\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"format\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"An
+        atomic property that contains either a single string or an object that defines
+        the format of a value of this type, used when parsing a string value as described
+        in Parsing Cells in [[tabular-data-model]].\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Datatype\",\n        \"rdfs:range\": \"xsd:string\"\n      },\n      {\n
+        \       \"@id\": \"csvw:groupChar\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"group character\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"A string whose value is used
+        to group digits within the number.\"\n        },\n        \"rdfs:domain\":
+        \"csvw:NumericFormat\",\n        \"rdfs:range\": {\n          \"owl:unionOf\":
+        [\n            \"csvw:NumericFormat\",\n            \"xsd:string\"\n          ]\n
+        \       }\n      },\n      {\n        \"@id\": \"csvw:header\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"header\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"A boolean atomic
+        property that, if `true`, sets the header row count flag to `1`, and if `false`
+        to `0`, unless headerRowCount is provided, in which case the value provided
+        for the header property is ignored.\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:boolean\"\n      },\n      {\n
+        \       \"@id\": \"csvw:headerRowCount\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"header row count\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"An numeric atomic property
+        that sets the header row count flag to the single provided value, which must
+        be a non-negative integer.\"\n        },\n        \"rdfs:domain\": \"csvw:Dialect\",\n
+        \       \"rdfs:range\": \"xsd:nonNegativeInteger\"\n      },\n      {\n        \"@id\":
+        \"csvw:lang\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"language\"\n        },\n        \"rdfs:comment\": {\n
+        \         \"en\": \"An atomic property giving a single string language code
+        as defined by [[BCP47]].\"\n        },\n        \"rdfs:domain\": {\n          \"owl:unionOf\":
+        [\n            \"csvw:TableGroup\",\n            \"csvw:Table\",\n            \"csvw:Schema\",\n
+        \           \"csvw:Column\"\n          ]\n        },\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:length\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"length\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"The exact length
+        of the value of the cell.\"\n        },\n        \"rdfs:domain\": \"csvw:Datatype\",\n
+        \       \"rdfs:range\": \"xsd:nonNegativeInteger\"\n      },\n      {\n        \"@id\":
+        \"csvw:lineTerminators\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"line terminators\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that sets the line terminators flag
+        to either an array containing the single provided string value, or the provided
+        array.\"\n        },\n        \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:maxExclusive\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"max exclusive\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An atomic property that contains a single number that is the maximum valid
+        value (exclusive).\"\n        },\n        \"rdfs:domain\": \"csvw:Datatype\",\n
+        \       \"rdfs:range\": \"xsd:integer\"\n      },\n      {\n        \"@id\":
+        \"csvw:maxInclusive\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"max inclusive\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that contains a single number that
+        is the maximum valid value (inclusive).\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Datatype\",\n        \"rdfs:range\": \"xsd:integer\"\n      },\n      {\n
+        \       \"@id\": \"csvw:maxLength\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"max length\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"A numeric atomic property
+        that contains a single integer that is the maximum length of the value.\"\n
+        \       },\n        \"rdfs:domain\": \"csvw:Datatype\",\n        \"rdfs:range\":
+        \"xsd:nonNegativeInteger\"\n      },\n      {\n        \"@id\": \"csvw:minExclusive\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"min exclusive\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An atomic property that contains a single number that is the minimum valid
+        value (exclusive).\"\n        },\n        \"rdfs:domain\": \"csvw:Datatype\",\n
+        \       \"rdfs:range\": \"xsd:integer\"\n      },\n      {\n        \"@id\":
+        \"csvw:minInclusive\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"min inclusive\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that contains a single number that
+        is the minimum valid value (inclusive).\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Datatype\",\n        \"rdfs:range\": \"xsd:integer\"\n      },\n      {\n
+        \       \"@id\": \"csvw:minLength\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"min length\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"An atomic property that contains
+        a single integer that is the minimum length of the value.\"\n        },\n
+        \       \"rdfs:domain\": \"csvw:Datatype\",\n        \"rdfs:range\": \"xsd:nonNegativeInteger\"\n
+        \     },\n      {\n        \"@id\": \"csvw:name\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"name\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that gives a single canonical name
+        for the column. The value of this property becomes the name annotation for
+        the described column.\"\n        },\n        \"rdfs:domain\": \"csvw:Column\",\n
+        \       \"rdfs:range\": \"xsd:string\"\n      },\n      {\n        \"@id\":
+        \"csvw:note\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"note\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An array property that provides an array of objects representing arbitrary
+        annotations on the annotated tabular data model.\"\n        },\n        \"rdfs:domain\":
+        {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n            \"csvw:Table\"\n
+        \         ]\n        }\n      },\n      {\n        \"@id\": \"csvw:null\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"null\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"An
+        atomic property giving the string or strings used for null values within the
+        data. If the string value of the cell is equal to any one of these values,
+        the cell value is `null`.\"\n        },\n        \"rdfs:domain\": {\n          \"owl:unionOf\":
+        [\n            \"csvw:TableGroup\",\n            \"csvw:Table\",\n            \"csvw:Schema\",\n
+        \           \"csvw:Column\"\n          ]\n        },\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:ordered\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"ordered\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"A boolean atomic
+        property taking a single value which indicates whether a list that is the
+        value of the cell is ordered (if `true`) or unordered (if `false`).\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"xsd:boolean\"\n      },\n
+        \     {\n        \"@id\": \"csvw:pattern\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"pattern\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"A regular expression string, in the syntax and interpreted
+        as defined by [[ECMASCRIPT]].\"\n        },\n        \"rdfs:domain\": \"csvw:NumericFormat\",\n
+        \       \"rdfs:range\": \"xsd:string\"\n      },\n      {\n        \"@id\":
+        \"csvw:primaryKey\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"primary key\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"For Schema: A column reference property that holds
+        either a single reference to a column description object or an array of references.\\n\\nFor
+        Row: a possibly empty list of cells whose values together provide a unique
+        identifier for this row. This is similar to the name of a column.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:Schema\",\n
+        \           \"csvw:Row\"\n          ]\n        },\n        \"rdfs:range\":
+        \"xsd:string\"\n      },\n      {\n        \"@id\": \"csvw:propertyUrl\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"property URL\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An URI template property that MAY be used to create a URI for a property
+        if the table is mapped to another format. \"\n        },\n        \"rdfs:domain\":
+        {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n            \"csvw:Table\",\n
+        \           \"csvw:Schema\",\n            \"csvw:Column\"\n          ]\n        },\n
+        \       \"rdfs:range\": \"csvw:uriTemplate\"\n      },\n      {\n        \"@id\":
+        \"csvw:quoteChar\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"quote char\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that sets the quote character flag
+        to the single provided value, which must be a string or `null`.\"\n        },\n
+        \       \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:string\"\n
+        \     },\n      {\n        \"@id\": \"csvw:reference\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"reference\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An object property
+        that identifies a **referenced table** and a set of **referenced columns**
+        within that table.\"\n        },\n        \"rdfs:domain\": \"csvw:ForeignKey\",\n
+        \       \"rdfs:range\": \"csvw:TableReference\"\n      },\n      {\n        \"@id\":
+        \"csvw:referencedRow\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"referenced rows\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"A possibly empty list of pairs of a foreign key and
+        a row in a table within the same group of tables.\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Row\"\n      },\n      {\n        \"@id\": \"csvw:required\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"required\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"A boolean atomic
+        property taking a single value which indicates whether the cell must have
+        a non-null value. The default is `false`. \"\n        },\n        \"rdfs:domain\":
+        {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n            \"csvw:Table\",\n
+        \           \"csvw:Schema\",\n            \"csvw:Column\"\n          ]\n        },\n
+        \       \"rdfs:range\": \"xsd:boolean\"\n      },\n      {\n        \"@id\":
+        \"csvw:resource\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"resource\"\n        },\n        \"rdfs:comment\": {\n
+        \         \"en\": \"A link property holding a URL that is the identifier for
+        a specific table that is being referenced.\"\n        },\n        \"rdfs:domain\":
+        \"csvw:TableReference\",\n        \"rdfs:range\": \"xsd:anyURI\"\n      },\n
+        \     {\n        \"@id\": \"csvw:row\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"row\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"Relates a Table to each Row output.\"\n        },\n
+        \       \"rdfs:subPropertyOf\": \"rdfs:member\",\n        \"rdfs:domain\":
+        \"csvw:Table\",\n        \"rdfs:range\": \"csvw:Row\"\n      },\n      {\n
+        \       \"@id\": \"csvw:rowTitle\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"row titles\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"A column reference property
+        that holds either a single reference to a column description object or an
+        array of references.\"\n        },\n        \"rdfs:domain\": \"csvw:Schema\",\n
+        \       \"rdfs:range\": \"xsd:string\"\n      },\n      {\n        \"@id\":
+        \"csvw:rownum\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"row number\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"The position of the row amongst the rows of the Annotated
+        Tabl, starting from 1\"\n        },\n        \"rdfs:range\": \"xsd:integer\"\n
+        \     },\n      {\n        \"@id\": \"csvw:scriptFormat\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"script format\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"A link property
+        giving the single URL for the format that is used by the script or template.\"\n
+        \       },\n        \"rdfs:domain\": \"csvw:Transformation\",\n        \"rdfs:range\":
+        \"xsd:anyURI\"\n      },\n      {\n        \"@id\": \"csvw:schemaReference\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"schema reference\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"A link property holding a URL that is the identifier for a schema that is
+        being referenced.\"\n        },\n        \"rdfs:domain\": \"csvw:TableReference\",\n
+        \       \"rdfs:range\": \"xsd:anyURI\"\n      },\n      {\n        \"@id\":
+        \"csvw:separator\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"separator\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An atomic property that MUST have a single string value
+        that is the character used to separate items in the string value of the cell.\"\n
+        \       },\n        \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"xsd:string\"\n      },\n
+        \     {\n        \"@id\": \"csvw:skipBlankRows\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"skip blank rows\"\n        },\n
+        \       \"rdfs:comment\": {\n          \"en\": \"An boolean atomic property
+        that sets the `skip blank rows` flag to the single provided boolean value.\"\n
+        \       },\n        \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\":
+        \"xsd:boolean\"\n      },\n      {\n        \"@id\": \"csvw:skipColumns\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"skip columns\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An numeric atomic property that sets the `skip columns` flag to the single
+        provided numeric value, which MUST be a non-negative integer.\"\n        },\n
+        \       \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:nonNegativeInteger\"\n
+        \     },\n      {\n        \"@id\": \"csvw:skipInitialSpace\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"skip initial
+        space\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"A boolean
+        atomic property that, if `true`, sets the trim flag to \\\"start\\\". If `false`,
+        to `false`.\"\n        },\n        \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\":
+        \"xsd:boolean\"\n      },\n      {\n        \"@id\": \"csvw:skipRows\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"skip rows\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An numeric atomic property that sets the `skip rows` flag to the single
+        provided numeric value, which MUST be a non-negative integer.\"\n        },\n
+        \       \"rdfs:domain\": \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:nonNegativeInteger\"\n
+        \     },\n      {\n        \"@id\": \"csvw:source\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"source\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"A single string atomic property that provides, if specified,
+        the format to which the tabular data should be transformed prior to the transformation
+        using the script or template.\"\n        },\n        \"rdfs:domain\": \"csvw:Transformation\",\n
+        \       \"rdfs:range\": \"xsd:string\"\n      },\n      {\n        \"@id\":
+        \"csvw:suppressOutput\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"suppress output\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"A boolean atomic property. If `true`, suppresses any
+        output that would be generated when converting a table or cells within a column.\"\n
+        \       },\n        \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:Table\",\n
+        \           \"csvw:Column\"\n          ]\n        },\n        \"rdfs:range\":
+        \"xsd:boolean\"\n      },\n      {\n        \"@id\": \"csvw:table\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"table\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"Relates an Table
+        group to annotated tables.\"\n        },\n        \"rdfs:subPropertyOf\":
+        \"rdfs:member\",\n        \"rdfs:domain\": \"csvw:TableGroup\",\n        \"rdfs:range\":
+        \"csvw:Table\"\n      },\n      {\n        \"@id\": \"csvw:tableDirection\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"table direction\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"One of `rtl`, `ltr` or `auto`. Indicates whether the tables in the group
+        should be displayed with the first column on the right, on the left, or based
+        on the first character in the table that has a specific direction.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\"\n          ]\n        },\n        \"rdfs:range\":
+        \"csvw:Direction\"\n      },\n      {\n        \"@id\": \"csvw:tableSchema\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"table schema\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"An object property that provides a single schema description as described
+        in section 5.5 Schemas, used as the default for all the tables in the group\"\n
+        \       },\n        \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\"\n          ]\n        },\n        \"rdfs:range\":
+        \"csvw:Schema\"\n      },\n      {\n        \"@id\": \"csvw:targetFormat\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"target format\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"A link property giving the single URL for the format that will be created
+        through the transformation.\"\n        },\n        \"rdfs:domain\": \"csvw:Transformation\",\n
+        \       \"rdfs:range\": \"xsd:anyURI\"\n      },\n      {\n        \"@id\":
+        \"csvw:transformations\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"transformations\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"An array property of transformation definitions that
+        provide mechanisms to transform the tabular data into other formats.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"csvw:Transformation\"\n
+        \     },\n      {\n        \"@id\": \"csvw:textDirection\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"text direction\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An atomic property
+        that must have a single value that is one of `rtl` or `ltr` (the default).\"\n
+        \       },\n        \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"csvw:Direction\"\n      },\n
+        \     {\n        \"@id\": \"csvw:title\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"title\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"For a Transformation A natural language property that
+        describes the format that will be generated from the transformation.\\n\\nFor
+        a Column: A natural language property that provides possible alternative names
+        for the column.\"\n        },\n        \"rdfs:domain\": {\n          \"owl:unionOf\":
+        [\n            \"csvw:Transformation\",\n            \"csvw:Column\",\n            \"csvw:Row\"\n
+        \         ]\n        }\n      },\n      {\n        \"@id\": \"csvw:trim\",\n
+        \       \"@type\": \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\":
+        \"trim\"\n        },\n        \"rdfs:comment\": {\n          \"en\": \"An
+        atomic property that, if the boolean `true`, sets the trim flag to `true`
+        and if the boolean `false` to `false`. If the value provided is a string,
+        sets the trim flag to the provided value, which must be one of \\\"true\\\",
+        \\\"false\\\", \\\"start\\\" or \\\"end\\\".\"\n        },\n        \"rdfs:domain\":
+        \"csvw:Dialect\",\n        \"rdfs:range\": \"xsd:boolean\"\n      },\n      {\n
+        \       \"@id\": \"csvw:url\",\n        \"@type\": \"rdf:Property\",\n        \"rdfs:label\":
+        {\n          \"en\": \"url\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"For a Table: This link property gives the single URL of the CSV file that
+        the table is held in, relative to the location of the metadata document.\\n\\nFor
+        a Transformation: A link property giving the single URL of the file that the
+        script or template is held in, relative to the location of the metadata document.\"\n
+        \       },\n        \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:Table\",\n
+        \           \"csvw:Transformation\"\n          ]\n        },\n        \"rdfs:range\":
+        \"xsd:anyURI\"\n      },\n      {\n        \"@id\": \"csvw:valueUrl\",\n        \"@type\":
+        \"rdf:Property\",\n        \"rdfs:label\": {\n          \"en\": \"valueUrl\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"An URI template
+        property that is used to map the values of cells into URLs.\"\n        },\n
+        \       \"rdfs:domain\": {\n          \"owl:unionOf\": [\n            \"csvw:TableGroup\",\n
+        \           \"csvw:Table\",\n            \"csvw:Schema\",\n            \"csvw:Column\"\n
+        \         ]\n        },\n        \"rdfs:range\": \"csvw:uriTemplate\"\n      },\n
+        \     {\n        \"@id\": \"csvw:virtual\",\n        \"@type\": \"rdf:Property\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"virtual\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"A boolean atomic property taking a single value which
+        indicates whether the column is a virtual column not present in the original
+        source\"\n        },\n        \"rdfs:domain\": \"csvw:Column\",\n        \"rdfs:range\":
+        \"xsd:boolean\"\n      }\n    ],\n    \"rdfs_datatypes\": [\n      {\n        \"@id\":
+        \"csvw:JSON\",\n        \"@type\": \"rdfs:Datatype\",\n        \"rdfs:label\":
+        {\n          \"en\": \"JSON\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"A literal containing JSON.\"\n        },\n        \"rdfs:subClassOf\": \"xsd:string\"\n
+        \     },\n      {\n        \"@id\": \"csvw:uriTemplate\",\n        \"@type\":
+        \"rdfs:Datatype\",\n        \"rdfs:label\": {\n          \"en\": \"uri template\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"\"\n        },\n
+        \       \"rdfs:subClassOf\": \"xsd:string\"\n      }\n    ],\n    \"rdfs_instances\":
+        [\n      {\n        \"@id\": \"csvw:auto\",\n        \"@type\": \"Direction\",\n
+        \       \"rdfs:label\": {\n          \"en\": \"auto\"\n        },\n        \"rdfs:comment\":
+        {\n          \"en\": \"Indicates whether the tables in the group should be
+        displayed based on the first character in the table that has a specific direction.\"\n
+        \       }\n      },\n      {\n        \"@id\": \"csvw:inherit\",\n        \"@type\":
+        \"Direction\",\n        \"rdfs:label\": {\n          \"en\": \"inherit\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"For `textDirection`,
+        indicates that the direction is inherited from the `tableDirection` annotation
+        of the `table`.\"\n        }\n      },\n      {\n        \"@id\": \"csvw:ltr\",\n
+        \       \"@type\": \"Direction\",\n        \"rdfs:label\": {\n          \"en\":
+        \"left to right\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"Indicates whether the tables in the group should be displayed with the first
+        column on the right.\"\n        }\n      },\n      {\n        \"@id\": \"csvw:rtl\",\n
+        \       \"@type\": \"Direction\",\n        \"rdfs:label\": {\n          \"en\":
+        \"right to left\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"Indicates whether the tables in the group should be displayed with the first
+        column on the left.\"\n        }\n      },\n      {\n        \"@id\": \"csvw:csvEncodedTabularData\",\n
+        \       \"@type\": \"prov:Role\",\n        \"rdfs:label\": {\n          \"en\":
+        \"CSV Encoded Tabular Data\"\n        },\n        \"rdfs:comment\": {\n          \"en\":
+        \"Describes the role of a CSV file in the tabular data mapping.\"\n        }\n
+        \     },\n      {\n        \"@id\": \"csvw:tabularMetadata\",\n        \"@type\":
+        \"prov:Role\",\n        \"rdfs:label\": {\n          \"en\": \"Tabular Metadata\"\n
+        \       },\n        \"rdfs:comment\": {\n          \"en\": \"Describes the
+        role of a Metadata file in the tabular data mapping.\"\n        }\n      }\n
+        \   ]\n  }\n}\n"
+    headers:
+      Accept-Ranges:
+      - bytes
+      CF-Cache-Status:
+      - BYPASS
+      CF-RAY:
+      - 7bae37ba6e20413c-LHR
+      Cache-Control:
+      - max-age=21600
+      Connection:
+      - close
+      Content-Length:
+      - '46280'
+      Content-Type:
+      - application/ld+json
+      Date:
+      - Thu, 20 Apr 2023 14:53:36 GMT
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cf_bm=lLrphYsFiH4tFqahn0fDLdjghefa1TWqnalGE1PB7rc-1682002416-0-AXGKPYuBtt1LjvsXAIjrGoH6jpQbM2Jzyuda35P1fBlrHv7wKPIYScJehIsLl6l+/lAKpkw9MQ+o1rNi8QusFuw=;
+        path=/; expires=Thu, 20-Apr-23 15:23:36 GMT; domain=.w3.org; HttpOnly; Secure;
+        SameSite=None
+      access-control-allow-origin:
+      - '*'
+      alt-svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      content-location:
+      - csvw.jsonld
+      content-security-policy:
+      - upgrade-insecure-requests
+      etag:
+      - '"b4c8-577b4ded6f000;9f-50ab8a8466840'
+      expires:
+      - Thu, 20 Apr 2023 20:53:36 GMT
+      last-modified:
+      - Mon, 08 Oct 2018 10:13:20 GMT
+      strict-transport-security:
+      - max-age=15552000; includeSubdomains; preload
+      tcn:
+      - choice
+      vary:
+      - negotiate,accept, Accept-Encoding
+      x-backend:
+      - www-mirrors
+      x-request-id:
+      - 7bae37ba6e20413c
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -7,7 +7,7 @@ from typing import List
 import pandas as pd
 import pytest
 
-from csvcubed.cli.build import build as cli_build
+from csvcubed.cli.buildcsvw.build import build_csvw as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
