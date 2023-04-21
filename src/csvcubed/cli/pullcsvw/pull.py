@@ -8,8 +8,10 @@ import json
 import logging
 import os
 import shutil
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Set, Union
+from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 from urllib.parse import urljoin, urlparse
 
 import rdflib
@@ -19,9 +21,14 @@ from csvcubed.utils.cache import session
 from csvcubed.utils.json import load_json_document
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
-from csvcubed.utils.uri import looks_like_uri
+from csvcubed.utils.uri import file_uri_to_path, looks_like_uri
 
 _logger = logging.getLogger(__name__)
+
+TPath = TypeVar("TPath", bound=Union[str, Path])
+"""
+Either a string (URL) for a remotely stored CSV-W or a Path for a locally stored CSV-W.
+"""
 
 
 def pull(csvw_metadata_url: str, output_dir: Path) -> None:
@@ -34,35 +41,268 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
 
     output_dir.mkdir(exist_ok=True, parents=True)
 
-    if looks_like_uri(csvw_metadata_url):
-        csvw_metadata_file_name = _get_file_name_from_url(csvw_metadata_url)
-        _download_to_file(csvw_metadata_url, output_dir / csvw_metadata_file_name)
-        base_path_for_relative_files = urlparse(urljoin(csvw_metadata_url, ".")).path
-    else:
-        _copy_local_dependency(csvw_metadata_url, output_dir)
-        base_path_for_relative_files = str(Path(csvw_metadata_url).absolute().parent)
+    csvw_puller = (
+        HttpCsvWPuller(csvw_metadata_url)
+        if looks_like_uri(csvw_metadata_url)
+        else FileCsvWPuller(Path(csvw_metadata_url).absolute())
+    )
 
-    _logger.debug("Base path for relative files '%s'", base_path_for_relative_files)
+    csvw_puller.pull(output_dir)
 
-    for absolute_dependency_path in _get_csvw_dependencies_follow_relative_only(
-        csvw_metadata_url
-    ):
-        relative_dependency_path = os.path.relpath(
-            urlparse(absolute_dependency_path).path, start=base_path_for_relative_files
+
+@dataclass
+class CsvWPuller(Generic[TPath], ABC):
+    csvw_metadata_path: TPath
+
+    @abstractmethod
+    def pull(self, output_dir: Path) -> None:
+        """
+        Pulls the CSV-W into the output directory.
+        """
+        ...
+
+    @abstractmethod
+    def _get_table_group(self) -> Dict:
+        """
+        Returns the table group for the CSV-W metadata file.
+        """
+        ...
+
+    @abstractmethod
+    def _get_default_base_path(self) -> TPath:
+        """
+        Returns the default base path for the document, assuming that a `@base` URL hasn't been set in the context.
+
+        i.e. Where all the URLs are relative to (by default).
+        """
+        ...
+
+    @abstractmethod
+    def _join_paths(self, base_path: TPath, relative_path: str) -> TPath:
+        ...
+
+    @abstractmethod
+    def _get_metadata_file_identifier(self) -> str:
+        """
+        Return a unique identifier for this metadata file.
+        """
+        ...
+
+    @abstractmethod
+    def _rdflib_uri_to_path(self, rdflib_uri: str) -> TPath:
+        """
+        Map an rdflib URI to a TPath.
+        """
+        ...
+
+    def _get_csvw_dependencies_follow_relative_only(
+        self,
+    ) -> Set[TPath]:
+        """
+        :return: A set containing all the relative URLs referenced by the CSV-W converted to absolute form.
+        """
+
+        _logger.debug("Locating dependencies for '%s'", self.csvw_metadata_path)
+        dependencies = self._get_csv_w_spec_dependencies_follow_relative_only()
+        dependencies |= self._get_rdf_file_dependencies_follow_relative_only()
+
+        _logger.debug("Found CSV-W spec dependencies %s", dependencies)
+
+        return dependencies
+
+    def _get_csvw_metadata_base_path(self, table_group: dict) -> TPath:
+        base_url = _get_context_base_url(table_group.get("@context"))
+
+        default_base_path = self._get_default_base_path()
+
+        if base_url is None:
+            _logger.debug(
+                "Absolute base path/URL for document: '%s'", default_base_path
+            )
+            return default_base_path
+        elif looks_like_uri(base_url):
+            # If you specify an absolute base_url then none of the dependencies are relative, so there's nothing to
+            # download.
+            raise AbsoluteBasePathError(base_url)
+
+        base_path = self._join_paths(default_base_path, base_url)
+        _logger.debug("Absolute base path/URL for document: '%s'", base_path)
+        return base_path
+
+    def _get_csv_w_spec_dependencies_follow_relative_only(self) -> Set[TPath]:
+        table_group = self._get_table_group()
+        dependencies = _get_csv_w_spec_dependencies(table_group)
+        # N.B. Dependencies which are absolute because of an absolute base_url will never come into this function.
+        absolute_dependencies = {d for d in dependencies if looks_like_uri(d)}
+        for d in absolute_dependencies:
+            _logger.warning(
+                "Not downloading dependency '%s' since it is an absolute dependency.", d
+            )
+
+        try:
+            base_path = self._get_csvw_metadata_base_path(table_group)
+        except AbsoluteBasePathError as e:
+            _logger.warning(
+                "Metadata JSON document %s has absolute base URL %s. No relative dependencies to download.",
+                self.csvw_metadata_path,
+                e.base_url,
+            )
+            return set()
+
+        return {
+            self._join_paths(base_path, d)
+            for d in dependencies
+            if d not in absolute_dependencies
+        }
+
+    def _get_rdf_file_dependencies_follow_relative_only(self) -> Set[TPath]:
+        """
+        Extract file dependencies defined in RDF.
+
+        If you want to load the triples, you should not use this function as this loads all dependent triples and
+        then throws most of them away.
+
+        :return: A list of paths specifying the location of file dependencies.
+        """
+
+        table_group_graph = rdflib.ConjunctiveGraph()
+
+        metadata_file_identifier: str = self._get_metadata_file_identifier()
+        parse_graph_retain_relative(
+            self.csvw_metadata_path,
+            format="json-ld",
+            graph=table_group_graph.get_context(metadata_file_identifier),
         )
-        _logger.debug("Relative dependency path '%s'", relative_dependency_path)
 
-        output_file = output_dir / relative_dependency_path
-        output_file.parent.mkdir(exist_ok=True, parents=True)
-        if looks_like_uri(csvw_metadata_url):
-            _download_to_file(absolute_dependency_path, output_file)
-        else:
+        # This certainly isn't the most efficient approach at dependency resolution, but it's convenient right now.
+        add_triples_for_file_dependencies(
+            table_group_graph,
+            paths_relative_to=self.csvw_metadata_path,
+            follow_relative_path_dependencies_only=True,
+        )
+
+        rdf_file_dependencies = {
+            self._rdflib_uri_to_path(str(c.identifier))
+            for c in table_group_graph.contexts()
+            if isinstance(c.identifier, rdflib.URIRef)
+            and c.identifier != rdflib.URIRef(metadata_file_identifier)
+        }
+
+        _logger.debug("Found RDF File dependencies %s", rdf_file_dependencies)
+
+        return rdf_file_dependencies
+
+
+@dataclass
+class FileCsvWPuller(CsvWPuller[Path]):
+    # @abstractmethod
+    # def _pull_resource_to_dir(self, output_dir: Path) -> None:
+    #     ...
+
+    def pull(self, output_dir: Path) -> None:
+        _copy_local_dependency(self.csvw_metadata_path, output_dir)
+
+        _logger.debug(
+            "All files will be placed relative to '%s'", self.csvw_metadata_path
+        )
+
+        for (
+            absolute_dependency_path
+        ) in self._get_csvw_dependencies_follow_relative_only():
+            relative_dependency_path = absolute_dependency_path.relative_to(
+                self.csvw_metadata_path.parent
+            )
+            _logger.debug("Relative dependency path '%s'", relative_dependency_path)
+
+            output_file = output_dir / relative_dependency_path
+            _logger.debug("Output file path '%s'", output_file)
+
+            output_file.parent.mkdir(exist_ok=True, parents=True)
             _copy_local_dependency(absolute_dependency_path, output_file)
 
+    def _get_table_group(self) -> Dict:
+        _logger.debug("Opening metadata file '%s'", self.csvw_metadata_path)
+        with open(Path(self.csvw_metadata_path), "r") as f:
+            return json.load(f)
 
-def _copy_local_dependency(path_to_copy: str, output_location: Path) -> None:
+    def _get_default_base_path(self) -> Path:
+        return self.csvw_metadata_path.parent
+
+    def _join_paths(self, base_path: Path, relative_path: str) -> Path:
+        return file_uri_to_path(urljoin(base_path.as_uri() + "/", relative_path))
+
+    def _get_metadata_file_identifier(self) -> str:
+        return self.csvw_metadata_path.as_uri()
+
+    def _rdflib_uri_to_path(self, rdflib_uri: str) -> Path:
+        return file_uri_to_path(rdflib_uri)
+
+
+@dataclass
+class HttpCsvWPuller(CsvWPuller[str]):
+    def pull(self, output_dir: Path) -> None:
+        csvw_metadata_file_name = _get_file_name_from_url(self.csvw_metadata_path)
+
+        _download_to_file(self.csvw_metadata_path, output_dir / csvw_metadata_file_name)
+
+        base_path_for_relative_files = urlparse(
+            urljoin(self.csvw_metadata_path, ".")
+        ).path
+
+        _logger.debug(
+            "All files will be placed relative to '%s'", base_path_for_relative_files
+        )
+
+        for (
+            absolute_dependency_path
+        ) in self._get_csvw_dependencies_follow_relative_only():
+            relative_dependency_path = os.path.relpath(
+                urlparse(absolute_dependency_path).path,
+                start=base_path_for_relative_files,
+            )
+            _logger.debug("Relative dependency path '%s'", relative_dependency_path)
+
+            output_file = output_dir / relative_dependency_path
+            _logger.debug("Output file path '%s'", output_file)
+
+            output_file.parent.mkdir(exist_ok=True, parents=True)
+            _download_to_file(absolute_dependency_path, output_file)
+
+    def _get_table_group(self) -> Dict:
+        _logger.debug("Downloading metadata file '%s'", self.csvw_metadata_path)
+
+        with session.cache_disabled():
+            _logger.debug("Temporarily disabling HTTP(s) cache to ensure latest data.")
+            return load_json_document(self.csvw_metadata_path)
+
+    def _get_default_base_path(self) -> str:
+        return self.csvw_metadata_path
+
+    def _join_paths(self, base_path: str, relative_path: str) -> str:
+        return urljoin(base_path, relative_path)
+
+    def _get_metadata_file_identifier(self) -> str:
+        return self.csvw_metadata_path
+
+    def _rdflib_uri_to_path(self, rdflib_uri: str) -> str:
+        return rdflib_uri
+
+
+@dataclass
+class AbsoluteBasePathError(ValueError):
+    """
+    An exception to communicate that the base path of the CSV-W metadata document is an absolute URL.
+
+    This means that there are no relative dependencies that we can download. This exception should be caught and a
+    warning communicated to the user.
+    """
+
+    base_url: str
+
+
+def _copy_local_dependency(path_to_copy: Path, output_location: Path) -> None:
     _logger.debug("Treating location '%s' as a local Path", path_to_copy)
-    absolute_path_to_copy = str(Path(path_to_copy).absolute())
+    absolute_path_to_copy = path_to_copy.absolute()
     _logger.info(
         "Copying file '%s' to %s.",
         absolute_path_to_copy,
@@ -95,53 +335,6 @@ def _get_context_base_url(context: Union[Dict, List, None]) -> Optional[str]:
     return base_url
 
 
-def _get_csvw_dependencies_follow_relative_only(metadata_file_url: str) -> Set[str]:
-    """
-    :return: A set containing all the relative URLs referenced by the CSV-W converted to absolute form.
-    """
-
-    _logger.debug("Locating dependencies for '%s'", metadata_file_url)
-    table_group = _get_table_group_for_metadata_file(metadata_file_url)
-
-    base_url = _get_context_base_url(table_group.get("@context"))
-    if base_url is None:
-        base_url = metadata_file_url
-    elif looks_like_uri(base_url):
-        # If you specify an absolute base_url then none of the dependencies are relative, so there's nothing to
-        # download.
-        _logger.warning(
-            "Metadata JSON document %s has absolute base URL %s. No relative dependencies to download.",
-            metadata_file_url,
-            base_url,
-        )
-        return set()
-    else:
-        base_url = urljoin(metadata_file_url, base_url)
-    _logger.debug("Absolute base URL for document: '%s'", base_url)
-
-    dependencies = _get_csv_w_spec_dependencies_follow_relative_only(
-        base_url, table_group
-    )
-    dependencies |= _get_rdf_file_dependencies_follow_relative_only(metadata_file_url)
-
-    _logger.debug("Found CSV-W spec dependencies %s", dependencies)
-
-    return dependencies
-
-
-def _get_csv_w_spec_dependencies_follow_relative_only(base_url, table_group):
-    dependencies = _get_csv_w_spec_dependencies(table_group)
-    # N.B. Dependencies which are absolute because of an absolute base_url will never come into this function.
-    absolute_dependencies = {d for d in dependencies if looks_like_uri(d)}
-    for d in absolute_dependencies:
-        _logger.warning(
-            "Not downloading dependency '%s' since it is an absolute dependency.", d
-        )
-    return {
-        urljoin(base_url, d) for d in dependencies if d not in absolute_dependencies
-    }
-
-
 def _get_csv_w_spec_dependencies(table_group: dict) -> Set[str]:
     """ """
     _logger.debug("Locating CSV-W spec file dependencies.")
@@ -167,57 +360,6 @@ def _get_csv_w_spec_dependencies(table_group: dict) -> Set[str]:
             dependencies.add(schema.strip())
 
     return dependencies
-
-
-def _get_rdf_file_dependencies_follow_relative_only(metadata_file_url: str) -> Set[str]:
-    """
-    Extract file dependencies defined in RDF.
-
-    If you want to load the triples, you should not use this function as this loads all dependent triples and
-    then throws most of them away.
-
-    :return: A list of paths specifying the location of file dependencies.
-    """
-
-    table_group_graph = rdflib.ConjunctiveGraph()
-
-    parse_graph_retain_relative(
-        metadata_file_url,
-        format="json-ld",
-        graph=table_group_graph.get_context(metadata_file_url),
-    )
-
-    # This certainly isn't the most efficient approach at dependency resolution, but it's convenient right now.
-    add_triples_for_file_dependencies(
-        table_group_graph,
-        paths_relative_to=metadata_file_url,
-        follow_relative_path_dependencies_only=True,
-    )
-
-    rdf_file_dependencies = {
-        str(c.identifier)
-        for c in table_group_graph.contexts()
-        if isinstance(c.identifier, rdflib.URIRef)
-        and c.identifier != rdflib.URIRef(metadata_file_url)
-    }
-
-    _logger.debug("Found RDF File dependencies %s", rdf_file_dependencies)
-
-    return rdf_file_dependencies
-
-
-def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
-    _logger.debug("Acquiring table group for metadata file '%s'", metadata_file)
-    if looks_like_uri(metadata_file):
-        _logger.debug("Downloading metadata file '%s'", metadata_file)
-
-        with session.cache_disabled():
-            _logger.debug("Temporarily disabling HTTP(s) cache to ensure latest data.")
-            return load_json_document(metadata_file)
-    else:
-        _logger.debug("Opening metadata file '%s'", metadata_file)
-        with open(Path(metadata_file), "r") as f:
-            return json.load(f)
 
 
 def _get_file_name_from_url(url: str) -> str:
