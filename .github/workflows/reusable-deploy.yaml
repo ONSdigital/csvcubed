@@ -48,7 +48,9 @@ jobs:
 
           mkdir inspect-api
 
-          cp -r ../build/html/* inspect-api
+          mkdir inspect-api/html
+
+          cp -r ../build/html/* inspect-api/html
 
           mkdir inspect-api/doctrees
 
