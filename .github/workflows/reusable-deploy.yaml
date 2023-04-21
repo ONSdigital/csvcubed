@@ -50,9 +50,9 @@ jobs:
 
           cp -r ../build/html/* inspect-api
 
-          cp -r ../build/doctrees/* inspect-api
+          mkdir inspect-api/doctrees
 
-          cp -r ../source/* inspect-api
+          cp -r ../build/doctrees/* inspect-api/doctrees
 
           touch .nojekyll
 
