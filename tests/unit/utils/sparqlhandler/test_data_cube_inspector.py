@@ -1023,13 +1023,15 @@ def test_load_pandas_df_from_standard_shape_csv_url():
         _test_case_base_dir
         / "inspector-load-dataframe"
         / "standard-shape"
-        / "standard-shape-out"
+        / "out"
         / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, True)
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(
+        csv_url, dereference_uris=True
+    )
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "string"

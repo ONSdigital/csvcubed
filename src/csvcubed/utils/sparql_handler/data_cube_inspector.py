@@ -35,6 +35,7 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -325,56 +326,71 @@ class DataCubeInspector:
         same columns being defined.
         """
         cols = self.get_column_component_info(csv_url)
-        dict_of_types = _get_data_types_of_all_cols(cols, True)
+        dict_of_types = _get_data_types_of_all_cols(cols, dereference_uris)
         absolute_csv_url = file_uri_to_path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
         )
+        (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
 
         if dereference_uris:
-            (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
+            code_lists = self.get_code_lists_and_cols(csv_url).codelists
             for col in cols:
-                if col.column_type.value == "Attribute":
+                value_url = col.column_definition.value_url
+                col_values = df[col.column_definition.title].values
+                if isinstance(col_values, Categorical):
+                    col_categories = col_values.categories
+                if col.column_type.value == "Attribute" and value_url is not None:
+                    col_uris = [
+                        uritemplate.expand(value_url, {col.column_definition.name: cat})
+                        for cat in col_categories
+                    ]
                     attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-                    value_url = col.column_definition.value_url
-                    col_data = df[col.column_definition.title]
-                    col_values = col_data.values
-                    col_categories = col_values.categories
-                    col_uris = [
-                        uritemplate.expand(value_url, {col.column_definition.name: val})
-                        for val in col_values
+                    new_category_labels = [
+                        attribute_vals[col.column_definition.title][uri]
+                        for uri in col_uris
                     ]
-                    label = attribute_vals[col.column_definition.title][col_uris[0]]
-                    pass
+                    df[col.column_definition.title] = col_values.rename_categories(
+                        new_category_labels
+                    )
                 elif col.column_type.value == "Measures":
+                    col_uris = [
+                        uritemplate.expand(value_url, {col.column_definition.name: cat})
+                        for cat in col_categories
+                    ]
                     measures = self.get_measure_uris_and_labels(csv_url)
-                    value_url = col.column_definition.value_url
-                    col_data = df[col.column_definition.title]
-                    col_values = col_data.values
-                    col_categories = col_values.categories
-                    col_uris = [
-                        uritemplate.expand(value_url, {col.column_definition.name: val})
-                        for val in col_values
-                    ]
+                    new_category_labels = [measures[uri] for uri in col_uris]
+                    df[col.column_definition.title] = col_values.rename_categories(
+                        new_category_labels
+                    )
                 elif col.column_type.value == "Units":
-                    units = self.get_units()
-                    value_url = col.column_definition.value_url
-                    col_data = df[col.column_definition.title]
-                    col_values = col_data.values
-                    col_categories = col_values.categories
                     col_uris = [
-                        uritemplate.expand(value_url, {col.column_definition.name: val})
-                        for val in col_values
+                        uritemplate.expand(value_url, {col.column_definition.name: cat})
+                        for cat in col_categories
                     ]
+                    new_category_labels = [
+                        self.get_unit_for_uri(col_uri).unit_label
+                        for col_uri in col_uris
+                    ]
+                    df[col.column_definition.title] = col_values.rename_categories(
+                        new_category_labels
+                    )
                 elif col.column_type.value == "Dimension":
-                    code_lists = self.get_code_lists_and_cols(csv_url)
-                    value_url = col.column_definition.value_url
-                    col_data = df[col.column_definition.title]
-                    col_values = col_data.values
-                    col_categories = col_values.categories
-                    col_uris = [
-                        uritemplate.expand(value_url, {col.column_definition.name: val})
-                        for val in col_values
-                    ]
+                    code_list_inspector = CodeListInspector(self.csvw_inspector)
+                    for code_list in code_lists:
+                        if col.column_definition.title == code_list.code_list_label:
+                            concept_scheme_uri = code_list.code_list
+                            uri_labels_dict = (
+                                code_list_inspector.get_map_code_list_uri_to_label(
+                                    concept_scheme_uri
+                                )
+                            )
+                            new_category_labels = uri_labels_dict.values()
+                            df[
+                                col.column_definition.title
+                            ] = col_values.rename_categories(new_category_labels)
+                else:
+                    # Column is either an Attribute Literal or Observations
+                    pass
 
             return df, _errors
         else:

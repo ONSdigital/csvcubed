@@ -17,6 +17,12 @@
             "values": [
                 {
                     "label": "Final"
+                },
+                {
+                    "label": "Provisional"
+                },
+                {
+                    "label": "Estimated"
                 }
             ]
         },
