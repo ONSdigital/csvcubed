@@ -44,7 +44,7 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     csvw_puller = (
         HttpCsvWPuller(csvw_metadata_url)
         if looks_like_uri(csvw_metadata_url)
-        else FileCsvWPuller(Path(csvw_metadata_url).absolute())
+        else FileCsvWPuller(Path(csvw_metadata_url))
     )
 
     csvw_puller.pull(output_dir)
@@ -226,7 +226,7 @@ class FileCsvWPuller(CsvWPuller[Path]):
 
     def _get_table_group(self) -> Dict:
         _logger.debug("Opening metadata file '%s'", self.csvw_metadata_path)
-        with open(Path(self.csvw_metadata_path), "r") as f:
+        with open(self.csvw_metadata_path, "r") as f:
             return json.load(f)
 
     def _get_default_csv_w_base_path(self) -> Path:
