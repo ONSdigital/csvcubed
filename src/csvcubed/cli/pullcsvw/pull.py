@@ -40,11 +40,13 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
         base_path_for_relative_files = urlparse(urljoin(csvw_metadata_url, ".")).path
     else:
         _copy_local_dependency(csvw_metadata_url, output_dir)
-        base_path_for_relative_files = Path(csvw_metadata_url).absolute().parent
+        base_path_for_relative_files = str(Path(csvw_metadata_url).absolute().parent)
 
     _logger.debug("Base path for relative files '%s'", base_path_for_relative_files)
 
-    for absolute_dependency_path in _get_csvw_dependencies(csvw_metadata_url):
+    for absolute_dependency_path in _get_csvw_dependencies_follow_relative_only(
+        csvw_metadata_url
+    ):
         relative_dependency_path = os.path.relpath(
             urlparse(absolute_dependency_path).path, start=base_path_for_relative_files
         )
@@ -93,9 +95,9 @@ def _get_context_base_url(context: Union[Dict, List, None]) -> Optional[str]:
     return base_url
 
 
-def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
+def _get_csvw_dependencies_follow_relative_only(metadata_file_url: str) -> Set[str]:
     """
-    :return: A set containing all the URLs referenced by the CSV-W converted to absolute form.
+    :return: A set containing all the relative URLs referenced by the CSV-W converted to absolute form.
     """
 
     _logger.debug("Locating dependencies for '%s'", metadata_file_url)
@@ -104,25 +106,46 @@ def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
     base_url = _get_context_base_url(table_group.get("@context"))
     if base_url is None:
         base_url = metadata_file_url
-    elif not looks_like_uri(base_url):
+    elif looks_like_uri(base_url):
+        # If you specify an absolute base_url then none of the dependencies are relative, so there's nothing to
+        # download.
+        _logger.warning(
+            "Metadata JSON document has absolute base URL '%s'. No relative dependencies to download.",
+            base_url,
+        )
+        return set()
+    else:
         base_url = urljoin(metadata_file_url, base_url)
     _logger.debug("Absolute base URL for document: '%s'", base_url)
 
-    dependencies = set(_get_csv_w_spec_dependencies(table_group))
-    dependencies |= _get_rdf_file_dependencies(metadata_file_url)
+    dependencies = _get_csv_w_spec_dependencies_follow_relative_only(
+        base_url, table_group
+    )
+    dependencies |= _get_rdf_file_dependencies_follow_relative_only(metadata_file_url)
 
-    absolute_dependencies = {
-        path if looks_like_uri(path) else urljoin(base_url, path)
-        for path in dependencies
+    _logger.debug("Found CSV-W spec dependencies %s", dependencies)
+
+    return dependencies
+
+
+def _get_csv_w_spec_dependencies_follow_relative_only(base_url, table_group):
+    dependencies = _get_csv_w_spec_dependencies(table_group)
+    # N.B. Dependencies which are absolute because of an absolute base_url will never come into this function.
+    absolute_dependencies = {d for d in dependencies if looks_like_uri(d)}
+    for d in absolute_dependencies:
+        _logger.warning(
+            "Not downloading dependency '%s' since it is an absolute dependency.", d
+        )
+    return {
+        urljoin(base_url, d) for d in dependencies if d not in absolute_dependencies
     }
 
-    _logger.debug("Found CSV-W spec dependencies %s", absolute_dependencies)
 
-    return absolute_dependencies
-
-
-def _get_csv_w_spec_dependencies(table_group: dict) -> Iterable[str]:
+def _get_csv_w_spec_dependencies(table_group: dict) -> Set[str]:
+    """ """
     _logger.debug("Locating CSV-W spec file dependencies.")
+    dependencies: Set[str] = set()
+
     # Embedded tables
     tables = table_group.get("tables", [])
 
@@ -135,15 +158,17 @@ def _get_csv_w_spec_dependencies(table_group: dict) -> Iterable[str]:
         table_url = table.get("url")
         schema = table.get("tableSchema")
 
-        if table_url is not None and str(table_url).strip() != "":
+        if table_url is not None:
             _logger.debug("Found table located at url '%s'", table_url)
-            yield str(table_url).strip()
-        if schema is not None and isinstance(schema, str) and schema.strip() != "":
+            dependencies.add(str(table_url).strip())
+        if schema is not None and isinstance(schema, str):
             _logger.debug("Found schema defined in file '%s'", schema)
-            yield schema.strip()
+            dependencies.add(schema.strip())
+
+    return dependencies
 
 
-def _get_rdf_file_dependencies(metadata_file_url: str) -> Set[str]:
+def _get_rdf_file_dependencies_follow_relative_only(metadata_file_url: str) -> Set[str]:
     """
     Extract file dependencies defined in RDF.
 

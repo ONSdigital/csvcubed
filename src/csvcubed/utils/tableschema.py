@@ -177,8 +177,19 @@ def add_triples_for_file_dependencies(
 
     if follow_relative_path_dependencies_only and any(dependencies_to_load):
         _logger.debug("Dropping non-relative dependencies.")
+        absolute_dependency_urls = {
+            d.data_dump for d in dependencies_to_load if looks_like_uri(d.data_dump)
+        }
+        for dep in absolute_dependency_urls:
+            _logger.warning(
+                "Not following RDF dependency '%s' since it is an absolute dependency.",
+                dep,
+            )
+
         dependencies_to_load = [
-            d for d in dependencies_to_load if not looks_like_uri(d.data_dump)
+            d
+            for d in dependencies_to_load
+            if d.data_dump not in absolute_dependency_urls
         ]
 
     if not any(dependencies_to_load):

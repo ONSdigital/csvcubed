@@ -1,14 +1,17 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 import pytest
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
-from csvcubed.cli.pullcsvw.pull import _get_csvw_dependencies
+from csvcubed.cli.pullcsvw.pull import _get_csvw_dependencies_follow_relative_only, pull
 
 _test_cases_dir = get_test_cases_dir()
 
 
 @pytest.mark.vcr
 def test_extracting_dependant_urls():
-    dependencies = _get_csvw_dependencies(
+    dependencies = _get_csvw_dependencies_follow_relative_only(
         "https://w3c.github.io/csvw/tests/test015/csv-metadata.json"
     )
 
@@ -17,7 +20,7 @@ def test_extracting_dependant_urls():
 
 @pytest.mark.vcr
 def test_extracting_relative_base_url_from_context():
-    dependencies = _get_csvw_dependencies(
+    dependencies = _get_csvw_dependencies_follow_relative_only(
         "https://w3c.github.io/csvw/tests/test273-metadata.json"
     )
 
@@ -26,7 +29,7 @@ def test_extracting_relative_base_url_from_context():
 
 @pytest.mark.vcr
 def test_extracting_multiple_tables_with_url_schemas():
-    dependencies = _get_csvw_dependencies(
+    dependencies = _get_csvw_dependencies_follow_relative_only(
         "https://w3c.github.io/csvw/tests/test034/csv-metadata.json"
     )
 
@@ -45,7 +48,9 @@ def test_extracting_multiple_tables_with_url_schemas():
 @pytest.mark.vcr
 def test_get_relative_dependencies():
     base = "https://w3c.github.io/csvw/tests/test034"
-    dependencies = _get_csvw_dependencies(f"{base}/csv-metadata.json")
+    dependencies = _get_csvw_dependencies_follow_relative_only(
+        f"{base}/csv-metadata.json"
+    )
 
     assert dependencies == {
         f"{base}/gov.uk/data/professions.csv",
@@ -62,7 +67,7 @@ def test_get_relative_dependencies():
 @pytest.mark.vcr
 def test_get_tableschema_dependencies():
     base = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/main/sweden_at_eurovision_no_missing/convention_out"
-    dependencies = _get_csvw_dependencies(
+    dependencies = _get_csvw_dependencies_follow_relative_only(
         f"{base}/sweden-at-eurovision-no-missing.csv-metadata.json"
     )
 
@@ -93,7 +98,9 @@ def test_extracting_rdf_dependency():
         "test-cases/cli/inspect/dependencies"
     )
 
-    dependencies = _get_csvw_dependencies(f"{base}/transitive.csv-metadata.json")
+    dependencies = _get_csvw_dependencies_follow_relative_only(
+        f"{base}/transitive.csv-metadata.json"
+    )
 
     assert dependencies == {
         f"{base}/data.csv",
@@ -102,6 +109,28 @@ def test_extracting_rdf_dependency():
         f"{base}/transitive.1.json",
         f"{base}/transitive.2.json",
     }
+
+
+@pytest.mark.vcr
+def test_pull_with_absolute_dependency():
+    """
+    Test that absolute (non-relative) dependencies of CSV-Ws can also be successfully pulled.
+    """
+    with TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        pull(
+            "https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/rdf-definitions/attributes/"
+            "analyst-function-obs-marker.csv-metadata.json",
+            tmp,
+        )
+        assert (tmp / "analyst-function-obs-marker.csv-metadata.json").exists()
+        """
+            Note that since the CSV file in this example is at an absolute non-relative URL on a different domain,
+            we don't download it.
+
+            If we did download it, we'd have to fundamentally rewrite the CSV-W metadata.json document to make it point
+            to it.
+        """
 
 
 if __name__ == "__main__":
