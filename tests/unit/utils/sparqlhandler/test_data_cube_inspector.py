@@ -1046,7 +1046,11 @@ def test_load_pandas_df_from_standard_shape_csv_url():
 
 
 def test_load_pandas_df_standard_shape_with_dereferencing():
-    """ """
+    """
+    Tests that using the get_dataframe function with dereferencing enabled
+    correctly alters the contents of the dataframe to use the human-readable
+    labels.
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "inspector-load-dataframe"
@@ -1073,7 +1077,10 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
 
 
 def test_load_pandas_df_without_dereferencing():
-    """ """
+    """
+    Checks that turning off the dereferencing parameter of the get_dataframe function
+    correctly returns the unchanged values from the created dataframe.
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "inspector-load-dataframe"
@@ -1129,7 +1136,8 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
 def test_load_pandas_df_from_pivoted_shape_with_dereferencing():
     """
     Testing that a dataframe with columns represented in the correct data types
-    can be loaded from a pivoted shape CSVW.
+    can be loaded from a pivoted shape CSVW, and that the URIs of the created
+    dataframe can correctly be dereferenced to human readable labels.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
