@@ -62,13 +62,13 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
 
 def _copy_local_dependency(path_to_copy: str, output_location: Path) -> None:
     _logger.debug("Treating location '%s' as a local Path", path_to_copy)
-    csvw_metadata_file_path = str(Path(path_to_copy).absolute())
+    absolute_path_to_copy = str(Path(path_to_copy).absolute())
     _logger.info(
         "Copying file '%s' to %s.",
-        csvw_metadata_file_path,
+        absolute_path_to_copy,
         output_location,
     )
-    shutil.copy(csvw_metadata_file_path, output_location)
+    shutil.copy(absolute_path_to_copy, output_location)
     _logger.debug("File copy operation complete.")
 
 

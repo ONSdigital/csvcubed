@@ -196,7 +196,7 @@ def code_list_build_command(
 )
 def csvw_pull(csvw_metadata_json_url: str, out: Path, log_level: str) -> None:
     """
-    Pull a CSV-W and all dependent files.
+    Pull a CSV-W and all relatively defined dependent files.
     """
     _init_logging(log_level)
     try:
