@@ -54,11 +54,18 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
 class CsvWPuller(Generic[TPath], ABC):
     csvw_metadata_path: TPath
 
-    @abstractmethod
     def pull(self, output_dir: Path) -> None:
         """
         Pulls the CSV-W into the output directory.
         """
+        self._pull_resource_to_dir(self.csvw_metadata_path, output_dir)
+        for (
+            absolute_dependency_path
+        ) in self._get_csvw_dependencies_follow_relative_only():
+            self._pull_resource_to_dir(absolute_dependency_path, output_dir)
+
+    @abstractmethod
+    def _pull_resource_to_dir(self, absolute_path: TPath, output_dir: Path) -> None:
         ...
 
     @abstractmethod
@@ -69,7 +76,7 @@ class CsvWPuller(Generic[TPath], ABC):
         ...
 
     @abstractmethod
-    def _get_default_base_path(self) -> TPath:
+    def _get_default_csv_w_base_path(self) -> TPath:
         """
         Returns the default base path for the document, assuming that a `@base` URL hasn't been set in the context.
 
@@ -78,20 +85,23 @@ class CsvWPuller(Generic[TPath], ABC):
         ...
 
     @abstractmethod
-    def _join_paths(self, base_path: TPath, relative_path: str) -> TPath:
-        ...
-
-    @abstractmethod
-    def _get_metadata_file_identifier(self) -> str:
+    def _join_relative_path(self, base_path: TPath, relative_path: str) -> TPath:
         """
-        Return a unique identifier for this metadata file.
+        Join a relative path onto some base path.
         """
         ...
 
     @abstractmethod
-    def _rdflib_uri_to_path(self, rdflib_uri: str) -> TPath:
+    def _get_unique_identifier(self) -> str:
         """
-        Map an rdflib URI to a TPath.
+        Return a unique string identifying this metadata file.
+        """
+        ...
+
+    @abstractmethod
+    def _map_rdflib_uri_to_path(self, rdflib_uri: str) -> TPath:
+        """
+        Map an rdflib URI representing a path to a TPath.
         """
         ...
 
@@ -113,7 +123,7 @@ class CsvWPuller(Generic[TPath], ABC):
     def _get_csvw_metadata_base_path(self, table_group: dict) -> TPath:
         base_url = _get_context_base_url(table_group.get("@context"))
 
-        default_base_path = self._get_default_base_path()
+        default_base_path = self._get_default_csv_w_base_path()
 
         if base_url is None:
             _logger.debug(
@@ -125,7 +135,7 @@ class CsvWPuller(Generic[TPath], ABC):
             # download.
             raise AbsoluteBasePathError(base_url)
 
-        base_path = self._join_paths(default_base_path, base_url)
+        base_path = self._join_relative_path(default_base_path, base_url)
         _logger.debug("Absolute base path/URL for document: '%s'", base_path)
         return base_path
 
@@ -150,7 +160,7 @@ class CsvWPuller(Generic[TPath], ABC):
             return set()
 
         return {
-            self._join_paths(base_path, d)
+            self._join_relative_path(base_path, d)
             for d in dependencies
             if d not in absolute_dependencies
         }
@@ -167,7 +177,7 @@ class CsvWPuller(Generic[TPath], ABC):
 
         table_group_graph = rdflib.ConjunctiveGraph()
 
-        metadata_file_identifier: str = self._get_metadata_file_identifier()
+        metadata_file_identifier: str = self._get_unique_identifier()
         parse_graph_retain_relative(
             self.csvw_metadata_path,
             format="json-ld",
@@ -182,7 +192,7 @@ class CsvWPuller(Generic[TPath], ABC):
         )
 
         rdf_file_dependencies = {
-            self._rdflib_uri_to_path(str(c.identifier))
+            self._map_rdflib_uri_to_path(str(c.identifier))
             for c in table_group_graph.contexts()
             if isinstance(c.identifier, rdflib.URIRef)
             and c.identifier != rdflib.URIRef(metadata_file_identifier)
@@ -195,78 +205,72 @@ class CsvWPuller(Generic[TPath], ABC):
 
 @dataclass
 class FileCsvWPuller(CsvWPuller[Path]):
-    # @abstractmethod
-    # def _pull_resource_to_dir(self, output_dir: Path) -> None:
-    #     ...
+    """
+    Pulls a CSV-W and its relative dependencies from one file-system location to another.
+    """
 
-    def pull(self, output_dir: Path) -> None:
-        _copy_local_dependency(self.csvw_metadata_path, output_dir)
+    def __post_init__(self):
+        self.csvw_metadata_path = self.csvw_metadata_path.absolute()
 
-        _logger.debug(
-            "All files will be placed relative to '%s'", self.csvw_metadata_path
+    def _pull_resource_to_dir(
+        self, absolute_resource_path: Path, output_dir: Path
+    ) -> None:
+        # Need to decide where we should write the file to within the output directory.
+        relative_dependency_path = absolute_resource_path.relative_to(
+            self.csvw_metadata_path.parent
         )
 
-        for (
-            absolute_dependency_path
-        ) in self._get_csvw_dependencies_follow_relative_only():
-            relative_dependency_path = absolute_dependency_path.relative_to(
-                self.csvw_metadata_path.parent
-            )
-            _logger.debug("Relative dependency path '%s'", relative_dependency_path)
-
-            output_file = output_dir / relative_dependency_path
-            _logger.debug("Output file path '%s'", output_file)
-
-            output_file.parent.mkdir(exist_ok=True, parents=True)
-            _copy_local_dependency(absolute_dependency_path, output_file)
+        output_file = output_dir / relative_dependency_path
+        output_file.parent.mkdir(exist_ok=True, parents=True)
+        _copy_local_dependency(absolute_resource_path, output_file)
 
     def _get_table_group(self) -> Dict:
         _logger.debug("Opening metadata file '%s'", self.csvw_metadata_path)
         with open(Path(self.csvw_metadata_path), "r") as f:
             return json.load(f)
 
-    def _get_default_base_path(self) -> Path:
+    def _get_default_csv_w_base_path(self) -> Path:
+        # Needs to be the parent directory so that when the paths get joined we don't end up with
+        # paths like `.../thingy.csv-metadata.json/thingy.csv`
         return self.csvw_metadata_path.parent
 
-    def _join_paths(self, base_path: Path, relative_path: str) -> Path:
+    def _join_relative_path(self, base_path: Path, relative_path: str) -> Path:
+        # `base_path` always represents the parent directory inside a FileCsvWPuller.
+        # we need to include a trailing slash so that we end up with
         return file_uri_to_path(urljoin(base_path.as_uri() + "/", relative_path))
 
-    def _get_metadata_file_identifier(self) -> str:
+    def _get_unique_identifier(self) -> str:
+        # The URI of the file path is good enough to uniquely identify the CSV-W metadata file.
         return self.csvw_metadata_path.as_uri()
 
-    def _rdflib_uri_to_path(self, rdflib_uri: str) -> Path:
+    def _map_rdflib_uri_to_path(self, rdflib_uri: str) -> Path:
         return file_uri_to_path(rdflib_uri)
 
 
 @dataclass
 class HttpCsvWPuller(CsvWPuller[str]):
-    def pull(self, output_dir: Path) -> None:
-        csvw_metadata_file_name = _get_file_name_from_url(self.csvw_metadata_path)
+    """
+    Pulls a CSV-W and its relative dependencies from an HTTP(s) location to the local file-system.
+    """
 
-        _download_to_file(self.csvw_metadata_path, output_dir / csvw_metadata_file_name)
-
+    def _pull_resource_to_dir(
+        self, absolute_resource_path: str, output_dir: Path
+    ) -> None:
+        # Need to decide where we should write the file to within the output directory.
         base_path_for_relative_files = urlparse(
             urljoin(self.csvw_metadata_path, ".")
         ).path
 
-        _logger.debug(
-            "All files will be placed relative to '%s'", base_path_for_relative_files
+        output_path = output_dir / os.path.relpath(
+            urlparse(absolute_resource_path).path,
+            start=base_path_for_relative_files,
         )
 
-        for (
-            absolute_dependency_path
-        ) in self._get_csvw_dependencies_follow_relative_only():
-            relative_dependency_path = os.path.relpath(
-                urlparse(absolute_dependency_path).path,
-                start=base_path_for_relative_files,
-            )
-            _logger.debug("Relative dependency path '%s'", relative_dependency_path)
+        _logger.debug("Downloading %s to %s", absolute_resource_path, output_path)
 
-            output_file = output_dir / relative_dependency_path
-            _logger.debug("Output file path '%s'", output_file)
+        output_path.parent.mkdir(exist_ok=True, parents=True)
 
-            output_file.parent.mkdir(exist_ok=True, parents=True)
-            _download_to_file(absolute_dependency_path, output_file)
+        _download_to_file(absolute_resource_path, output_path)
 
     def _get_table_group(self) -> Dict:
         _logger.debug("Downloading metadata file '%s'", self.csvw_metadata_path)
@@ -275,16 +279,17 @@ class HttpCsvWPuller(CsvWPuller[str]):
             _logger.debug("Temporarily disabling HTTP(s) cache to ensure latest data.")
             return load_json_document(self.csvw_metadata_path)
 
-    def _get_default_base_path(self) -> str:
+    def _get_default_csv_w_base_path(self) -> str:
         return self.csvw_metadata_path
 
-    def _join_paths(self, base_path: str, relative_path: str) -> str:
+    def _join_relative_path(self, base_path: str, relative_path: str) -> str:
         return urljoin(base_path, relative_path)
 
-    def _get_metadata_file_identifier(self) -> str:
+    def _get_unique_identifier(self) -> str:
         return self.csvw_metadata_path
 
-    def _rdflib_uri_to_path(self, rdflib_uri: str) -> str:
+    def _map_rdflib_uri_to_path(self, rdflib_uri: str) -> str:
+        # A URI is already the native way to represent paths in this class.
         return rdflib_uri
 
 
@@ -368,19 +373,19 @@ def _get_file_name_from_url(url: str) -> str:
     return file_name
 
 
-def _download_to_file(rel_dep_url: str, output_file: Path) -> None:
-    _logger.info("Downloading '%s' to '%s'.", rel_dep_url, output_file)
+def _download_to_file(url_to_download: str, output_file: Path) -> None:
+    _logger.info("Downloading '%s' to '%s'.", url_to_download, output_file)
 
     with open(output_file, "wb+") as f:
         with session.cache_disabled():
             _logger.debug("Temporarily disabling HTTP(s) cache to ensure latest data.")
-            response = session.get(rel_dep_url)
+            response = session.get(url_to_download)
             if not response.ok:
                 raise HTTPError(
-                    f"Failed to get url {rel_dep_url} with status code {response.status_code}. "
+                    f"Failed to get url {url_to_download} with status code {response.status_code}. "
                     f"With text response: {response.text}"
                 )
             for chunk in response.iter_content(chunk_size=1024):
                 f.write(chunk)
 
-    _logger.debug("Download of '%s' complete.", rel_dep_url)
+    _logger.debug("Download of '%s' complete.", url_to_download)
