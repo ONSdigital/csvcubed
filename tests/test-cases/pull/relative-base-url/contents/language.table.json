@@ -1,0 +1,52 @@
+{
+    "columns": [
+        {
+            "titles": "Label",
+            "name": "label",
+            "required": true,
+            "propertyUrl": "rdfs:label"
+        },
+        {
+            "titles": "Notation",
+            "name": "notation",
+            "required": true,
+            "propertyUrl": "skos:notation"
+        },
+        {
+            "titles": "Parent Notation",
+            "name": "parent_notation",
+            "required": false,
+            "propertyUrl": "skos:broader",
+            "valueUrl": "language.csv#{+parent_notation}"
+        },
+        {
+            "titles": "Sort Priority",
+            "name": "sort_priority",
+            "required": false,
+            "datatype": "integer",
+            "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+        },
+        {
+            "titles": "Description",
+            "name": "description",
+            "required": false,
+            "propertyUrl": "rdfs:comment"
+        },
+        {
+            "virtual": true,
+            "name": "virt_inScheme",
+            "required": true,
+            "propertyUrl": "skos:inScheme",
+            "valueUrl": "language.csv#code-list"
+        },
+        {
+            "virtual": true,
+            "name": "virt_type",
+            "required": true,
+            "propertyUrl": "rdf:type",
+            "valueUrl": "skos:Concept"
+        }
+    ],
+    "aboutUrl": "language.csv#{+notation}",
+    "primaryKey": "notation"
+}

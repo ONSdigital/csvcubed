@@ -133,5 +133,44 @@ def test_pull_with_absolute_dependency():
         """
 
 
+@pytest.mark.vcr
+def test_relative_base_url():
+    """
+    Test that a relative `@base` URL can successfully be used with the pull command.
+    """
+    csvw_doc = (
+        _test_cases_dir
+        / "pull"
+        / "relative-base-url"
+        / "sweden-at-eurovision-complete-dataset.csv-metadata.json"
+    )
+    with TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        pull(str(csvw_doc), tmp)
+
+        assert (
+            tmp / "sweden-at-eurovision-complete-dataset.csv-metadata.json"
+        ).exists()
+        contents_dir = tmp / "contents"
+        assert contents_dir.exists()
+
+        # Test the CSV-W dependencies.
+        assert (contents_dir / "entrant.csv").exists()
+        assert (contents_dir / "entrant.table.json").exists()
+        assert (contents_dir / "language.csv").exists()
+        assert (contents_dir / "language.table.json").exists()
+        assert (contents_dir / "song.csv").exists()
+        assert (contents_dir / "song.table.json").exists()
+        assert (contents_dir / "sweden-at-eurovision-complete-dataset.csv").exists()
+        assert (contents_dir / "year.csv").exists()
+        assert (contents_dir / "year.table.json").exists()
+
+        # Test the RDF dependencies
+        assert (contents_dir / "entrant.csv-metadata.json").exists()
+        assert (contents_dir / "language.csv-metadata.json").exists()
+        assert (contents_dir / "song.csv-metadata.json").exists()
+        assert (contents_dir / "year.csv-metadata.json").exists()
+
+
 if __name__ == "__main__":
     pytest.main()

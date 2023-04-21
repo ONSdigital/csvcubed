@@ -60,9 +60,9 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
             _copy_local_dependency(absolute_dependency_path, output_file)
 
 
-def _copy_local_dependency(csvw_metadata_path: str, output_location: Path) -> None:
-    _logger.debug("Treating location '%s' as a local Path", csvw_metadata_path)
-    csvw_metadata_file_path = str(Path(csvw_metadata_path).absolute())
+def _copy_local_dependency(path_to_copy: str, output_location: Path) -> None:
+    _logger.debug("Treating location '%s' as a local Path", path_to_copy)
+    csvw_metadata_file_path = str(Path(path_to_copy).absolute())
     _logger.info(
         "Copying file '%s' to %s.",
         csvw_metadata_file_path,
@@ -110,7 +110,8 @@ def _get_csvw_dependencies_follow_relative_only(metadata_file_url: str) -> Set[s
         # If you specify an absolute base_url then none of the dependencies are relative, so there's nothing to
         # download.
         _logger.warning(
-            "Metadata JSON document has absolute base URL '%s'. No relative dependencies to download.",
+            "Metadata JSON document %s has absolute base URL %s. No relative dependencies to download.",
+            metadata_file_url,
             base_url,
         )
         return set()
