@@ -323,7 +323,10 @@ class DataCubeInspector:
         value_url: str,
         csv_url: str,
         col_categories: pd.Index,
-    ):
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Attribute type columns.
+        """
         col_uris = [
             uritemplate.expand(value_url, {col.column_definition.name: cat})
             for cat in col_categories
@@ -337,7 +340,10 @@ class DataCubeInspector:
         value_url: str,
         csv_url: str,
         col_categories: pd.Index,
-    ):
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Measures type columns.
+        """
         col_uris = [
             uritemplate.expand(value_url, {col.column_definition.name: cat})
             for cat in col_categories
@@ -350,7 +356,10 @@ class DataCubeInspector:
         value_url: str,
         csv_url: str,
         col_categories: pd.Index,
-    ):
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Units type columns.
+        """
         col_uris = [
             uritemplate.expand(value_url, {col.column_definition.name: cat})
             for cat in col_categories
@@ -359,7 +368,10 @@ class DataCubeInspector:
 
     def _dereference_uri_for_dimensions(
         self, code_lists: CodelistsResult, col: ColumnComponentInfo
-    ):
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Dimension type columns.
+        """
         code_list_inspector = CodeListInspector(self.csvw_inspector)
         code_list = single(
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
@@ -368,7 +380,8 @@ class DataCubeInspector:
         uri_labels_dict = code_list_inspector.get_map_code_list_uri_to_label(
             concept_scheme_uri
         )
-        return uri_labels_dict.values()
+
+        return list(uri_labels_dict.values())
 
     def get_dataframe(
         self, csv_url: str, dereference_uris: bool = True
@@ -377,6 +390,7 @@ class DataCubeInspector:
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
+        dereference_uris set to true means column values are altered to contain human readable labels.
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = _get_data_types_of_all_cols(cols)
@@ -407,6 +421,9 @@ class DataCubeInspector:
         col_categories: pd.Index,
         code_lists: CodelistsResult,
     ) -> List[str]:
+        """
+        Identifies the type of column being used and applies the appropriate dereferencing function.
+        """
         value_url = col.column_definition.value_url
 
         if col.column_type.value == "Attribute" and value_url is not None:
@@ -424,7 +441,7 @@ class DataCubeInspector:
         elif col.column_type.value == "Dimension":
             return self._dereference_uri_for_dimensions(code_lists, col)
         # Column is either an Attribute Literal or Observations
-        raise ValueError("TODO: fill this in with some info")
+        raise ValueError("Input column does not contain categorical values.")
 
     def _map_column_name_to_title_to_attribute_value_url(
         self, csv_url: str
@@ -515,40 +532,6 @@ class DataCubeInspector:
             map_col_title_to_attr_val_uris_and_labels[col_title] = results_for_col_title
 
         return map_col_title_to_attr_val_uris_and_labels
-
-
-def _overwrite_labels_for_columns(
-    dataframe: pd.DataFrame,
-    affected_columns: List[ColumnComponentInfo],
-    map_label_to_new_value: Dict[str, str],
-    raise_missing_values_exceptions: bool,
-) -> None:
-    if dataframe.empty:
-        return
-
-    for column in affected_columns:
-        column_data = dataframe[column.column_definition.title]
-        assert column_data is not None
-        column_values = column_data.values
-        assert isinstance(column_values, Categorical)
-        new_category_labels: List[str] = []
-        for c in column_values.categories:
-            c = str(c)
-            new_category_label = map_label_to_new_value.get(c)
-            if new_category_label is None:
-                if raise_missing_values_exceptions:
-                    raise ValueError(
-                        f"Unable to find new category label for term '{c}' in column '{column.column_definition.title}'."
-                    )
-                else:
-                    # Can't raise exception here, just leave the value as-is.
-                    new_category_labels.append(c)
-            else:
-                new_category_labels.append(new_category_label)
-
-        dataframe[column.column_definition.title] = column_values.rename_categories(
-            new_category_labels
-        )
 
 
 def _get_column_type_and_component(
