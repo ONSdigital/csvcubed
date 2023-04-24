@@ -392,9 +392,11 @@ class DataCubeInspector:
                 for cat in col_categories
             ]
             attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-            return [
-                attribute_vals[col.column_definition.title][uri] for uri in col_uris
-            ]
+            if col.column_definition.title is not None:
+                return [
+                    attribute_vals[col.column_definition.title][uri] for uri in col_uris
+                ]
+            raise ValueError("Column title is not defined")
         raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_measures(
