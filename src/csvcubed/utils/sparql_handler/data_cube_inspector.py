@@ -167,12 +167,11 @@ class DataCubeInspector:
     Public getters for the cached properties.
     """
 
-    def get_unit_for_uri(self, uri: str) -> UnitResult:
+    def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
         """
         Get a specific unit, by its uri.
         """
-        result: UnitResult = get_from_dict_ensure_exists(self._units, uri)
-        return result
+        return self._units.get(uri)
 
     def get_units(self) -> List[UnitResult]:
         """
@@ -432,12 +431,7 @@ class DataCubeInspector:
                 uritemplate.expand(value_url, {col.column_definition.name: cat})
                 for cat in col_categories
             ]
-            dereferenced_units = []
-            for col_uri in col_uris:
-                if self.get_unit_for_uri(col_uri) is not None:
-                    dereferenced_units.append(self.get_unit_for_uri(col_uri).unit_label)
-                return dereferenced_units
-            raise ValueError("Unit label is not defined")
+            return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
         raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_dimensions(
