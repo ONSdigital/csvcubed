@@ -22,6 +22,7 @@ from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeEx
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.sparqlresults import (
+    CodelistResult,
     CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
@@ -353,7 +354,7 @@ class DataCubeInspector:
         csv_url: str,
         col: ColumnComponentInfo,
         col_categories: pd.Index,
-        code_lists: CodelistsResult,
+        code_lists: List[CodelistResult],
     ) -> List[str]:
         """
         Identifies the type of column being used and applies the appropriate dereferencing function.
@@ -364,11 +365,11 @@ class DataCubeInspector:
             return self._dereference_uris_for_attributes(
                 col, value_url, csv_url, col_categories
             )
-        elif col.column_type.value == "Measures":
+        elif col.column_type.value == "Measures" and value_url is not None:
             return self._dereference_uris_for_measures(
                 col, value_url, csv_url, col_categories
             )
-        elif col.column_type.value == "Units":
+        elif col.column_type.value == "Units" and value_url is not None:
             return self._dereference_uris_for_units(col, value_url, col_categories)
         elif col.column_type.value == "Dimension":
             return self._dereference_uris_for_dimensions(code_lists, col)
@@ -385,12 +386,16 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Attribute Resource-type column values.
         """
-        col_uris = [
-            uritemplate.expand(value_url, {col.column_definition.name: cat})
-            for cat in col_categories
-        ]
-        attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-        return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
+        if col.column_definition.name is not None:
+            col_uris = [
+                uritemplate.expand(value_url, {col.column_definition.name: cat})
+                for cat in col_categories
+            ]
+            attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
+            return [
+                attribute_vals[col.column_definition.title][uri] for uri in col_uris
+            ]
+        raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_measures(
         self,
@@ -402,11 +407,13 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Measures-type column values.
         """
-        col_uris = [
-            uritemplate.expand(value_url, {col.column_definition.name: cat})
-            for cat in col_categories
-        ]
-        return [self.get_measure_uris_and_labels(csv_url)[uri] for uri in col_uris]
+        if col.column_definition.name is not None:
+            col_uris = [
+                uritemplate.expand(value_url, {col.column_definition.name: cat})
+                for cat in col_categories
+            ]
+            return [self.get_measure_uris_and_labels(csv_url)[uri] for uri in col_uris]
+        raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_units(
         self,
@@ -417,14 +424,16 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Units-type column values.
         """
-        col_uris = [
-            uritemplate.expand(value_url, {col.column_definition.name: cat})
-            for cat in col_categories
-        ]
-        return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
+        if col.column_definition.name is not None:
+            col_uris = [
+                uritemplate.expand(value_url, {col.column_definition.name: cat})
+                for cat in col_categories
+            ]
+            return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
+        raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_dimensions(
-        self, code_lists: CodelistsResult, col: ColumnComponentInfo
+        self, code_lists: List[CodelistResult], col: ColumnComponentInfo
     ) -> List[str]:
         """
         Returns the list of dereferenced URIs for Dimension-type column values.
