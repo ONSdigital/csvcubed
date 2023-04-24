@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 import pandas as pd
 import pytest
 from click import Path
+from pandas.testing import assert_frame_equal
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube_shape import CubeShape
@@ -1013,11 +1014,11 @@ def test_get_primary_csv_url():
     assert csv_url == "energy-trends-uk-total-energy.csv"
 
 
-def test_load_pandas_df_from_standard_shape_csv_url():
+def test_load_pandas_df_dtypes_from_standard_shape_csv_url():
     """
     Testing that a dataframe with columns represented in the correct data types
     can be loaded from a standard shape CSVW and that a distinction is made between
-    attribute reasource and attribute literal columns.
+    attribute resource and attribute literal columns.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -1036,7 +1037,7 @@ def test_load_pandas_df_from_standard_shape_csv_url():
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "category"
     assert dataframe["Dim2"].dtype == "category"
-    assert dataframe["Dim1"].dtype == "category"
+    assert dataframe["Dim3"].dtype == "category"
     assert dataframe["AttrResource"].dtype == "category"
     assert dataframe["AttrLiteral"].dtype == "Int64"
     assert dataframe["Units"].dtype == "category"
@@ -1064,19 +1065,35 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
     dataframe, validation_errors = data_cube_inspector.get_dataframe(
         csv_url, dereference_uris=True
     )
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(
+                data=["Something 1", "Something 2", "Something 3"], dtype="category"
+            ),
+            "Dim2": pd.Series(
+                ["Something Else 1", "Something Else 2", "Something Else 3"],
+                dtype="category",
+            ),
+            "Dim3": pd.Series([2021, 2022, 2023], dtype="category"),
+            "AttrResource": pd.Series(
+                ["Final", "Provisional", "Estimated"], dtype="category"
+            ),
+            "AttrLiteral": pd.Series([-90, -80, -70], dtype="Int64"),
+            "Units": pd.Series(
+                ["Some Unit 1", "Some Unit 2", "Some Unit 3"], dtype="category"
+            ),
+            "Measures": pd.Series(
+                ["Some Measure 1", "Some Measure 2", "Some Measure 3"], dtype="category"
+            ),
+            "Obs": pd.Series([127, 227, 327], dtype="int16"),
+        }
+    )
 
-    assert dataframe["Dim1"][0] == "Something 1"
-    assert dataframe["Dim2"][0] == "Something Else 1"
-    assert dataframe["Dim3"][0] == 2021
-    assert dataframe["Measures"][0] == "Some Measure 1"
-    assert dataframe["Obs"][0] == 127
-    assert dataframe["Units"][0] == "Some Unit 1"
-    assert dataframe["AttrLiteral"][0] == -90
-    assert dataframe["AttrResource"][0] == "Final"
+    assert_frame_equal(dataframe, expected_df)
     assert not any(validation_errors)
 
 
-def test_load_pandas_df_without_dereferencing():
+def test_load_pandas_df_standard_shape_without_dereferencing():
     """
     Checks that turning off the dereferencing parameter of the get_dataframe function
     correctly returns the unchanged values from the created dataframe.
@@ -1094,19 +1111,34 @@ def test_load_pandas_df_without_dereferencing():
     dataframe, validation_errors = data_cube_inspector.get_dataframe(
         csv_url, dereference_uris=False
     )
-
-    assert dataframe["Dim1"][0] == "something-1"
-    assert dataframe["Dim2"][0] == "something-else-1"
-    assert dataframe["Dim3"][0] == "2021"
-    assert dataframe["Measures"][0] == "some-measure-1"
-    assert dataframe["Obs"][0] == 127
-    assert dataframe["Units"][0] == "some-unit-1"
-    assert dataframe["AttrLiteral"][0] == -90
-    assert dataframe["AttrResource"][0] == "final"
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(
+                data=["something-1", "something-2", "something-3"], dtype="category"
+            ),
+            "Dim2": pd.Series(
+                ["something-else-1", "something-else-2", "something-else-3"],
+                dtype="category",
+            ),
+            "Dim3": pd.Series(["2021", "2022", "2023"], dtype="category"),
+            "AttrResource": pd.Series(
+                ["final", "provisional", "estimated"], dtype="category"
+            ),
+            "AttrLiteral": pd.Series([-90, -80, -70], dtype="Int64"),
+            "Units": pd.Series(
+                ["some-unit-1", "some-unit-2", "some-unit-3"], dtype="category"
+            ),
+            "Measures": pd.Series(
+                ["some-measure-1", "some-measure-2", "some-measure-3"], dtype="category"
+            ),
+            "Obs": pd.Series([127, 227, 327], dtype="int16"),
+        }
+    )
+    assert_frame_equal(dataframe, expected_df)
     assert not any(validation_errors)
 
 
-def test_load_pandas_df_from_pivoted_shape_csv_url():
+def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     """
     Testing that a dataframe with columns represented in the correct data types
     can be loaded from a pivoted shape CSVW.
@@ -1133,7 +1165,7 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
     assert not any(validation_errors)
 
 
-def test_load_pandas_df_from_pivoted_shape_with_dereferencing():
+def test_load_pandas_df_pivoted_shape_with_dereferencing():
     """
     Testing that a dataframe with columns represented in the correct data types
     can be loaded from a pivoted shape CSVW, and that the URIs of the created
@@ -1151,9 +1183,43 @@ def test_load_pandas_df_from_pivoted_shape_with_dereferencing():
 
     dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, True)
 
-    assert isinstance(dataframe, pd.DataFrame)
-    assert dataframe["Dim1"][0] == "Value1"
-    assert dataframe["Dim2"][0] == "Value2"
-    assert dataframe["Obs1"][0] == "01:02:03"
-    assert dataframe["Obs2"][0] == True
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(["Value1"], dtype="category"),
+            "Obs1": pd.Series(["01:02:03"], dtype="string"),
+            "Dim2": pd.Series(["Value2"], dtype="category"),
+            "Obs2": pd.Series([True], dtype="bool"),
+        }
+    )
+    assert_frame_equal(dataframe, expected_df)
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_pivoted_shape_without_dereferencing():
+    """
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a pivoted shape CSVW, and that the URIs of the created
+    dataframe can correctly be dereferenced to human readable labels.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "inspector-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, False)
+
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(["value1"], dtype="category"),
+            "Obs1": pd.Series(["01:02:03"], dtype="string"),
+            "Dim2": pd.Series(["value2"], dtype="category"),
+            "Obs2": pd.Series([True], dtype="bool"),
+        }
+    )
+    assert_frame_equal(dataframe, expected_df)
     assert not any(validation_errors)

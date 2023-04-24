@@ -317,72 +317,6 @@ class DataCubeInspector:
             primary_catalog_metadata.dataset_uri
         ).csv_url
 
-    def _dereference_uri_for_attribute(
-        self,
-        col: ColumnComponentInfo,
-        value_url: str,
-        csv_url: str,
-        col_categories: pd.Index,
-    ) -> List[str]:
-        """
-        Returns the list of dereferenced URIs for Attribute type columns.
-        """
-        col_uris = [
-            uritemplate.expand(value_url, {col.column_definition.name: cat})
-            for cat in col_categories
-        ]
-        attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-        return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
-
-    def _dereference_uri_for_measures(
-        self,
-        col: ColumnComponentInfo,
-        value_url: str,
-        csv_url: str,
-        col_categories: pd.Index,
-    ) -> List[str]:
-        """
-        Returns the list of dereferenced URIs for Measures type columns.
-        """
-        col_uris = [
-            uritemplate.expand(value_url, {col.column_definition.name: cat})
-            for cat in col_categories
-        ]
-        return [self.get_measure_uris_and_labels(csv_url)[uri] for uri in col_uris]
-
-    def _dereference_uri_for_units(
-        self,
-        col: ColumnComponentInfo,
-        value_url: str,
-        csv_url: str,
-        col_categories: pd.Index,
-    ) -> List[str]:
-        """
-        Returns the list of dereferenced URIs for Units type columns.
-        """
-        col_uris = [
-            uritemplate.expand(value_url, {col.column_definition.name: cat})
-            for cat in col_categories
-        ]
-        return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
-
-    def _dereference_uri_for_dimensions(
-        self, code_lists: CodelistsResult, col: ColumnComponentInfo
-    ) -> List[str]:
-        """
-        Returns the list of dereferenced URIs for Dimension type columns.
-        """
-        code_list_inspector = CodeListInspector(self.csvw_inspector)
-        code_list = single(
-            code_lists, lambda c: col.column_definition.title in c.cols_used_in
-        )
-        concept_scheme_uri = code_list.code_list
-        uri_labels_dict = code_list_inspector.get_map_code_list_uri_to_label(
-            concept_scheme_uri
-        )
-
-        return list(uri_labels_dict.values())
-
     def get_dataframe(
         self, csv_url: str, dereference_uris: bool = True
     ) -> Tuple[pd.DataFrame, List[ValidationError]]:
@@ -390,7 +324,7 @@ class DataCubeInspector:
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
-        dereference_uris set to true means column values are altered to contain human readable labels.
+        dereference_uris=True means URIs of column values are converted to their human readable labels.
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = _get_data_types_of_all_cols(cols)
@@ -427,21 +361,84 @@ class DataCubeInspector:
         value_url = col.column_definition.value_url
 
         if col.column_type.value == "Attribute" and value_url is not None:
-            return self._dereference_uri_for_attribute(
+            return self._dereference_uris_for_attributes(
                 col, value_url, csv_url, col_categories
             )
         elif col.column_type.value == "Measures":
-            return self._dereference_uri_for_measures(
+            return self._dereference_uris_for_measures(
                 col, value_url, csv_url, col_categories
             )
         elif col.column_type.value == "Units":
-            return self._dereference_uri_for_units(
-                col, value_url, csv_url, col_categories
-            )
+            return self._dereference_uris_for_units(col, value_url, col_categories)
         elif col.column_type.value == "Dimension":
-            return self._dereference_uri_for_dimensions(code_lists, col)
+            return self._dereference_uris_for_dimensions(code_lists, col)
         # Column is either an Attribute Literal or Observations
         raise ValueError("Input column does not contain categorical values.")
+
+    def _dereference_uris_for_attributes(
+        self,
+        col: ColumnComponentInfo,
+        value_url: str,
+        csv_url: str,
+        col_categories: pd.Index,
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Attribute Resource-type column values.
+        """
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
+        return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
+
+    def _dereference_uris_for_measures(
+        self,
+        col: ColumnComponentInfo,
+        value_url: str,
+        csv_url: str,
+        col_categories: pd.Index,
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Measures-type column values.
+        """
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        return [self.get_measure_uris_and_labels(csv_url)[uri] for uri in col_uris]
+
+    def _dereference_uris_for_units(
+        self,
+        col: ColumnComponentInfo,
+        value_url: str,
+        col_categories: pd.Index,
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Units-type column values.
+        """
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
+
+    def _dereference_uris_for_dimensions(
+        self, code_lists: CodelistsResult, col: ColumnComponentInfo
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Dimension-type column values.
+        """
+        code_list_inspector = CodeListInspector(self.csvw_inspector)
+        code_list = single(
+            code_lists, lambda c: col.column_definition.title in c.cols_used_in
+        )
+        concept_scheme_uri = code_list.code_list
+        uri_labels_dict = code_list_inspector.get_map_code_list_uri_to_label(
+            concept_scheme_uri
+        )
+
+        return list(uri_labels_dict.values())
 
     def _map_column_name_to_title_to_attribute_value_url(
         self, csv_url: str
