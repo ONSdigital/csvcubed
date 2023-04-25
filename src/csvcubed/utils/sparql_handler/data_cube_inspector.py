@@ -432,7 +432,7 @@ class DataCubeInspector:
             for col_uri in col_uris:
                 maybe_unit = self.get_unit_for_uri(col_uri)
                 if maybe_unit is None:
-                    raise Exception("nope")
+                    raise ValueError("Unit could not be retrieved.")
                 else:
                     unit_labels.append(maybe_unit.unit_label)
         raise ValueError("Column name is not defined")
