@@ -470,6 +470,7 @@ The list of organisations currently supported by csvcubed is:
 |[Government Security Profession](https://www.gov.uk/government/organisations/government-security-profession)|<https://www.gov.uk/government/organisations/government-security-profession>|
 |[Gowers Review of Intellectual Property](https://www.gov.uk/government/organisations/gowers-review-of-intellectual-property)|<https://www.gov.uk/government/organisations/gowers-review-of-intellectual-property>|
 |[Great Britain-China Centre](https://www.gov.uk/government/organisations/great-britain-china-centre)|<https://www.gov.uk/government/organisations/great-britain-china-centre>|
+|[Greater London Authority](https://www.london.gov.uk/)|<https://www.london.gov.uk/>|
 |[Great Yarmouth Education Action Zone](https://www.gov.uk/government/organisations/great-yarmouth-education-action-zone)|<https://www.gov.uk/government/organisations/great-yarmouth-education-action-zone>|
 |[Greenwich Education Action Zone](https://www.gov.uk/government/organisations/greenwich-education-action-zone)|<https://www.gov.uk/government/organisations/greenwich-education-action-zone>|
 |[Groceries Code Adjudicator](https://www.gov.uk/government/organisations/groceries-code-adjudicator)|<https://www.gov.uk/government/organisations/groceries-code-adjudicator>|
