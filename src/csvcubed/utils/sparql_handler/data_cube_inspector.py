@@ -344,10 +344,7 @@ class DataCubeInspector:
                             csv_url, col, col_values.categories, code_lists
                         )
                     )
-
-            return df, _errors
-        else:
-            return read_csv(absolute_csv_url, dtype=dict_of_types)
+        return df, _errors
 
     def _get_new_category_labels_for_col(
         self,
@@ -431,8 +428,25 @@ class DataCubeInspector:
                 uritemplate.expand(value_url, {col.column_definition.name: cat})
                 for cat in col_categories
             ]
-            return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
+            unit_labels = [
+                self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris
+            ]
+            if all(unit_labels):
+                return unit_labels
+            raise ValueError("Unit label not defined")
         raise ValueError("Column name is not defined")
+        # if col.column_definition.name is not None:
+        #     units = self.get_units()
+        #     col_uris = [
+        #         uritemplate.expand(value_url, {col.column_definition.name: cat})
+        #         for cat in col_categories
+        #     ]
+        #     dereferenced_units = []
+        #     for unit in units:
+        #         dereferenced_units.append(unit.unit_label)
+        #     return dereferenced_units
+        #     return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
+        # raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_dimensions(
         self, code_lists: List[CodelistResult], col: ColumnComponentInfo
