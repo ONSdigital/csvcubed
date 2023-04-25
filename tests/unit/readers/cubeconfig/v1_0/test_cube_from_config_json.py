@@ -953,5 +953,118 @@ def test_describes_obs_val_new_attribute_resource_column():
     assert column_title == "Obs Val Column Title"
 
 
+@pytest.mark.vcr
+def test_case_4():
+    """
+    {
+    // default: "code_list": true
+    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
+    }
+    """
+    column_data = ["a", "b", "c"]
+    dimension_config = {
+        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+    csv_column_title = "alphabet"
+
+    (column, _) = map_column_to_qb_component(
+        "New Dimension", dimension_config, data, cube_config_minor_version=0
+    )
+    assert isinstance(column.structural_definition, NewQbDimension)
+    code_list = column.structural_definition.code_list
+    assert code_list is not None
+    assert isinstance(code_list, NewQbCodeList)
+    assert code_list.concepts
+
+    _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+
+
+@pytest.mark.vcr
+def test_case_3():
+    """
+    {
+    // todo: Reconcile this with the ticket atm.
+    // In this example we have a bunch of concepts already defined and we want csvcubed to create a code list for us from the unique values.
+    // I don't think we support this atm.
+    "code_list": true,
+    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
+    }
+    """
+    column_data = ["a", "b", "c"]
+    dimension_config = {
+        "code_list": True,
+        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Dimension", dimension_config, data, cube_config_minor_version=0
+    )
+    assert isinstance(column.structural_definition, NewQbDimension)
+    code_list = column.structural_definition.code_list
+    assert code_list is not None
+    assert isinstance(code_list, NewQbCodeList)
+    assert code_list.concepts
+
+    _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+
+
+@pytest.mark.vcr
+def test_case_2():
+    """
+    {
+    // In this case we don't want any code list for our newly defined dimension, we just point at a bunch of URIs.
+    "code_list": false,
+    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
+    }
+    """
+    column_data = ["a", "b", "c"]
+    dimension_config = {
+        "code_list": False,
+        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Dimension", dimension_config, data, cube_config_minor_version=0
+    )
+    assert isinstance(column.structural_definition, NewQbDimension)
+    code_list = column.structural_definition.code_list
+    assert code_list is not None
+    assert isinstance(code_list, NewQbCodeList)
+    assert code_list.concepts
+
+    _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+
+
+@pytest.mark.vcr
+def test_cas_1():
+    """
+    {
+    // When reusing an existing dimension which either has a code-list or doesn't have a code list (we don't care)
+    "from_existing": "http://example.com/dimensions/some_dimension",
+    "cell_uri_template": "http://example.com/code-lists/the-corresponding/code-list/{+column_name}"
+    }
+    """
+    column_data = ["a", "b", "c"]
+    dimension_config = {
+        "from_existing": "http://example.com/dimensions/some_dimension",
+        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Dimension", dimension_config, data, cube_config_minor_version=0
+    )
+    assert isinstance(column.structural_definition, NewQbDimension)
+    code_list = column.structural_definition.code_list
+    assert code_list is not None
+    assert isinstance(code_list, NewQbCodeList)
+    assert code_list.concepts
+
+    _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+
+
 if __name__ == "__main__":
     pytest.main()

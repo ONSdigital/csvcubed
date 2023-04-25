@@ -114,10 +114,29 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def from_data(
         metadata: CatalogMetadata,
         data: PandasDataTypes,
+        csv_column_title: Optional[str] = None,
         uri_style: Optional[URIStyle] = None,
+        cell_uri_template: Optional[str] = None,
     ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
+        # todo: If the cell_uri_template is defined these should be DuplicatedQbConcepts instead of NewQbConcepts
+        # todo: DuplicatedQbConcept()
+        # todo: Generate the URI for each concept using: uritemplate.expand(csv_column_uri_template, {csvw_column_name: m})
+        csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
+        if cell_uri_template:
+            concepts = [
+                DuplicatedQbConcept(
+                    label=c,
+                    existing_concept_uri=uritemplate.expand(
+                        cell_uri_template, {csvw_safe_col_name: c}
+                    ),
+                )
+                for c in sorted(set(columnar_data))
+            ]
+        else:
+            concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
+        # todo: do we want to return a CompositeQbCodeList here?
         return NewQbCodeList(metadata, concepts, uri_style=uri_style)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:

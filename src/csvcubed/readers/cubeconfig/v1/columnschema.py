@@ -83,12 +83,14 @@ class NewDimension(SchemaBaseClass):
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
     ) -> Tuple[NewQbDimension, List[JsonSchemaValidationError]]:
+        # Do we need to be able to pass the cell_uri_template into here to generate the code list pointing to the existing concepts?
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
             data=data,
             description=self.description,
             parent_dimension_uri=self.from_existing,
             source_uri=self.definition_uri,
+            cell_uri_template=self.cell_uri_template,
         )
         # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
         # the _get_code_list method overrides the code_list if required.
@@ -217,6 +219,7 @@ class NewDimension(SchemaBaseClass):
 @dataclass
 class ExistingDimension(SchemaBaseClass):
     from_existing: str
+    # todo: Should cell_uri_template be required here?
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_dimension(self) -> ExistingQbDimension:
