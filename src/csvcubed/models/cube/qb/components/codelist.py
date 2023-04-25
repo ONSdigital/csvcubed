@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Generic, List, Optional, Set, TypeVar
 
+import uritemplate
+
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction
@@ -19,6 +21,7 @@ from csvcubed.models.validationerror import (
 )
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
+from csvcubed.utils.uri import csvw_column_name_safe
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
@@ -123,7 +126,8 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         # todo: If the cell_uri_template is defined these should be DuplicatedQbConcepts instead of NewQbConcepts
         # todo: DuplicatedQbConcept()
         # todo: Generate the URI for each concept using: uritemplate.expand(csv_column_uri_template, {csvw_column_name: m})
-        csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
+        # csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
+        csvw_safe_col_name = csvw_column_name_safe(metadata.get_identifier())
         if cell_uri_template:
             concepts = [
                 DuplicatedQbConcept(
