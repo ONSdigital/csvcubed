@@ -428,25 +428,14 @@ class DataCubeInspector:
                 uritemplate.expand(value_url, {col.column_definition.name: cat})
                 for cat in col_categories
             ]
-            unit_labels = [
-                self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris
-            ]
-            if all(unit_labels):
-                return unit_labels
-            raise ValueError("Unit label not defined")
+            unit_labels = []
+            for col_uri in col_uris:
+                maybe_unit = self.get_unit_for_uri(col_uri)
+                if maybe_unit is None:
+                    raise Exception("nope")
+                else:
+                    unit_labels.append(maybe_unit.unit_label)
         raise ValueError("Column name is not defined")
-        # if col.column_definition.name is not None:
-        #     units = self.get_units()
-        #     col_uris = [
-        #         uritemplate.expand(value_url, {col.column_definition.name: cat})
-        #         for cat in col_categories
-        #     ]
-        #     dereferenced_units = []
-        #     for unit in units:
-        #         dereferenced_units.append(unit.unit_label)
-        #     return dereferenced_units
-        #     return [self.get_unit_for_uri(col_uri).unit_label for col_uri in col_uris]
-        # raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_dimensions(
         self, code_lists: List[CodelistResult], col: ColumnComponentInfo
