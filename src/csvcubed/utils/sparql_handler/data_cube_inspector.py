@@ -435,6 +435,7 @@ class DataCubeInspector:
                     raise ValueError("Unit could not be retrieved.")
                 else:
                     unit_labels.append(maybe_unit.unit_label)
+            return unit_labels
         raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_dimensions(
