@@ -954,6 +954,36 @@ def test_describes_obs_val_new_attribute_resource_column():
 
 
 @pytest.mark.vcr
+def test_case_5():
+    """
+    {
+    // setting "code_list": some code-list-config.json and definging
+    // cell_uri_template gives conflicting instruction. Stop this and raise error
+    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
+    }
+    """
+    column_data = ["a", "b", "c"]
+    dimension_config = {
+        "code_list": "my_eurovision_code_list_config.json",
+        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Dimension", dimension_config, data, cube_config_minor_version=0
+    )
+    assert isinstance(
+        column.structural_definition, NewQbDimension
+    ), column.structural_definition
+    code_list = column.structural_definition.code_list
+    assert code_list is not None
+    assert isinstance(code_list, NewQbCodeList)
+    # assert code_list.concepts
+
+    # _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+
+
+@pytest.mark.vcr
 def test_case_4():
     """
     {
@@ -1039,7 +1069,7 @@ def test_case_2():
 
 
 @pytest.mark.vcr
-def test_cas_1():
+def test_case_1():
     """
     {
     // When reusing an existing dimension which either has a code-list or doesn't have a code list (we don't care)
