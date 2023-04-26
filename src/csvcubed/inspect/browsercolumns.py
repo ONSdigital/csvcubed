@@ -1,0 +1,191 @@
+from abc import ABC
+from dataclasses import dataclass, field
+from typing import Optional, Union
+
+from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
+from csvcubed.inspect.browsercomponents import (
+    Attribute,
+    Dimension,
+    ExternalAttribute,
+    ExternalDimension,
+    ExternalMeasure,
+    ExternalUnit,
+    LocalAttribute,
+    LocalDimension,
+    LocalMeasure,
+    LocalUnit,
+    Measure,
+    Unit,
+)
+from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.iterables import first, single
+from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
+from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
+
+
+@dataclass(frozen=True)
+class DataCubeColumn(ABC):
+    data_cube_inspector: DataCubeInspector = field(repr=False)
+    code_list_inspector: CodeListInspector = field(repr=False)
+    info: ColumnComponentInfo = field(repr=False)
+
+    def _get_csv_col_title(self) -> Optional[str]:
+        return self.info.column_definition.title
+
+    def _get_cell_uri_template(self) -> Optional[str]:
+        return self.info.column_definition.value_url
+
+    csv_column_title: Optional[str] = lazy_func_field(_get_csv_col_title, repr=False)
+    cell_uri_template: Optional[str] = lazy_func_field(
+        _get_cell_uri_template, repr=False
+    )
+
+
+@dataclass(frozen=True)
+class DimensionColumn(DataCubeColumn):
+    def _get_dimension(self) -> Dimension:
+        dimension_component = self.info.component
+        if dimension_component is None:
+            raise ValueError("Could not locate Dimension Component")
+
+        if dimension_component.property_label is None:
+            return ExternalDimension(dimension_component)
+
+        return LocalDimension(dimension_component)
+
+    dimension: Dimension = lazy_func_field(_get_dimension)
+
+
+@dataclass(frozen=True)
+class AttributeColumn(DataCubeColumn):
+    def _get_component(self) -> QubeComponentResult:
+        attribute_component = self.info.component
+        if attribute_component is None:
+            raise ValueError("Could not locate Attribute Component")
+
+        return attribute_component
+
+    def _get_attribute(self) -> Attribute:
+        attribute_component = self._get_component()
+        if attribute_component.property_label is None:
+            return ExternalAttribute(attribute_component)
+
+        return LocalAttribute(attribute_component)
+
+    def _get_required(self) -> bool:
+        return self._get_component().required
+
+    attribute: Attribute = lazy_func_field(_get_attribute)
+    required: bool = lazy_func_field(_get_required)
+
+
+@dataclass(frozen=True)
+class UnitsColumn(DataCubeColumn):
+    """TODO: List the units used in this column."""
+
+    pass
+
+
+@dataclass(frozen=True)
+class MeasuresColumn(DataCubeColumn):
+    """TODO: List the measures used in this column."""
+
+    pass
+
+
+@dataclass(frozen=True)
+class ObservationsColumn(DataCubeColumn, ABC):
+    def _get_unit(self) -> Union[Unit, UnitsColumn]:
+        columns_in_csv = (
+            self.data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(
+                self.info.column_definition.csv_url
+            )
+        )
+
+        unit_uri = first(
+            c.value_url
+            for c in columns_in_csv
+            if c.virtual
+            and c.property_url == SDMX_ATTRIBUTE_UNIT_URI
+            and c.about_url == self.info.column_definition.about_url
+        )
+        if unit_uri is None:
+            # There must be a units column for this obs val column.
+            column_component_infos = self.data_cube_inspector.get_column_component_info(
+                self.info.column_definition.csv_url
+            )
+            units_column_info = single(
+                column_component_infos,
+                lambda c: c.column_type == EndUserColumnType.Units
+                and c.column_definition.about_url
+                == self.info.column_definition.about_url,
+            )
+            return UnitsColumn(
+                data_cube_inspector=self.data_cube_inspector,
+                code_list_inspector=self.code_list_inspector,
+                info=units_column_info,
+            )
+
+        local_unit = self.data_cube_inspector.get_unit_for_uri(unit_uri)
+        if local_unit is None:
+            return ExternalUnit(unit_uri)
+
+        return LocalUnit(unit_uri=local_unit.unit_uri, label=local_unit.unit_label)
+
+    unit: Union[Unit, UnitsColumn] = lazy_func_field(_get_unit)
+
+
+@dataclass(frozen=True)
+class PivotedObservationsColumn(ObservationsColumn):
+    def _get_measure(self) -> Measure:
+        measure_uri = self.info.column_definition.property_url
+        if measure_uri is None:
+            raise ValueError("Measure URI was not set.")
+
+        local_measure_component = first(
+            c
+            for c in self.data_cube_inspector.get_dsd_qube_components_for_csv(
+                self.info.column_definition.csv_url
+            ).qube_components
+            if c.property_type == ComponentPropertyType.Measure.value
+            and c.property == measure_uri
+        )
+
+        if local_measure_component is None:
+            return ExternalMeasure(measure_uri)
+
+        measure_label = local_measure_component.property_label
+        if measure_label is None:
+            raise ValueError("Local measure's label is not set.")
+
+        return LocalMeasure(measure_uri=measure_uri, label=measure_label)
+
+    measure: Measure = lazy_func_field(_get_measure)
+
+
+@dataclass(frozen=True)
+class StandardShapeObservationsColumn(ObservationsColumn):
+    def _get_measures_column(self) -> MeasuresColumn:
+        measure_col_info = single(
+            c
+            for c in self.data_cube_inspector.get_column_component_info(
+                self.info.column_definition.csv_url
+            )
+            if c.column_type == EndUserColumnType.Measures
+        )
+
+        return MeasuresColumn(
+            data_cube_inspector=self.data_cube_inspector,
+            code_list_inspector=self.code_list_inspector,
+            info=measure_col_info,
+        )
+
+    measures_column: MeasuresColumn = lazy_func_field(_get_measures_column)
+
+
+@dataclass(frozen=True)
+class SuppressedColumn(DataCubeColumn):
+    pass
