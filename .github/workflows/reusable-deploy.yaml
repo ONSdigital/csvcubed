@@ -38,7 +38,7 @@ jobs:
           git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1 --branch gh-pages-test
           cd csvcubed-docs
 
-          git rm -rf external --ignore-unmatch
+          git rm -rf . --ignore-unmatch
 
           mkdir external
 
@@ -48,17 +48,7 @@ jobs:
 
           mkdir inspect-api
 
-          mkdir inspect-api/html
-
-          cp -r ../build/html/* inspect-api/html
-
-          mkdir inspect-api/doctrees
-
-          cp -r ../build/doctrees/* inspect-api/doctrees
-
-          mkdir source
-
-          cp -r ../source/* source
+          cp -r ../build/html/* inspect-api/
 
           touch .nojekyll
 

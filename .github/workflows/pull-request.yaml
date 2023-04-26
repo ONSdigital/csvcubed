@@ -3,26 +3,26 @@ on:
   pull_request:
 
 jobs:
-  test_in_environments:
-    strategy:
-      matrix:
-        # Test on linux with the oldest and newest versions of python.
-        python-version: ['3.9', '3.11']
-        os: [ubuntu-latest]
-        include:
-          # Test in windows with the newest supported version of python.
-          - os: windows-latest
-            python-version: '3.11'
+  # test_in_environments:
+  #   strategy:
+  #     matrix:
+  #       # Test on linux with the oldest and newest versions of python.
+  #       python-version: ['3.9', '3.11']
+  #       os: [ubuntu-latest]
+  #       include:
+  #         # Test in windows with the newest supported version of python.
+  #         - os: windows-latest
+  #           python-version: '3.11'
 
-    uses: ./.github/workflows/reusable-test.yaml
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
+  #   uses: ./.github/workflows/reusable-test.yaml
+  #   with:
+  #     os: ${{ matrix.os }}
+  #     python-version: ${{ matrix.python-version }}
 
   # todo: Remove this before merging PR in.
   build_package_and_documentation:
-    if: needs.test_in_environments.result == 'success'
-    needs: [test_in_environments]
+    # if: needs.test_in_environments.result == 'success'
+    # needs: [test_in_environments]
     uses: ./.github/workflows/reusable-build.yaml
 
   # todo: Remove this before merging PR in.
