@@ -1,0 +1,8 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description
+beer,beer,beer,,0,
+beer-and-cider,beer-and-cider,beer-and-cider,,1,
+cider,cider,cider,,2,
+made-wine,made-wine,made-wine,,3,
+spirits,spirits,spirits,,4,
+whiskey,whiskey,whiskey,,5,
+wine,wine,wine,,6,

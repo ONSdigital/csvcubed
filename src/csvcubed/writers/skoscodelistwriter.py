@@ -32,6 +32,14 @@ from csvcubed.writers.writerbase import WriterBase
 
 _logger = logging.getLogger(__name__)
 
+URI_IDENTIFIER_COL_TITLE = "Uri Identifier"
+LABEL_COL_TITLE = "Label"
+NOTATION_COL_TITLE = "Notation"
+PARENT_URI_IDENTIFIER_COL_TITLE = "Parent Uri Identifier"
+SORT_PRIORITY_COL_TITLE = "Sort Priority"
+DESCRIPTION_COL_TITLE = "Description"
+ORIGINAL_CONCEPT_URI_COL_TITLE = "Original Concept URI"
+
 
 @dataclass
 class SkosCodeListWriter(WriterBase):

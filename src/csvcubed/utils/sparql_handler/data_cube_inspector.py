@@ -5,15 +5,18 @@ Data Cube Inspector
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
+
 from dataclasses import dataclass
 from functools import cache, cached_property
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
 
 import pandas as pd
+import uritemplate
 from csvcubedmodels.rdf.namespaces import XSD
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
+from csvcubed.inputs import pandas_input_to_columnar_str
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
@@ -38,6 +41,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
+    select_labels_for_resource_uris,
     select_units,
 )
 from csvcubed.utils.uri import file_uri_to_path
@@ -216,19 +220,6 @@ class DataCubeInspector:
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
 
-    def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
-        """
-        Get the pandas dataframe for the csv url of the cube wishing to be loaded.
-        Returns DuplicateColumnTitleError in the event of two instances of the
-        same columns being defined.
-        """
-        cols = self.get_column_component_info(csv_url)
-        dict_of_types = _get_data_types_of_all_cols(cols)
-        absolute_csv_url = file_uri_to_path(
-            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
-        )
-        return read_csv(absolute_csv_url, dtype=dict_of_types)
-
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
         """
@@ -281,6 +272,38 @@ class DataCubeInspector:
             if c.column_type == column_type
         ]
 
+    def get_measure_uris_and_labels(self, csv_url: str) -> Dict[str, str]:
+        """
+        Returns a dictionary containing the measure URIs and labels from the input csv's qube components.
+        """
+        qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
+
+        results_dict = {}
+        for component in qube_components:
+            if component.property_type == ComponentPropertyType.Measure.value:
+                results_dict[component.property] = component.property_label
+
+        return results_dict
+
+    def get_attribute_value_uris_and_labels(
+        self, csv_url: str
+    ) -> Dict[str, Dict[str, str]]:
+        """
+        Returns a dictionary of the column name mapped to a dictionary of attribute value uris and their labels
+        """
+        (
+            map_col_name_to_title,
+            map_resource_attr_col_name_to_value_url,
+        ) = self._map_column_name_to_title_to_attribute_value_url(csv_url)
+
+        map_col_name_to_attr_val_uris = self._map_col_name_to_attr_val_uris(
+            csv_url, map_col_name_to_title, map_resource_attr_col_name_to_value_url
+        )
+
+        return self._map_col_title_to_attr_val_uris_and_labels(
+            map_col_name_to_attr_val_uris, map_col_name_to_title
+        )
+
     def get_primary_csv_url(self) -> str:
         """
         Retrieves the csv_url for the primary CSV defined in the CSV-W.
@@ -292,6 +315,109 @@ class DataCubeInspector:
             primary_catalog_metadata.dataset_uri
         ).csv_url
 
+    def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
+        """
+        Get the pandas dataframe for the csv url of the cube wishing to be loaded.
+        Returns DuplicateColumnTitleError in the event of two instances of the
+        same columns being defined.
+        """
+        cols = self.get_column_component_info(csv_url)
+        dict_of_types = _get_data_types_of_all_cols(cols)
+        absolute_csv_url = file_uri_to_path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+        )
+        return read_csv(absolute_csv_url, dtype=dict_of_types)
+
+    def _map_column_name_to_title_to_attribute_value_url(
+        self, csv_url: str
+    ) -> Tuple[Dict[str, str], Dict[str, str]]:
+        """
+        Returns dictionaries of column name to column title and resource attribute column name to value url
+        """
+        column_components = self.get_column_component_info(csv_url)
+
+        map_col_name_to_title = {
+            component.column_definition.name: component.column_definition.title
+            for component in column_components
+            if component.column_definition.name is not None
+            and component.column_definition.title is not None
+        }
+
+        map_resource_attr_col_name_to_value_url = {
+            component.column_definition.name: component.column_definition.value_url
+            for component in column_components
+            if component.column_type == EndUserColumnType.Attribute
+            and component.column_definition.name is not None
+            and component.column_definition.value_url is not None
+        }
+
+        return (map_col_name_to_title, map_resource_attr_col_name_to_value_url)
+
+    def _map_col_name_to_attr_val_uris(
+        self,
+        csv_url,
+        map_col_name_to_title: Dict[str, str],
+        map_resource_attr_col_name_to_value_url: Dict[str, str],
+    ) -> Dict[str, List[str]]:
+        """
+        Returns a dictionary of column name mapped to a list of all attribute value uris for that column
+        """
+        absolute_csv_url = file_uri_to_path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+        )
+        (dataframe, _) = read_csv(
+            absolute_csv_url,
+            usecols=[
+                map_col_name_to_title[col_name]
+                for col_name in map_resource_attr_col_name_to_value_url.keys()
+            ],
+            dtype={
+                col_name: "string"
+                for col_name in map_resource_attr_col_name_to_value_url.keys()
+            },
+        )
+        return {
+            name: [
+                uritemplate.expand(value_url, {name: av})
+                for av in pandas_input_to_columnar_str(
+                    dataframe[map_col_name_to_title[name]].unique()
+                )
+            ]
+            for name, value_url in map_resource_attr_col_name_to_value_url.items()
+        }
+
+    def _map_col_title_to_attr_val_uris_and_labels(
+        self,
+        map_col_name_to_attribute_value_uris: Dict[str, List[str]],
+        map_col_name_to_title: Dict[str, str],
+    ) -> Dict[str, Dict[str, str]]:
+        """
+        Returns a dictionary of the column title mapped to a dictionary of attribute value uris and their labels
+        """
+        map_uri_to_col_name: Dict[str, str] = {
+            uri: col_name
+            for col_name, uri_list in map_col_name_to_attribute_value_uris.items()
+            for uri in uri_list
+        }
+
+        uris_to_query = list(map_uri_to_col_name.keys())
+
+        sparql_results = select_labels_for_resource_uris(
+            self.csvw_inspector.rdf_graph, uris_to_query
+        )
+
+        map_col_title_to_attr_val_uris_and_labels: Dict[str, Dict[str, str]] = {}
+        for uri, label in sparql_results.items():
+            col_name = map_uri_to_col_name[uri]
+            col_title = map_col_name_to_title[col_name]
+            results_for_col_title = map_col_title_to_attr_val_uris_and_labels.get(
+                col_title, {}
+            )
+            results_for_col_title[uri] = label
+            map_col_title_to_attr_val_uris_and_labels[col_title] = results_for_col_title
+
+        return map_col_title_to_attr_val_uris_and_labels
+
 
 def _get_column_type_and_component(
     column: ColumnDefinition,
@@ -299,9 +425,11 @@ def _get_column_type_and_component(
     cube_shape: CubeShape,
     observations_columns: Set[ColumnDefinition],
 ) -> Tuple[EndUserColumnType, Optional[QubeComponentResult]]:
-    # We *assume* that all components which claim to be 'used' in a column express the same information about the
-    # column. i.e. if two or more components claim to be 'used' in the column, it shouldn't matter whether we pick the
-    # first or the second component, we should draw the same conclusions about the type of the column.
+    """
+    We *assume* that all components which claim to be 'used' in a column express the same information about the
+    column. i.e. if two or more components claim to be 'used' in the column, it shouldn't matter whether we pick the
+    first or the second component, we should draw the same conclusions about the type of the column.
+    """
     component_definition = first(
         qube_components, lambda q: column in q.real_columns_used_in
     )

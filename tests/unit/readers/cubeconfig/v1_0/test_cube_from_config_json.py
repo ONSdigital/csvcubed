@@ -7,7 +7,7 @@ from typing import List
 import pandas as pd
 import pytest
 
-from csvcubed.cli.build import build as cli_build
+from csvcubed.cli.buildcsvw.build import build_csvw as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -72,7 +72,6 @@ def test_build():
 def _check_new_attribute_column(
     column: QbColumn, column_config: dict, column_data: list, title: str
 ) -> None:
-
     assert isinstance(column, QbColumn)
     assert isinstance(column.structural_definition, NewQbAttribute)
     assert hasattr(column, "type") is False
@@ -375,6 +374,57 @@ def test_attribute_existing_resource():
     assert column.structural_definition.attribute_uri == column_config["from_existing"]
     assert isinstance(column.structural_definition.arbitrary_rdf, list)
     assert column.structural_definition.arbitrary_rdf == []
+
+
+@pytest.mark.vcr
+def test_attribute_existing_cell_uri_template():
+    column_data = [
+        "confidential",
+        "revised",
+        "confidential",
+        "revised",
+        "confidential",
+        "revised",
+    ]
+    column_config = vc.ATTRIBUTE_EXISTING_CELL_URI_TEMPLATE
+    data = pd.Series(column_data, name="Attribute Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "Cell URI attribute", column_config, data, cube_config_minor_version=0
+    )
+    # Confirm a Column is returned
+    assert isinstance(column, QbColumn)
+    assert hasattr(column, "type") is False
+
+    # And the Column is of the expected type
+    assert isinstance(column.structural_definition, ExistingQbAttribute)
+    assert not hasattr(column.structural_definition, "code_list")
+    assert column.structural_definition.attribute_uri == column_config["from_existing"]
+    assert isinstance(column.structural_definition.arbitrary_rdf, list)
+    assert column.structural_definition.arbitrary_rdf == []
+    assert column.structural_definition.new_attribute_values == []
+    assert column.structural_definition.is_required == False
+
+
+@pytest.mark.vcr
+def test_attribute_new_cell_uri_template():
+    column_data = [
+        "confidential",
+        "revised",
+        "confidential",
+        "revised",
+        "confidential",
+        "revised",
+    ]
+    column_config = vc.ATTRIBUTE_NEW_CELL_URI_TEMPLATE
+    data = pd.Series(column_data, name="Attribute Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "Cell URI attribute", column_config, data, cube_config_minor_version=0
+    )
+    _check_new_attribute_column(
+        column, column_config, column_data, "Cell URI attribute"
+    )
 
 
 @pytest.mark.vcr

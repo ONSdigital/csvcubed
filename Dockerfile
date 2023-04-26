@@ -1,10 +1,23 @@
-FROM gsscogs/pythonversiontesting:v1.0.7
+FROM gsscogs/pythonversiontesting:v1.0.8
 
 ARG VENV_PATH=/csvcubed-venv
 ARG VENV_PIP=${VENV_PATH}/bin/pip
 ARG VENV_POETRY=${VENV_PATH}/bin/poetry
 
 RUN pyenv global 3.11.1
+
+RUN apt-get update && apt-get install -y default-jre
+
+# Install Apache JENA CLI tools for this.
+WORKDIR /
+ADD https://downloads.apache.org/jena/binaries/apache-jena-4.7.0.tar.gz /apache-jena.tar.gz
+RUN tar xvfz /apache-jena.tar.gz && \
+    cd /apache-jena-* && \
+    cp -r * /usr/local/ && \
+    cd .. && \
+    rm -rf /apache-jena-* && \
+    rm /apache-jena.tar.gz
+
 
 RUN mkdir -p /workspace
 

@@ -3,7 +3,7 @@ from pathlib import Path
 from pandas import DataFrame
 from treelib import Tree
 
-from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
+from csvcubed.cli.inspectcsvw.inspectdatasetmanager import load_csv_to_dataframe
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     build_concepts_hierarchy_tree,

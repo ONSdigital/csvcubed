@@ -404,33 +404,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
     And the RDF should pass "skos, qb" SPARQL tests
 
-  Scenario: A codelist defined in a CSV-W should be copied to the output directory
-    Given the existing test-case file "qbwriter/code-list.csv-metadata.json"
-    And the existing test-case file "qbwriter/code-list.table.json"
-    And the existing test-case file "qbwriter/code-list.csv"
-    And a QbCube named "Some Qube" with code-list defined in an existing CSV-W "qbwriter/code-list.csv-metadata.json"
-    Then the CSVqb should pass all validations
-    When the cube is serialised to CSV-W
-    Then the file at "code-list.csv-metadata.json" should exist
-    And the file at "code-list.table.json" should exist
-    And the file at "code-list.csv" should exist
-    And csvlint validation of all CSV-Ws should succeed
-    Given we delete the "qbwriter" folder
-    Then csv2rdf on all CSV-Ws should succeed
-    And the RDF should pass "skos, qb" SPARQL tests
-    And the RDF should contain
-      """
-      <{{rdf_input_directory}}/some-qube.csv#structure> <http://purl.org/linked-data/cube#component> <{{rdf_input_directory}}/some-qube.csv#component/d-code-list>.
-      <{{rdf_input_directory}}/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list>.
-      <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
-
-      <{{rdf_input_directory}}/some-qube.csv#obs/a,10-20@some-measure> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
-
-      <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
-      <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
-      <http://www.w3.org/2004/02/skos/core#inScheme> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
-      """
-
   Scenario: A cube with an option attribute which has missing data values should validate successfully
     Given a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations
@@ -474,14 +447,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
     # since an `sdmxa:obsStatus` Attribute column has been defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
-
-  # Related to issue #389
-  Scenario: A QbCube which references a legacy composite code list should pass all tests
-    Given a QbCube named "Some Qube" which references a legacy composite code-list
-    When the cube is serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
-    And csv2rdf on all CSV-Ws should succeed
-    And the RDF should pass "qb, skos" SPARQL tests
 
   Scenario: A QbCube with a dimension containing URI-unsafe chars can be correctly serialised.
     Given a QbCube named "URI-Unsafe Cube" which has a dimension containing URI-unsafe chars

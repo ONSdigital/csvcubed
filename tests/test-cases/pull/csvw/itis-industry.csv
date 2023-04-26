@@ -1,0 +1,10 @@
+Label,Notation,Parent Notation,Sort Priority,Description
+All industries,all,,1,
+Manufacturing,manufacturing-industry,all,2,
+Wholesale & Retail,wholesale-retail-industry,all,3,
+Information and Communication,information-and-communication-industry,all,4,
+"Professional, Scientific and Technical Support",professional-scientific-and-technical-support-industry,all,5,
+Administrative and Support Service Activities,administrative-and-support-service-activities-industry,all,6,
+"Arts, Entertainment, Recreation and Other Service Activities",arts-entertainment-recreation-and-other-service-activities-industry,all,7,
+Film Industry,film-industry-excluding-other-services,all,8,
+Television Industry,television-industry-excluding-other-services,all,9,

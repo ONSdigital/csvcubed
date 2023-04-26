@@ -2,6 +2,7 @@ import pytest
 
 from csvcubed.models.cube.cube import DuplicateColumnTitleError
 from csvcubed.utils.pandas import read_csv
+from csvcubed.writers.skoscodelistwriter import LABEL_COL_TITLE, NOTATION_COL_TITLE
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir()
@@ -90,6 +91,12 @@ def test_duplicate_column_title_warning():
         DuplicateColumnTitleError("A"),
         DuplicateColumnTitleError("B"),
     }
+
+
+def test_use_cols():
+    df, _data_errors = read_csv(csv_path, usecols=[LABEL_COL_TITLE, NOTATION_COL_TITLE])
+    assert df.shape == (15, 2)
+    assert list(df.columns) == ["Label", "Notation"]
 
 
 if __name__ == "__main__":

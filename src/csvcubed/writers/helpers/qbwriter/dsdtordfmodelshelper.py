@@ -33,7 +33,6 @@ from csvcubed.models.cube.qb.components.attribute import (
 from csvcubed.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
     NewQbCodeList,
-    NewQbCodeListInCsvW,
     QbCodeList,
 )
 from csvcubed.models.cube.qb.components.datastructuredefinition import (
@@ -551,8 +550,6 @@ class DsdToRdfModelsHelper:
                     code_list, self.cube.uri_style
                 ).get_scheme_uri()
             )
-        elif isinstance(code_list, NewQbCodeListInCsvW):
-            return ExistingResource(code_list.concept_scheme_uri)
         else:
             raise TypeError(f"Unhandled codelist type {type(code_list)}")
 

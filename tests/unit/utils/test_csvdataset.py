@@ -17,7 +17,9 @@ from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
-from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
+from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
+    get_arguments_qb_dataset,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

@@ -1,0 +1,10 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description
+all,all,all,,0,
+ready-to-drink,ready-to-drink,ready-to-drink,,1,
+sparkling,sparkling,sparkling,,2,
+still,still,still,,3,
+uk,uk,uk,,4,
+uk-grain-and-blend,uk-grain-and-blend,uk-grain-and-blend,,5,
+uk-malt,uk-malt,uk-malt,,6,
+uk-potable,uk-potable,uk-potable,,7,
+uk-registered,uk-registered,uk-registered,,8,
