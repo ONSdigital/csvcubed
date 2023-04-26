@@ -1,0 +1,859 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "anxiety.csv#dataset",
+    "tables": [
+        {
+            "url": "anxiety.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "AREACD",
+                        "name": "areacd",
+                        "propertyUrl": "anxiety.csv#dimension/statistical-geography",
+                        "valueUrl": "ons-geography-code-list-for-anxiety-csv.csv#{+areacd}",
+                        "required": true
+                    },
+                    {
+                        "titles": "AREANM",
+                        "name": "areanm",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Geography",
+                        "name": "geography",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Variable Name",
+                        "name": "variable_name",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Indicator",
+                        "name": "indicator",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Mission",
+                        "name": "mission",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Category",
+                        "name": "category",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Period",
+                        "name": "period",
+                        "propertyUrl": "anxiety.csv#dimension/goverment-year",
+                        "valueUrl": "goverment-year.csv#{+period}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Value",
+                        "name": "value",
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "anxiety.csv#measure/mean-adults-self-reporting-anxiety-score",
+                        "datatype": "decimal",
+                        "required": false
+                    },
+                    {
+                        "titles": "Measure",
+                        "name": "measure",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Unit",
+                        "name": "unit",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Lower Confidence Interval (95%)",
+                        "name": "lower_confidence_interval_95",
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "anxiety.csv#attribute/lower-confidence-interval",
+                        "datatype": "decimal",
+                        "required": false
+                    },
+                    {
+                        "titles": "Upper Confidence Interval (95%)",
+                        "name": "upper_confidence_interval_95",
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "anxiety.csv#attribute/upper-confidence-interval",
+                        "datatype": "decimal",
+                        "required": false
+                    },
+                    {
+                        "titles": "Observation Status",
+                        "name": "observation_status",
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "anxiety.csv#attribute/observation-status",
+                        "valueUrl": "https://purl.org/csv-cubed/resources/attributes/af-obs-marker#{+observation_status}",
+                        "required": false
+                    },
+                    {
+                        "titles": "Polarity",
+                        "name": "polarity",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Notes",
+                        "name": "notes",
+                        "suppressOutput": true
+                    },
+                    {
+                        "name": "virt_slice",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Slice"
+                    },
+                    {
+                        "name": "virt_slice_structure",
+                        "virtual": true,
+                        "propertyUrl": "qb:sliceStructure",
+                        "valueUrl": "anxiety.csv#slice/cross-measures"
+                    },
+                    {
+                        "name": "virt_obs_value",
+                        "virtual": true,
+                        "propertyUrl": "qb:observation",
+                        "valueUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score"
+                    },
+                    {
+                        "name": "virt_obs_value_meas",
+                        "virtual": true,
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "qb:measureType",
+                        "valueUrl": "anxiety.csv#measure/mean-adults-self-reporting-anxiety-score"
+                    },
+                    {
+                        "name": "virt_obs_value_unit",
+                        "virtual": true,
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "anxiety.csv#unit/score"
+                    },
+                    {
+                        "name": "virt_dim_value_areacd",
+                        "virtual": true,
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "anxiety.csv#dimension/statistical-geography",
+                        "valueUrl": "ons-geography-code-list-for-anxiety-csv.csv#{+areacd}"
+                    },
+                    {
+                        "name": "virt_dim_value_period",
+                        "virtual": true,
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "anxiety.csv#dimension/goverment-year",
+                        "valueUrl": "goverment-year.csv#{+period}"
+                    },
+                    {
+                        "name": "virt_obs_value_type",
+                        "virtual": true,
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Observation"
+                    },
+                    {
+                        "name": "virt_dataSet_value",
+                        "virtual": true,
+                        "aboutUrl": "anxiety.csv#obs/{areacd},{period}@mean-adults-self-reporting-anxiety-score",
+                        "propertyUrl": "qb:dataSet",
+                        "valueUrl": "anxiety.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "areacd",
+                        "reference": {
+                            "resource": "ons-geography-code-list-for-anxiety-csv.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    },
+                    {
+                        "columnReference": "period",
+                        "reference": {
+                            "resource": "goverment-year.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "areacd",
+                    "period"
+                ],
+                "aboutUrl": "anxiety.csv#slice/{areacd},{period}"
+            }
+        },
+        {
+            "url": "ons-geography-code-list-for-anxiety-csv.csv",
+            "tableSchema": "ons-geography-code-list-for-anxiety-csv.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "goverment-year.csv",
+            "tableSchema": "goverment-year.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "anxiety.csv#structure",
+            "@type": [
+                "http://purl.org/linked-data/cube#DataStructureDefinition",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "anxiety.csv#component/measure-type"
+                },
+                {
+                    "@id": "anxiety.csv#component/statistical-geography"
+                },
+                {
+                    "@id": "anxiety.csv#component/observation-status"
+                },
+                {
+                    "@id": "anxiety.csv#component/lower-confidence-interval"
+                },
+                {
+                    "@id": "anxiety.csv#component/upper-confidence-interval"
+                },
+                {
+                    "@id": "anxiety.csv#component/unit"
+                },
+                {
+                    "@id": "anxiety.csv#component/mean-adults-self-reporting-anxiety-score"
+                },
+                {
+                    "@id": "anxiety.csv#component/goverment-year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#dimension/statistical-geography"
+                },
+                {
+                    "@id": "anxiety.csv#measure/mean-adults-self-reporting-anxiety-score"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "anxiety.csv#attribute/lower-confidence-interval"
+                },
+                {
+                    "@id": "anxiety.csv#attribute/upper-confidence-interval"
+                },
+                {
+                    "@id": "anxiety.csv#dimension/goverment-year"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "anxiety.csv#attribute/observation-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#sliceKey": [
+                {
+                    "@id": "anxiety.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/upper-confidence-interval",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "anxiety.csv#attribute/upper-confidence-interval"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#attribute/upper-confidence-interval"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/lower-confidence-interval",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "anxiety.csv#attribute/lower-confidence-interval"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#attribute/lower-confidence-interval"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#slice/cross-measures",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#SliceKey",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#dimension/goverment-year"
+                },
+                {
+                    "@id": "anxiety.csv#dimension/statistical-geography"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#class/statistical-geography",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/observation-status",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "anxiety.csv#attribute/observation-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#attribute/observation-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 8
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/mean-adults-self-reporting-anxiety-score",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#measure/mean-adults-self-reporting-anxiety-score"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "anxiety.csv#measure/mean-adults-self-reporting-anxiety-score"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#dataset",
+            "@type": [
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://purl.org/linked-data/cube#DataSet"
+            ],
+            "http://purl.org/dc/terms/creator": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics"
+                }
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@type": "https://www.w3.org/ns/iana/media-types/text/markdown#Resource",
+                    "@value": "This dataset shows the average rating of those that felt anxious yesterday for adults aged 16 years and over, in the UK, for periods 04/2011-03/2012 to 04/2021-03/2022.\n\n### Coverage \n\nUK\n\n#### Geography definition\n\nLocal Authority Districts and Unitary Authorities,\nCounties,\nRegions, \nNations (England, Wales, Scotland, Northern Ireland),\nCountry (UK)\n\n### Source\n\n - United Kingdom: [Office for National Statistics](https://www.ons.gov.uk/peoplepopulationandcommunity/wellbeing/bulletins/measuringnationalwellbeing/previousReleases) \n\n\n### Source Notes and Caveats \nOn 31 October 2022, alongside the publication of the latest personal well-being estimates for the period between April 2021 to March 2022, previously published estimates for the periods between April 2011 and March 2019 have been updated due to changes in guidance on data suppression, where estimates are no longer required to be suppressed solely based on their co-efficient of variation (CV) values. Previously published estimates were suppressed based on their co-efficient of variation (CV) values being over 20. Estimates have also been updated following quality assurance of previous publications. \n\n\n"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Anxiety"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-03-31T12:10:55.677219"
+                }
+            ],
+            "http://purl.org/dc/terms/license": [
+                {
+                    "@id": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-03-31T12:10:55.677219"
+                }
+            ],
+            "http://purl.org/dc/terms/publisher": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Anxiety"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "anxiety.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#comment": [
+                {
+                    "@language": "en",
+                    "@value": "The average rating of those that felt anxious yesterday for adults aged 16 years and over, UK, 04/2011-03/2012 to 04/2021-03/2022."
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Anxiety"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#keyword": [
+                {
+                    "@language": "en",
+                    "@value": "local-authorities"
+                },
+                {
+                    "@language": "en",
+                    "@value": "personal-wellbeing"
+                },
+                {
+                    "@language": "en",
+                    "@value": "regions"
+                },
+                {
+                    "@language": "en",
+                    "@value": "subnational"
+                },
+                {
+                    "@language": "en",
+                    "@value": "quality-of-life"
+                },
+                {
+                    "@language": "en",
+                    "@value": "counties"
+                },
+                {
+                    "@language": "en",
+                    "@value": "annual-population-survey"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#theme": [
+                {
+                    "@id": "https://www.ons.gov.uk/peoplepopulationandcommunity/wellbeing"
+                }
+            ],
+            "http://www.w3.org/ns/prov#wasGeneratedBy": [
+                {
+                    "@id": "anxiety.csv#csvcubed-build-activity"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/statistical-geography",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#dimension/statistical-geography"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "anxiety.csv#dimension/statistical-geography"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#dimension/goverment-year",
+            "@type": [
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "goverment-year.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Goverment Year"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "anxiety.csv#class/goverment-year"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/ns/prov#Activity",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.3.2"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#attribute/upper-confidence-interval",
+            "@type": [
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Upper Confidence Interval"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#class/goverment-year",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "anxiety.csv#measure/mean-adults-self-reporting-anxiety-score",
+            "@type": [
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Mean adults' self-reporting anxiety score"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "https://purl.org/csv-cubed/resources/measures#scale"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#attribute/observation-status",
+            "@type": [
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Observation Status"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/measure-type",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#dimension/statistical-geography",
+            "@type": [
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "ons-geography-code-list-for-anxiety-csv.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Statistical Geography"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "anxiety.csv#class/statistical-geography"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#component/goverment-year",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "anxiety.csv#dimension/goverment-year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "anxiety.csv#dimension/goverment-year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#attribute/lower-confidence-interval",
+            "@type": [
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Lower Confidence Interval"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#dependency/ons-geography-code-list-for-anxiety-csv",
+            "@type": [
+                "http://rdfs.org/ns/void#Dataset",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./ons-geography-code-list-for-anxiety-csv.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "ons-geography-code-list-for-anxiety-csv.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#dependency/goverment-year",
+            "@type": [
+                "http://rdfs.org/ns/void#Dataset",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./goverment-year.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "goverment-year.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#attribute/observation-status/u",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "u"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#attribute/observation-status/x",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "x"
+                }
+            ]
+        },
+        {
+            "@id": "anxiety.csv#unit/score",
+            "@type": [
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
+            ],
+            "http://qudt.org/schema/qudt/isScalingOf": [
+                {
+                    "@id": "http://qudt.org/vocab/unit/UNITLESS"
+                }
+            ],
+            "http://www.ontology-of-units-of-measure.org/resource/om-2/hasFactor": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#float",
+                    "@value": "1.0"
+                }
+            ],
+            "http://www.ontology-of-units-of-measure.org/resource/om-2/hasUnit": [
+                {
+                    "@id": "http://qudt.org/vocab/unit/UNITLESS"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#isDefinedBy": [
+                {
+                    "@id": "http://qudt.org/vocab/unit/UNITLESS"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "score"
+                }
+            ]
+        }
+    ]
+}
