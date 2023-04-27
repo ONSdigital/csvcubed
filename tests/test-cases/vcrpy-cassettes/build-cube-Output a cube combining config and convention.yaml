@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 27 Apr 2023 11:06:34 GMT
+      - Thu, 27 Apr 2023 11:55:09 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -325,13 +325,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 27 Apr 2023 11:06:34 GMT
+      - Thu, 27 Apr 2023 11:55:09 GMT
       ETag:
       - W/"c2c4afa5dd344a2efddea38fdf484a9aaeba0ed0bc78613f93c616583f7b96bf"
       Expires:
-      - Thu, 27 Apr 2023 11:11:34 GMT
+      - Thu, 27 Apr 2023 12:00:09 GMT
       Source-Age:
-      - '167'
+      - '59'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -345,15 +345,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - d880e5e843852e0a3aa045bd47124a4a655ddfaa
+      - 18f320bbb7bec96a9b7565df104bb4b5859809ff
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
       - 491C:D067:5CDC66:609FF2:644A5693
       X-Served-By:
-      - cache-lcy-eglc8600042-LCY
+      - cache-lcy-eglc8600048-LCY
       X-Timer:
-      - S1682593595.751699,VS0,VE1
+      - S1682596510.632178,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -425,7 +425,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 27 Apr 2023 11:06:35 GMT
+      - Thu, 27 Apr 2023 11:55:10 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -476,13 +476,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 27 Apr 2023 11:06:35 GMT
+      - Thu, 27 Apr 2023 11:55:10 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Thu, 27 Apr 2023 11:11:35 GMT
+      - Thu, 27 Apr 2023 12:00:10 GMT
       Source-Age:
-      - '167'
+      - '21'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -496,15 +496,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - f50a3d29f7bb0d601b73e8df7dc9cf9b62244952
+      - 3d0c7bf428b6322d36eba17e50fa18b054845eee
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - C352:2637:50813E:53F131:644A4595
+      - 7FAA:11014:5EDDD3:62A20A:644A56A2
       X-Served-By:
-      - cache-lhr7359-LHR
+      - cache-lcy-eglc8600028-LCY
       X-Timer:
-      - S1682593596.718635,VS0,VE1
+      - S1682596511.605274,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:

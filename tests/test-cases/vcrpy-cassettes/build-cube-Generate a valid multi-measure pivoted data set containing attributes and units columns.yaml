@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 27 Apr 2023 11:07:25 GMT
+      - Thu, 27 Apr 2023 11:56:11 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/measures.json
       server:
@@ -115,13 +115,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 27 Apr 2023 11:07:25 GMT
+      - Thu, 27 Apr 2023 11:56:11 GMT
       ETag:
       - W/"94d70729e3f9a1824bbe6c720e1091a3a5f0b7631c94ab859cabe1f67129d90b"
       Expires:
-      - Thu, 27 Apr 2023 11:12:25 GMT
+      - Thu, 27 Apr 2023 12:01:11 GMT
       Source-Age:
-      - '153'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -135,15 +135,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 7361ea33bf929f089cc0b7da628d1ce42488941b
+      - 1a1384a2e04a287eccd40f113c62e88965ec79ae
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
       - 5864:03CB:5F1276:62D770:644A56D4
       X-Served-By:
-      - cache-lcy-eglc8600034-LCY
+      - cache-lcy-eglc8600038-LCY
       X-Timer:
-      - S1682593646.990532,VS0,VE1
+      - S1682596571.497512,VS0,VE167
       X-XSS-Protection:
       - 1; mode=block
     status:
