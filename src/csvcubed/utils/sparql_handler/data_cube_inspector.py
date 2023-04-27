@@ -57,7 +57,7 @@ class DataCubeInspector:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
     csvw_inspector: CsvWInspector
-    code_list_inspector: CodeListInspector = field(init=False)
+    code_list_inspector: Optional[CodeListInspector] = field(init=False)
 
     def __post_init__(self):
         self.code_list_inspector = CodeListInspector(self.csvw_inspector)
