@@ -86,6 +86,10 @@ class MetadataPrinter:
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
+        """
+        Returns the type of csvw being evaluated as a string.
+        E.g. 'data cube' or 'code list'.
+        """
         if csvw_type == CSVWType.QbDataSet:
             return "data cube"
         elif csvw_type == CSVWType.CodeList:
@@ -111,6 +115,10 @@ class MetadataPrinter:
     def get_parent_label_unique_id_col_titles(
         columns: List[ColumnDefinition], primary_key_col: str
     ) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+        """
+        Returns a tuple containing the parent, label and unique id column titles
+        in a code list.
+        """
         parent_notation_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.SkosBroader
         )

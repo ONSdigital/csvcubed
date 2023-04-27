@@ -479,7 +479,11 @@ def _figure_out_end_user_column_type(
 
 
 def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
-    """ """
+    """
+    Returns a dictionary containing the column titles and the data type of their
+    values. This will be 'str' for most column types except for observations and
+    attribute literal columns.
+    """
     dict_of_types = {}
     for col in cols:
         is_attribute_literal = (

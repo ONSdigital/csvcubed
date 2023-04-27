@@ -74,6 +74,10 @@ class CsvWInspector:
 
     @cached_property
     def csvw_type(self) -> CSVWType:
+        """
+        Returns the type of the primary graph in a csvw.
+        E.g. CSVWType.CodeList or CSVWType.QbDataSet
+        """
         primary_graph = self.rdf_graph.get_context(self.primary_graph_uri)
         if ask_is_csvw_code_list(primary_graph):
             return CSVWType.CodeList
