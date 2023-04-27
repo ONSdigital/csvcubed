@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 22 Nov 2022 14:42:31 GMT
+      - Thu, 27 Apr 2023 11:17:47 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -111,13 +111,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 22 Nov 2022 14:42:31 GMT
+      - Thu, 27 Apr 2023 11:17:47 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Tue, 22 Nov 2022 14:47:31 GMT
+      - Thu, 27 Apr 2023 11:22:47 GMT
       Source-Age:
-      - '289'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -131,15 +131,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - bf007cba0392801fe3098c0d5454875ca98153f5
+      - d837226140369748d0f5b3da3255740f09410166
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 3A1E:74B9:62FFFC:68A9A3:637CDEB5
+      - 4F24:A971:5EA59A:6269DB:644A56AC
       X-Served-By:
-      - cache-lcy-eglc8600053-LCY
+      - cache-lcy-eglc8600025-LCY
       X-Timer:
-      - S1669128151.206055,VS0,VE1
+      - S1682594268.511459,VS0,VE193
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -187,7 +187,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 22 Nov 2022 14:42:31 GMT
+      - Thu, 27 Apr 2023 11:17:49 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
       server:
@@ -251,13 +251,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 22 Nov 2022 14:42:32 GMT
+      - Thu, 27 Apr 2023 11:17:49 GMT
       ETag:
       - W/"f58600e567f59e279a956de20b9455d9b890b4bf43861015943b6928eb8990fe"
       Expires:
-      - Tue, 22 Nov 2022 14:47:32 GMT
+      - Thu, 27 Apr 2023 11:22:49 GMT
       Source-Age:
-      - '289'
+      - '134'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -271,15 +271,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 23b5285074534f8aefc26d3cd87761a73eddc39f
+      - b1eaa5d13249f7bf069702c4e032eb7f78b8badf
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 31A6:B52C:662297:6BDC43:637CDEB6
+      - 9458:4670:298BDF:2AE67E:644A4488
       X-Served-By:
-      - cache-lcy-eglc8600058-LCY
+      - cache-lhr7361-LHR
       X-Timer:
-      - S1669128152.150286,VS0,VE0
+      - S1682594269.273162,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
