@@ -77,6 +77,7 @@ def _build_valid_cube(context):
     with vcr.use_cassette(
         str(_cassettes_dir / f"build-cube-{cassette_file_name}.yaml"),
         record_mode=vcr.record_mode.RecordMode.ONCE,
+        inject=True,
     ):
         cube, errors = cli_build(
             data_file,
