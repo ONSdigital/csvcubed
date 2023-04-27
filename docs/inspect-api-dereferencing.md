@@ -28,8 +28,8 @@ Assuming the CSV URL that is to be used as input has been assigned to a variable
 
 In this scenario, the contents of the DataFrame object returned by the `get_dataframe` function would look like this:
 
-| index | Dim1        | Dim2             | Dim3 | AttrResource | AttrLiteral | Units       | Measures       | Obs |
-|:------|:------------|:-----------------|-----:|:-------------|:------------|:------------|:---------------|:----|
-| 0     | Something 1 | Something Else 1 | 2021 | Final        | -90         | Some Unit 1 | Some Measure 1 | 127 |
-| 1     | Something 2 | Something Else 2 | 2022 | Provisional  | -80         | Some Unit 2 | Some Measure 2 | 227 |
-| 2     | Something 3 | Something Else 3 | 2023 | Estimated    | -70         | Some Unit 3 | Some Measure 3 | 327 |
+| Dim1        | Dim2             | Dim3 | AttrResource | AttrLiteral | Units       | Measures       | Obs |
+|:------------|:-----------------|-----:|:-------------|:------------|:------------|:---------------|:----|
+| Something 1 | Something Else 1 | 2021 | Final        | -90         | Some Unit 1 | Some Measure 1 | 127 |
+| Something 2 | Something Else 2 | 2022 | Provisional  | -80         | Some Unit 2 | Some Measure 2 | 227 |
+| Something 3 | Something Else 3 | 2023 | Estimated    | -70         | Some Unit 3 | Some Measure 3 | 327 |

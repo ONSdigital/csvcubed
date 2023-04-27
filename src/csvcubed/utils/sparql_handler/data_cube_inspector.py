@@ -6,7 +6,7 @@ Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import cache, cached_property
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
@@ -57,6 +57,10 @@ class DataCubeInspector:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
     csvw_inspector: CsvWInspector
+    code_list_inspector: CodeListInspector = field(init=False)
+
+    def __post_init__(self):
+        self.code_list_inspector = CodeListInspector(self.csvw_inspector)
 
     def __hash__(self):
         """
@@ -371,7 +375,7 @@ class DataCubeInspector:
         elif col.column_type.value == "Dimension":
             return self._dereference_uris_for_dimensions(code_lists, col)
         # Column is either an Attribute Literal or Observations
-        raise ValueError("Input column does not contain categorical values.")
+        raise ValueError("Unhandled column type/configuration")
 
     def _dereference_uris_for_attributes(
         self,
@@ -383,18 +387,16 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Attribute Resource-type column values.
         """
-        if col.column_definition.name is not None:
-            col_uris = [
-                uritemplate.expand(value_url, {col.column_definition.name: cat})
-                for cat in col_categories
-            ]
-            attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-            if col.column_definition.title is not None:
-                return [
-                    attribute_vals[col.column_definition.title][uri] for uri in col_uris
-                ]
+        if col.column_definition.name is None:
+            raise ValueError("Column name is not defined")
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
+        if col.column_definition.title is None:
             raise ValueError("Column title is not defined")
-        raise ValueError("Column name is not defined")
+        return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
 
     def _dereference_uris_for_measures(
         self,
@@ -411,7 +413,8 @@ class DataCubeInspector:
                 uritemplate.expand(value_url, {col.column_definition.name: cat})
                 for cat in col_categories
             ]
-            return [self.get_measure_uris_and_labels(csv_url)[uri] for uri in col_uris]
+            measure_uris_and_labels = self.get_measure_uris_and_labels(csv_url)
+            return [measure_uris_and_labels[uri] for uri in col_uris]
         raise ValueError("Column name is not defined")
 
     def _dereference_uris_for_units(
@@ -433,8 +436,7 @@ class DataCubeInspector:
                 maybe_unit = self.get_unit_for_uri(col_uri)
                 if maybe_unit is None:
                     raise ValueError("Unit could not be retrieved.")
-                else:
-                    unit_labels.append(maybe_unit.unit_label)
+                unit_labels.append(maybe_unit.unit_label)
             return unit_labels
         raise ValueError("Column name is not defined")
 
@@ -444,12 +446,11 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Dimension-type column values.
         """
-        code_list_inspector = CodeListInspector(self.csvw_inspector)
         code_list = single(
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
         )
         concept_scheme_uri = code_list.code_list
-        uri_labels_dict = code_list_inspector.get_map_code_list_uri_to_label(
+        uri_labels_dict = self.code_list_inspector.get_map_code_list_uri_to_label(
             concept_scheme_uri
         )
 
