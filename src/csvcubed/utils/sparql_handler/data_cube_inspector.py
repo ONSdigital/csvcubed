@@ -450,6 +450,10 @@ class DataCubeInspector:
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
         )
         concept_scheme_uri = code_list.code_list
+        if self.code_list_inspector is None:
+            raise ValueError(
+                "Code List Inspector object does not exist, cannot get URI to Label."
+            )
         uri_labels_dict = self.code_list_inspector.get_map_code_list_uri_to_label(
             concept_scheme_uri
         )
