@@ -72,7 +72,7 @@ def _build_valid_cube(context):
 
     with vcr.use_cassette(
         str(_cassettes_dir / f"build-cube-{cassette_file_name}.yaml"),
-        record_mode=vcr.record_mode.RecordMode.ONCE,
+        record_mode=vcr.record_mode.RecordMode.NEW_EPISODES,
     ):
         mocker = mock_json_schemas()
         mocker.start()
