@@ -17,7 +17,6 @@ release = "0.3.5"
 extensions = [
     "sphinx.ext.autodoc",
 ]
-html_css_files = ["custom.css"]
 include_patterns = [
     "index.rst",
     "modules.rst",
@@ -33,3 +32,4 @@ exclude_patterns = []
 
 html_theme = "python_docs_theme"
 html_static_path = ["_static"]
+html_css_files = ["custom.css"]
