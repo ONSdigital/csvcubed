@@ -1,4 +1,5 @@
 div.sphinxsidebar
 {
     word-wrap: break-word;
+    line-break: auto;
 }
