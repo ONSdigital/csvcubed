@@ -378,7 +378,9 @@ class DataCubeInspector:
         elif col.column_type.value == "Dimension":
             return self._dereference_uris_for_dimensions(code_lists, col)
         # Column is either an Attribute Literal or Observations
-        raise ValueError("Unhandled column type/configuration")
+        raise ValueError(
+            f"Unhandled column type/configuration - {col.column_type.value}, {col.column_definition}"
+        )
 
     def _dereference_uris_for_attributes(
         self,
@@ -392,13 +394,14 @@ class DataCubeInspector:
         """
         if col.column_definition.name is None:
             raise ValueError(f"Column name is not defined - {col.column_definition}")
+        if col.column_definition.title is None:
+            raise ValueError(f"Column title is not defined - {col.column_definition}")
+
         col_uris = [
             uritemplate.expand(value_url, {col.column_definition.name: cat})
             for cat in col_categories
         ]
         attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
-        if col.column_definition.title is None:
-            raise ValueError(f"Column title is not defined - {col.column_definition}")
         return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
 
     def _dereference_uris_for_measures(
@@ -451,6 +454,9 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Dimension-type column values.
         """
+        if col.column_definition.title is None:
+            raise ValueError(f"Column title is not defined - {col.column_definition}")
+
         code_list = single(
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
         )
