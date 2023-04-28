@@ -4,7 +4,6 @@ from functools import cache
 from pathlib import Path
 from typing import List, Optional, TypeVar, Union
 
-from csvcubed.inspect.browsertable import CodeListTable
 from csvcubed.inspect.inspect_api import DataCubeTable
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
 from csvcubed.models.sparqlresults import CatalogMetadataResult
@@ -86,44 +85,3 @@ class MetadataBrowser(ABC):
     @abstractmethod
     def __hash__(self):
         pass
-
-
-@dataclass
-class CsvWBrowser:
-    primary_csvw: Union[str, Path]
-    _csvw_inspector: CsvWInspector = field(init=False, repr=False)
-    _data_cube_inspector: DataCubeInspector = field(init=False, repr=False)
-    _code_list_inspector: CodeListInspector = field(init=False, repr=False)
-
-    def _get_tables(self) -> List[TableBrowser]:
-        cube_tables = [
-            DataCubeTable(
-                csv_url=t.csv_url,
-                data_cube_inspector=self._data_cube_inspector,
-                code_list_inspector=self._code_list_inspector,
-            )
-            for t in self._data_cube_inspector._cube_table_identifiers.values()
-        ]
-        code_list_tables = [
-            CodeListTable(
-                csv_url=t.csv_url,
-                data_cube_inspector=self._data_cube_inspector,
-                code_list_inspector=self._code_list_inspector,
-            )
-            for t in self._code_list_inspector._code_list_table_identifiers
-        ]
-
-        return [*cube_tables, *code_list_tables]
-
-    tables: List[TableBrowser] = lazy_func_field(_get_tables)
-
-    def __post_init__(self):
-        csvw_path = (
-            self.primary_csvw
-            if isinstance(self.primary_csvw, Path)
-            else Path(self.primary_csvw)
-        )
-        csvw_rdf_manager = CsvWRdfManager(csvw_path.expanduser())
-        self._csvw_inspector = csvw_rdf_manager.csvw_inspector
-        self._data_cube_inspector = DataCubeInspector(self._csvw_inspector)
-        self._code_list_inspector = CodeListInspector(self._csvw_inspector)
