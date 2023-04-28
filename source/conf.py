@@ -17,6 +17,7 @@ release = "0.3.5"
 extensions = [
     "sphinx.ext.autodoc",
 ]
+html_css_files = ["custom.css"]
 include_patterns = [
     "index.rst",
     "modules.rst",
