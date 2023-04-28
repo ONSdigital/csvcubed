@@ -391,14 +391,14 @@ class DataCubeInspector:
         Returns the list of dereferenced URIs for Attribute Resource-type column values.
         """
         if col.column_definition.name is None:
-            raise ValueError("Column name is not defined")
+            raise ValueError(f"Column name is not defined - {col.column_definition}")
         col_uris = [
             uritemplate.expand(value_url, {col.column_definition.name: cat})
             for cat in col_categories
         ]
         attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
         if col.column_definition.title is None:
-            raise ValueError("Column title is not defined")
+            raise ValueError(f"Column title is not defined - {col.column_definition}")
         return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
 
     def _dereference_uris_for_measures(
@@ -430,19 +430,20 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Units-type column values.
         """
-        if col.column_definition.name is not None:
-            col_uris = [
-                uritemplate.expand(value_url, {col.column_definition.name: cat})
-                for cat in col_categories
-            ]
-            unit_labels = []
-            for col_uri in col_uris:
-                maybe_unit = self.get_unit_for_uri(col_uri)
-                if maybe_unit is None:
-                    raise ValueError("Unit could not be retrieved.")
-                unit_labels.append(maybe_unit.unit_label)
-            return unit_labels
-        raise ValueError("Column name is not defined")
+        if col.column_definition.name is None:
+            raise ValueError(f"Column name is not defined - {col.column_definition}")
+
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        unit_labels = []
+        for col_uri in col_uris:
+            maybe_unit = self.get_unit_for_uri(col_uri)
+            if maybe_unit is None:
+                raise ValueError(f"Unit {col_uri} could not be retrieved.")
+            unit_labels.append(maybe_unit.unit_label)
+        return unit_labels
 
     def _dereference_uris_for_dimensions(
         self, code_lists: List[CodelistResult], col: ColumnComponentInfo
