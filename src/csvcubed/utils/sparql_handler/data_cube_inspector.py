@@ -6,7 +6,7 @@ Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from functools import cache, cached_property
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
@@ -57,10 +57,13 @@ class DataCubeInspector:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
     csvw_inspector: CsvWInspector
-    code_list_inspector: Optional[CodeListInspector] = field(init=False)
+    code_list_inspector_in: InitVar[Optional[CodeListInspector]] = None
+    _code_list_inspector: CodeListInspector = field(init=False)
 
-    def __post_init__(self):
-        self.code_list_inspector = CodeListInspector(self.csvw_inspector)
+    def __post_init__(self, code_list_inspector_in: Optional[CodeListInspector]):
+        self._code_list_inspector = code_list_inspector_in or CodeListInspector(
+            self.csvw_inspector
+        )
 
     def __hash__(self):
         """
@@ -408,14 +411,15 @@ class DataCubeInspector:
         """
         Returns the list of dereferenced URIs for Measures-type column values.
         """
-        if col.column_definition.name is not None:
-            col_uris = [
-                uritemplate.expand(value_url, {col.column_definition.name: cat})
-                for cat in col_categories
-            ]
-            measure_uris_and_labels = self.get_measure_uris_and_labels(csv_url)
-            return [measure_uris_and_labels[uri] for uri in col_uris]
-        raise ValueError("Column name is not defined")
+        if col.column_definition.name is None:
+            raise ValueError(f"Column name is not defined - {col.column_definition}")
+
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        measure_uris_and_labels = self.get_measure_uris_and_labels(csv_url)
+        return [measure_uris_and_labels[uri] for uri in col_uris]
 
     def _dereference_uris_for_units(
         self,
@@ -450,11 +454,7 @@ class DataCubeInspector:
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
         )
         concept_scheme_uri = code_list.code_list
-        if self.code_list_inspector is None:
-            raise ValueError(
-                "Code List Inspector object does not exist, cannot get URI to Label."
-            )
-        uri_labels_dict = self.code_list_inspector.get_map_code_list_uri_to_label(
+        uri_labels_dict = self._code_list_inspector.get_map_code_list_uri_to_label(
             concept_scheme_uri
         )
 
