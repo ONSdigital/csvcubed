@@ -17,7 +17,6 @@ release = "0.3.5"
 extensions = [
     "sphinx.ext.autodoc",
 ]
-html_css_files = ["custom.css"]
 include_patterns = [
     "index.rst",
     "modules.rst",
@@ -31,5 +30,5 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "python_docs_theme"
+html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
