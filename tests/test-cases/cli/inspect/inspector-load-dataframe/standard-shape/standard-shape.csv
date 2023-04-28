@@ -1,2 +1,4 @@
 Dim1,Dim2,Dim3,Attr Resource,Attr Literal,Units,Measures,Obs
-Something,Something Else,2023,Final,-90,Some Unit,Some Measure,127
+Something 1,Something Else 1,2021,Final,-90,Some Unit 1,Some Measure 1,127
+Something 2,Something Else 2,2022,Provisional,-80,Some Unit 2,Some Measure 2,227
+Something 3,Something Else 3,2023,Estimated,-70,Some Unit 3,Some Measure 3,327
