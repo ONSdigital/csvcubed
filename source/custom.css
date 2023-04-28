@@ -1,8 +1,8 @@
-div.sphinxsidebarwrapper ul li ul li ul ul{
+div.sphinxsidebarwrapper ul{
     line-break: auto;
     word-break: break-all;
 }
-div.sphinxsidebarwrapper ul li ul li ul{
+div.sphinxsidebarwrapper li{
     line-break: auto;
     word-break: break-all;
 }
