@@ -2,3 +2,15 @@ div.sphinxsidebarwrapper ul li ul{
     overflow-wrap: break-word;
 
 }
+div.sphinxsidebarwrapper li{
+    overflow-wrap: break-word;
+
+}
+div.sphinxsidebarwrapper ul{
+    overflow-wrap: break-word;
+
+}
+div.sphinxsidebarwrapper li ul{
+    overflow-wrap: break-word;
+
+}
