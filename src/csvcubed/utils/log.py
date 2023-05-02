@@ -11,7 +11,7 @@ import traceback
 from pathlib import Path
 from typing import Union
 
-from appdirs import AppDirs
+from platformdirs import PlatformDirs
 
 
 class CustomFormatter(logging.Formatter):
@@ -44,7 +44,7 @@ def start_logging(
 ) -> None:
     logging_level = _get_logging_level(selected_logging_level)
 
-    dirs = AppDirs(log_dir_name, "csvcubed")
+    dirs = PlatformDirs(log_dir_name, "csvcubed")
     log_file_path = Path(dirs.user_log_dir) / "out.log"
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
 

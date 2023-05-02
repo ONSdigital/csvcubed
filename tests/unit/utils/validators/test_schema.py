@@ -1,14 +1,14 @@
 from pathlib import Path
 
-import appdirs
 import pytest
+from platformdirs import PlatformDirs
 
 from csvcubed.utils.validators.schema import (
     map_to_internal_validation_errors,
     validate_dict_against_schema,
 )
 
-_user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
+_user_log_dir = Path(PlatformDirs("csvcubed_testing", "csvcubed").user_log_dir)
 _log_file_path = _user_log_dir / "out.log"
 
 
