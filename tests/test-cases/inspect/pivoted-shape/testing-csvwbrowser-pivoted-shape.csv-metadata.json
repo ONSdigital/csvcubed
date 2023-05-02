@@ -1,0 +1,574 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "testing-csvwbrowser-pivoted-shape.csv#dataset",
+    "tables": [
+        {
+            "url": "testing-csvwbrowser-pivoted-shape.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "LocalDimension",
+                        "name": "localdimension",
+                        "propertyUrl": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension",
+                        "valueUrl": "localdimension.csv#{+localdimension}",
+                        "required": true
+                    },
+                    {
+                        "titles": "ExternalDimension",
+                        "name": "externaldimension",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+                        "valueUrl": "http://www.example.org/code-lists/regions/{+externaldimension}",
+                        "required": true
+                    },
+                    {
+                        "titles": "SuppressedDimension",
+                        "name": "suppresseddimension",
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "LocalAttribute",
+                        "name": "localattribute",
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute",
+                        "datatype": "decimal",
+                        "required": false
+                    },
+                    {
+                        "titles": "ExternalAttribute",
+                        "name": "externalattribute",
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute",
+                        "valueUrl": "http://www.example.org/status/{+externalattribute}",
+                        "required": false
+                    },
+                    {
+                        "titles": "Observations",
+                        "name": "observations",
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure",
+                        "datatype": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "virt_slice",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Slice"
+                    },
+                    {
+                        "name": "virt_slice_structure",
+                        "virtual": true,
+                        "propertyUrl": "qb:sliceStructure",
+                        "valueUrl": "testing-csvwbrowser-pivoted-shape.csv#slice/cross-measures"
+                    },
+                    {
+                        "name": "virt_obs_observations",
+                        "virtual": true,
+                        "propertyUrl": "qb:observation",
+                        "valueUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure"
+                    },
+                    {
+                        "name": "virt_obs_observations_meas",
+                        "virtual": true,
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "qb:measureType",
+                        "valueUrl": "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure"
+                    },
+                    {
+                        "name": "virt_obs_observations_unit",
+                        "virtual": true,
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "testing-csvwbrowser-pivoted-shape.csv#unit/some-unit"
+                    },
+                    {
+                        "name": "virt_dim_observations_localdimension",
+                        "virtual": true,
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension",
+                        "valueUrl": "localdimension.csv#{+localdimension}"
+                    },
+                    {
+                        "name": "virt_dim_observations_externaldimension",
+                        "virtual": true,
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+                        "valueUrl": "http://www.example.org/code-lists/regions/{+externaldimension}"
+                    },
+                    {
+                        "name": "virt_obs_observations_type",
+                        "virtual": true,
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Observation"
+                    },
+                    {
+                        "name": "virt_dataSet_observations",
+                        "virtual": true,
+                        "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#obs/{localdimension},{externaldimension}@some-measure",
+                        "propertyUrl": "qb:dataSet",
+                        "valueUrl": "testing-csvwbrowser-pivoted-shape.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "localdimension",
+                        "reference": {
+                            "resource": "localdimension.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "localdimension",
+                    "externaldimension"
+                ],
+                "aboutUrl": "testing-csvwbrowser-pivoted-shape.csv#slice/{localdimension},{externaldimension}"
+            }
+        },
+        {
+            "url": "localdimension.csv",
+            "tableSchema": "localdimension.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/measure-type",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/localattribute",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "ExternalAttribute"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#class/localdimension",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "LocalAttribute"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#slice/cross-measures",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#SliceKey",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "localdimension.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "LocalDimension"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#class/localdimension"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/externaldimension",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Some Measure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#integer"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#structure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataStructureDefinition",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/externaldimension"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/measure-type"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/localattribute"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/localdimension"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/some-measure"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/externalattribute"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#component/unit"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute"
+                },
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#sliceKey": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/externalattribute",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#dataset",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#Attachable"
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@type": "https://www.w3.org/ns/iana/media-types/text/markdown#Resource",
+                    "@value": "Testing the CsvWBrowser functionality with a pivoted shape cube generated using csvcubed"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Testing CsvWBrowser (pivoted shape)"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-04-26T12:51:54.377752"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-04-26T12:51:54.377752"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Testing CsvWBrowser (pivoted shape)"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Testing CsvWBrowser (pivoted shape)"
+                }
+            ],
+            "http://www.w3.org/ns/prov#wasGeneratedBy": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#csvcubed-build-activity"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/unit",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/localdimension",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#component/some-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#dependency/localdimension",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://rdfs.org/ns/void#Dataset"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./localdimension.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "localdimension.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "testing-csvwbrowser-pivoted-shape.csv#unit/some-unit",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Some Unit"
+                }
+            ]
+        }
+    ]
+}

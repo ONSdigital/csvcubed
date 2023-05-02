@@ -51,7 +51,10 @@ class DimensionColumn(DataCubeColumn):
         if dimension_component is None:
             raise ValueError("Could not locate Dimension Component")
 
-        if dimension_component.property_label is None:
+        if (
+            dimension_component.property_label is None
+            or dimension_component.property_label == ""
+        ):
             return ExternalDimension(dimension_component)
 
         return LocalDimension(dimension_component)

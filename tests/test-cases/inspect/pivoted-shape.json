@@ -1,0 +1,33 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Testing CsvWBrowser (pivoted shape)",
+    "description": "Testing the CsvWBrowser functionality with a pivoted shape cube generated using csvcubed",
+    "columns": {
+        "LocalDimension": {
+            "type": "dimension"
+        },
+        "ExternalDimension": {
+            "type": "dimension",
+            "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+            "cell_uri_template": "http://www.example.org/code-lists/regions/{+externaldimension}"
+        },
+        "SuppressedDimension": false,
+        "LocalAttribute": {
+            "type": "attribute",
+            "data_type": "decimal"
+        },
+        "ExternalAttribute": {
+            "type": "attribute"
+        },
+        "Observations": {
+            "type": "observations",
+            "data_type": "integer",
+            "measure": {
+                "label": "Some Measure"
+            },
+            "unit": {
+                "label": "Some Unit"
+            }
+        }
+    }
+}
