@@ -18,7 +18,11 @@ div.sphinxsidebarwrapper ul li ul li{
     overflow-wrap: break-word;
 
 }
-div.sphinxsidebarwrapper ul li li ul li{
+div.sphinxsidebarwrapper ul li li ul.a{
+    overflow-wrap: break-word;
+
+}
+div.sphinxsidebarwrapper ul li li ul.b{
     overflow-wrap: break-word;
 
 }
