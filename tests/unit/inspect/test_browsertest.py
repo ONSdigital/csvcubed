@@ -96,6 +96,7 @@ def test_pivoted_shape_data_cube_table_columns():
     )
     assert local_dimension_column.dimension.label == "LocalDimension"
     assert local_dimension_column.info.component.property_label == "LocalDimension"
+    assert isinstance(local_dimension_column, DimensionColumn)
     assert isinstance(local_dimension_column.dimension, LocalDimension)
 
     external_dimension_column = columns["ExternalDimension"]
@@ -108,6 +109,7 @@ def test_pivoted_shape_data_cube_table_columns():
         external_dimension_column.dimension.dimension_uri
         == "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
     )
+    assert isinstance(external_dimension_column, DimensionColumn)
     assert isinstance(external_dimension_column.dimension, ExternalDimension)
 
     local_attribute_column = columns["LocalAttribute"]
@@ -118,6 +120,7 @@ def test_pivoted_shape_data_cube_table_columns():
         == "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute"
     )
     assert local_attribute_column.attribute.label == "LocalAttribute"
+    assert isinstance(local_attribute_column, AttributeColumn)
     assert isinstance(local_attribute_column.attribute, LocalAttribute)
 
     external_attribute_column = columns["ExternalAttribute"]
@@ -130,6 +133,7 @@ def test_pivoted_shape_data_cube_table_columns():
         external_attribute_column.attribute.attribute_uri
         == "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute"
     )
+    assert isinstance(external_attribute_column, AttributeColumn)
     assert isinstance(external_attribute_column.attribute, ExternalAttribute)
 
     pivoted_obs_column = columns["Observations"]
@@ -145,6 +149,7 @@ def test_pivoted_shape_data_cube_table_columns():
         == "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure"
     )
     assert pivoted_obs_column.measure.label == "Some Measure"
+    assert isinstance(pivoted_obs_column, PivotedObservationsColumn)
     assert isinstance(pivoted_obs_column.unit, LocalUnit)
     assert isinstance(pivoted_obs_column.measure, LocalMeasure)
 
