@@ -111,11 +111,8 @@ def test_something():
     )
 
     test_metadata = anxiety_browser._csvw_inspector.get_primary_catalog_metadata()
-    tables = anxiety_browser.tables
-    table = tables[0]
-    table_title = table.title
 
-    assert test_metadata.title == "Some title"
+    assert test_metadata.title == metadata[0].title
     assert test_metadata.dataset_uri == "http://example.com/dataset-uri"
     assert test_metadata.graph_uri == path_to_file_uri_for_rdflib(
         primary_json_file_path
@@ -133,10 +130,9 @@ def test_something():
     assert test_metadata.identifier == "some-identifier"
     assert test_metadata.comment == "Some comment"
     assert test_metadata.description == "Some description"
-    assert len(tables) == 2
 
 
-def test_pivoted_shape_csvwbrowser():
+def test_pivoted_shape_csvwbrowser_and_tables():
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-shape"
@@ -151,15 +147,22 @@ def test_pivoted_shape_csvwbrowser():
 
     assert tables[0].data_set_uri == "testing-csvwbrowser-pivoted-shape.csv#dataset"
     assert tables[0].shape == CubeShape.Pivoted
-
-    assert tables[1].concept_scheme_uri == "localdimension.csv#code-list"
     assert tables[0].csv_url == "testing-csvwbrowser-pivoted-shape.csv"
-    assert tables[1].csv_url == "localdimension.csv"
     assert tables[0].title == "Testing CsvWBrowser (pivoted shape)"
-    assert tables[1].title == "LocalDimension"
+    assert tables[0].comment == "CsvWBrowser test - pivoted shape"
+    assert (
+        tables[0].description
+        == "Testing the CsvWBrowser functionality with a pivoted shape cube generated using csvcubed"
+    )
+
+    assert tables[1].concept_scheme_uri == "local-dimension-code-list.csv#code-list"
+    assert tables[1].csv_url == "local-dimension-code-list.csv"
+    assert tables[1].title == "Local dimension code list"
+    assert tables[1].comment == "Code list - local dimension"
+    assert tables[1].description == "Code list for a locally defined dimension"
 
 
-def test_pivoted_shape_columns():
+def test_pivoted_shape_data_cube_table_columns():
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-shape"
@@ -180,6 +183,7 @@ def test_pivoted_shape_columns():
         == "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension"
     )
     assert local_dimension_column.dimension.label == "LocalDimension"
+    assert local_dimension_column.info.component.property_label == "LocalDimension"
     assert isinstance(local_dimension_column.dimension, LocalDimension)
 
     external_dimension_column = columns["ExternalDimension"]
@@ -214,9 +218,7 @@ def test_pivoted_shape_columns():
         external_attribute_column.attribute.attribute_uri
         == "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute"
     )
-    assert external_attribute_column.attribute.label == "ExternalAttribute"
-    # ExternalAttribute column being configured as LocalAttribute
-    # assert isinstance(external_attribute_column.attribute, ExternalAttribute)
+    assert isinstance(external_attribute_column.attribute, ExternalAttribute)
 
     pivoted_obs_column = columns["Observations"]
     assert pivoted_obs_column.csv_column_title == "Observations"
@@ -234,166 +236,6 @@ def test_pivoted_shape_columns():
     assert isinstance(pivoted_obs_column.unit, LocalUnit)
     assert isinstance(pivoted_obs_column.measure, LocalMeasure)
 
-    # assert local_dimension_col == DimensionColumn(
-    #     dimension=LocalDimension(
-    #         dimension_component=local_dimension_col.info.component.component,
-    #         dimension_uri="testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension",
-    #         label="LocalDimension",
-    #     )
-    # )
-    # assert cols == OrderedDict(
-    #     [
-    #         (
-    #             "LocalDimension",
-    #             DimensionColumn(
-    #                 dimension=LocalDimension(
-    #                     dimension_uri="testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension",
-    #                     label="LocalDimension",
-    #                 )
-    #             ),
-    #         ),
-    #         (
-    #             "ExternalDimension",
-    #             DimensionColumn(
-    #                 dimension=LocalDimension(
-    #                     dimension_uri="http://purl.org/linked-data/sdmx/2009/dimension#refArea",
-    #                     label="",
-    #                 )
-    #             ),
-    #         ),
-    #         ("SuppressedDimension", SuppressedColumn()),
-    #         (
-    #             "LocalAttribute",
-    #             AttributeColumn(
-    #                 attribute=LocalAttribute(
-    #                     attribute_uri="testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute",
-    #                     label="LocalAttribute",
-    #                 ),
-    #                 required=False,
-    #             ),
-    #         ),
-    #         (
-    #             "ExternalAttribute",
-    #             AttributeColumn(
-    #                 attribute=LocalAttribute(
-    #                     attribute_uri="testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute",
-    #                     label="ExternalAttribute",
-    #                 ),
-    #                 required=False,
-    #             ),
-    #         ),
-    #         (
-    #             "Observations",
-    #             PivotedObservationsColumn(
-    #                 unit=LocalUnit(
-    #                     unit_uri="testing-csvwbrowser-pivoted-shape.csv#unit/some-unit",
-    #                     label="Some Unit",
-    #                 ),
-    #                 measure=LocalMeasure(
-    #                     measure_uri="testing-csvwbrowser-pivoted-shape.csv#measure/some-measure",
-    #                     label="Some Measure",
-    #                 ),
-    #             ),
-    #         ),
-    #     ]
-    # )
-
-
-# DimensionColumn(dimension=LocalDimension(dimension_uri='testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension', label='LocalDimension'))
-# DimensionColumn(dimension=LocalDimension(dimension_uri='http://purl.org/linked-data/sdmx/2009/dimension#refArea', label=''))
-
-# def test_csvw_browser():
-#     """ """
-#     csvw_path = (
-#         _test_case_base_dir
-#         / "eurovision"
-#         / "sweden-at-eurovision-complete-dataset.csv-metadata.json"
-#     )
-
-#     csv_path = (
-#         _test_case_base_dir / "eurovision" / "sweden-at-eurovision-complete-dataset.csv"
-#     )
-
-#     csvw_browser = CsvWBrowser(csvw_path)
-#     csvw_browser_tables = csvw_browser.tables
-#     table_browser = TableBrowser(
-#         csv_path, csvw_browser._data_cube_inspector, csvw_browser._code_list_inspector
-#     )
-
-#     assert len(csvw_browser_tables) == 5
-#     assert csvw_browser_tables[0].csv_url == "sweden-at-eurovision-complete-dataset.csv"
-#     assert csvw_browser_tables
-#     assert isinstance(csvw_browser_tables[0], DataCubeTable)
-#     assert isinstance(csvw_browser_tables[0].columns["Year"], DimensionColumn)
-#     assert (
-#         csvw_browser_tables[0].columns["Year"].dimension.dimension_uri
-#         == "sweden-at-eurovision-complete-dataset.csv#dimension/year"
-#     )
-#     assert (
-#         csvw_browser_tables[0]
-#         .columns["Year"]
-#         .dimension.dimension_component.property_label
-#         == "Year"
-#     )
-
-#     # assert csvw_browser_tables[0].columns == OrderedDict(
-#     #     [
-#     #         (
-#     #             "Year",
-#     #             DimensionColumn(
-#     #                 dimension=LocalDimension(
-#     #                     dimension_uri="sweden-at-eurovision-complete-dataset.csv#dimension/year",
-#     #                     label="Year",
-#     #                 )
-#     #             ),
-#     #         ),
-#     #         (
-#     #             "Entrant",
-#     #             DimensionColumn(
-#     #                 dimension=LocalDimension(
-#     #                     dimension_uri="sweden-at-eurovision-complete-dataset.csv#dimension/entrant",
-#     #                     label="Entrant",
-#     #                 )
-#     #             ),
-#     #         ),
-#     #         (
-#     #             "Song",
-#     #             DimensionColumn(
-#     #                 dimension=LocalDimension(
-#     #                     dimension_uri="sweden-at-eurovision-complete-dataset.csv#dimension/song",
-#     #                     label="Song",
-#     #                 )
-#     #             ),
-#     #         ),
-#     #         (
-#     #             "Language",
-#     #             DimensionColumn(
-#     #                 dimension=LocalDimension(
-#     #                     dimension_uri="sweden-at-eurovision-complete-dataset.csv#dimension/language",
-#     #                     label="Language",
-#     #                 )
-#     #             ),
-#     #         ),
-#     #         (
-#     #             "Value",
-#     #             StandardShapeObservationsColumn(
-#     #                 unit=UnitsColumn(), measures_column=MeasuresColumn()
-#     #             ),
-#     #         ),
-#     #         ("Measure", MeasuresColumn()),
-#     #         ("Unit", UnitsColumn()),
-#     #         (
-#     #             "Marker",
-#     #             AttributeColumn(
-#     #                 attribute=LocalAttribute(
-#     #                     attribute_uri="sweden-at-eurovision-complete-dataset.csv#attribute/observation-status",
-#     #                     label="Observation Status",
-#     #                 ),
-#     #                 required=False,
-#     #             ),
-#     #         ),
-#     #     ]
-#     # )
 
 if __name__ == "__main__":
     pytest.main()

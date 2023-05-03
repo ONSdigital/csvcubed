@@ -2,9 +2,33 @@
     "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "title": "Testing CsvWBrowser (pivoted shape)",
     "description": "Testing the CsvWBrowser functionality with a pivoted shape cube generated using csvcubed",
+    "summary": "CsvWBrowser test - pivoted shape",
     "columns": {
         "LocalDimension": {
-            "type": "dimension"
+            "type": "dimension",
+            "code_list": {
+                "title": "Local dimension code list",
+                "description": "Code list for a locally defined dimension",
+                "summary": "Code list - local dimension",
+                "concepts": [
+                    {
+                        "label": "LocalDim1",
+                        "notation": "localdim1"
+                    },
+                    {
+                        "label": "LocalDim2",
+                        "notation": "localdim2"
+                    },
+                    {
+                        "label": "LocalDim3",
+                        "notation": "localdim3"
+                    },
+                    {
+                        "label": "LocalDim4",
+                        "notation": "localdim4"
+                    }
+                ]
+            }
         },
         "ExternalDimension": {
             "type": "dimension",

@@ -73,7 +73,10 @@ class AttributeColumn(DataCubeColumn):
 
     def _get_attribute(self) -> Attribute:
         attribute_component = self._get_component()
-        if attribute_component.property_label is None:
+        if (
+            attribute_component.property_label is None
+            or attribute_component.property_label == ""
+        ):
             return ExternalAttribute(attribute_component)
 
         return LocalAttribute(attribute_component)

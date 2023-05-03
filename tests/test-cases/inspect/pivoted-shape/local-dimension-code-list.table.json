@@ -23,7 +23,7 @@
             "name": "parent_uri_identifier",
             "required": false,
             "propertyUrl": "skos:broader",
-            "valueUrl": "localdimension.csv#{+parent_uri_identifier}"
+            "valueUrl": "local-dimension-code-list.csv#{+parent_uri_identifier}"
         },
         {
             "titles": "Sort Priority",
@@ -43,7 +43,7 @@
             "name": "virt_inScheme",
             "required": true,
             "propertyUrl": "skos:inScheme",
-            "valueUrl": "localdimension.csv#code-list"
+            "valueUrl": "local-dimension-code-list.csv#code-list"
         },
         {
             "virtual": true,
@@ -53,6 +53,6 @@
             "valueUrl": "skos:Concept"
         }
     ],
-    "aboutUrl": "localdimension.csv#{+uri_identifier}",
+    "aboutUrl": "local-dimension-code-list.csv#{+uri_identifier}",
     "primaryKey": "uri_identifier"
 }
