@@ -5,6 +5,7 @@ div.sphinxsidebarwrapper {
 div.sphinxsidebarwrapper li,
 div.sphinxsidebarwrapper ul {
     overflow-wrap: break-word;
+
 }
 
 div.sphinxsidebar {
@@ -14,4 +15,12 @@ div.sphinxsidebar {
 
 div.bodywrapper {
     margin-left: 350px;
+}
+
+a.current {
+    background-color: pink;
+}
+
+.toctree-wrapper {
+    display: none;
 }

@@ -7,9 +7,10 @@ Welcome to csvcubed's documentation!
 ====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 20
    :caption: Contents:
 
+   csvcubed
 
 
 Indices and tables

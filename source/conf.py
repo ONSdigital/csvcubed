@@ -20,8 +20,8 @@ extensions = [
 include_patterns = [
     "index.rst",
     "modules.rst",
-    "csvcubed.cli.inspect.rst",
-    "csvcubed.utils.sparql_handler.rst",
+    "thingy.rst",
+    "csvcubed*.rst",
 ]
 templates_path = ["_templates"]
 exclude_patterns = []
@@ -33,3 +33,5 @@ exclude_patterns = []
 html_theme = "python_docs_theme"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
+
+html_sidebars = {"**": ["globaltoc.html", "sourcelink.html", "searchbox.html"]}
