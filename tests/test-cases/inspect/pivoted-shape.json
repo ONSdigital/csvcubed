@@ -41,7 +41,8 @@
             "data_type": "decimal"
         },
         "ExternalAttribute": {
-            "type": "attribute"
+            "type": "attribute",
+            "cell_uri_template": "http://www.example.org/status/{+externalattribute}"
         },
         "Observations": {
             "type": "observations",

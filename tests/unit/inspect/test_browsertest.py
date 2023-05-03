@@ -44,94 +44,6 @@ from tests.unit.test_baseunit import get_test_cases_dir
 _test_case_base_dir = get_test_cases_dir() / "inspect"
 
 
-def _create_inspectors(json_path):
-    graph = rdflib.ConjunctiveGraph()
-    csvw_inspector = CsvWInspector(graph, json_path)
-    code_list_inspector = CodeListInspector(csvw_inspector)
-    data_cube_inspector = DataCubeInspector(csvw_inspector)
-    return (csvw_inspector, code_list_inspector, data_cube_inspector)
-
-
-def test_something():
-    primary_json_file_path = (Path(".") / "some-file.json").absolute()
-
-    (csvw_inspector, code_list_inspector, data_cube_inspector) = _create_inspectors(
-        primary_json_file_path
-    )
-
-    metadata = [
-        CatalogMetadataResult(
-            dataset_uri="http://example.com/dataset-uri",
-            graph_uri=path_to_file_uri_for_rdflib(primary_json_file_path),
-            title="Some title",
-            label="Some label",
-            issued="1970-01-01",
-            modified="2000-10-05",
-            license="http://example.com/some-license",
-            creator="http://example.com/some-creator",
-            publisher="http://example.com/some-publisher",
-            landing_pages=["http://example.com/some-landing-page"],
-            themes=["http://example.com/some-theme"],
-            keywords=["some keyword"],
-            contact_point=["mailto:someone@example.com"],
-            identifier="some-identifier",
-            comment="Some comment",
-            description="Some description",
-        )
-    ]
-
-    anxiety_browser = CsvWBrowser(
-        _test_case_base_dir / "anxiety" / "anxiety.csv-metadata.json"
-    )
-    anxiety_browser._csvw_inspector = csvw_inspector
-    anxiety_browser._data_cube_inspector = data_cube_inspector
-    anxiety_browser._code_list_inspector = code_list_inspector
-
-    setattr(csvw_inspector, "catalog_metadata", metadata)
-
-    setattr(
-        data_cube_inspector,
-        "_cube_table_identifiers",
-        {
-            "cube.csv": CubeTableIdentifiers(
-                csv_url="cube.csv",
-                data_set_url="cube.csv#dataset",
-                dsd_uri="cube.csv#dsd",
-            )
-        },
-    )
-    setattr(
-        code_list_inspector,
-        "_code_list_table_identifiers",
-        [
-            CodeListTableIdentifers(
-                "code-list.csv", concept_scheme_url="code-list.csv#code-list"
-            )
-        ],
-    )
-
-    test_metadata = anxiety_browser._csvw_inspector.get_primary_catalog_metadata()
-
-    assert test_metadata.title == metadata[0].title
-    assert test_metadata.dataset_uri == "http://example.com/dataset-uri"
-    assert test_metadata.graph_uri == path_to_file_uri_for_rdflib(
-        primary_json_file_path
-    )
-    assert test_metadata.label == "Some label"
-    assert test_metadata.issued == "1970-01-01"
-    assert test_metadata.modified == "2000-10-05"
-    assert test_metadata.license == "http://example.com/some-license"
-    assert test_metadata.creator == "http://example.com/some-creator"
-    assert test_metadata.publisher == "http://example.com/some-publisher"
-    assert test_metadata.landing_pages == ["http://example.com/some-landing-page"]
-    assert test_metadata.themes == ["http://example.com/some-theme"]
-    assert test_metadata.keywords == ["some keyword"]
-    assert test_metadata.contact_point == ["mailto:someone@example.com"]
-    assert test_metadata.identifier == "some-identifier"
-    assert test_metadata.comment == "Some comment"
-    assert test_metadata.description == "Some description"
-
-
 def test_pivoted_shape_csvwbrowser_and_tables():
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -176,7 +88,7 @@ def test_pivoted_shape_data_cube_table_columns():
     assert local_dimension_column.csv_column_title == "LocalDimension"
     assert (
         local_dimension_column.cell_uri_template
-        == "localdimension.csv#{+localdimension}"
+        == "local-dimension-code-list.csv#{+localdimension}"
     )
     assert (
         local_dimension_column.dimension.dimension_uri

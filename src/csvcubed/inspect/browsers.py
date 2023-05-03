@@ -4,7 +4,6 @@ from functools import cache
 from pathlib import Path
 from typing import List, Optional, TypeVar, Union
 
-from csvcubed.inspect.inspect_api import DataCubeTable
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
 from csvcubed.models.sparqlresults import CatalogMetadataResult
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector

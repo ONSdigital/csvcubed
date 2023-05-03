@@ -7,8 +7,8 @@
         {
             "@id": "local-dimension-code-list.csv#csvcubed-build-activity",
             "@type": [
-                "http://www.w3.org/ns/prov#Activity",
-                "http://www.w3.org/2000/01/rdf-schema#Resource"
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
             ],
             "http://www.w3.org/ns/prov#used": [
                 {
@@ -19,11 +19,11 @@
         {
             "@id": "local-dimension-code-list.csv#code-list",
             "@type": [
-                "http://www.w3.org/ns/prov#Entity",
-                "http://www.w3.org/ns/dcat#Resource",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/dcat#Dataset",
                 "http://www.w3.org/2004/02/skos/core#ConceptScheme",
-                "http://www.w3.org/ns/dcat#Dataset"
+                "http://www.w3.org/ns/prov#Entity",
+                "http://www.w3.org/ns/dcat#Resource"
             ],
             "http://purl.org/dc/terms/description": [
                 {
@@ -39,13 +39,13 @@
             "http://purl.org/dc/terms/issued": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-05-03T10:16:33.801150"
+                    "@value": "2023-05-03T11:02:43.443368"
                 }
             ],
             "http://purl.org/dc/terms/modified": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2023-05-03T10:16:33.801150"
+                    "@value": "2023-05-03T11:02:43.443368"
                 }
             ],
             "http://purl.org/dc/terms/title": [
