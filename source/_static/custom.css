@@ -1,32 +1,17 @@
-div.sphinxsidebarwrapper ul li ul{
-    overflow-wrap: break-word;
-
+div.sphinxsidebarwrapper {
+    overflow-x: auto !important;
 }
-div.sphinxsidebarwrapper li{
-    overflow-wrap: break-word;
 
+div.sphinxsidebarwrapper li,
+div.sphinxsidebarwrapper ul {
+    overflow-wrap: break-word;
 }
-div.sphinxsidebarwrapper ul{
-    overflow-wrap: break-word;
 
+div.sphinxsidebar {
+    overflow-wrap: break-word;
+    width: 350px;
 }
-div.sphinxsidebarwrapper li ul{
-    overflow-wrap: break-word;
 
-}
-div.sphinxsidebarwrapper ul li ul li{
-    overflow-wrap: break-word;
-
-}
-div.sphinxsidebarwrapper ul li ul li ul li.b ul{
-    overflow-wrap: break-word;
-
-}
-div.sphinxsidebarwrapper ul li li ul.b{
-    overflow-wrap: break-word;
-
-}
-div.sphinxsidebar{
-    overflow-wrap: break-word;
-
+div.bodywrapper {
+    margin-left: 350px;
 }
