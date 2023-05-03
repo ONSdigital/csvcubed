@@ -154,5 +154,117 @@ def test_pivoted_shape_data_cube_table_columns():
     assert isinstance(pivoted_obs_column.measure, LocalMeasure)
 
 
+def test_standard_shape_browser_locally_defined_measures_units():
+    """ """
+    csvw_path = (
+        _test_case_base_dir
+        / "eurovision"
+        / "sweden-at-eurovision-complete-dataset.csv-metadata.json"
+    )
+
+    csvw_browser = CsvWBrowser(csvw_path)
+    csvw_browser_tables = csvw_browser.tables
+
+    dimension_column = csvw_browser_tables[0].columns["Year"]
+    assert isinstance(dimension_column, DimensionColumn)
+    assert isinstance(dimension_column.dimension, LocalDimension)
+
+    assert dimension_column.csv_column_title == "Year"
+    assert dimension_column.cell_uri_template == "year.csv#{+year}"
+    assert (
+        dimension_column.dimension.dimension_uri
+        == "sweden-at-eurovision-complete-dataset.csv#dimension/year"
+    )
+    assert dimension_column.dimension.label == "Year"
+
+    observation_column = csvw_browser_tables[0].columns["Value"]
+    assert isinstance(observation_column, StandardShapeObservationsColumn)
+    assert observation_column.csv_column_title == "Value"
+    assert observation_column.cell_uri_template == None
+
+    measures_column = csvw_browser_tables[0].columns["Measure"]
+    assert isinstance(measures_column, MeasuresColumn)
+    assert measures_column.csv_column_title == "Measure"
+    assert (
+        measures_column.cell_uri_template
+        == "sweden-at-eurovision-complete-dataset.csv#measure/{+measure}"
+    )
+
+    units_column = csvw_browser_tables[0].columns["Unit"]
+    assert isinstance(units_column, UnitsColumn)
+    assert units_column.csv_column_title == "Unit"
+    assert (
+        units_column.cell_uri_template
+        == "sweden-at-eurovision-complete-dataset.csv#unit/{+unit}"
+    )
+
+    attribute_column = csvw_browser_tables[0].columns["Marker"]
+    assert isinstance(attribute_column, AttributeColumn)
+    assert attribute_column.csv_column_title == "Marker"
+    assert (
+        attribute_column.cell_uri_template
+        == "sweden-at-eurovision-complete-dataset.csv#attribute/observation-status/{+marker}"
+    )
+    assert isinstance(attribute_column.attribute, LocalAttribute)
+    assert (
+        attribute_column.attribute.attribute_uri
+        == "sweden-at-eurovision-complete-dataset.csv#attribute/observation-status"
+    )
+    assert attribute_column.attribute.label == "Observation Status"
+
+
+def test_standard_shape_browser_external_measures_units():
+    csvw_path = _test_case_base_dir / "anxiety" / "anxiety.csv-metadata.json"
+
+    csvw_browser = CsvWBrowser(csvw_path)
+    csvw_browser_tables = csvw_browser.tables
+
+    dimension_column = csvw_browser_tables[0].columns["AREACD"]
+    assert isinstance(dimension_column, DimensionColumn)
+    assert dimension_column.csv_column_title == "AREACD"
+    assert dimension_column.cell_uri_template == "statistical-geography.csv#{+areacd}"
+    assert isinstance(dimension_column.dimension, LocalDimension)
+    assert (
+        dimension_column.dimension.dimension_uri
+        == "anxiety.csv#dimension/statistical-geography"
+    )
+    assert dimension_column.dimension.label == "Statistical Geography"
+
+    observation_column = csvw_browser_tables[0].columns["Value"]
+    assert isinstance(observation_column, StandardShapeObservationsColumn)
+    assert observation_column.csv_column_title == "Value"
+    assert observation_column.cell_uri_template == None
+
+    measures_column = csvw_browser_tables[0].columns["Measure"]
+    assert isinstance(measures_column, MeasuresColumn)
+    assert measures_column.csv_column_title == "Measure"
+    assert (
+        measures_column.cell_uri_template
+        == "http://example.org/code-lists/example-measure/{+measure}"
+    )
+
+    units_column = csvw_browser_tables[0].columns["Unit"]
+    assert isinstance(units_column, UnitsColumn)
+    assert units_column.csv_column_title == "Unit"
+    assert (
+        units_column.cell_uri_template
+        == "http://example.org/code-lists/example-units/{+unit}"
+    )
+
+    attribute_column = csvw_browser_tables[0].columns["Observation Status"]
+    assert isinstance(attribute_column, AttributeColumn)
+    assert attribute_column.csv_column_title == "Observation Status"
+    assert (
+        attribute_column.cell_uri_template
+        == "https://purl.org/csv-cubed/resources/attributes/af-obs-marker#{+observation_status}"
+    )
+    assert isinstance(attribute_column.attribute, LocalAttribute)
+    assert (
+        attribute_column.attribute.attribute_uri
+        == "anxiety.csv#attribute/observation-status"
+    )
+    assert attribute_column.attribute.label == "Observation Status"
+
+
 if __name__ == "__main__":
     pytest.main()
