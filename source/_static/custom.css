@@ -22,3 +22,7 @@ div.sphinxsidebarwrapper ul li ul li ul{
     overflow-wrap: break-word;
 
 }
+div.sphinxsidebar{
+    overflow-wrap: break-word;
+
+}
