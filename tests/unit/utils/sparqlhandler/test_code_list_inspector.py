@@ -1,7 +1,7 @@
 import pytest
 
 from csvcubed.models.sparqlresults import CatalogMetadataResult, CodeListTableIdentifers
-from tests.helpers.inspectors_cache import get_code_list_inspector, get_csvw_rdf_manager
+from tests.helpers.inspectors_cache import get_code_list_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

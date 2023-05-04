@@ -139,42 +139,12 @@ class UnitResult:
 
 
 @dataclass
-class CodelistColumnResult(DataClassBase):
-    """
-    Model to represent a codelist column.
-    """
-
-    column_property_url: Optional[str]
-    column_value_url: Optional[str]
-    column_title: Optional[str]
-    column_name: Optional[str]
-
-
-@dataclass
-class CodeListColsByDatasetUrlResult:
-    """
-    Model to represent select codelist columns by table url.
-    """
-
-    columns: List[CodelistColumnResult]
-
-
-@dataclass
 class PrimaryKeyColNameByDatasetUrlResult:
     """
     Model to represent select primary key column name by table url.
     """
 
     value: str
-
-
-@dataclass
-class PrimaryKeyColNamesByDatasetUrlResult:
-    """
-    Model to represent select primary keys by table url.
-    """
-
-    primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
 
 
 @dataclass
@@ -260,7 +230,7 @@ class QubeComponentsResult:
     Model to represent select qube components sparql query result.
     """
 
-    qube_components: list[QubeComponentResult]
+    qube_components: List[QubeComponentResult]
     num_components: int
 
 
@@ -569,7 +539,7 @@ def _map_primary_key_col_name_by_csv_url_result(
 
 def map_primary_key_col_names_by_csv_url_result(
     sparql_results: List[ResultRow],
-) -> PrimaryKeyColNamesByDatasetUrlResult:
+) -> List[PrimaryKeyColNameByDatasetUrlResult]:
     """
     Maps sparql query result to `PrimaryKeyColNamesByDatasetUrlResult`
 
@@ -577,16 +547,12 @@ def map_primary_key_col_names_by_csv_url_result(
 
     :return: `PrimaryKeyColNamesByDatasetUrlResult`
     """
-    primary_key_col_names = list(
+    return list(
         map(
             lambda result: _map_primary_key_col_name_by_csv_url_result(result),
             sparql_results,
         )
     )
-    result = PrimaryKeyColNamesByDatasetUrlResult(
-        primary_key_col_names=primary_key_col_names
-    )
-    return result
 
 
 def map_metadata_dependency_results(

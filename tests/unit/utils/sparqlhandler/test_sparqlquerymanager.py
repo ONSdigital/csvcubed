@@ -1,97 +1,24 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
-import dateutil.parser
 import pytest
 from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
 from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult,
-    ColumnDefinition,
-    CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
-    QubeComponentResult,
-    UnitResult,
 )
-from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    ask_is_csvw_code_list,
-    ask_is_csvw_qb_dataset,
     select_csvw_table_schema_file_dependencies,
-    select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
-from tests.helpers.inspectors_cache import (
-    get_code_list_inspector,
-    get_csvw_rdf_manager,
-    get_data_cube_inspector,
-)
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
-
-
-def assert_dsd_component_equal(
-    component: QubeComponentResult,
-    property: str,
-    property_type: ComponentPropertyType,
-    property_label: str,
-    csv_col_titles: List[str],
-    observation_value_column_titles: List[str],
-    dsd_uri: str,
-    required: bool,
-):
-    assert component.property == property
-    assert component.property_type == property_type.value
-    assert component.property_label == property_label
-    assert {c.title for c in component.real_columns_used_in} == set(csv_col_titles)
-    assert component.dsd_uri == dsd_uri
-    assert component.required == required
-
-    if any(observation_value_column_titles):
-        expected_obs_val_col_titles = {
-            title.strip() for title in observation_value_column_titles
-        }
-        actual_obs_val_col_titles = {
-            c.title.strip() for c in component.used_by_observed_value_columns
-        }
-        assert expected_obs_val_col_titles == actual_obs_val_col_titles
-
-
-def _assert_code_list_column_equal(
-    column: ColumnDefinition,
-    column_title: Optional[str],
-    column_property_url: str,
-    column_value_url: Optional[str],
-):
-    assert (
-        column.title == column_title
-        if column_title is not None
-        else column.title is None
-    )
-    assert column.property_url == column_property_url
-    assert (
-        column.value_url == column_value_url
-        if column_value_url is not None
-        else column.value_url is None
-    )
-
-
-def get_dsd_component_by_property_url(
-    components: List[QubeComponentResult], property_url: str
-) -> QubeComponentResult:
-    """
-    Filters dsd components by property url.
-    """
-    filtered_results = [
-        component for component in components if component.property == property_url
-    ]
-    return filtered_results[0]
 
 
 # TODO this function may have to become a cached property to ensure test coverage of the IsPivotedShapeMeasureResult class
@@ -102,20 +29,6 @@ def _get_measure_by_measure_uri(
     Filters measures by measure uri.
     """
     filtered_results = [result for result in results if result.measure == measure_uri]
-    assert len(filtered_results) == 1
-
-    return filtered_results[0]
-
-
-def _get_code_list_column_by_property_url(
-    columns: List[ColumnDefinition], property_url: str
-) -> ColumnDefinition:
-    """
-    Filters code list columns by column property url.
-    """
-    filtered_results = [
-        result for result in columns if result.property_url == property_url
-    ]
     assert len(filtered_results) == 1
 
     return filtered_results[0]
@@ -144,59 +57,6 @@ def test_select_table_schema_dependencies():
         "sector.table.json",
         "subsector.table.json",
     }
-
-
-def test_select_codelist_cols_by_csv_url():
-    """
-    Should return expected `CodeListColsByDatasetUrlResult`.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
-    primary_catalogue_metadata = (
-        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
-        primary_catalogue_metadata.dataset_uri
-    ).csv_url
-
-    result = code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
-
-    assert len(result) == 7
-
-    column = _get_code_list_column_by_property_url(result, "rdfs:label")
-    _assert_code_list_column_equal(column, "Label", "rdfs:label", None)
-
-    column = _get_code_list_column_by_property_url(result, "skos:notation")
-    _assert_code_list_column_equal(column, "Notation", "skos:notation", None)
-
-    column = _get_code_list_column_by_property_url(result, "skos:broader")
-    _assert_code_list_column_equal(
-        column,
-        "Parent Notation",
-        "skos:broader",
-        "alcohol-content.csv#{+parent_notation}",
-    )
-
-    column = _get_code_list_column_by_property_url(
-        result, "http://www.w3.org/ns/ui#sortPriority"
-    )
-    _assert_code_list_column_equal(
-        column, "Sort Priority", "http://www.w3.org/ns/ui#sortPriority", None
-    )
-
-    column = _get_code_list_column_by_property_url(result, "rdfs:comment")
-    _assert_code_list_column_equal(column, "Description", "rdfs:comment", None)
-
-    column = _get_code_list_column_by_property_url(result, "skos:inScheme")
-    _assert_code_list_column_equal(
-        column,
-        None,
-        "skos:inScheme",
-        "alcohol-content.csv#code-list",
-    )
-
-    column = _get_code_list_column_by_property_url(result, "rdf:type")
-    _assert_code_list_column_equal(column, None, "rdf:type", "skos:Concept")
 
 
 def test_select_metadata_dependencies():
