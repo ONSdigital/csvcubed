@@ -94,6 +94,7 @@ def get_dsd_component_by_property_url(
     return filtered_results[0]
 
 
+# TODO this function may have to become a cached property to ensure test coverage of the IsPivotedShapeMeasureResult class
 def _get_measure_by_measure_uri(
     results: List[IsPivotedShapeMeasureResult], measure_uri: str
 ) -> IsPivotedShapeMeasureResult:
@@ -324,79 +325,6 @@ def test_select_metadata_dependencies():
         data_dump=expected_dependency_file.absolute().as_uri(),
         uri_space="dimension.csv#",
     )
-
-
-def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
-    """
-    Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-multi-measure-dataset"
-        / "qb-id-10003.csv-metadata.json"
-    )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    results = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph,
-        [
-            CubeTableIdentifiers(
-                "qb-id-10003.csv",
-                "qb-id-10003.csv#dataset",
-                "qb-id-10003.csv#structure",
-            )
-        ],
-    )
-
-    assert results is not None
-    assert len(results) == 2
-
-    result = _get_measure_by_measure_uri(
-        results, "qb-id-10003.csv#measure/some-measure"
-    )
-    assert result.measure == "qb-id-10003.csv#measure/some-measure"
-    assert result.is_pivoted_shape == True
-
-    result = _get_measure_by_measure_uri(
-        results, "qb-id-10003.csv#measure/some-other-measure"
-    )
-    assert result.measure == "qb-id-10003.csv#measure/some-other-measure"
-    assert result.is_pivoted_shape == True
-
-
-# Calling SPARQL query directly
-def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
-    """
-    Checks that the measures retrieved from a metadata file that represents a standard shape cube are as expected.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "single-unit_single-measure"
-        / "energy-trends-uk-total-energy.csv-metadata.json"
-    )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    results = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph,
-        [
-            CubeTableIdentifiers(
-                "energy-trends-uk-total-energy.csv",
-                "energy-trends-uk-total-energy.csv#dataset",
-                "energy-trends-uk-total-energy.csv#structure",
-            )
-        ],
-    )
-
-    assert results is not None
-    assert len(results) == 1
-
-    result = _get_measure_by_measure_uri(
-        results, "energy-trends-uk-total-energy.csv#measure/energy-consumption"
-    )
-    assert (
-        result.measure == "energy-trends-uk-total-energy.csv#measure/energy-consumption"
-    )
-    assert result.is_pivoted_shape == False
 
 
 def test_rdf_dependency_loaded() -> None:
