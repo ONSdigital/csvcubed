@@ -29,6 +29,11 @@ from csvcubed.utils.tableschema import CsvWRdfManager
 
 @dataclass(frozen=True)
 class DataCubeTable(MetadataBrowser, TableBrowser):
+    """
+    Represents a DataCubeTable object browser which allows access to the cube's shape,
+    the data set URI, and a dictionary of columns.
+    """
+
     def _get_shape(self) -> CubeShape:
         return self.data_cube_inspector.get_shape_for_csv(self.csv_url)
 
@@ -64,6 +69,10 @@ class DataCubeTable(MetadataBrowser, TableBrowser):
 
 @dataclass(frozen=True)
 class CodeListTable(MetadataBrowser, TableBrowser):
+    """
+    Represents a CodeListTable object browser, containing the concept scheme URI.
+    """
+
     def _get_concept_scheme_uri(self) -> str:
         return single(
             self.code_list_inspector._code_list_table_identifiers,
@@ -136,6 +145,11 @@ def _map_to_data_cube_column(
 
 @dataclass
 class CsvWBrowser:
+    """
+    The main Browser object that allows access to the CSVW, data cube, and code list inspectors,
+    along with the associated tables.
+    """
+
     primary_csvw: Union[str, Path]
     _csvw_inspector: CsvWInspector = field(init=False, repr=False)
     _data_cube_inspector: DataCubeInspector = field(init=False, repr=False)

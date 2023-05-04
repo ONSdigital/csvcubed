@@ -28,6 +28,11 @@ from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 
 @dataclass(frozen=True)
 class DataCubeColumn(ABC):
+    """
+    Base column class for different data cube column types to inherit from.
+    Allows access to the column's info and the data cube/code list inspectors.
+    """
+
     data_cube_inspector: DataCubeInspector = field(repr=False)
     code_list_inspector: CodeListInspector = field(repr=False)
     info: ColumnComponentInfo = field(repr=False)
@@ -38,6 +43,13 @@ class DataCubeColumn(ABC):
     def _get_cell_uri_template(self) -> Optional[str]:
         return self.info.column_definition.value_url
 
+    def _get_component(self) -> QubeComponentResult:
+        component = self.info.component
+        if component is None:
+            raise ValueError("Could not locate Component")
+
+        return component
+
     csv_column_title: Optional[str] = lazy_func_field(_get_csv_col_title, repr=False)
     cell_uri_template: Optional[str] = lazy_func_field(
         _get_cell_uri_template, repr=False
@@ -46,10 +58,12 @@ class DataCubeColumn(ABC):
 
 @dataclass(frozen=True)
 class DimensionColumn(DataCubeColumn):
+    """
+    Represents a dimension column.
+    """
+
     def _get_dimension(self) -> Dimension:
-        dimension_component = self.info.component
-        if dimension_component is None:
-            raise ValueError("Could not locate Dimension Component")
+        dimension_component = self._get_component()
 
         if (
             dimension_component.property_label is None
@@ -64,12 +78,10 @@ class DimensionColumn(DataCubeColumn):
 
 @dataclass(frozen=True)
 class AttributeColumn(DataCubeColumn):
-    def _get_component(self) -> QubeComponentResult:
-        attribute_component = self.info.component
-        if attribute_component is None:
-            raise ValueError("Could not locate Attribute Component")
-
-        return attribute_component
+    """
+    Represents an attribute column. Can either exist in the form of a local attribute,
+    or an external attribute.
+    """
 
     def _get_attribute(self) -> Attribute:
         attribute_component = self._get_component()
@@ -90,6 +102,10 @@ class AttributeColumn(DataCubeColumn):
 
 @dataclass(frozen=True)
 class UnitsColumn(DataCubeColumn):
+    """
+    Represents a Units column
+    """
+
     """TODO: List the units used in this column."""
 
     pass
@@ -97,6 +113,10 @@ class UnitsColumn(DataCubeColumn):
 
 @dataclass(frozen=True)
 class MeasuresColumn(DataCubeColumn):
+    """
+    Represents a Measures column
+    """
+
     """TODO: List the measures used in this column."""
 
     pass
@@ -104,6 +124,11 @@ class MeasuresColumn(DataCubeColumn):
 
 @dataclass(frozen=True)
 class ObservationsColumn(DataCubeColumn, ABC):
+    """
+    Represents an observation column. Can exist either as a pivoted shape observation column,
+    or a standard shape observation column.
+    """
+
     def _get_unit(self) -> Union[Unit, UnitsColumn]:
         columns_in_csv = (
             self.data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(
@@ -146,6 +171,11 @@ class ObservationsColumn(DataCubeColumn, ABC):
 
 @dataclass(frozen=True)
 class PivotedObservationsColumn(ObservationsColumn):
+    """
+    Represents an observations column in a pivoted shape data cube, extending the Observations
+    column's implementation.
+    """
+
     def _get_measure(self) -> Measure:
         measure_uri = self.info.column_definition.property_url
         if measure_uri is None:
@@ -174,6 +204,11 @@ class PivotedObservationsColumn(ObservationsColumn):
 
 @dataclass(frozen=True)
 class StandardShapeObservationsColumn(ObservationsColumn):
+    """
+    Represents an observations column in a standard shape data cube, extending the observations
+    column's implementation.
+    """
+
     def _get_measures_column(self) -> MeasuresColumn:
         measure_col_info = single(
             c
@@ -194,4 +229,8 @@ class StandardShapeObservationsColumn(ObservationsColumn):
 
 @dataclass(frozen=True)
 class SuppressedColumn(DataCubeColumn):
+    """
+    Represents a column that has its output suppressed.
+    """
+
     pass

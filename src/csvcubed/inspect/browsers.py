@@ -17,6 +17,11 @@ TRet = TypeVar("TRet")
 
 @dataclass(frozen=True)
 class TableBrowser(ABC):
+    """
+    Base table browser class to be inherited by the DataCubeTable and CodeListTable class
+    implementations.
+    """
+
     csv_url: str
     data_cube_inspector: DataCubeInspector = field(repr=False)
     code_list_inspector: CodeListInspector = field(repr=False)
@@ -24,6 +29,10 @@ class TableBrowser(ABC):
 
 @dataclass(frozen=True)
 class MetadataBrowser(ABC):
+    """
+    Allows access to the various catalog metadata results.
+    """
+
     def _get_title(self) -> str:
         return self._get_metadata().title
 

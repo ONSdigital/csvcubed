@@ -6,6 +6,11 @@ from csvcubed.models.sparqlresults import QubeComponentResult
 
 @dataclass(frozen=True)
 class Dimension:
+    """
+    Represents a dimension component. It allows access to the dimension's URI.
+    Inherited by the implementations of externally and locally defined dimensions.
+    """
+
     dimension_component: QubeComponentResult = field(repr=False)
 
     def _get_dimension_uri(self) -> str:
@@ -39,6 +44,11 @@ class LocalDimension(Dimension):
 
 @dataclass(frozen=True)
 class Attribute:
+    """
+    The base class for an attribute component. Can exist either as a locally defined or
+    externally defined attribute.
+    """
+
     attribute_component: QubeComponentResult = field(repr=False)
 
     def _get_attribute_uri(self) -> str:
@@ -72,6 +82,11 @@ class LocalAttribute(Attribute):
 
 @dataclass(frozen=True)
 class Unit:
+    """
+    Represents a unit, allowing access to its URI. Goes on to be inherited by the
+    externally and locally defined unit classes.
+    """
+
     unit_uri: str
 
 
@@ -93,6 +108,11 @@ class LocalUnit(Unit):
 
 @dataclass(frozen=True)
 class Measure:
+    """
+    Represents a measure, allowing access to its URI. Inherited by the
+    externally and locally defined measure class implementations.
+    """
+
     measure_uri: str
 
 

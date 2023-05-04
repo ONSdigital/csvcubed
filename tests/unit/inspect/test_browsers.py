@@ -147,10 +147,7 @@ def test_standard_shape_browser_locally_defined_measures_units():
     """
     Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
     correctly extracts underlying values from the inspector functions in a standard shape
-    CSVW input with externally defined measures and units.
-    NOTE this test currently does not test anything that isn't covered by the previous test.
-    The external measures and units will be tested when the MeasureColumn and UnitColumn classes
-    have been fully implemented.
+    CSVW input with locally defined measures and units.
     """
     csvw_path = (
         _test_case_base_dir
@@ -210,6 +207,14 @@ def test_standard_shape_browser_locally_defined_measures_units():
 
 
 def test_standard_shape_browser_external_measures_units():
+    """
+    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    correctly extracts underlying values from the inspector functions in a standard shape
+    CSVW input with externally defined measures and units.
+    NOTE this test currently does not test anything that isn't covered by the previous test.
+    The external measures and units will be tested when the MeasureColumn and UnitColumn classes
+    have been fully implemented.
+    """
     csvw_path = _test_case_base_dir / "anxiety" / "anxiety.csv-metadata.json"
 
     csvw_browser = CsvWBrowser(csvw_path)
