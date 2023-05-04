@@ -1,9 +1,4 @@
-from pathlib import Path
-from typing import OrderedDict
-from unittest.mock import MagicMock, patch
-
 import pytest
-import rdflib
 
 from csvcubed.inspect.browsercolumns import (
     AttributeColumn,
@@ -11,7 +6,6 @@ from csvcubed.inspect.browsercolumns import (
     MeasuresColumn,
     PivotedObservationsColumn,
     StandardShapeObservationsColumn,
-    SuppressedColumn,
     UnitsColumn,
 )
 from csvcubed.inspect.browsercomponents import (
@@ -22,29 +16,19 @@ from csvcubed.inspect.browsercomponents import (
     LocalMeasure,
     LocalUnit,
 )
-from csvcubed.inspect.browsers import MetadataBrowser, TableBrowser
 from csvcubed.inspect.browsertable import CodeListTable, CsvWBrowser, DataCubeTable
-from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult,
-    CodeListTableIdentifers,
-    ColumnDefinition,
-    CubeTableIdentifiers,
-    QubeComponentResult,
-)
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.tableschema import CsvWRdfManager
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "inspect"
 
 
 def test_pivoted_shape_csvwbrowser_and_tables():
+    """
+    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    correctly extracts underlying values from the inspector functions in a pivoted shape
+    CSVW input.
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-shape"
@@ -75,6 +59,11 @@ def test_pivoted_shape_csvwbrowser_and_tables():
 
 
 def test_pivoted_shape_data_cube_table_columns():
+    """
+    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    correctly extracts underlying values from the inspector functions in a standard shape
+    CSVW input with locally defined measures and units.
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-shape"
@@ -155,7 +144,14 @@ def test_pivoted_shape_data_cube_table_columns():
 
 
 def test_standard_shape_browser_locally_defined_measures_units():
-    """ """
+    """
+    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    correctly extracts underlying values from the inspector functions in a standard shape
+    CSVW input with externally defined measures and units.
+    NOTE this test currently does not test anything that isn't covered by the previous test.
+    The external measures and units will be tested when the MeasureColumn and UnitColumn classes
+    have been fully implemented.
+    """
     csvw_path = (
         _test_case_base_dir
         / "eurovision"
