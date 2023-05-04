@@ -121,107 +121,6 @@ def _get_code_list_column_by_property_url(
     return filtered_results[0]
 
 
-def test_ask_is_csvw_code_list():
-    """
-    Should return true if the input rdf graph is a code list.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    is_code_list = ask_is_csvw_code_list(csvw_metadata_rdf_graph)
-
-    assert is_code_list is True
-
-
-def test_ask_is_csvw_qb_dataset():
-    """
-    Should return true if the input rdf graph is a qb dataset.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    is_qb_dataset = ask_is_csvw_qb_dataset(csvw_metadata_rdf_graph)
-
-    assert is_qb_dataset is True
-
-
-def test_get_primary_catalog_metadata_for_dataset():
-    """
-    Should return expected `CatalogMetadataResult`.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
-    result: CatalogMetadataResult = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
-    )
-
-    assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
-    assert result.title == "Alcohol Bulletin"
-    assert result.label == "Alcohol Bulletin"
-    assert (
-        dateutil.parser.isoparse(result.issued).strftime("%Y-%m-%d %H:%M:%S%z")
-        == "2016-02-26 09:30:00+0000"
-    )
-    assert (
-        dateutil.parser.isoparse(result.modified).strftime("%Y-%m-%d %H:%M:%S%z")
-        == "2022-02-11 21:00:09+0000"
-    )
-    assert (
-        result.comment
-        == "Quarterly statistics from the 4 different alcohol duty regimes administered by HM Revenue and Customs."
-    )
-    assert (
-        result.description
-        == "The Alcohol Bulletin National Statistics present statistics from the 4\ndifferent alcohol duties administered by HM Revenue and Customs (HMRC): [Wine\nDuty](https://www.gov.uk/government/collections/wine-duty) (wine and made-\nwine), [Spirits Duty](https://www.gov.uk/guidance/spirits-duty), [Beer\nDuty](https://www.gov.uk/guidance/beer-duty) and [Cider\nDuty](https://www.gov.uk/government/collections/cider-duty).\n\nThe Alcohol Bulletin is updated quarterly and includes statistics on duty\nreceipts up to the latest full month before its release, and statistics\nrelating to clearances and production that are one month behind that of duty\nreceipts.\n\n[Archive versions of the Alcohol Bulletin published on GOV.UK after August\n2019](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/government/statistics/alcohol-\nbulletin) are no longer hosted on this page and are instead available via the\nUK Government Web Archive, from the National Archives.\n\n[Archive versions of the Alcohol Bulletin published between 2008 and August\n2019](https://www.uktradeinfo.com/trade-data/tax-and-duty-bulletins/) are\nfound on the UK Trade Info website.\n\n## Quality report\n\nFurther details for this statistical release, including data suitability and\ncoverage, are included within the [Alcohol Bulletin quality\nreport](https://www.gov.uk/government/statistics/quality-report-alcohol-\nduties-publications-bulletin-and-factsheet).\n\n  *[HMRC]: HM Revenue and Customs\n  *[UK]: United Kingdom\n\n"
-    )
-    assert result.license == "None"
-    assert (
-        result.creator
-        == "https://www.gov.uk/government/organisations/hm-revenue-customs"
-    )
-    assert (
-        result.publisher
-        == "https://www.gov.uk/government/organisations/hm-revenue-customs"
-    )
-    assert (
-        len(result.landing_pages) == 1
-        and result.landing_pages[0]
-        == "https://www.gov.uk/government/statistics/alcohol-bulletin"
-    )
-    assert (
-        len(result.themes) == 1
-        and result.themes[0] == "http://gss-data.org.uk/def/gdp#trade"
-    )
-    assert len(result.keywords) == 1 and result.keywords[0] == ""
-    assert result.contact_point == "None"
-    assert result.identifier == "Alcohol Bulletin"
-
-
-def test_select_single_unit_from_dsd():
-    """
-    Should return expected `UnitResult`.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "single-unit_multi-measure"
-        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
-    )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-
-    result: UnitResult = data_cube_inspector.get_unit_for_uri(
-        "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
-    )
-
-    assert result.unit_label == "MtCO2e"
-    assert (
-        result.unit_uri
-        == "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
-    )
-
-
 def test_select_table_schema_dependencies():
     """
     Test that we can successfully identify all table schema file dependencies from a CSV-W.
@@ -247,7 +146,6 @@ def test_select_table_schema_dependencies():
     }
 
 
-# Calling SPARQL query directly
 def test_select_codelist_cols_by_csv_url():
     """
     Should return expected `CodeListColsByDatasetUrlResult`.
@@ -301,7 +199,6 @@ def test_select_codelist_cols_by_csv_url():
     _assert_code_list_column_equal(column, None, "rdf:type", "skos:Concept")
 
 
-# Calling SPARQL query directly
 def test_select_metadata_dependencies():
     """
     Test that we can extract `void:DataSet` dependencies from a csvcubed CSV-W output.
