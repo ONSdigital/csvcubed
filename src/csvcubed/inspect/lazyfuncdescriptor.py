@@ -1,3 +1,9 @@
+"""
+Lazy Func Descriptor
+--------------------
+
+Contains the LazyFuncFieldDescriptor class and function
+"""
 from dataclasses import field
 from typing import Any, Callable, Generic, Mapping, Optional, Type, TypeVar
 
@@ -7,6 +13,8 @@ TRet = TypeVar("TRet")
 
 class LazyFuncFieldDescriptor(Generic[TClass, TRet]):
     """
+    A class of Descriptor-typed fields to be used in the lazy_func_field function.
+
     https://docs.python.org/3/library/dataclasses.html#descriptor-typed-fields
     """
 
