@@ -6,7 +6,7 @@ Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass, field
 from functools import cache, cached_property
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 import pandas as pd
 import uritemplate
 from csvcubedmodels.rdf.namespaces import XSD
+from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.inputs import pandas_input_to_columnar_str
@@ -21,6 +22,7 @@ from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeEx
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.sparqlresults import (
+    CodelistResult,
     CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
@@ -31,9 +33,10 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.dict import get_from_dict_ensure_exists
-from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -53,7 +56,14 @@ _XSD_BASE_URI: str = XSD[""].toPython()
 class DataCubeRepository:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
-    csvw_repository: CsvWRepository
+    csvw_inspector: CsvWInspector
+    code_list_inspector_in: InitVar[Optional[CodeListInspector]] = None
+    _code_list_inspector: CodeListInspector = field(init=False)
+
+    def __post_init__(self, code_list_inspector_in: Optional[CodeListInspector]):
+        self._code_list_inspector = code_list_inspector_in or CodeListInspector(
+            self.csvw_inspector
+        )
 
     def __hash__(self):
         """
@@ -315,18 +325,147 @@ class DataCubeRepository:
             primary_catalog_metadata.dataset_uri
         ).csv_url
 
-    def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
+    def get_dataframe(
+        self, csv_url: str, dereference_uris: bool = True
+    ) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
+        dereference_uris=True means URIs of column values are converted to their human readable labels.
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = _get_data_types_of_all_cols(cols)
         absolute_csv_url = file_uri_to_path(
             urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
         )
-        return read_csv(absolute_csv_url, dtype=dict_of_types)
+        (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
+
+        if dereference_uris:
+            code_lists = self.get_code_lists_and_cols(csv_url).codelists
+            for col in cols:
+                col_values = df[col.column_definition.title].values
+                if isinstance(col_values, Categorical):
+                    df[col.column_definition.title] = col_values.rename_categories(
+                        self._get_new_category_labels_for_col(
+                            csv_url, col, col_values.categories, code_lists
+                        )
+                    )
+        return df, _errors
+
+    def _get_new_category_labels_for_col(
+        self,
+        csv_url: str,
+        col: ColumnComponentInfo,
+        col_categories: pd.Index,
+        code_lists: List[CodelistResult],
+    ) -> List[str]:
+        """
+        Identifies the type of column being used and applies the appropriate dereferencing function.
+        """
+        value_url = col.column_definition.value_url
+
+        if col.column_type.value == "Attribute" and value_url is not None:
+            return self._dereference_uris_for_attributes(
+                col, value_url, csv_url, col_categories
+            )
+        elif col.column_type.value == "Measures" and value_url is not None:
+            return self._dereference_uris_for_measures(
+                col, value_url, csv_url, col_categories
+            )
+        elif col.column_type.value == "Units" and value_url is not None:
+            return self._dereference_uris_for_units(col, value_url, col_categories)
+        elif col.column_type.value == "Dimension":
+            return self._dereference_uris_for_dimensions(code_lists, col)
+        # Column is either an Attribute Literal or Observations
+        raise ValueError(
+            f"Unhandled column type/configuration - {col.column_type.value}, {col.column_definition}"
+        )
+
+    def _dereference_uris_for_attributes(
+        self,
+        col: ColumnComponentInfo,
+        value_url: str,
+        csv_url: str,
+        col_categories: pd.Index,
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Attribute Resource-type column values.
+        """
+        if col.column_definition.name is None:
+            raise ValueError(f"Column name is not defined - {col.column_definition}")
+        if col.column_definition.title is None:
+            raise ValueError(f"Column title is not defined - {col.column_definition}")
+
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        attribute_vals = self.get_attribute_value_uris_and_labels(csv_url)
+        return [attribute_vals[col.column_definition.title][uri] for uri in col_uris]
+
+    def _dereference_uris_for_measures(
+        self,
+        col: ColumnComponentInfo,
+        value_url: str,
+        csv_url: str,
+        col_categories: pd.Index,
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Measures-type column values.
+        """
+        if col.column_definition.name is None:
+            raise ValueError(f"Column name is not defined - {col.column_definition}")
+
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        measure_uris_and_labels = self.get_measure_uris_and_labels(csv_url)
+        return [measure_uris_and_labels[uri] for uri in col_uris]
+
+    def _dereference_uris_for_units(
+        self,
+        col: ColumnComponentInfo,
+        value_url: str,
+        col_categories: pd.Index,
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Units-type column values.
+        """
+        if col.column_definition.name is None:
+            raise ValueError(f"Column name is not defined - {col.column_definition}")
+
+        col_uris = [
+            uritemplate.expand(value_url, {col.column_definition.name: cat})
+            for cat in col_categories
+        ]
+        unit_labels = []
+        for col_uri in col_uris:
+            maybe_unit = self.get_unit_for_uri(col_uri)
+            if maybe_unit is None:
+                raise ValueError(f"Unit {col_uri} could not be retrieved.")
+            unit_labels.append(maybe_unit.unit_label)
+        return unit_labels
+
+    def _dereference_uris_for_dimensions(
+        self, code_lists: List[CodelistResult], col: ColumnComponentInfo
+    ) -> List[str]:
+        """
+        Returns the list of dereferenced URIs for Dimension-type column values.
+        """
+        if col.column_definition.title is None:
+            raise ValueError(f"Column title is not defined - {col.column_definition}")
+
+        code_list = single(
+            code_lists, lambda c: col.column_definition.title in c.cols_used_in
+        )
+        concept_scheme_uri = code_list.code_list
+        uri_labels_dict = self._code_list_inspector.get_map_code_list_uri_to_label(
+            concept_scheme_uri
+        )
+
+        return list(uri_labels_dict.values())
 
     def _map_column_name_to_title_to_attribute_value_url(
         self, csv_url: str
@@ -504,6 +643,6 @@ def _get_data_types_of_all_cols(cols: List[ColumnComponentInfo]) -> Dict:
                     f"Unhandled data type '{col.column_definition.data_type}' in column '{col.column_definition.title}'."
                 )
         else:
-            dict_of_types[col.column_definition.title] = "string"
+            dict_of_types[col.column_definition.title] = "category"
 
     return dict_of_types

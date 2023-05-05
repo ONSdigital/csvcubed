@@ -68,16 +68,16 @@ def _build_valid_cube(context):
     exit_stack.enter_context(session.cache_disabled())
     context.add_cleanup(lambda: exit_stack.pop_all().close())
 
-    mocker = mock_json_schemas()
-    mocker.start()
-    context.add_cleanup(lambda: mocker.stop())
-
     context.out_dir = get_context_temp_dir_path(context) / "out"
 
     with vcr.use_cassette(
         str(_cassettes_dir / f"build-cube-{cassette_file_name}.yaml"),
-        record_mode=vcr.record_mode.RecordMode.ONCE,
+        record_mode=vcr.record_mode.RecordMode.NEW_EPISODES,  # Changed this temporarily to resolve an issue with inconsistent run order when using vcrpy and mockers together.
     ):
+        mocker = mock_json_schemas()
+        mocker.start()
+        context.add_cleanup(lambda: mocker.stop())
+
         cube, errors = cli_build(
             data_file,
             config_file,
