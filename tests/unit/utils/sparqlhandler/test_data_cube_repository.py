@@ -15,7 +15,10 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.inspectors_cache import (
+    get_csvw_rdf_manager,
+    get_data_cube_repository,
+)
 from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
     get_arguments_qb_dataset,
 )
@@ -38,10 +41,10 @@ def test_exception_is_thrown_for_invalid_csv_url():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
     with pytest.raises(KeyError) as exception:
-        assert data_cube_inspector.get_cube_identifiers_for_csv("c")
+        assert data_cube_repository.get_cube_identifiers_for_csv("c")
 
     assert "Couldn't find value for key" in str(exception.value)
 
@@ -59,10 +62,10 @@ def test_get_cube_identifiers_for_data_set_error():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
     with pytest.raises(KeyError) as exception:
-        cube_identifers = data_cube_inspector.get_cube_identifiers_for_data_set(
+        cube_identifers = data_cube_repository.get_cube_identifiers_for_data_set(
             data_set_uri=""
         )
         assert cube_identifers is None
@@ -80,10 +83,10 @@ def test_get_cube_identifiers_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result: CubeTableIdentifiers = data_cube_inspector.get_cube_identifiers_for_csv(
+    result: CubeTableIdentifiers = data_cube_repository.get_cube_identifiers_for_csv(
         csv_url
     )
 
@@ -102,10 +105,10 @@ def test_get_cube_identifiers_for_data_set():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result_qube_components = data_cube_repository.get_dsd_qube_components_for_csv(
         csv_url
     )
 
@@ -137,10 +140,10 @@ def test_detect_csvw_shape_pivoted():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    cube_shape: CubeShape = data_cube_inspector.get_shape_for_csv(csv_url)
+    cube_shape: CubeShape = data_cube_repository.get_shape_for_csv(csv_url)
 
     assert cube_shape == CubeShape.Pivoted
 
@@ -155,10 +158,10 @@ def test_detect_csvw_shape_standard():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    cube_shape: CubeShape = data_cube_inspector.get_shape_for_csv(csv_url)
+    cube_shape: CubeShape = data_cube_repository.get_shape_for_csv(csv_url)
 
     assert cube_shape == CubeShape.Standard
 
@@ -172,12 +175,12 @@ def test_get_code_lists_and_cols():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     results = {
         c.csv_url: c
-        for c in data_cube_inspector.get_code_lists_and_cols(csv_url).codelists
+        for c in data_cube_repository.get_code_lists_and_cols(csv_url).codelists
     }
 
     assert len(results) == 1
@@ -194,10 +197,10 @@ def test_get_dsd_code_list_and_cols_without_codelist_labels():
     Should return expected code lists and column information.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result: CodelistsResult = data_cube_inspector.get_code_lists_and_cols(csv_url)
+    result: CodelistsResult = data_cube_repository.get_code_lists_and_cols(csv_url)
 
     assert len(result.codelists) == 3
     assert (
@@ -215,9 +218,9 @@ def test_get_units():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    results = data_cube_inspector.get_units()
+    results = data_cube_repository.get_units()
 
     unit_uris = {"qb-id-10003.csv#unit/percent", "qb-id-10003.csv#unit/some-unit"}
     results_unit_uris = {result.unit_uri for result in results}
@@ -239,9 +242,9 @@ def test_get_unit_for_uri():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    result: UnitResult = data_cube_inspector.get_unit_for_uri(
+    result: UnitResult = data_cube_repository.get_unit_for_uri(
         "qb-id-10003.csv#unit/percent"
     )
 
@@ -259,11 +262,11 @@ def test_get_dsd_qube_components_for_csv_multi_measure_pivoted():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     result_qube_components: QubeComponentsResult = (
-        data_cube_inspector.get_dsd_qube_components_for_csv(csv_url)
+        data_cube_repository.get_dsd_qube_components_for_csv(csv_url)
     )
 
     components = result_qube_components.qube_components
@@ -363,11 +366,11 @@ def test_get_dsd_qube_components_for_csv_single_measure_pivoted():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         csv_url
     )
 
@@ -453,11 +456,11 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
 
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         csv_url
     )
 
@@ -559,11 +562,13 @@ def test_pivoted_column_component_info():
         / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    list_of_columns_definitions = data_cube_repository.get_column_component_info(
+        csv_url
+    )
 
     # get the test to check the properties and make sure the types match and the columns definitions match in the
     # correct order
@@ -596,11 +601,13 @@ def test_standard_column_component_info():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    list_of_columns_definitions = data_cube_repository.get_column_component_info(
+        csv_url
+    )
 
     # get the test to check the properties and make sure the types match and the columns definitions match in the
     # correct order
@@ -635,11 +642,13 @@ def test_supressed_column_info():
         / "suppressed-data-example.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    list_of_columns_definitions = data_cube_repository.get_column_component_info(
+        csv_url
+    )
 
     # get the test to check the properties and make sure the types match and the columns definitions match in the
     # correct order
@@ -668,13 +677,13 @@ def test_standard_column_component_property_url():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    column_components = data_cube_inspector.get_dsd_qube_components_for_csv(csv_url)
+    column_components = data_cube_repository.get_dsd_qube_components_for_csv(csv_url)
 
-    column_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    column_definitions = data_cube_repository.get_column_component_info(csv_url)
     column_definitions = [x.column_definition for x in column_definitions]
 
     measure_column = first(
@@ -708,10 +717,10 @@ def test_get_columns_for_component_dimension():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    delivered_columns = data_cube_inspector.get_columns_of_type(
+    delivered_columns = data_cube_repository.get_columns_of_type(
         csv_url, EndUserColumnType.Dimension
     )
 
@@ -734,10 +743,10 @@ def test_get_columns_for_component_unit():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    delivered_columns = data_cube_inspector.get_columns_of_type(
+    delivered_columns = data_cube_repository.get_columns_of_type(
         csv_url, EndUserColumnType.Units
     )
 
@@ -760,10 +769,10 @@ def test_get_columns_for_component_observation():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    delivered_columns = data_cube_inspector.get_columns_of_type(
+    delivered_columns = data_cube_repository.get_columns_of_type(
         csv_url, EndUserColumnType.Observations
     )
 
@@ -786,10 +795,10 @@ def test_get_columns_for_component_measures():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    delivered_columns = data_cube_inspector.get_columns_of_type(
+    delivered_columns = data_cube_repository.get_columns_of_type(
         csv_url, EndUserColumnType.Measures
     )
 
@@ -812,10 +821,10 @@ def test_get_columns_for_component_attribute():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    delivered_columns = data_cube_inspector.get_columns_of_type(
+    delivered_columns = data_cube_repository.get_columns_of_type(
         csv_url, EndUserColumnType.Attribute
     )
 
@@ -841,10 +850,10 @@ def test_get_columns_for_component_attribute_pivoted():
         / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    delivered_columns = data_cube_inspector.get_columns_of_type(
+    delivered_columns = data_cube_repository.get_columns_of_type(
         csv_url, EndUserColumnType.Attribute
     )
 
@@ -866,10 +875,10 @@ def test_get_measure_uris_and_labels_pivoted_multi_measure():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result = data_cube_inspector.get_measure_uris_and_labels(csv_url)
+    result = data_cube_repository.get_measure_uris_and_labels(csv_url)
 
     assert result == {
         "qb-id-10003.csv#measure/some-measure": "Some Measure",
@@ -888,11 +897,11 @@ def test_get_measure_uris_and_labels_standard_multi_measure():
         / "multi-unit_multi-measure_with_labels"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
 
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result = data_cube_inspector.get_measure_uris_and_labels(csv_url)
+    result = data_cube_repository.get_measure_uris_and_labels(csv_url)
 
     assert len(result) == 9
     assert (
@@ -939,11 +948,11 @@ def test_get_attribute_value_uris_and_labels():
         / "multi-attribute-resource-values"
         / "multi-attribute.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
 
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    result = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+    result = data_cube_repository.get_attribute_value_uris_and_labels(csv_url)
 
     assert len(result) == 2
     assert result["Imports Status"] == {
@@ -967,12 +976,12 @@ def test_get_attribute_value_uris_and_labels_duplicate_uris():
         / "multi-attribute-resource-values"
         / "multi-attribute-duplicate-uris.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
 
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     with pytest.raises(KeyError) as exception:
-        _ = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+        _ = data_cube_repository.get_attribute_value_uris_and_labels(csv_url)
 
     assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
         exception.value
@@ -988,12 +997,12 @@ def test_get_attribute_value_uris_and_labels_duplicate_labels():
         / "multi-attribute-resource-values"
         / "multi-attribute-duplicate-labels.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
 
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     with pytest.raises(KeyError) as exception:
-        _ = data_cube_inspector.get_attribute_value_uris_and_labels(csv_url)
+        _ = data_cube_repository.get_attribute_value_uris_and_labels(csv_url)
 
     assert ("Duplicate URIs or multiple labels for URI in CSV-W") in str(
         exception.value
@@ -1009,8 +1018,8 @@ def test_get_primary_csv_url():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     assert csv_url == "energy-trends-uk-total-energy.csv"
 
@@ -1028,10 +1037,10 @@ def test_load_pandas_df_from_standard_shape_csv_url():
         / "standard-shape-out"
         / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url)
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "string"
@@ -1057,10 +1066,10 @@ def test_load_pandas_df_from_pivoted_shape_csv_url():
         / "pivoted-shape-out"
         / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url)
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "string"

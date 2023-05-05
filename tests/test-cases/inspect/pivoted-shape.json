@@ -1,8 +1,8 @@
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Testing CsvWBrowser (pivoted shape)",
-    "description": "Testing the CsvWBrowser functionality with a pivoted shape cube generated using csvcubed",
-    "summary": "CsvWBrowser test - pivoted shape",
+    "title": "Testing Inspector (pivoted shape)",
+    "description": "Testing the Inspector functionality with a pivoted shape cube generated using csvcubed",
+    "summary": "Inspector test - pivoted shape",
     "columns": {
         "LocalDimension": {
             "type": "dimension",

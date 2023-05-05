@@ -1,8 +1,8 @@
 """
-Code List Inspector
+Code List Repository
 -------------------
 
-This module contains the `CodeListInspector` class which allows API-style access to information
+This module contains the `CodeListRepository` class which allows API-style access to information
 about code lists contained within an RDF graph.
 """
 from dataclasses import dataclass
@@ -19,7 +19,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.pandas import read_csv
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
+from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import file_uri_to_path, looks_like_uri
 from csvcubed.writers.skoscodelistwriter import (
@@ -29,12 +29,12 @@ from csvcubed.writers.skoscodelistwriter import (
 
 
 @dataclass
-class CodeListInspector:
+class CodeListRepository:
     """
     Allows API-style access to information about code lists contained within an RDF graph.
     """
 
-    csvw_inspector: CsvWInspector
+    csvw_repository: CsvWRepository
 
     @cached_property
     def _code_list_table_identifiers(self) -> List[CodeListTableIdentifers]:
@@ -69,7 +69,7 @@ class CodeListInspector:
         # Get the csv_url -> column_scheme_url identifiers for all csv files.
         table_identifiers = [
             get_table_identifiers(csv_url, columns)
-            for (csv_url, columns) in self.csvw_inspector.column_definitions.items()
+            for (csv_url, columns) in self.csvw_repository.column_definitions.items()
         ]
 
         # If the csv file doesn't have a code list in it, don't include it in the code list identifiers returned.
@@ -96,7 +96,7 @@ class CodeListInspector:
         self, concept_scheme_url: str
     ) -> CatalogMetadataResult:
         """Returns the Catalogue Metadata for a given ConceptScheme. Raises a KeyError if it cannot be found."""
-        catalog_mdata_results = self.csvw_inspector.catalog_metadata
+        catalog_mdata_results = self.csvw_repository.catalog_metadata
 
         result = first(
             catalog_mdata_results, lambda i: i.dataset_uri == concept_scheme_url
@@ -125,7 +125,7 @@ class CodeListInspector:
                 absolute_csv_url = csv_url
         else:
             absolute_csv_url = file_uri_to_path(
-                urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+                urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
             )
 
         (dataframe, _) = read_csv(
@@ -163,7 +163,7 @@ class CodeListInspector:
         This will only work if the primary file loaded into the graph was a
         code list.
         """
-        primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
+        primary_catalog_metadata = self.csvw_repository.get_primary_catalog_metadata()
         return self.get_table_identifiers_for_concept_scheme(
             primary_catalog_metadata.dataset_uri
         ).csv_url

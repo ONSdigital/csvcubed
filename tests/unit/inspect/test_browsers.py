@@ -1,6 +1,6 @@
 import pytest
 
-from csvcubed.inspect.browsercolumns import (
+from csvcubed.inspect.inspectorcolumns import (
     AttributeColumn,
     DimensionColumn,
     MeasuresColumn,
@@ -8,7 +8,7 @@ from csvcubed.inspect.browsercolumns import (
     StandardShapeObservationsColumn,
     UnitsColumn,
 )
-from csvcubed.inspect.browsercomponents import (
+from csvcubed.inspect.inspectorcomponents import (
     ExternalAttribute,
     ExternalDimension,
     LocalAttribute,
@@ -16,39 +16,39 @@ from csvcubed.inspect.browsercomponents import (
     LocalMeasure,
     LocalUnit,
 )
-from csvcubed.inspect.browsertable import CodeListTable, CsvWBrowser, DataCubeTable
+from csvcubed.inspect.inspectortable import CodeListTable, DataCubeTable, Inspector
 from csvcubed.models.cube.cube_shape import CubeShape
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "inspect"
 
 
-def test_pivoted_shape_csvwbrowser_and_tables():
+def test_pivoted_shape_inspector_and_tables():
     """
-    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    Tests whether an Inspector correctly represents the expected CSVW structure and
     correctly extracts underlying values from the inspector functions in a pivoted shape
     CSVW input.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-shape"
-        / "testing-csvwbrowser-pivoted-shape.csv-metadata.json"
+        / "testing-inspector-pivoted-shape.csv-metadata.json"
     )
-    csvw_browser = CsvWBrowser(csvw_metadata_json_path)
-    tables = csvw_browser.tables
+    inspector = Inspector(csvw_metadata_json_path)
+    tables = inspector.tables
 
     assert len(tables) == 2
     assert isinstance(tables[0], DataCubeTable)
     assert isinstance(tables[1], CodeListTable)
 
-    assert tables[0].data_set_uri == "testing-csvwbrowser-pivoted-shape.csv#dataset"
+    assert tables[0].data_set_uri == "testing-inspector-pivoted-shape.csv#dataset"
     assert tables[0].shape == CubeShape.Pivoted
-    assert tables[0].csv_url == "testing-csvwbrowser-pivoted-shape.csv"
-    assert tables[0].title == "Testing CsvWBrowser (pivoted shape)"
-    assert tables[0].comment == "CsvWBrowser test - pivoted shape"
+    assert tables[0].csv_url == "testing-inspector-pivoted-shape.csv"
+    assert tables[0].title == "Testing Inspector (pivoted shape)"
+    assert tables[0].comment == "Inspector test - pivoted shape"
     assert (
         tables[0].description
-        == "Testing the CsvWBrowser functionality with a pivoted shape cube generated using csvcubed"
+        == "Testing the Inspector functionality with a pivoted shape cube generated using csvcubed"
     )
 
     assert tables[1].concept_scheme_uri == "local-dimension-code-list.csv#code-list"
@@ -60,17 +60,17 @@ def test_pivoted_shape_csvwbrowser_and_tables():
 
 def test_pivoted_shape_data_cube_table_columns():
     """
-    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    Tests whether an Inspector correctly represents the expected CSVW structure and
     correctly extracts underlying values from the inspector functions in a standard shape
     CSVW input with locally defined measures and units.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-shape"
-        / "testing-csvwbrowser-pivoted-shape.csv-metadata.json"
+        / "testing-inspector-pivoted-shape.csv-metadata.json"
     )
-    csvw_browser = CsvWBrowser(csvw_metadata_json_path)
-    tables = csvw_browser.tables
+    inspector = Inspector(csvw_metadata_json_path)
+    tables = inspector.tables
     columns = tables[0].columns
 
     local_dimension_column = columns["LocalDimension"]
@@ -81,7 +81,7 @@ def test_pivoted_shape_data_cube_table_columns():
     )
     assert (
         local_dimension_column.dimension.dimension_uri
-        == "testing-csvwbrowser-pivoted-shape.csv#dimension/localdimension"
+        == "testing-inspector-pivoted-shape.csv#dimension/localdimension"
     )
     assert local_dimension_column.dimension.label == "LocalDimension"
     assert local_dimension_column.info.component.property_label == "LocalDimension"
@@ -106,7 +106,7 @@ def test_pivoted_shape_data_cube_table_columns():
     assert local_attribute_column.cell_uri_template is None
     assert (
         local_attribute_column.attribute.attribute_uri
-        == "testing-csvwbrowser-pivoted-shape.csv#attribute/localattribute"
+        == "testing-inspector-pivoted-shape.csv#attribute/localattribute"
     )
     assert local_attribute_column.attribute.label == "LocalAttribute"
     assert isinstance(local_attribute_column, AttributeColumn)
@@ -120,7 +120,7 @@ def test_pivoted_shape_data_cube_table_columns():
     )
     assert (
         external_attribute_column.attribute.attribute_uri
-        == "testing-csvwbrowser-pivoted-shape.csv#attribute/externalattribute"
+        == "testing-inspector-pivoted-shape.csv#attribute/externalattribute"
     )
     assert isinstance(external_attribute_column, AttributeColumn)
     assert isinstance(external_attribute_column.attribute, ExternalAttribute)
@@ -130,12 +130,12 @@ def test_pivoted_shape_data_cube_table_columns():
     assert pivoted_obs_column.cell_uri_template is None
     assert (
         pivoted_obs_column.unit.unit_uri
-        == "testing-csvwbrowser-pivoted-shape.csv#unit/some-unit"
+        == "testing-inspector-pivoted-shape.csv#unit/some-unit"
     )
     assert pivoted_obs_column.unit.label == "Some Unit"
     assert (
         pivoted_obs_column.measure.measure_uri
-        == "testing-csvwbrowser-pivoted-shape.csv#measure/some-measure"
+        == "testing-inspector-pivoted-shape.csv#measure/some-measure"
     )
     assert pivoted_obs_column.measure.label == "Some Measure"
     assert isinstance(pivoted_obs_column, PivotedObservationsColumn)
@@ -143,9 +143,9 @@ def test_pivoted_shape_data_cube_table_columns():
     assert isinstance(pivoted_obs_column.measure, LocalMeasure)
 
 
-def test_standard_shape_browser_locally_defined_measures_units():
+def test_standard_shape_inspector_locally_defined_measures_units():
     """
-    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    Tests whether an Inspector correctly represents the expected CSVW structure and
     correctly extracts underlying values from the inspector functions in a standard shape
     CSVW input with locally defined measures and units.
     """
@@ -155,10 +155,10 @@ def test_standard_shape_browser_locally_defined_measures_units():
         / "sweden-at-eurovision-complete-dataset.csv-metadata.json"
     )
 
-    csvw_browser = CsvWBrowser(csvw_path)
-    csvw_browser_tables = csvw_browser.tables
+    inspector = Inspector(csvw_path)
+    inspector_tables = inspector.tables
 
-    dimension_column = csvw_browser_tables[0].columns["Year"]
+    dimension_column = inspector_tables[0].columns["Year"]
     assert isinstance(dimension_column, DimensionColumn)
     assert isinstance(dimension_column.dimension, LocalDimension)
 
@@ -170,12 +170,12 @@ def test_standard_shape_browser_locally_defined_measures_units():
     )
     assert dimension_column.dimension.label == "Year"
 
-    observation_column = csvw_browser_tables[0].columns["Value"]
+    observation_column = inspector_tables[0].columns["Value"]
     assert isinstance(observation_column, StandardShapeObservationsColumn)
     assert observation_column.csv_column_title == "Value"
     assert observation_column.cell_uri_template == None
 
-    measures_column = csvw_browser_tables[0].columns["Measure"]
+    measures_column = inspector_tables[0].columns["Measure"]
     assert isinstance(measures_column, MeasuresColumn)
     assert measures_column.csv_column_title == "Measure"
     assert (
@@ -183,7 +183,7 @@ def test_standard_shape_browser_locally_defined_measures_units():
         == "sweden-at-eurovision-complete-dataset.csv#measure/{+measure}"
     )
 
-    units_column = csvw_browser_tables[0].columns["Unit"]
+    units_column = inspector_tables[0].columns["Unit"]
     assert isinstance(units_column, UnitsColumn)
     assert units_column.csv_column_title == "Unit"
     assert (
@@ -191,7 +191,7 @@ def test_standard_shape_browser_locally_defined_measures_units():
         == "sweden-at-eurovision-complete-dataset.csv#unit/{+unit}"
     )
 
-    attribute_column = csvw_browser_tables[0].columns["Marker"]
+    attribute_column = inspector_tables[0].columns["Marker"]
     assert isinstance(attribute_column, AttributeColumn)
     assert attribute_column.csv_column_title == "Marker"
     assert (
@@ -206,9 +206,9 @@ def test_standard_shape_browser_locally_defined_measures_units():
     assert attribute_column.attribute.label == "Observation Status"
 
 
-def test_standard_shape_browser_external_measures_units():
+def test_standard_shape_inspector_external_measures_units():
     """
-    Tests whether a CsvWBrowser correctly represents the expected CSVW structure and
+    Tests whether an Inspector correctly represents the expected CSVW structure and
     correctly extracts underlying values from the inspector functions in a standard shape
     CSVW input with externally defined measures and units.
     NOTE this test currently does not test anything that isn't covered by the previous test.
@@ -217,10 +217,10 @@ def test_standard_shape_browser_external_measures_units():
     """
     csvw_path = _test_case_base_dir / "anxiety" / "anxiety.csv-metadata.json"
 
-    csvw_browser = CsvWBrowser(csvw_path)
-    csvw_browser_tables = csvw_browser.tables
+    inspector = Inspector(csvw_path)
+    inspector_tables = inspector.tables
 
-    dimension_column = csvw_browser_tables[0].columns["AREACD"]
+    dimension_column = inspector_tables[0].columns["AREACD"]
     assert isinstance(dimension_column, DimensionColumn)
     assert dimension_column.csv_column_title == "AREACD"
     assert dimension_column.cell_uri_template == "statistical-geography.csv#{+areacd}"
@@ -231,12 +231,12 @@ def test_standard_shape_browser_external_measures_units():
     )
     assert dimension_column.dimension.label == "Statistical Geography"
 
-    observation_column = csvw_browser_tables[0].columns["Value"]
+    observation_column = inspector_tables[0].columns["Value"]
     assert isinstance(observation_column, StandardShapeObservationsColumn)
     assert observation_column.csv_column_title == "Value"
     assert observation_column.cell_uri_template == None
 
-    measures_column = csvw_browser_tables[0].columns["Measure"]
+    measures_column = inspector_tables[0].columns["Measure"]
     assert isinstance(measures_column, MeasuresColumn)
     assert measures_column.csv_column_title == "Measure"
     assert (
@@ -244,7 +244,7 @@ def test_standard_shape_browser_external_measures_units():
         == "http://example.org/code-lists/example-measure/{+measure}"
     )
 
-    units_column = csvw_browser_tables[0].columns["Unit"]
+    units_column = inspector_tables[0].columns["Unit"]
     assert isinstance(units_column, UnitsColumn)
     assert units_column.csv_column_title == "Unit"
     assert (
@@ -252,7 +252,7 @@ def test_standard_shape_browser_external_measures_units():
         == "http://example.org/code-lists/example-units/{+unit}"
     )
 
-    attribute_column = csvw_browser_tables[0].columns["Observation Status"]
+    attribute_column = inspector_tables[0].columns["Observation Status"]
     assert isinstance(attribute_column, AttributeColumn)
     assert attribute_column.csv_column_title == "Observation Status"
     assert (

@@ -26,9 +26,9 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 from tests.helpers.inspectors_cache import (
-    get_code_list_inspector,
+    get_code_list_repository,
     get_csvw_rdf_manager,
-    get_data_cube_inspector,
+    get_data_cube_repository,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -154,7 +154,7 @@ def test_get_primary_catalog_metadata_for_dataset():
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     result: CatalogMetadataResult = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
     )
 
     assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
@@ -208,9 +208,9 @@ def test_select_single_unit_from_dsd():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    result: UnitResult = data_cube_inspector.get_unit_for_uri(
+    result: UnitResult = data_cube_repository.get_unit_for_uri(
         "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
     )
 
@@ -252,15 +252,17 @@ def test_select_codelist_cols_by_csv_url():
     Should return expected `CodeListColsByDatasetUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
+    code_list_repository = get_code_list_repository(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
+        code_list_repository.csvw_repository.get_primary_catalog_metadata()
     )
-    csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
+    csv_url = code_list_repository.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
-    result = code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+    result = code_list_repository.csvw_repository.get_column_definitions_for_csv(
+        csv_url
+    )
 
     assert len(result) == 7
 

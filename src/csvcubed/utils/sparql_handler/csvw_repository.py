@@ -1,5 +1,5 @@
 """
-Code List Inspector
+Code List Repository
 -------------------
 
 Provides access to inspect the contents of an rdflib graph containing
@@ -32,7 +32,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 
 @dataclass
-class CsvWInspector:
+class CsvWRepository:
     """
     Provides access to inspect the contents of an rdflib graph containing one of more code lists.
     """

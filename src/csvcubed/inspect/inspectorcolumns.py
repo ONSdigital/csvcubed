@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from typing import Optional, Union
 
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.inspect.browsercomponents import (
+from csvcubed.inspect.inspectorcomponents import (
     Attribute,
     Dimension,
     ExternalAttribute,
@@ -29,20 +29,20 @@ from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
 from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.utils.iterables import first, single
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
+from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 
 
 @dataclass(frozen=True)
 class DataCubeColumn(ABC):
     """
     Base column class for different data cube column types to inherit from.
-    Allows access to the column's info and the data cube/code list inspectors.
+    Allows access to the column's info and the data cube/code list repositorys.
     """
 
-    data_cube_inspector: DataCubeInspector = field(repr=False)
-    code_list_inspector: CodeListInspector = field(repr=False)
+    data_cube_repository: DataCubeRepository = field(repr=False)
+    code_list_repository: CodeListRepository = field(repr=False)
     info: ColumnComponentInfo = field(repr=False)
 
     def _get_csv_col_title(self) -> Optional[str]:
@@ -139,7 +139,7 @@ class ObservationsColumn(DataCubeColumn, ABC):
 
     def _get_unit(self) -> Union[Unit, UnitsColumn]:
         columns_in_csv = (
-            self.data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(
+            self.data_cube_repository.csvw_repository.get_column_definitions_for_csv(
                 self.info.column_definition.csv_url
             )
         )
@@ -153,8 +153,10 @@ class ObservationsColumn(DataCubeColumn, ABC):
         )
         if unit_uri is None:
             # There must be a units column for this obs val column.
-            column_component_infos = self.data_cube_inspector.get_column_component_info(
-                self.info.column_definition.csv_url
+            column_component_infos = (
+                self.data_cube_repository.get_column_component_info(
+                    self.info.column_definition.csv_url
+                )
             )
             units_column_info = single(
                 column_component_infos,
@@ -163,12 +165,12 @@ class ObservationsColumn(DataCubeColumn, ABC):
                 == self.info.column_definition.about_url,
             )
             return UnitsColumn(
-                data_cube_inspector=self.data_cube_inspector,
-                code_list_inspector=self.code_list_inspector,
+                data_cube_repository=self.data_cube_repository,
+                code_list_repository=self.code_list_repository,
                 info=units_column_info,
             )
 
-        local_unit = self.data_cube_inspector.get_unit_for_uri(unit_uri)
+        local_unit = self.data_cube_repository.get_unit_for_uri(unit_uri)
         if local_unit is None:
             return ExternalUnit(unit_uri)
 
@@ -191,7 +193,7 @@ class PivotedObservationsColumn(ObservationsColumn):
 
         local_measure_component = first(
             c
-            for c in self.data_cube_inspector.get_dsd_qube_components_for_csv(
+            for c in self.data_cube_repository.get_dsd_qube_components_for_csv(
                 self.info.column_definition.csv_url
             ).qube_components
             if c.property_type == ComponentPropertyType.Measure.value
@@ -220,15 +222,15 @@ class StandardShapeObservationsColumn(ObservationsColumn):
     def _get_measures_column(self) -> MeasuresColumn:
         measure_col_info = single(
             c
-            for c in self.data_cube_inspector.get_column_component_info(
+            for c in self.data_cube_repository.get_column_component_info(
                 self.info.column_definition.csv_url
             )
             if c.column_type == EndUserColumnType.Measures
         )
 
         return MeasuresColumn(
-            data_cube_inspector=self.data_cube_inspector,
-            code_list_inspector=self.code_list_inspector,
+            data_cube_repository=self.data_cube_repository,
+            code_list_repository=self.code_list_repository,
             info=measure_col_info,
         )
 

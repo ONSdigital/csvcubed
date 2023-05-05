@@ -8,34 +8,31 @@ Class definitions to help provide access to the contents of a CSVW.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from functools import cache
-from pathlib import Path
-from typing import List, Optional, TypeVar, Union
+from typing import List, Optional, TypeVar
 
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
 from csvcubed.models.sparqlresults import CatalogMetadataResult
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
-from csvcubed.utils.tableschema import CsvWRdfManager
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 
 TClass = TypeVar("TClass")
 TRet = TypeVar("TRet")
 
 
 @dataclass(frozen=True)
-class TableBrowser(ABC):
+class TableInspector(ABC):
     """
-    Base table browser class to be inherited by the DataCubeTable and CodeListTable class
+    Base table inspector class to be inherited by the DataCubeTable and CodeListTable class
     implementations.
     """
 
     csv_url: str
-    data_cube_inspector: DataCubeInspector = field(repr=False)
-    code_list_inspector: CodeListInspector = field(repr=False)
+    data_cube_repository: DataCubeRepository = field(repr=False)
+    code_list_repository: CodeListRepository = field(repr=False)
 
 
 @dataclass(frozen=True)
-class MetadataBrowser(ABC):
+class MetadataInspector(ABC):
     """
     Allows access to the various catalog metadata results.
     """
