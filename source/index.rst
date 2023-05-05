@@ -12,6 +12,7 @@ Welcome to csvcubed's documentation!
    :caption: Contents:
 
    csvcubed
+   modules
 
 
 Indices and tables
