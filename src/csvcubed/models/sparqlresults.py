@@ -5,7 +5,6 @@ SPARQL query results
 
 import logging
 from dataclasses import dataclass
-from os import linesep
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -16,7 +15,6 @@ from rdflib.query import ResultRow
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.iterables import first, group_by, single
-from csvcubed.utils.printable import get_printable_list_str
 from csvcubed.utils.qb.components import (
     ComponentPropertyType,
     get_component_property_as_relative_path,
@@ -34,9 +32,9 @@ class CatalogMetadataResult:
     """
 
     dataset_uri: str
-    """Data set here doesn't necessarily mean the qb:DataSet. It means eiither the qb:DataSet or the skos:ConceptScheme."""
+    """Data set here doesn't necessarily mean the qb:DataSet. It means either the qb:DataSet or the skos:ConceptScheme."""
     graph_uri: str
-    """URI representing the grapgh in which the Catalog Metadata was found."""
+    """URI representing the graph in which the Catalog Metadata was found."""
     title: str
     label: str
     issued: str
@@ -51,29 +49,6 @@ class CatalogMetadataResult:
     identifier: str
     comment: str
     description: str
-
-    @property
-    def output_str(self) -> str:
-        formatted_landing_pages: str = get_printable_list_str(self.landing_pages)
-        formatted_themes: str = get_printable_list_str(self.themes)
-        formatted_keywords: str = get_printable_list_str(self.keywords)
-        formatted_description: str = self.description.replace(linesep, f"{linesep}\t\t")
-        return f"""
-        - Title: {self.title}
-        - Label: {self.label}
-        - Issued: {self.issued}
-        - Modified: {self.modified}
-        - License: {self.license}
-        - Creator: {self.creator}
-        - Publisher: {self.publisher}
-        - Landing Pages: {formatted_landing_pages}
-        - Themes: {formatted_themes}
-        - Keywords: {formatted_keywords}
-        - Contact Point: {self.contact_point}
-        - Identifier: {self.identifier}
-        - Comment: {self.comment}
-        - Description: {formatted_description}
-        """
 
 
 @dataclass

@@ -17,9 +17,6 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from tests.helpers.inspectors_cache import get_data_cube_inspector
-from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
-    get_arguments_qb_dataset,
-)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -82,7 +79,6 @@ def test_exception_is_thrown_for_invalid_csv_url():
     assert "Couldn't find value for key" in str(exception.value)
 
 
-# Duplicate test
 def test_get_cube_identifiers_for_data_set_error():
     """
     Ensures we can return the correct error message when attempting to return the
