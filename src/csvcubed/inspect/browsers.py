@@ -1,3 +1,10 @@
+"""
+Inspectors
+----------
+
+Class definitions to help provide access to the contents of a CSVW.
+"""
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from functools import cache

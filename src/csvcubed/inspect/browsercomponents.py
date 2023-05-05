@@ -1,3 +1,11 @@
+"""
+Inspector Components
+--------------------
+
+Class definitions for the different component types that may be accessed
+within an inspector column.
+"""
+
 from dataclasses import dataclass, field
 
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field

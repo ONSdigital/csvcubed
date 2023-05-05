@@ -1,3 +1,11 @@
+"""
+Inspector Columns
+-----------------
+
+Class definitions for the several different column types that are used
+inside inspector tables.
+"""
+
 from abc import ABC
 from dataclasses import dataclass, field
 from typing import Optional, Union

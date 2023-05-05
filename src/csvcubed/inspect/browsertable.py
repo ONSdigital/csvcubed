@@ -1,3 +1,12 @@
+"""
+Inspector Tables
+----------------
+
+Enables access to browse the contents of a data cube table and a
+code list table, as well as their metadata. Also contains the base
+Inspector class.
+"""
+
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, OrderedDict, Union
