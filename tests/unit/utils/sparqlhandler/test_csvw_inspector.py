@@ -168,7 +168,6 @@ def test_get_data_cube_column_definitions_for_csv():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
 

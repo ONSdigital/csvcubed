@@ -147,8 +147,7 @@ class TableSchemaPropertiesResult:
 @dataclass
 class IsPivotedShapeResult:
     """
-    A dataclass that is used to return the measure of from a cube's metadata and whether that measure is part of a
-    pivoted or standard shape cube.
+    A dataclass that is used to return whether a cube is in pivoted or standard shape.
     """
 
     csv_url: str
@@ -567,7 +566,7 @@ def map_is_pivoted_shape_data_set(
     sparql_results: List[ResultRow],
 ) -> List[IsPivotedShapeResult]:
     """
-    Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
+    Maps the sparql query result to objects of type IsPivotedShapeResult that are then returned.
     """
 
     def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeResult:
