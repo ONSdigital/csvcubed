@@ -7,7 +7,7 @@ from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from tests.helpers.inspectors_cache import (
+from tests.helpers.repository_cache import (
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )

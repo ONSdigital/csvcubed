@@ -16,7 +16,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from tests.helpers.inspectors_cache import (
+from tests.helpers.repository_cache import (
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )
@@ -256,7 +256,7 @@ def test_get_unit_for_uri():
 def test_get_dsd_qube_components_for_csv_multi_measure_pivoted():
     """
     Test that dsd components from a pivoted multi measure dataset are
-    correctly returned by the inspector function get_dsd_qube_components_for_csv
+    correctly returned by the repository function get_dsd_qube_components_for_csv
     """
     path_to_json_file = (
         _test_case_base_dir
@@ -450,7 +450,7 @@ def test_get_dsd_qube_components_for_csv_single_measure_pivoted():
 def test_get_dsd_qube_components_for_csv_standard_shape():
     """
     Test that dsd components from a standard shape dataset are
-    correctly returned by the inspector function get_dsd_qube_components_for_csv
+    correctly returned by the repository function get_dsd_qube_components_for_csv
     """
     path_to_json_file = (
         _test_case_base_dir
@@ -1033,7 +1033,7 @@ def test_load_pandas_df_dtypes_from_standard_shape_csv_url():
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "inspector-load-dataframe"
+        / "repository-load-dataframe"
         / "standard-shape"
         / "standard-shape-out"
         / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
@@ -1041,7 +1041,7 @@ def test_load_pandas_df_dtypes_from_standard_shape_csv_url():
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
         csv_url, dereference_uris=False
     )
 
@@ -1065,15 +1065,15 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "inspector-load-dataframe"
+        / "repository-load-dataframe"
         / "standard-shape"
         / "standard-shape-out"
         / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
         csv_url, dereference_uris=True
     )
     expected_df = pd.DataFrame(
@@ -1111,15 +1111,15 @@ def test_load_pandas_df_standard_shape_without_dereferencing():
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "inspector-load-dataframe"
+        / "repository-load-dataframe"
         / "standard-shape"
         / "standard-shape-out"
         / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
         csv_url, dereference_uris=False
     )
     expected_df = pd.DataFrame(
@@ -1156,7 +1156,7 @@ def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "inspector-load-dataframe"
+        / "repository-load-dataframe"
         / "pivoted-shape"
         / "pivoted-shape-out"
         / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
@@ -1164,7 +1164,7 @@ def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, False)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url, False)
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "category"
@@ -1184,15 +1184,15 @@ def test_load_pandas_df_pivoted_shape_with_dereferencing():
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "inspector-load-dataframe"
+        / "repository-load-dataframe"
         / "pivoted-shape"
         / "pivoted-shape-out"
         / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, True)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url, True)
 
     expected_df = pd.DataFrame(
         data={
@@ -1214,15 +1214,15 @@ def test_load_pandas_df_pivoted_shape_without_dereferencing():
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "inspector-load-dataframe"
+        / "repository-load-dataframe"
         / "pivoted-shape"
         / "pivoted-shape-out"
         / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    csv_url = data_cube_inspector.get_primary_csv_url()
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url, False)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url, False)
 
     expected_df = pd.DataFrame(
         data={

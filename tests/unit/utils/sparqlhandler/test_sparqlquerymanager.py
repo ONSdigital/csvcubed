@@ -25,7 +25,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_metadata_dependencies,
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
-from tests.helpers.inspectors_cache import (
+from tests.helpers.repository_cache import (
     get_code_list_repository,
     get_csvw_rdf_manager,
     get_data_cube_repository,

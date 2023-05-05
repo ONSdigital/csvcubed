@@ -1,6 +1,6 @@
 """
-Code List Repository
--------------------
+CsvW Repository
+---------------
 
 Provides access to inspect the contents of an rdflib graph containing
 one of more code lists.

@@ -10,7 +10,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from tests.helpers.inspectors_cache import get_code_list_repository
+from tests.helpers.repository_cache import get_code_list_repository
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

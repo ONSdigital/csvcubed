@@ -1,6 +1,6 @@
 """
 Data Cube Repository
--------------------
+--------------------
 
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
@@ -36,7 +36,7 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -56,13 +56,13 @@ _XSD_BASE_URI: str = XSD[""].toPython()
 class DataCubeRepository:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
-    csvw_inspector: CsvWInspector
-    code_list_inspector_in: InitVar[Optional[CodeListInspector]] = None
-    _code_list_inspector: CodeListInspector = field(init=False)
+    csvw_repository: CsvWRepository
+    code_list_repository_in: InitVar[Optional[CodeListRepository]] = None
+    _code_list_repository: CodeListRepository = field(init=False)
 
-    def __post_init__(self, code_list_inspector_in: Optional[CodeListInspector]):
-        self._code_list_inspector = code_list_inspector_in or CodeListInspector(
-            self.csvw_inspector
+    def __post_init__(self, code_list_repository_in: Optional[CodeListRepository]):
+        self._code_list_repository = code_list_repository_in or CodeListRepository(
+            self.csvw_repository
         )
 
     def __hash__(self):
@@ -461,7 +461,7 @@ class DataCubeRepository:
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
         )
         concept_scheme_uri = code_list.code_list
-        uri_labels_dict = self._code_list_inspector.get_map_code_list_uri_to_label(
+        uri_labels_dict = self._code_list_repository.get_map_code_list_uri_to_label(
             concept_scheme_uri
         )
 

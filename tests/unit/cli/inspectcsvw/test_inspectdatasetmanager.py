@@ -37,7 +37,7 @@ from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepositor
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
 )
-from tests.helpers.inspectors_cache import (
+from tests.helpers.repository_cache import (
     get_code_list_repository,
     get_data_cube_repository,
 )

@@ -1,8 +1,8 @@
 """
-Inspectors Cache
+Repository Cache
 ----------------------
 
-Caches inspector objects for data sets which are commonly used as test cases
+Caches repository objects for data sets which are commonly used as test cases
 """
 from pathlib import Path
 from typing import Dict

@@ -1,6 +1,6 @@
 """
 Code List Repository
--------------------
+--------------------
 
 This module contains the `CodeListRepository` class which allows API-style access to information
 about code lists contained within an RDF graph.
