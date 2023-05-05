@@ -28,7 +28,7 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
-    IsPivotedShapeMeasureResult,
+    IsPivotedShapeResult,
     MetadataDependenciesResult,
     PrimaryKeyColNameByDatasetUrlResult,
     QubeComponentsResult,
@@ -39,7 +39,7 @@ from csvcubed.models.sparqlresults import (
     map_column_definition_results,
     map_csvw_table_schemas_file_dependencies_result,
     map_data_set_dsd_csv_url_result,
-    map_is_pivoted_shape_for_measures_in_data_set,
+    map_is_pivoted_shape_data_set,
     map_labels_for_resource_uris,
     map_metadata_dependency_results,
     map_primary_key_col_names_by_csv_url_result,
@@ -83,9 +83,7 @@ class SPARQLQueryName(Enum):
 
     SELECT_TABLE_SCHEMA_PROPERTIES = "select_table_schema_properties"
 
-    SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = (
-        "select_is_pivoted_shape_for_measures_in_data_set"
-    )
+    SELECT_IS_PIVOTED_SHAPE_DATA_SET = "select_is_pivoted_shape_data_set"
 
     SELECT_COLUMN_DEFINITIONS = "select_column_definitions"
 
@@ -223,10 +221,10 @@ def select_csvw_dsd_qube_components(
     )
 
 
-def select_is_pivoted_shape_for_measures_in_data_set(
+def select_is_pivoted_shape_data_set(
     rdf_graph: rdflib.ConjunctiveGraph,
     cube_table_identifiers: List[CubeTableIdentifiers],
-) -> List[IsPivotedShapeMeasureResult]:
+) -> List[IsPivotedShapeResult]:
     """
     Queries the measure and whether it is a part of a pivoted or standard shape cube.
 
@@ -235,16 +233,14 @@ def select_is_pivoted_shape_for_measures_in_data_set(
     :return: `List[IsPivotedShapeMeasureResult]`
     """
     result_is_pivoted_shape: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET
-        ),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_DATA_SET),
         rdf_graph,
         values_bindings=[
             _cube_table_identifiers_to_values_binding(cube_table_identifiers)
         ],
     )
 
-    return map_is_pivoted_shape_for_measures_in_data_set(result_is_pivoted_shape)
+    return map_is_pivoted_shape_data_set(result_is_pivoted_shape)
 
 
 def _cube_table_identifiers_to_values_binding(

@@ -1,13 +1,9 @@
 from pathlib import Path
-from typing import List
 
 import pytest
 from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
-from csvcubed.models.sparqlresults import (
-    IsPivotedShapeMeasureResult,
-    MetadataDependenciesResult,
-)
+from csvcubed.models.sparqlresults import MetadataDependenciesResult
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_table_schema_file_dependencies,
@@ -19,19 +15,6 @@ from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
-
-
-# TODO this function may have to become a cached property to ensure test coverage of the IsPivotedShapeMeasureResult class
-def _get_measure_by_measure_uri(
-    results: List[IsPivotedShapeMeasureResult], measure_uri: str
-) -> IsPivotedShapeMeasureResult:
-    """
-    Filters measures by measure uri.
-    """
-    filtered_results = [result for result in results if result.measure == measure_uri]
-    assert len(filtered_results) == 1
-
-    return filtered_results[0]
 
 
 def test_select_table_schema_dependencies():
