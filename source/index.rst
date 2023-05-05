@@ -8,6 +8,7 @@ Welcome to csvcubed's documentation!
 
 .. toctree::
    :maxdepth: 20
+   :titlesonly:
    :caption: Contents:
 
    csvcubed
