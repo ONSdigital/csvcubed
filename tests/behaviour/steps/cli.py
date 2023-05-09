@@ -10,9 +10,9 @@ import subprocess
 from pathlib import Path
 from typing import Tuple
 
-from appdirs import AppDirs
 from behave import then, when
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
+from platformdirs import PlatformDirs
 
 
 @when('the csvcubed CLI is run with "{arguments}"')
@@ -20,7 +20,7 @@ def step_impl(context, arguments: str):
     command: str = f"csvcubed {arguments.strip()}"
     (status_code, response) = run_command_in_temp_dir(context, command)
     context.csvcubed_cli_result = (status_code, response)
-    dirs = AppDirs("csvcubed-cli", "csvcubed")
+    dirs = PlatformDirs("csvcubed-cli", "csvcubed")
     context.csvcubed_log_location = Path(dirs.user_log_dir)
 
 
