@@ -1131,6 +1131,10 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
 
     assert_frame_equal(dataframe, expected_df)
     assert not any(validation_errors)
+    """
+    pivoted_df = dataframe.pivot(index=["Dim1", "Dim2", "Dim3", "AttrResource", "AttrLiteral"], columns="Measures", values="Obs").reset_index()
+    pivoted_df.rename(columns={"Some Measure 1": "Some Measure 1 (Some Unit 1)", "Some Measure 2": "Some Measure 2 (Some Unit 2)", "Some Measure 3": "Some Measure 3 (Some Unit 3)"})
+    """
 
 
 def test_load_pandas_df_standard_shape_without_dereferencing():
@@ -1263,3 +1267,23 @@ def test_load_pandas_df_pivoted_shape_without_dereferencing():
     )
     assert_frame_equal(dataframe, expected_df)
     assert not any(validation_errors)
+    """
+    std_df = dataframe.melt(id_vars=["Dim1", "Dim2"], value_vars=["Obs1", "Obs2"], var_name="Measure", value_name="Value")
+    std_df["Unit"] = std_df["Measure"].map({"Obs1": "Some Unit", "Obs2": "Some Other Unit"})
+    std_df["Measure"] = std_df["Measure"].replace({"Obs1": "Some Measure", "Obs2": "Another Measure"})
+    """
+
+
+def test_convert_dataframe_shape():
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "repository-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+    (dataframe, errors) = data_cube_repository.get_dataframe(csv_url, True)
+    pivoted_df = data_cube_repository._convert_dataframe_shape(dataframe)
+    assert errors is None

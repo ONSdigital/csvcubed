@@ -353,6 +353,58 @@ class DataCubeRepository:
                     )
         return df, _errors
 
+    def _convert_dataframe_shape(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        check utils/csvdataset.py for ideas
+        https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/shape-conversion/
+
+        if CubeShape == Pivoted:
+            if there's no Units column in the CSV:
+
+                id_vars = List[Dimension column title(s)]
+                value_vars = List[Observation column title(s)]
+
+                std_df = df.melt(
+                    id_vars=id_vars,
+                    value_vars=value_vars,
+                    var_name = "Measure column title",
+                    value_name = "Observation column title"
+                )
+
+                std_df["Unit column title"] = std_df["Measure column title"].map(
+                    {
+                        "Obs col title 1": "Unit for Obs col 1",
+                        "Obs col title 2": "Unit for Obs col 2"...
+                    }
+                )
+
+                std_df["Measure column title"] = std_df["Measure column title"].replace(
+                    {
+                        "Obs col title 1": "Measure for Obs col 1",
+                        "Obs col title 2": "Measure for Obs col 2"...
+                    }
+                )
+            elif there's a Units column in the CSV:
+                TODO
+        elif CubeShape == Standard:
+
+            index = List[Dimension column title(s) and Attribute column title(s)]
+
+            pivoted_df = df.pivot(
+                index=index,
+                columns="Measure column title",
+                values="Observations column title"
+            )
+
+            pivoted_df.rename(
+                columns={
+                    "Some Measure 1": "Some Measure 1 (Unit for Measure 1)",
+                    "Some Measure 2": "Some Measure 2 (Unit for Measure 2)",
+                    ...
+                }
+            )
+        """
+
     def _get_new_category_labels_for_col(
         self,
         csv_url: str,
