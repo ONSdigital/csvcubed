@@ -26,7 +26,7 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
-    IsPivotedShapeMeasureResult,
+    IsPivotedShapeResult,
     QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
@@ -43,7 +43,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
-    select_is_pivoted_shape_for_measures_in_data_set,
+    select_is_pivoted_shape_data_set,
     select_labels_for_resource_uris,
     select_units,
 )
@@ -126,7 +126,7 @@ class DataCubeRepository:
         """
 
         def _detect_shape_for_cube(
-            measures_with_shape: List[IsPivotedShapeMeasureResult],
+            csv_url_with_shape: List[IsPivotedShapeResult],
         ) -> CubeShape:
             """
             Given a metadata validator as input, returns the shape of the cube that
@@ -134,9 +134,9 @@ class DataCubeRepository:
             """
             all_pivoted = True
             all_standard_shape = True
-            for measure in measures_with_shape:
-                all_pivoted = all_pivoted and measure.is_pivoted_shape
-                all_standard_shape = all_standard_shape and not measure.is_pivoted_shape
+            for csv_url in csv_url_with_shape:
+                all_pivoted = all_pivoted and csv_url.is_pivoted_shape
+                all_standard_shape = all_standard_shape and not csv_url.is_pivoted_shape
 
             if all_pivoted:
                 return CubeShape.Pivoted
@@ -149,15 +149,15 @@ class DataCubeRepository:
                     "that are pivoted and some are not pivoted."
                 )
 
-        results = select_is_pivoted_shape_for_measures_in_data_set(
+        results = select_is_pivoted_shape_data_set(
             self.csvw_repository.rdf_graph, list(self._cube_table_identifiers.values())
         )
 
-        map_csv_url_to_measure_shape = group_by(results, lambda r: r.csv_url)
+        map_csv_url_to_shape = group_by(results, lambda r: r.csv_url)
 
         return {
-            csv_url: _detect_shape_for_cube(measures_with_shape)
-            for (csv_url, measures_with_shape) in map_csv_url_to_measure_shape.items()
+            csv_url: _detect_shape_for_cube(csv_url_with_shape)
+            for (csv_url, csv_url_with_shape) in map_csv_url_to_shape.items()
         }
 
     @cached_property

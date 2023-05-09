@@ -5,7 +5,6 @@ SPARQL query results
 
 import logging
 from dataclasses import dataclass
-from os import linesep
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -16,7 +15,6 @@ from rdflib.query import ResultRow
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.iterables import first, group_by, single
-from csvcubed.utils.printable import get_printable_list_str
 from csvcubed.utils.qb.components import (
     ComponentPropertyType,
     get_component_property_as_relative_path,
@@ -34,9 +32,9 @@ class CatalogMetadataResult:
     """
 
     dataset_uri: str
-    """Data set here doesn't necessarily mean the qb:DataSet. It means eiither the qb:DataSet or the skos:ConceptScheme."""
+    """Data set here doesn't necessarily mean the qb:DataSet. It means either the qb:DataSet or the skos:ConceptScheme."""
     graph_uri: str
-    """URI representing the grapgh in which the Catalog Metadata was found."""
+    """URI representing the graph in which the Catalog Metadata was found."""
     title: str
     label: str
     issued: str
@@ -51,29 +49,6 @@ class CatalogMetadataResult:
     identifier: str
     comment: str
     description: str
-
-    @property
-    def output_str(self) -> str:
-        formatted_landing_pages: str = get_printable_list_str(self.landing_pages)
-        formatted_themes: str = get_printable_list_str(self.themes)
-        formatted_keywords: str = get_printable_list_str(self.keywords)
-        formatted_description: str = self.description.replace(linesep, f"{linesep}\t\t")
-        return f"""
-        - Title: {self.title}
-        - Label: {self.label}
-        - Issued: {self.issued}
-        - Modified: {self.modified}
-        - License: {self.license}
-        - Creator: {self.creator}
-        - Publisher: {self.publisher}
-        - Landing Pages: {formatted_landing_pages}
-        - Themes: {formatted_themes}
-        - Keywords: {formatted_keywords}
-        - Contact Point: {self.contact_point}
-        - Identifier: {self.identifier}
-        - Comment: {self.comment}
-        - Description: {formatted_description}
-        """
 
 
 @dataclass
@@ -139,42 +114,12 @@ class UnitResult:
 
 
 @dataclass
-class CodelistColumnResult(DataClassBase):
-    """
-    Model to represent a codelist column.
-    """
-
-    column_property_url: Optional[str]
-    column_value_url: Optional[str]
-    column_title: Optional[str]
-    column_name: Optional[str]
-
-
-@dataclass
-class CodeListColsByDatasetUrlResult:
-    """
-    Model to represent select codelist columns by table url.
-    """
-
-    columns: List[CodelistColumnResult]
-
-
-@dataclass
 class PrimaryKeyColNameByDatasetUrlResult:
     """
     Model to represent select primary key column name by table url.
     """
 
     value: str
-
-
-@dataclass
-class PrimaryKeyColNamesByDatasetUrlResult:
-    """
-    Model to represent select primary keys by table url.
-    """
-
-    primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
 
 
 @dataclass
@@ -200,14 +145,12 @@ class TableSchemaPropertiesResult:
 
 
 @dataclass
-class IsPivotedShapeMeasureResult:
+class IsPivotedShapeResult:
     """
-    A dataclass that is used to return the measure of from a cube's metadata and whether that measure is part of a
-    pivoted or standard shape cube.
+    A dataclass that is used to return whether a cube is in pivoted or standard shape.
     """
 
     csv_url: str
-    measure: str
     is_pivoted_shape: bool
 
 
@@ -260,7 +203,7 @@ class QubeComponentsResult:
     Model to represent select qube components sparql query result.
     """
 
-    qube_components: list[QubeComponentResult]
+    qube_components: List[QubeComponentResult]
     num_components: int
 
 
@@ -569,7 +512,7 @@ def _map_primary_key_col_name_by_csv_url_result(
 
 def map_primary_key_col_names_by_csv_url_result(
     sparql_results: List[ResultRow],
-) -> PrimaryKeyColNamesByDatasetUrlResult:
+) -> List[PrimaryKeyColNameByDatasetUrlResult]:
     """
     Maps sparql query result to `PrimaryKeyColNamesByDatasetUrlResult`
 
@@ -577,16 +520,12 @@ def map_primary_key_col_names_by_csv_url_result(
 
     :return: `PrimaryKeyColNamesByDatasetUrlResult`
     """
-    primary_key_col_names = list(
+    return list(
         map(
             lambda result: _map_primary_key_col_name_by_csv_url_result(result),
             sparql_results,
         )
     )
-    result = PrimaryKeyColNamesByDatasetUrlResult(
-        primary_key_col_names=primary_key_col_names
-    )
-    return result
 
 
 def map_metadata_dependency_results(
@@ -623,17 +562,16 @@ def map_table_schema_properties_results(
     return [map_row(row.asdict()) for row in sparql_results]
 
 
-def map_is_pivoted_shape_for_measures_in_data_set(
+def map_is_pivoted_shape_data_set(
     sparql_results: List[ResultRow],
-) -> List[IsPivotedShapeMeasureResult]:
+) -> List[IsPivotedShapeResult]:
     """
-    Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
+    Maps the sparql query result to objects of type IsPivotedShapeResult that are then returned.
     """
 
-    def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeMeasureResult:
-        return IsPivotedShapeMeasureResult(
+    def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeResult:
+        return IsPivotedShapeResult(
             csv_url=str(row_result["csvUrl"]),
-            measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
         )
 

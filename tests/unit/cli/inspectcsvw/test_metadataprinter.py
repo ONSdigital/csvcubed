@@ -18,9 +18,6 @@ from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
-from tests.unit.utils.sparqlhandler.test_data_cube_repository import (
-    get_arguments_qb_dataset,
-)
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
@@ -151,7 +148,7 @@ def test_column_component_info_for_output():
 
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     list_of_column_component_info = data_cube_repository.get_column_component_info(
         csv_url
