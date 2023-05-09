@@ -1,1 +1,5 @@
-only show cli.inspect and utils.sparqlhandler
+Delete the python references
+
+update the release
+
+Delete botton parts
