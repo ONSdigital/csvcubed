@@ -12,13 +12,13 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
 from csvcubed.models.sparqlresults import CodelistsResult
-from tests.helpers.inspectors_cache import get_data_cube_inspector
+from tests.helpers.repository_cache import get_data_cube_repository
 from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
     expected_dataframe_pivoted_single_measure,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
-from tests.unit.utils.sparqlhandler.test_data_cube_inspector import (
+from tests.unit.utils.sparqlhandler.test_data_cube_repository import (
     get_arguments_qb_dataset,
 )
 
@@ -34,8 +34,8 @@ def test_multi_measure_pivoted_shape_cube_observation_and_count_info():
         / "qb-id-10003.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    metadata_printer = MetadataPrinter(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
+    metadata_printer = MetadataPrinter(data_cube_repository)
 
     result_code_lists: CodelistsResult = metadata_printer.result_primary_csv_code_lists
     assert result_code_lists is not None
@@ -94,8 +94,8 @@ def test_single_measure_pivoted_shape_cube_observation_and_count_info():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
-    metadata_printer = MetadataPrinter(data_cube_inspector)
+    data_cube_repository = get_data_cube_repository(path_to_json_file)
+    metadata_printer = MetadataPrinter(data_cube_repository)
 
     result_code_lists: CodelistsResult = metadata_printer.result_primary_csv_code_lists
     assert result_code_lists is not None
@@ -149,11 +149,11 @@ def test_column_component_info_for_output():
         / "qb-id-10003.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
-    list_of_column_component_info = data_cube_inspector.get_column_component_info(
+    list_of_column_component_info = data_cube_repository.get_column_component_info(
         csv_url
     )
 

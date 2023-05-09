@@ -5,9 +5,12 @@ from rdflib import ConjunctiveGraph
 
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import ColumnDefinition
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
+from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.repository_cache import (
+    get_csvw_rdf_manager,
+    get_data_cube_repository,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -16,7 +19,7 @@ _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 def test_get_primary_catalog_metadata():
     """
     Tests that primary catalog metadata can correctly be retrieved from an input
-    csvw metadata json file's CsvWRdfManager object, by accessing its csvw_inspector and
+    csvw metadata json file's CsvWRdfManager object, by accessing its csvw_repository and
     running the function.
     """
     csvw_metadata_json_path = (
@@ -28,7 +31,7 @@ def test_get_primary_catalog_metadata():
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
     test_catalog_metadata_result = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
     )
 
     assert test_catalog_metadata_result.graph_uri == primary_graph_identifier
@@ -41,13 +44,15 @@ def test_get_primary_catalog_metadata_key_error():
     """
     rdf_graph = ConjunctiveGraph()
 
-    csvw_inspector = CsvWInspector(rdf_graph, Path("does-not-exist.csv-metadata.json"))
+    csvw_repository = CsvWRepository(
+        rdf_graph, Path("does-not-exist.csv-metadata.json")
+    )
 
     with pytest.raises(KeyError) as exception:
-        assert csvw_inspector.get_primary_catalog_metadata()
+        assert csvw_repository.get_primary_catalog_metadata()
 
     assert (
-        f"Could not find catalog metadata in primary graph '{csvw_inspector.primary_graph_uri}'."
+        f"Could not find catalog metadata in primary graph '{csvw_repository.primary_graph_uri}'."
         in str(exception.value)
     )
 
@@ -55,7 +60,7 @@ def test_get_primary_catalog_metadata_key_error():
 def test_detect_csvw_type_qb_dataset():
     """
     Tests the detection of the csvw_type of an input metadata json file that has a CsvWRdfManager
-    object created from it, in this case to correctly detect a QbDataset csvw type from its csvw_inspector.
+    object created from it, in this case to correctly detect a QbDataset csvw type from its csvw_repository.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -64,7 +69,7 @@ def test_detect_csvw_type_qb_dataset():
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    csvw_type = csvw_rdf_manager.csvw_inspector.csvw_type
+    csvw_type = csvw_rdf_manager.csvw_repository.csvw_type
     assert csvw_type == CSVWType.QbDataSet
 
 
@@ -76,10 +81,12 @@ def test_csvw_type_key_error():
 
     rdf_graph = ConjunctiveGraph()
 
-    csvw_inspector = CsvWInspector(rdf_graph, Path("does-not-exist.csv-metadata.json"))
+    csvw_repository = CsvWRepository(
+        rdf_graph, Path("does-not-exist.csv-metadata.json")
+    )
 
     with pytest.raises(TypeError) as exception:
-        assert csvw_inspector.csvw_type()
+        assert csvw_repository.csvw_type()
 
     assert (
         "The input metadata is invalid as it is not a data cube or a code list."
@@ -90,7 +97,7 @@ def test_csvw_type_key_error():
 def test_detect_csvw_type_code_list():
     """
     Tests the detection of the csvw_type of an input metadata json file that has a CsvWRdfManager
-    object created from it, in this case to correctly detect a CodeList csvw type from its csvw_inspector.
+    object created from it, in this case to correctly detect a CodeList csvw type from its csvw_repository.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -99,7 +106,7 @@ def test_detect_csvw_type_code_list():
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    csvw_type = csvw_rdf_manager.csvw_inspector.csvw_type
+    csvw_type = csvw_rdf_manager.csvw_repository.csvw_type
     assert csvw_type == CSVWType.CodeList
 
 
@@ -114,11 +121,11 @@ def test_get_table_info_for_csv_url():
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    csvw_inspector: CsvWInspector = CsvWInspector(
+    csvw_repository: CsvWRepository = CsvWRepository(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
     )
 
-    result = csvw_inspector.get_table_info_for_csv_url("some-dimension.csv")
+    result = csvw_repository.get_table_info_for_csv_url("some-dimension.csv")
 
     assert result.about_url == "some-dimension.csv#{+uri_identifier}"
     assert result.csv_url == "some-dimension.csv"
@@ -132,11 +139,11 @@ def test_get_table_info_multiple_tables():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    csvw_inspector: CsvWInspector = CsvWInspector(
+    csvw_repository: CsvWRepository = CsvWRepository(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
     )
 
-    result = csvw_inspector._table_schema_properties
+    result = csvw_repository._table_schema_properties
 
     assert len(result) == 4
 
@@ -175,17 +182,17 @@ def test_get_column_definitions_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
     )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+    csv_url = data_cube_repository.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     ).csv_url
 
     results = {
         c.name: c
-        for c in data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(
+        for c in data_cube_repository.csvw_repository.get_column_definitions_for_csv(
             csv_url
         )
     }
@@ -272,7 +279,7 @@ def test_multi_theme_and_keyword():
 
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
     )
 
     assert set(primary_catalog_metadata.themes) == {
@@ -302,8 +309,8 @@ def test_colums_return_order():
         / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
     )
 
-    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
-    column_definitions = csvw_inspector.get_column_definitions_for_csv(
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    column_definitions = csvw_repository.get_column_definitions_for_csv(
         "multi-measure-pivoted-dataset-units-and-attributes.csv"
     )
 
