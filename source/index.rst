@@ -14,7 +14,6 @@ Welcome to csvcubed's documentation!
    csvcubed
    modules
 
-
 Indices and tables
 ==================
 
