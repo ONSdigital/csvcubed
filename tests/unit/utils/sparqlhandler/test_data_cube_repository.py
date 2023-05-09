@@ -16,13 +16,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from tests.helpers.repository_cache import (
-    get_csvw_rdf_manager,
-    get_data_cube_repository,
-)
-from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
-    get_arguments_qb_dataset,
-)
+from tests.helpers.repository_cache import get_data_cube_repository
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -716,8 +710,11 @@ def test_standard_column_component_property_url():
 
     column_components = data_cube_repository.get_dsd_qube_components_for_csv(csv_url)
 
-    column_definitions = data_cube_repository.get_column_component_info(csv_url)
-    column_definitions = [x.column_definition for x in column_definitions]
+    # column_definitions = data_cube_repository.get_column_component_info(csv_url)
+    column_definitions = [
+        x.column_definition
+        for x in data_cube_repository.get_column_component_info(csv_url)
+    ]
 
     measure_column = first(
         column_definitions,

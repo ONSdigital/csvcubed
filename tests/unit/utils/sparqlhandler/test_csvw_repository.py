@@ -8,6 +8,7 @@ from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from tests.helpers.repository_cache import (
+    get_code_list_repository,
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )
@@ -27,12 +28,10 @@ def test_get_primary_catalog_metadata():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
-    test_catalog_metadata_result = (
-        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
-    )
+    test_catalog_metadata_result = csvw_repository.get_primary_catalog_metadata()
 
     assert test_catalog_metadata_result.graph_uri == primary_graph_identifier
 
@@ -67,11 +66,26 @@ def test_detect_csvw_type_qb_dataset():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
-    csvw_type = csvw_inspector.csvw_type
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    csvw_type = csvw_repository.csvw_type
 
-    csvw_type = csvw_rdf_manager.csvw_repository.csvw_type
     assert csvw_type == CSVWType.QbDataSet
+
+
+def test_detect_csvw_type_code_list():
+    """
+    Tests the detection of the csvw_type of an input metadata json file that has a CsvWRdfManager
+    object created from it, in this case to correctly detect a CodeList csvw type from its csvw_repository.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    csvw_type = csvw_repository.csvw_type
+
+    assert csvw_type == CSVWType.CodeList
 
 
 def test_csvw_type_key_error():
@@ -95,23 +109,6 @@ def test_csvw_type_key_error():
     )
 
 
-def test_detect_csvw_type_code_list():
-    """
-    Tests the detection of the csvw_type of an input metadata json file that has a CsvWRdfManager
-    object created from it, in this case to correctly detect a CodeList csvw type from its csvw_repository.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "some-dimension.csv-metadata.json"
-    )
-    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
-    csvw_type = csvw_inspector.csvw_type
-
-    csvw_type = csvw_rdf_manager.csvw_repository.csvw_type
-    assert csvw_type == CSVWType.CodeList
-
-
 def test_get_table_info_for_csv_url():
     """
     Ensures that the correct table schema properties are returned for the given code list.
@@ -121,11 +118,7 @@ def test_get_table_info_for_csv_url():
         / "pivoted-single-measure-dataset"
         / "some-dimension.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
-    csvw_repository: CsvWRepository = CsvWRepository(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
 
     result = csvw_repository.get_table_info_for_csv_url("some-dimension.csv")
 
@@ -139,11 +132,7 @@ def test_get_table_info_multiple_tables():
     Tests retrieval of all tables from a data cube that contains multiple tables.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
-    csvw_repository: CsvWRepository = CsvWRepository(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
 
     result = csvw_repository._table_schema_properties
 
@@ -263,12 +252,12 @@ def test_get_data_cube_column_definitions_for_csv():
 
 def test_get_code_list_column_definitions_for_csv():
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
-    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
-    csv_url = code_list_inspector.get_primary_csv_url()
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    code_list_repository = get_code_list_repository(csvw_metadata_json_path)
+    csv_url = code_list_repository.get_primary_csv_url()
 
     results = {
-        c.name: c for c in csvw_inspector.get_column_definitions_for_csv(csv_url)
+        c.name: c for c in csvw_repository.get_column_definitions_for_csv(csv_url)
     }
     assert results["label"] == ColumnDefinition(
         csv_url="alcohol-content.csv",
@@ -368,10 +357,8 @@ def test_multi_theme_and_keyword():
         / "aged-16-to-64-years-level-3-or-above-qualifications.csv-metadata.json"
     )
 
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
-    )
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    primary_catalog_metadata = csvw_repository.get_primary_catalog_metadata()
 
     assert set(primary_catalog_metadata.themes) == {
         "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork",
