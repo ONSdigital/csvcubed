@@ -20,7 +20,6 @@ extensions = [
 include_patterns = [
     "index.rst",
     "modules.rst",
-    "thingy.rst",
     "csvcubed*.rst",
 ]
 templates_path = ["_templates"]
