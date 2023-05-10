@@ -247,6 +247,10 @@ def test_get_data_cube_column_definitions_for_csv():
 
 
 def test_get_code_list_column_definitions_for_csv():
+    """
+    Tests that the code list column definitions can be successfully retrieved and
+    are as expected given the input csv.
+    """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
     csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)

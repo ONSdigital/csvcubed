@@ -32,6 +32,10 @@ def assert_dsd_component_equal(
     dsd_uri: str,
     required: bool,
 ):
+    """
+    Used throughout several tests to perform assertions checking that
+    data structure definition components are as expected.
+    """
     assert component.property == property
     assert component.property_type == property_type.value
     assert component.property_label == property_label
