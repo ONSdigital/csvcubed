@@ -774,7 +774,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     )
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols,
-        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url[0].value,
     )
 
     result = get_concepts_hierarchy_info(
@@ -810,7 +810,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     )
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols,
-        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url[0].value,
     )
 
     result = get_concepts_hierarchy_info(
