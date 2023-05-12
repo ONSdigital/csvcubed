@@ -563,6 +563,33 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     )
 
 
+def test_transform_to_canonical_shape_for_pivoted_multi_unit_multi_measure_data_set():
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "repository-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
+
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        data_cube_repository,
+        dataset,
+        csv_url,
+        qube_components,
+    )
+
+    assert "Measure" in measure_col
+    assert "Unit" in unit_col
+
+
 def test_melt_data_set_for_pivoted_shape():
     """
     Ensures that a melted DataFrame output by _melt_data_set() is as expected.

@@ -17,7 +17,10 @@ from csvcubedmodels.rdf.namespaces import XSD
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.inputs import pandas_input_to_columnar_str
+from csvcubed.inputs import (
+    pandas_input_to_columnar_optional_str,
+    pandas_input_to_columnar_str,
+)
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
@@ -354,11 +357,54 @@ class DataCubeRepository:
         return df, _errors
 
     def _convert_dataframe_shape(self, df: pd.DataFrame) -> pd.DataFrame:
+        col_component_info = self.get_column_component_info(self.get_primary_csv_url())
+        index = [
+            col.column_definition.title
+            for col in col_component_info
+            if col.column_type == EndUserColumnType.Dimension
+            or col.column_type == EndUserColumnType.Attribute
+        ]
+        measure_col = [
+            col.column_definition.title
+            for col in col_component_info
+            if col.column_type == EndUserColumnType.Measures
+        ]
+        unit_col = [
+            col.column_definition.title
+            for col in col_component_info
+            if col.column_type == EndUserColumnType.Units
+        ]
+        obs_val_col = [
+            col.column_definition.title
+            for col in col_component_info
+            if col.column_type == EndUserColumnType.Observations
+        ]
+        pivoted_df = df.pivot(
+            index=index, columns=measure_col[0], values=obs_val_col[0]
+        ).reset_index()
+        pass
         """
         check utils/csvdataset.py for ideas
         https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/shape-conversion/
 
-        if CubeShape == Pivoted:
+        if CubeShape == Standard:
+
+            index = List[Dimension column title(s) and Attribute column title(s)]
+
+            pivoted_df = df.pivot(
+                index=index,
+                columns="Measure column title",
+                values="Observations column title"
+            )
+
+            pivoted_df.rename(
+                columns={
+                    "Some Measure 1": "Some Measure 1 (Unit for Measure 1)",
+                    "Some Measure 2": "Some Measure 2 (Unit for Measure 2)",
+                    ...
+                }
+            )
+        elif CubeShape == Pivoted:
             if there's no Units column in the CSV:
 
                 id_vars = List[Dimension column title(s)]
@@ -386,23 +432,6 @@ class DataCubeRepository:
                 )
             elif there's a Units column in the CSV:
                 TODO
-        elif CubeShape == Standard:
-
-            index = List[Dimension column title(s) and Attribute column title(s)]
-
-            pivoted_df = df.pivot(
-                index=index,
-                columns="Measure column title",
-                values="Observations column title"
-            )
-
-            pivoted_df.rename(
-                columns={
-                    "Some Measure 1": "Some Measure 1 (Unit for Measure 1)",
-                    "Some Measure 2": "Some Measure 2 (Unit for Measure 2)",
-                    ...
-                }
-            )
         """
 
     def _get_new_category_labels_for_col(
@@ -510,7 +539,9 @@ class DataCubeRepository:
             raise ValueError(f"Column title is not defined - {col.column_definition}")
 
         code_list = single(
-            code_lists, lambda c: col.column_definition.title in c.cols_used_in
+            code_lists,
+            lambda c: col.column_definition.title in c.cols_used_in,
+            "code list",
         )
         concept_scheme_uri = code_list.code_list
         uri_labels_dict = self._code_list_repository.get_map_code_list_uri_to_label(
@@ -570,7 +601,7 @@ class DataCubeRepository:
         return {
             name: [
                 uritemplate.expand(value_url, {name: av})
-                for av in pandas_input_to_columnar_str(
+                for av in pandas_input_to_columnar_optional_str(
                     dataframe[map_col_name_to_title[name]].unique()
                 )
             ]
