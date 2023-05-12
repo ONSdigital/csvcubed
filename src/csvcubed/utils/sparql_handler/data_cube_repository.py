@@ -1,6 +1,6 @@
 """
-Data Cube Inspector
--------------------
+Data Cube Repository
+--------------------
 
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
@@ -36,9 +36,9 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
+from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
@@ -53,16 +53,16 @@ _XSD_BASE_URI: str = XSD[""].toPython()
 
 
 @dataclass
-class DataCubeInspector:
+class DataCubeRepository:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
-    csvw_inspector: CsvWInspector
-    code_list_inspector_in: InitVar[Optional[CodeListInspector]] = None
-    _code_list_inspector: CodeListInspector = field(init=False)
+    csvw_repository: CsvWRepository
+    code_list_repository_in: InitVar[Optional[CodeListRepository]] = None
+    _code_list_repository: CodeListRepository = field(init=False)
 
-    def __post_init__(self, code_list_inspector_in: Optional[CodeListInspector]):
-        self._code_list_inspector = code_list_inspector_in or CodeListInspector(
-            self.csvw_inspector
+    def __post_init__(self, code_list_repository_in: Optional[CodeListRepository]):
+        self._code_list_repository = code_list_repository_in or CodeListRepository(
+            self.csvw_repository
         )
 
     def __hash__(self):
@@ -72,9 +72,9 @@ class DataCubeInspector:
         We *don't* want to make use of the dataclass hashing functionality, since it may end up evaluating all of
         our cached properties which would mean they're no longer lazy-loading.
 
-        The csvw_inspector can uniquely identify us by the file we originally loaded.
+        The csvw_repository can uniquely identify us by the file we originally loaded.
         """
-        return hash(self.csvw_inspector)
+        return hash(self.csvw_repository)
 
     """
     Private cached properties.
@@ -85,7 +85,7 @@ class DataCubeInspector:
         """
         Gets the unit_uri for each UnitResult
         """
-        results = select_units(self.csvw_inspector.rdf_graph)
+        results = select_units(self.csvw_repository.rdf_graph)
         return {result.unit_uri: result for result in results}
 
     @cached_property
@@ -95,7 +95,7 @@ class DataCubeInspector:
 
         Maps from csv_url to the identifiers.
         """
-        results = select_data_set_dsd_and_csv_url(self.csvw_inspector.rdf_graph)
+        results = select_data_set_dsd_and_csv_url(self.csvw_repository.rdf_graph)
         results_dict: Dict[str, CubeTableIdentifiers] = {}
         for result in results:
             results_dict[result.csv_url] = result
@@ -111,10 +111,10 @@ class DataCubeInspector:
         }
 
         return select_csvw_dsd_qube_components(
-            self.csvw_inspector.rdf_graph,
-            self.csvw_inspector.csvw_json_path,
+            self.csvw_repository.rdf_graph,
+            self.csvw_repository.csvw_json_path,
             map_dsd_uri_to_csv_url,
-            self.csvw_inspector.column_definitions,
+            self.csvw_repository.column_definitions,
             self._cube_shapes,
         )
 
@@ -150,7 +150,7 @@ class DataCubeInspector:
                 )
 
         results = select_is_pivoted_shape_data_set(
-            self.csvw_inspector.rdf_graph, list(self._cube_table_identifiers.values())
+            self.csvw_repository.rdf_graph, list(self._cube_table_identifiers.values())
         )
 
         map_csv_url_to_shape = group_by(results, lambda r: r.csv_url)
@@ -166,8 +166,8 @@ class DataCubeInspector:
         Maps the csv url to the code lists/columns featured in the CSV.
         """
         return select_dsd_code_list_and_cols(
-            self.csvw_inspector.rdf_graph,
-            self.csvw_inspector.csvw_json_path,
+            self.csvw_repository.rdf_graph,
+            self.csvw_repository.csvw_json_path,
         )
 
     """
@@ -241,7 +241,7 @@ class DataCubeInspector:
 
         real_columns = [
             c
-            for c in self.csvw_inspector.get_column_definitions_for_csv(csv_url)
+            for c in self.csvw_repository.get_column_definitions_for_csv(csv_url)
             if not c.virtual
         ]
         qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
@@ -320,7 +320,7 @@ class DataCubeInspector:
         This will only work if the primary file loaded into the graph was a
         data cube.
         """
-        primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
+        primary_catalog_metadata = self.csvw_repository.get_primary_catalog_metadata()
         return self.get_cube_identifiers_for_data_set(
             primary_catalog_metadata.dataset_uri
         ).csv_url
@@ -337,7 +337,7 @@ class DataCubeInspector:
         cols = self.get_column_component_info(csv_url)
         dict_of_types = _get_data_types_of_all_cols(cols)
         absolute_csv_url = file_uri_to_path(
-            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+            urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
         )
         (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
 
@@ -461,7 +461,7 @@ class DataCubeInspector:
             code_lists, lambda c: col.column_definition.title in c.cols_used_in
         )
         concept_scheme_uri = code_list.code_list
-        uri_labels_dict = self._code_list_inspector.get_map_code_list_uri_to_label(
+        uri_labels_dict = self._code_list_repository.get_map_code_list_uri_to_label(
             concept_scheme_uri
         )
 
@@ -502,7 +502,7 @@ class DataCubeInspector:
         Returns a dictionary of column name mapped to a list of all attribute value uris for that column
         """
         absolute_csv_url = file_uri_to_path(
-            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+            urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
         )
         (dataframe, _) = read_csv(
             absolute_csv_url,
@@ -542,7 +542,7 @@ class DataCubeInspector:
         uris_to_query = list(map_uri_to_col_name.keys())
 
         sparql_results = select_labels_for_resource_uris(
-            self.csvw_inspector.rdf_graph, uris_to_query
+            self.csvw_repository.rdf_graph, uris_to_query
         )
 
         map_col_title_to_attr_val_uris_and_labels: Dict[str, Dict[str, str]] = {}

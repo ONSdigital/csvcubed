@@ -1,6 +1,6 @@
 """
-Code List Inspector
--------------------
+CsvW Repository
+---------------
 
 Provides access to inspect the contents of an rdflib graph containing
 one of more code lists.
@@ -32,7 +32,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 
 @dataclass
-class CsvWInspector:
+class CsvWRepository:
     """
     Provides access to inspect the contents of an rdflib graph containing one of more code lists.
     """

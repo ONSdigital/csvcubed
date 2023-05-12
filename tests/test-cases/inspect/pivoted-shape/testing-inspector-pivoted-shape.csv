@@ -1,0 +1,5 @@
+LocalDimension,ExternalDimension,SuppressedDimension,LocalAttribute,ExternalAttribute,Observations
+localdim1,E92000001,SuppDim1,1.0,confidential,100
+localdim2,N92000002,SuppDim2,2.0,estimated,200
+localdim3,S92000003,SuppDim3,3.0,provisional,300
+localdim4,W92000004,SuppDim4,4.0,,400

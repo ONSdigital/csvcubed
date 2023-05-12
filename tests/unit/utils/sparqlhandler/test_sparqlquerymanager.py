@@ -10,7 +10,11 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_metadata_dependencies,
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager
+from tests.helpers.repository_cache import (
+    get_code_list_repository,
+    get_csvw_rdf_manager,
+    get_data_cube_repository,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
