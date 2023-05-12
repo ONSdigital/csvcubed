@@ -2,14 +2,14 @@ import logging
 import shutil
 from pathlib import Path
 
-import appdirs
 import pytest
+from platformdirs import PlatformDirs
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.utils.createlocalcopyresponse import map_url_to_file_path
 from csvcubed.utils.log import start_logging
 
-_user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
+_user_log_dir = Path(PlatformDirs("csvcubed_testing", "csvcubed").user_log_dir)
 
 
 @pytest.fixture(autouse=True, scope="session")

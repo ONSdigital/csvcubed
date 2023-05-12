@@ -3,7 +3,7 @@ Tests for friendly error messages being logged
 """
 from pathlib import Path
 
-import appdirs
+from platformdirs import PlatformDirs
 
 from csvcubed.cli.buildcsvw.build import _extract_and_validate_cube
 from csvcubed.models.cube.cube import (
@@ -45,7 +45,7 @@ from tests.unit.test_baseunit import assert_num_validation_errors, get_test_case
 _test_case_dir = Path(
     get_test_cases_dir().absolute(), "readers", "cube-config", "v1.0", "error_mappings"
 )
-_user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
+_user_log_dir = Path(PlatformDirs("csvcubed_testing", "csvcubed").user_log_dir)
 _log_file_path = _user_log_dir / "out.log"
 
 

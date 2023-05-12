@@ -8,6 +8,7 @@ from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from tests.helpers.repository_cache import (
+    get_code_list_repository,
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )
@@ -27,12 +28,10 @@ def test_get_primary_catalog_metadata():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
-    test_catalog_metadata_result = (
-        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
-    )
+    test_catalog_metadata_result = csvw_repository.get_primary_catalog_metadata()
 
     assert test_catalog_metadata_result.graph_uri == primary_graph_identifier
 
@@ -67,9 +66,9 @@ def test_detect_csvw_type_qb_dataset():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    csvw_type = csvw_repository.csvw_type
 
-    csvw_type = csvw_rdf_manager.csvw_repository.csvw_type
     assert csvw_type == CSVWType.QbDataSet
 
 
@@ -104,9 +103,9 @@ def test_detect_csvw_type_code_list():
         / "pivoted-single-measure-dataset"
         / "some-dimension.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    csvw_type = csvw_repository.csvw_type
 
-    csvw_type = csvw_rdf_manager.csvw_repository.csvw_type
     assert csvw_type == CSVWType.CodeList
 
 
@@ -119,11 +118,7 @@ def test_get_table_info_for_csv_url():
         / "pivoted-single-measure-dataset"
         / "some-dimension.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
-    csvw_repository: CsvWRepository = CsvWRepository(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
 
     result = csvw_repository.get_table_info_for_csv_url("some-dimension.csv")
 
@@ -137,11 +132,7 @@ def test_get_table_info_multiple_tables():
     Tests retrieval of all tables from a data cube that contains multiple tables.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
-    csvw_repository: CsvWRepository = CsvWRepository(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
 
     result = csvw_repository._table_schema_properties
 
@@ -172,7 +163,7 @@ def test_get_table_info_multiple_tables():
     assert result["alcohol-sub-type.csv"].primary_key_col_names == ["notation"]
 
 
-def test_get_column_definitions_for_csv():
+def test_get_data_cube_column_definitions_for_csv():
     """
     Ensures that the `ColumnDefinition`s with different property values can be correctly loaded from as CSV-W file.
     """
@@ -181,14 +172,8 @@ def test_get_column_definitions_for_csv():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_repository.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     results = {
         c.name: c
@@ -265,6 +250,105 @@ def test_get_column_definitions_for_csv():
     )
 
 
+def test_get_code_list_column_definitions_for_csv():
+    """
+    Tests that the code list column definitions can be successfully retrieved and
+    are as expected given the input csv.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
+    csvw_repository = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_repository
+    code_list_repository = get_code_list_repository(csvw_metadata_json_path)
+    csv_url = code_list_repository.get_primary_csv_url()
+
+    results = {
+        c.name: c for c in csvw_repository.get_column_definitions_for_csv(csv_url)
+    }
+    assert results["label"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type=None,
+        name="label",
+        property_url="rdfs:label",
+        required=True,
+        suppress_output=False,
+        title="Label",
+        value_url=None,
+        virtual=False,
+    )
+    assert results["notation"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type=None,
+        name="notation",
+        property_url="skos:notation",
+        required=True,
+        suppress_output=False,
+        title="Notation",
+        value_url=None,
+        virtual=False,
+    )
+    assert results["parent_notation"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type=None,
+        name="parent_notation",
+        property_url="skos:broader",
+        required=False,
+        suppress_output=False,
+        title="Parent Notation",
+        value_url="alcohol-content.csv#{+parent_notation}",
+        virtual=False,
+    )
+    assert results["sort_priority"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type="http://www.w3.org/2001/XMLSchema#integer",
+        name="sort_priority",
+        property_url="http://www.w3.org/ns/ui#sortPriority",
+        required=False,
+        suppress_output=False,
+        title="Sort Priority",
+        value_url=None,
+        virtual=False,
+    )
+    assert results["description"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type=None,
+        name="description",
+        property_url="rdfs:comment",
+        required=False,
+        suppress_output=False,
+        title="Description",
+        value_url=None,
+        virtual=False,
+    )
+    assert results["virt_inScheme"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type=None,
+        name="virt_inScheme",
+        property_url="skos:inScheme",
+        required=True,
+        suppress_output=False,
+        title=None,
+        value_url="alcohol-content.csv#code-list",
+        virtual=True,
+    )
+    assert results["virt_type"] == ColumnDefinition(
+        csv_url="alcohol-content.csv",
+        about_url=None,
+        data_type=None,
+        name="virt_type",
+        property_url="rdf:type",
+        required=True,
+        suppress_output=False,
+        title=None,
+        value_url="skos:Concept",
+        virtual=True,
+    )
+
+
 def test_multi_theme_and_keyword():
     """
     This test ensures that the 'select_catalog_metadata.sparql' will return the correct amount of
@@ -301,7 +385,7 @@ def test_multi_theme_and_keyword():
     }
 
 
-def test_colums_return_order():
+def test_columns_return_order():
     """This test will check if the columns are returned in the correct order."""
     csvw_metadata_json_path = (
         _test_case_base_dir

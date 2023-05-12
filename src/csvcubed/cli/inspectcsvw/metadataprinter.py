@@ -298,7 +298,35 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following catalog metadata:{self.result_catalog_metadata.output_str}"
+        formatted_landing_pages: str = get_printable_list_str(
+            self.result_catalog_metadata.landing_pages
+        )
+        formatted_themes: str = get_printable_list_str(
+            self.result_catalog_metadata.themes
+        )
+        formatted_keywords: str = get_printable_list_str(
+            self.result_catalog_metadata.keywords
+        )
+        formatted_description: str = self.result_catalog_metadata.description.replace(
+            linesep, f"{linesep}\t\t"
+        )
+        return f"""
+        - The {self.csvw_type_str} has the following catalog metadata:
+          - Title: {self.result_catalog_metadata.title}
+          - Label: {self.result_catalog_metadata.label}
+          - Issued: {self.result_catalog_metadata.issued}
+          - Modified: {self.result_catalog_metadata.modified}
+          - License: {self.result_catalog_metadata.license}
+          - Creator: {self.result_catalog_metadata.creator}
+          - Publisher: {self.result_catalog_metadata.publisher}
+          - Landing Pages: {formatted_landing_pages}
+          - Themes: {formatted_themes}
+          - Keywords: {formatted_keywords}
+          - Contact Point: {self.result_catalog_metadata.contact_point}
+          - Identifier: {self.result_catalog_metadata.identifier}
+          - Comment: {self.result_catalog_metadata.comment}
+          - Description: {formatted_description}
+        """
 
     @property
     def codelist_info_printable(self) -> str:

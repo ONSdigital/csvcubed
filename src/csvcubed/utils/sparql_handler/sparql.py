@@ -11,7 +11,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 import rdflib.term
 from rdflib import Graph, Literal
 from rdflib.query import ResultRow
-from rdflib.term import Node
+from rdflib.term import Identifier
 
 from csvcubed.models.csvcubedexception import (
     UnexpectedSparqlAskQueryResponseTypeException,
@@ -52,7 +52,7 @@ def ask(query_name: str, query: str, graph: Graph) -> bool:
 def select(
     query: str,
     graph: Graph,
-    init_bindings: Optional[Dict[str, Node]] = None,
+    init_bindings: Optional[Dict[str, Identifier]] = None,
     values_bindings: List[ValuesBinding] = [],
 ) -> List[ResultRow]:
     """

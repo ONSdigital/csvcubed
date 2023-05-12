@@ -22,9 +22,11 @@ The log path is dependant upon the operating system in-use, the following are ty
 
 | Operating System | Typical Log Path                                                                                          |
 |------------------|-----------------------------------------------------------------------------------------------------------|
-| **Windows**      | `C:\Documents and Settings\<username>\Local Settings\Application Data\csvcubed\csvcubed-cli\Logs\out.log` |
-| **Linux**        | `~/.cache/csvcubed-cli/log/out.log`                                                                       |
-| **MacOS**        | `~/Library/Logs/csvcubed-cli/out.log`                                                                     |
+| **Windows**      | `%USERPROFILE%\AppData\Local\csvcubed-cli\csvcubed\Logs\out.log` (not roaming)  |
+|                  | `%USERPROFILE%\AppData\Roaming\Local\csvcubed-cli\csvcubed\Logs\out.log` (Roaming) |
+| **Linux**        | `~/.local/state/csvcubed-cli/csvcubed\log\out.log`      |
+|                  | `$XDG_STATE_HOME/csvcubed-cli/csvcubed\log\out.log`    |
+| **MacOS**        | `/root/.local/state/csvcubed-cli/log/out.log`          |
 
 ## Log retention
 

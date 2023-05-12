@@ -151,7 +151,7 @@ def test_column_component_info_for_output():
 
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_repository)
+    csv_url = data_cube_repository.get_primary_csv_url()
 
     list_of_column_component_info = data_cube_repository.get_column_component_info(
         csv_url
