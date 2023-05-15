@@ -1,0 +1,5 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description
+localdim1,LocalDim1,localdim1,,0,
+localdim2,LocalDim2,localdim2,,1,
+localdim3,LocalDim3,localdim3,,2,
+localdim4,LocalDim4,localdim4,,3,

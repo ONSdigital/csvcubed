@@ -47,10 +47,10 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
+from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 
 
 @dataclass
@@ -59,7 +59,7 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    state: Union[DataCubeInspector, CodeListInspector]
+    state: Union[DataCubeRepository, CodeListRepository]
 
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
@@ -79,9 +79,9 @@ class MetadataPrinter:
 
     def __post_init__(self):
         self.generate_general_results()
-        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_repository.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()
-        elif self.state.csvw_inspector.csvw_type == CSVWType.CodeList:
+        elif self.state.csvw_repository.csvw_type == CSVWType.CodeList:
             self.generate_codelist_results()
 
     @staticmethod
@@ -95,12 +95,12 @@ class MetadataPrinter:
 
     def get_primary_csv_url(self) -> str:
         """Return the csv_url for the primary table in the graph."""
-        primary_metadata = self.state.csvw_inspector.get_primary_catalog_metadata()
-        if isinstance(self.state, DataCubeInspector):
+        primary_metadata = self.state.csvw_repository.get_primary_catalog_metadata()
+        if isinstance(self.state, DataCubeRepository):
             return self.state.get_cube_identifiers_for_data_set(
                 primary_metadata.dataset_uri
             ).csv_url
-        elif isinstance(self.state, CodeListInspector):
+        elif isinstance(self.state, CodeListRepository):
             return self.state.get_table_identifiers_for_concept_scheme(
                 primary_metadata.dataset_uri
             ).csv_url
@@ -129,20 +129,20 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        csvw_inspector = self.state.csvw_inspector
-        csvw_type = csvw_inspector.csvw_type
+        csvw_repository = self.state.csvw_repository
+        csvw_type = csvw_repository.csvw_type
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
-        self.result_catalog_metadata = csvw_inspector.get_primary_catalog_metadata()
+        self.result_catalog_metadata = csvw_repository.get_primary_catalog_metadata()
         self.primary_csv_url = self.get_primary_csv_url()
         self.dataset = load_csv_to_dataframe(
-            csvw_inspector.csvw_json_path, Path(self.primary_csv_url)
+            csvw_repository.csvw_json_path, Path(self.primary_csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
             self.dataset,
             csvw_type,
             self.state.get_shape_for_csv(self.primary_csv_url)
-            if isinstance(self.state, DataCubeInspector)
+            if isinstance(self.state, DataCubeRepository)
             else None,
         )
 
@@ -152,14 +152,14 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        assert isinstance(self.state, DataCubeInspector)  # Make pyright happier
+        assert isinstance(self.state, DataCubeRepository)  # Make pyright happier
 
         self.primary_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
             self.primary_csv_url
         )
 
         self.primary_csv_column_definitions = (
-            self.state.csvw_inspector.get_column_definitions_for_csv(
+            self.state.csvw_repository.get_column_definitions_for_csv(
                 self.primary_csv_url
             )
         )
@@ -192,12 +192,12 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        csvw_inspector = self.state.csvw_inspector
-        self.result_code_list_cols = csvw_inspector.get_column_definitions_for_csv(
+        csvw_repository = self.state.csvw_repository
+        self.result_code_list_cols = csvw_repository.get_column_definitions_for_csv(
             self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_table_schema_properties = csvw_inspector.get_table_info_for_csv_url(
+        result_table_schema_properties = csvw_repository.get_table_info_for_csv_url(
             self.primary_csv_url
         )
 
@@ -256,7 +256,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_repository.csvw_type == CSVWType.QbDataSet:
             return "- This file is a data cube."
         else:
             return "- This file is a code list."
@@ -298,7 +298,35 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following catalog metadata:{self.result_catalog_metadata.output_str}"
+        formatted_landing_pages: str = get_printable_list_str(
+            self.result_catalog_metadata.landing_pages
+        )
+        formatted_themes: str = get_printable_list_str(
+            self.result_catalog_metadata.themes
+        )
+        formatted_keywords: str = get_printable_list_str(
+            self.result_catalog_metadata.keywords
+        )
+        formatted_description: str = self.result_catalog_metadata.description.replace(
+            linesep, f"{linesep}\t\t"
+        )
+        return f"""
+        - The {self.csvw_type_str} has the following catalog metadata:
+          - Title: {self.result_catalog_metadata.title}
+          - Label: {self.result_catalog_metadata.label}
+          - Issued: {self.result_catalog_metadata.issued}
+          - Modified: {self.result_catalog_metadata.modified}
+          - License: {self.result_catalog_metadata.license}
+          - Creator: {self.result_catalog_metadata.creator}
+          - Publisher: {self.result_catalog_metadata.publisher}
+          - Landing Pages: {formatted_landing_pages}
+          - Themes: {formatted_themes}
+          - Keywords: {formatted_keywords}
+          - Contact Point: {self.result_catalog_metadata.contact_point}
+          - Identifier: {self.result_catalog_metadata.identifier}
+          - Comment: {self.result_catalog_metadata.comment}
+          - Description: {formatted_description}
+        """
 
     @property
     def codelist_info_printable(self) -> str:

@@ -1,0 +1,420 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description,Original Concept URI
+s12000033,Aberdeen City,S12000033,,0,,http://statistics.data.gov.uk/id/statistical-geography/S12000033
+s12000034,Aberdeenshire,S12000034,,1,,http://statistics.data.gov.uk/id/statistical-geography/S12000034
+e07000223,Adur,E07000223,,2,,http://statistics.data.gov.uk/id/statistical-geography/E07000223
+e07000026,Allerdale,E07000026,,3,,http://statistics.data.gov.uk/id/statistical-geography/E07000026
+e07000032,Amber Valley,E07000032,,4,,http://statistics.data.gov.uk/id/statistical-geography/E07000032
+s12000041,Angus,S12000041,,5,,http://statistics.data.gov.uk/id/statistical-geography/S12000041
+n09000001,Antrim and Newtownabbey,N09000001,,6,,http://statistics.data.gov.uk/id/statistical-geography/N09000001
+n09000011,Ards and North Down,N09000011,,7,,http://statistics.data.gov.uk/id/statistical-geography/N09000011
+s12000035,Argyll and Bute,S12000035,,8,,http://statistics.data.gov.uk/id/statistical-geography/S12000035
+n09000002,"Armagh City, Banbridge and Craigavon",N09000002,,9,,http://statistics.data.gov.uk/id/statistical-geography/N09000002
+e07000224,Arun,E07000224,,10,,http://statistics.data.gov.uk/id/statistical-geography/E07000224
+e07000170,Ashfield,E07000170,,11,,http://statistics.data.gov.uk/id/statistical-geography/E07000170
+e07000105,Ashford,E07000105,,12,,http://statistics.data.gov.uk/id/statistical-geography/E07000105
+e07000200,Babergh,E07000200,,13,,http://statistics.data.gov.uk/id/statistical-geography/E07000200
+e09000002,Barking and Dagenham,E09000002,,14,,http://statistics.data.gov.uk/id/statistical-geography/E09000002
+e09000003,Barnet,E09000003,,15,,http://statistics.data.gov.uk/id/statistical-geography/E09000003
+e08000016,Barnsley,E08000016,,16,,http://statistics.data.gov.uk/id/statistical-geography/E08000016
+e07000027,Barrow-in-Furness,E07000027,,17,,http://statistics.data.gov.uk/id/statistical-geography/E07000027
+e07000066,Basildon,E07000066,,18,,http://statistics.data.gov.uk/id/statistical-geography/E07000066
+e07000084,Basingstoke and Deane,E07000084,,19,,http://statistics.data.gov.uk/id/statistical-geography/E07000084
+e07000171,Bassetlaw,E07000171,,20,,http://statistics.data.gov.uk/id/statistical-geography/E07000171
+e06000022,Bath and North East Somerset,E06000022,,21,,http://statistics.data.gov.uk/id/statistical-geography/E06000022
+e06000055,Bedford,E06000055,,22,,http://statistics.data.gov.uk/id/statistical-geography/E06000055
+n09000003,Belfast,N09000003,,23,,http://statistics.data.gov.uk/id/statistical-geography/N09000003
+e09000004,Bexley,E09000004,,24,,http://statistics.data.gov.uk/id/statistical-geography/E09000004
+e08000025,Birmingham,E08000025,,25,,http://statistics.data.gov.uk/id/statistical-geography/E08000025
+e07000129,Blaby,E07000129,,26,,http://statistics.data.gov.uk/id/statistical-geography/E07000129
+e06000008,Blackburn with Darwen,E06000008,,27,,http://statistics.data.gov.uk/id/statistical-geography/E06000008
+e06000009,Blackpool,E06000009,,28,,http://statistics.data.gov.uk/id/statistical-geography/E06000009
+w06000019,Blaenau Gwent,W06000019,,29,,http://statistics.data.gov.uk/id/statistical-geography/W06000019
+e07000033,Bolsover,E07000033,,30,,http://statistics.data.gov.uk/id/statistical-geography/E07000033
+e08000001,Bolton,E08000001,,31,,http://statistics.data.gov.uk/id/statistical-geography/E08000001
+e07000136,Boston,E07000136,,32,,http://statistics.data.gov.uk/id/statistical-geography/E07000136
+e06000058,"Bournemouth, Christchurch and Poole",E06000058,,33,,http://statistics.data.gov.uk/id/statistical-geography/E06000058
+e06000036,Bracknell Forest,E06000036,,34,,http://statistics.data.gov.uk/id/statistical-geography/E06000036
+e08000032,Bradford,E08000032,,35,,http://statistics.data.gov.uk/id/statistical-geography/E08000032
+e07000067,Braintree,E07000067,,36,,http://statistics.data.gov.uk/id/statistical-geography/E07000067
+e07000143,Breckland,E07000143,,37,,http://statistics.data.gov.uk/id/statistical-geography/E07000143
+e09000005,Brent,E09000005,,38,,http://statistics.data.gov.uk/id/statistical-geography/E09000005
+e07000068,Brentwood,E07000068,,39,,http://statistics.data.gov.uk/id/statistical-geography/E07000068
+w06000013,Bridgend,W06000013,,40,,http://statistics.data.gov.uk/id/statistical-geography/W06000013
+e06000043,Brighton and Hove,E06000043,,41,,http://statistics.data.gov.uk/id/statistical-geography/E06000043
+e06000023,"Bristol, City of",E06000023,,42,,http://statistics.data.gov.uk/id/statistical-geography/E06000023
+e07000144,Broadland,E07000144,,43,,http://statistics.data.gov.uk/id/statistical-geography/E07000144
+e09000006,Bromley,E09000006,,44,,http://statistics.data.gov.uk/id/statistical-geography/E09000006
+e07000234,Bromsgrove,E07000234,,45,,http://statistics.data.gov.uk/id/statistical-geography/E07000234
+e07000095,Broxbourne,E07000095,,46,,http://statistics.data.gov.uk/id/statistical-geography/E07000095
+e07000172,Broxtowe,E07000172,,47,,http://statistics.data.gov.uk/id/statistical-geography/E07000172
+e06000060,Buckinghamshire,E06000060,,48,,http://statistics.data.gov.uk/id/statistical-geography/E06000060
+e07000117,Burnley,E07000117,,49,,http://statistics.data.gov.uk/id/statistical-geography/E07000117
+e08000002,Bury,E08000002,,50,,http://statistics.data.gov.uk/id/statistical-geography/E08000002
+w06000018,Caerphilly,W06000018,,51,,http://statistics.data.gov.uk/id/statistical-geography/W06000018
+e08000033,Calderdale,E08000033,,52,,http://statistics.data.gov.uk/id/statistical-geography/E08000033
+e07000008,Cambridge,E07000008,,53,,http://statistics.data.gov.uk/id/statistical-geography/E07000008
+e10000003,Cambridgeshire,E10000003,,54,,http://statistics.data.gov.uk/id/statistical-geography/E10000003
+e09000007,Camden,E09000007,,55,,http://statistics.data.gov.uk/id/statistical-geography/E09000007
+e07000192,Cannock Chase,E07000192,,56,,http://statistics.data.gov.uk/id/statistical-geography/E07000192
+e07000106,Canterbury,E07000106,,57,,http://statistics.data.gov.uk/id/statistical-geography/E07000106
+w06000015,Cardiff,W06000015,,58,,http://statistics.data.gov.uk/id/statistical-geography/W06000015
+e07000028,Carlisle,E07000028,,59,,http://statistics.data.gov.uk/id/statistical-geography/E07000028
+w06000010,Carmarthenshire,W06000010,,60,,http://statistics.data.gov.uk/id/statistical-geography/W06000010
+e07000069,Castle Point,E07000069,,61,,http://statistics.data.gov.uk/id/statistical-geography/E07000069
+n09000004,Causeway Coast and Glens,N09000004,,62,,http://statistics.data.gov.uk/id/statistical-geography/N09000004
+e06000056,Central Bedfordshire,E06000056,,63,,http://statistics.data.gov.uk/id/statistical-geography/E06000056
+w06000008,Ceredigion,W06000008,,64,,http://statistics.data.gov.uk/id/statistical-geography/W06000008
+e07000130,Charnwood,E07000130,,65,,http://statistics.data.gov.uk/id/statistical-geography/E07000130
+e07000070,Chelmsford,E07000070,,66,,http://statistics.data.gov.uk/id/statistical-geography/E07000070
+e07000078,Cheltenham,E07000078,,67,,http://statistics.data.gov.uk/id/statistical-geography/E07000078
+e07000177,Cherwell,E07000177,,68,,http://statistics.data.gov.uk/id/statistical-geography/E07000177
+e06000049,Cheshire East,E06000049,,69,,http://statistics.data.gov.uk/id/statistical-geography/E06000049
+e06000050,Cheshire West and Chester,E06000050,,70,,http://statistics.data.gov.uk/id/statistical-geography/E06000050
+e07000034,Chesterfield,E07000034,,71,,http://statistics.data.gov.uk/id/statistical-geography/E07000034
+e07000225,Chichester,E07000225,,72,,http://statistics.data.gov.uk/id/statistical-geography/E07000225
+e07000118,Chorley,E07000118,,73,,http://statistics.data.gov.uk/id/statistical-geography/E07000118
+s12000036,City of Edinburgh,S12000036,,74,,http://statistics.data.gov.uk/id/statistical-geography/S12000036
+e09000001,City of London,E09000001,,75,,http://statistics.data.gov.uk/id/statistical-geography/E09000001
+s12000005,Clackmannanshire,S12000005,,76,,http://statistics.data.gov.uk/id/statistical-geography/S12000005
+e07000071,Colchester,E07000071,,77,,http://statistics.data.gov.uk/id/statistical-geography/E07000071
+w06000003,Conwy,W06000003,,78,,http://statistics.data.gov.uk/id/statistical-geography/W06000003
+e07000029,Copeland,E07000029,,79,,http://statistics.data.gov.uk/id/statistical-geography/E07000029
+e06000052,Cornwall,E06000052,,80,,http://statistics.data.gov.uk/id/statistical-geography/E06000052
+e07000079,Cotswold,E07000079,,81,,http://statistics.data.gov.uk/id/statistical-geography/E07000079
+e06000047,County Durham,E06000047,,82,,http://statistics.data.gov.uk/id/statistical-geography/E06000047
+e08000026,Coventry,E08000026,,83,,http://statistics.data.gov.uk/id/statistical-geography/E08000026
+e07000163,Craven,E07000163,,84,,http://statistics.data.gov.uk/id/statistical-geography/E07000163
+e07000226,Crawley,E07000226,,85,,http://statistics.data.gov.uk/id/statistical-geography/E07000226
+e09000008,Croydon,E09000008,,86,,http://statistics.data.gov.uk/id/statistical-geography/E09000008
+e10000006,Cumbria,E10000006,,87,,http://statistics.data.gov.uk/id/statistical-geography/E10000006
+e07000096,Dacorum,E07000096,,88,,http://statistics.data.gov.uk/id/statistical-geography/E07000096
+e06000005,Darlington,E06000005,,89,,http://statistics.data.gov.uk/id/statistical-geography/E06000005
+e07000107,Dartford,E07000107,,90,,http://statistics.data.gov.uk/id/statistical-geography/E07000107
+w06000004,Denbighshire,W06000004,,91,,http://statistics.data.gov.uk/id/statistical-geography/W06000004
+e06000015,Derby,E06000015,,92,,http://statistics.data.gov.uk/id/statistical-geography/E06000015
+e10000007,Derbyshire,E10000007,,93,,http://statistics.data.gov.uk/id/statistical-geography/E10000007
+e07000035,Derbyshire Dales,E07000035,,94,,http://statistics.data.gov.uk/id/statistical-geography/E07000035
+n09000005,Derry City and Strabane,N09000005,,95,,http://statistics.data.gov.uk/id/statistical-geography/N09000005
+e10000008,Devon,E10000008,,96,,http://statistics.data.gov.uk/id/statistical-geography/E10000008
+e08000017,Doncaster,E08000017,,97,,http://statistics.data.gov.uk/id/statistical-geography/E08000017
+e06000059,Dorset,E06000059,,98,,http://statistics.data.gov.uk/id/statistical-geography/E06000059
+e07000108,Dover,E07000108,,99,,http://statistics.data.gov.uk/id/statistical-geography/E07000108
+e08000027,Dudley,E08000027,,100,,http://statistics.data.gov.uk/id/statistical-geography/E08000027
+s12000006,Dumfries and Galloway,S12000006,,101,,http://statistics.data.gov.uk/id/statistical-geography/S12000006
+s12000042,Dundee City,S12000042,,102,,http://statistics.data.gov.uk/id/statistical-geography/S12000042
+e09000009,Ealing,E09000009,,103,,http://statistics.data.gov.uk/id/statistical-geography/E09000009
+s12000008,East Ayrshire,S12000008,,104,,http://statistics.data.gov.uk/id/statistical-geography/S12000008
+e07000009,East Cambridgeshire,E07000009,,105,,http://statistics.data.gov.uk/id/statistical-geography/E07000009
+e07000040,East Devon,E07000040,,106,,http://statistics.data.gov.uk/id/statistical-geography/E07000040
+s12000045,East Dunbartonshire,S12000045,,107,,http://statistics.data.gov.uk/id/statistical-geography/S12000045
+e07000085,East Hampshire,E07000085,,108,,http://statistics.data.gov.uk/id/statistical-geography/E07000085
+e07000242,East Hertfordshire,E07000242,,109,,http://statistics.data.gov.uk/id/statistical-geography/E07000242
+e07000137,East Lindsey,E07000137,,110,,http://statistics.data.gov.uk/id/statistical-geography/E07000137
+s12000010,East Lothian,S12000010,,111,,http://statistics.data.gov.uk/id/statistical-geography/S12000010
+e12000004,East Midlands,E12000004,,112,,http://statistics.data.gov.uk/id/statistical-geography/E12000004
+s12000011,East Renfrewshire,S12000011,,113,,http://statistics.data.gov.uk/id/statistical-geography/S12000011
+e06000011,East Riding of Yorkshire,E06000011,,114,,http://statistics.data.gov.uk/id/statistical-geography/E06000011
+e07000193,East Staffordshire,E07000193,,115,,http://statistics.data.gov.uk/id/statistical-geography/E07000193
+e07000244,East Suffolk,E07000244,,116,,http://statistics.data.gov.uk/id/statistical-geography/E07000244
+e10000011,East Sussex,E10000011,,117,,http://statistics.data.gov.uk/id/statistical-geography/E10000011
+e12000006,East of England,E12000006,,118,,http://statistics.data.gov.uk/id/statistical-geography/E12000006
+e07000061,Eastbourne,E07000061,,119,,http://statistics.data.gov.uk/id/statistical-geography/E07000061
+e07000086,Eastleigh,E07000086,,120,,http://statistics.data.gov.uk/id/statistical-geography/E07000086
+e07000030,Eden,E07000030,,121,,http://statistics.data.gov.uk/id/statistical-geography/E07000030
+e07000207,Elmbridge,E07000207,,122,,http://statistics.data.gov.uk/id/statistical-geography/E07000207
+e09000010,Enfield,E09000010,,123,,http://statistics.data.gov.uk/id/statistical-geography/E09000010
+e92000001,England,E92000001,,124,,http://statistics.data.gov.uk/id/statistical-geography/E92000001
+e07000072,Epping Forest,E07000072,,125,,http://statistics.data.gov.uk/id/statistical-geography/E07000072
+e07000208,Epsom and Ewell,E07000208,,126,,http://statistics.data.gov.uk/id/statistical-geography/E07000208
+e07000036,Erewash,E07000036,,127,,http://statistics.data.gov.uk/id/statistical-geography/E07000036
+e10000012,Essex,E10000012,,128,,http://statistics.data.gov.uk/id/statistical-geography/E10000012
+e07000041,Exeter,E07000041,,129,,http://statistics.data.gov.uk/id/statistical-geography/E07000041
+s12000014,Falkirk,S12000014,,130,,http://statistics.data.gov.uk/id/statistical-geography/S12000014
+e07000087,Fareham,E07000087,,131,,http://statistics.data.gov.uk/id/statistical-geography/E07000087
+e07000010,Fenland,E07000010,,132,,http://statistics.data.gov.uk/id/statistical-geography/E07000010
+n09000006,Fermanagh and Omagh,N09000006,,133,,http://statistics.data.gov.uk/id/statistical-geography/N09000006
+s12000047,Fife,S12000047,,134,,http://statistics.data.gov.uk/id/statistical-geography/S12000047
+w06000005,Flintshire,W06000005,,135,,http://statistics.data.gov.uk/id/statistical-geography/W06000005
+e07000112,Folkestone and Hythe,E07000112,,136,,http://statistics.data.gov.uk/id/statistical-geography/E07000112
+e07000080,Forest of Dean,E07000080,,137,,http://statistics.data.gov.uk/id/statistical-geography/E07000080
+e07000119,Fylde,E07000119,,138,,http://statistics.data.gov.uk/id/statistical-geography/E07000119
+e08000037,Gateshead,E08000037,,139,,http://statistics.data.gov.uk/id/statistical-geography/E08000037
+e07000173,Gedling,E07000173,,140,,http://statistics.data.gov.uk/id/statistical-geography/E07000173
+s12000049,Glasgow City,S12000049,,141,,http://statistics.data.gov.uk/id/statistical-geography/S12000049
+e07000081,Gloucester,E07000081,,142,,http://statistics.data.gov.uk/id/statistical-geography/E07000081
+e10000013,Gloucestershire,E10000013,,143,,http://statistics.data.gov.uk/id/statistical-geography/E10000013
+e07000088,Gosport,E07000088,,144,,http://statistics.data.gov.uk/id/statistical-geography/E07000088
+e07000109,Gravesham,E07000109,,145,,http://statistics.data.gov.uk/id/statistical-geography/E07000109
+e07000145,Great Yarmouth,E07000145,,146,,http://statistics.data.gov.uk/id/statistical-geography/E07000145
+e11000001,Greater Manchester,E11000001,,147,,http://statistics.data.gov.uk/id/statistical-geography/E11000001
+e09000011,Greenwich,E09000011,,148,,http://statistics.data.gov.uk/id/statistical-geography/E09000011
+e07000209,Guildford,E07000209,,149,,http://statistics.data.gov.uk/id/statistical-geography/E07000209
+w06000002,Gwynedd,W06000002,,150,,http://statistics.data.gov.uk/id/statistical-geography/W06000002
+e09000012,Hackney,E09000012,,151,,http://statistics.data.gov.uk/id/statistical-geography/E09000012
+e06000006,Halton,E06000006,,152,,http://statistics.data.gov.uk/id/statistical-geography/E06000006
+e07000164,Hambleton,E07000164,,153,,http://statistics.data.gov.uk/id/statistical-geography/E07000164
+e09000013,Hammersmith and Fulham,E09000013,,154,,http://statistics.data.gov.uk/id/statistical-geography/E09000013
+e10000014,Hampshire,E10000014,,155,,http://statistics.data.gov.uk/id/statistical-geography/E10000014
+e07000131,Harborough,E07000131,,156,,http://statistics.data.gov.uk/id/statistical-geography/E07000131
+e09000014,Haringey,E09000014,,157,,http://statistics.data.gov.uk/id/statistical-geography/E09000014
+e07000073,Harlow,E07000073,,158,,http://statistics.data.gov.uk/id/statistical-geography/E07000073
+e07000165,Harrogate,E07000165,,159,,http://statistics.data.gov.uk/id/statistical-geography/E07000165
+e09000015,Harrow,E09000015,,160,,http://statistics.data.gov.uk/id/statistical-geography/E09000015
+e07000089,Hart,E07000089,,161,,http://statistics.data.gov.uk/id/statistical-geography/E07000089
+e06000001,Hartlepool,E06000001,,162,,http://statistics.data.gov.uk/id/statistical-geography/E06000001
+e07000062,Hastings,E07000062,,163,,http://statistics.data.gov.uk/id/statistical-geography/E07000062
+e07000090,Havant,E07000090,,164,,http://statistics.data.gov.uk/id/statistical-geography/E07000090
+e09000016,Havering,E09000016,,165,,http://statistics.data.gov.uk/id/statistical-geography/E09000016
+e06000019,"Herefordshire, County of",E06000019,,166,,http://statistics.data.gov.uk/id/statistical-geography/E06000019
+e10000015,Hertfordshire,E10000015,,167,,http://statistics.data.gov.uk/id/statistical-geography/E10000015
+e07000098,Hertsmere,E07000098,,168,,http://statistics.data.gov.uk/id/statistical-geography/E07000098
+e07000037,High Peak,E07000037,,169,,http://statistics.data.gov.uk/id/statistical-geography/E07000037
+s12000017,Highland,S12000017,,170,,http://statistics.data.gov.uk/id/statistical-geography/S12000017
+e09000017,Hillingdon,E09000017,,171,,http://statistics.data.gov.uk/id/statistical-geography/E09000017
+e07000132,Hinckley and Bosworth,E07000132,,172,,http://statistics.data.gov.uk/id/statistical-geography/E07000132
+e07000227,Horsham,E07000227,,173,,http://statistics.data.gov.uk/id/statistical-geography/E07000227
+e09000018,Hounslow,E09000018,,174,,http://statistics.data.gov.uk/id/statistical-geography/E09000018
+e07000011,Huntingdonshire,E07000011,,175,,http://statistics.data.gov.uk/id/statistical-geography/E07000011
+e07000120,Hyndburn,E07000120,,176,,http://statistics.data.gov.uk/id/statistical-geography/E07000120
+e13000001,Inner London,E13000001,,177,,http://statistics.data.gov.uk/id/statistical-geography/E13000001
+s12000018,Inverclyde,S12000018,,178,,http://statistics.data.gov.uk/id/statistical-geography/S12000018
+e07000202,Ipswich,E07000202,,179,,http://statistics.data.gov.uk/id/statistical-geography/E07000202
+w06000001,Isle of Anglesey,W06000001,,180,,http://statistics.data.gov.uk/id/statistical-geography/W06000001
+e06000046,Isle of Wight,E06000046,,181,,http://statistics.data.gov.uk/id/statistical-geography/E06000046
+e06000053,Isles of Scilly,E06000053,,182,,http://statistics.data.gov.uk/id/statistical-geography/E06000053
+e09000019,Islington,E09000019,,183,,http://statistics.data.gov.uk/id/statistical-geography/E09000019
+e09000020,Kensington and Chelsea,E09000020,,184,,http://statistics.data.gov.uk/id/statistical-geography/E09000020
+e10000016,Kent,E10000016,,185,,http://statistics.data.gov.uk/id/statistical-geography/E10000016
+e07000146,King's Lynn and West Norfolk,E07000146,,186,,http://statistics.data.gov.uk/id/statistical-geography/E07000146
+e06000010,"Kingston upon Hull, City of",E06000010,,187,,http://statistics.data.gov.uk/id/statistical-geography/E06000010
+e09000021,Kingston upon Thames,E09000021,,188,,http://statistics.data.gov.uk/id/statistical-geography/E09000021
+e08000034,Kirklees,E08000034,,189,,http://statistics.data.gov.uk/id/statistical-geography/E08000034
+e08000011,Knowsley,E08000011,,190,,http://statistics.data.gov.uk/id/statistical-geography/E08000011
+e09000022,Lambeth,E09000022,,191,,http://statistics.data.gov.uk/id/statistical-geography/E09000022
+e10000017,Lancashire,E10000017,,192,,http://statistics.data.gov.uk/id/statistical-geography/E10000017
+e07000121,Lancaster,E07000121,,193,,http://statistics.data.gov.uk/id/statistical-geography/E07000121
+e08000035,Leeds,E08000035,,194,,http://statistics.data.gov.uk/id/statistical-geography/E08000035
+e06000016,Leicester,E06000016,,195,,http://statistics.data.gov.uk/id/statistical-geography/E06000016
+e10000018,Leicestershire,E10000018,,196,,http://statistics.data.gov.uk/id/statistical-geography/E10000018
+e07000063,Lewes,E07000063,,197,,http://statistics.data.gov.uk/id/statistical-geography/E07000063
+e09000023,Lewisham,E09000023,,198,,http://statistics.data.gov.uk/id/statistical-geography/E09000023
+e07000194,Lichfield,E07000194,,199,,http://statistics.data.gov.uk/id/statistical-geography/E07000194
+e07000138,Lincoln,E07000138,,200,,http://statistics.data.gov.uk/id/statistical-geography/E07000138
+e10000019,Lincolnshire,E10000019,,201,,http://statistics.data.gov.uk/id/statistical-geography/E10000019
+n09000007,Lisburn and Castlereagh,N09000007,,202,,http://statistics.data.gov.uk/id/statistical-geography/N09000007
+e08000012,Liverpool,E08000012,,203,,http://statistics.data.gov.uk/id/statistical-geography/E08000012
+e12000007,London,E12000007,,204,,http://statistics.data.gov.uk/id/statistical-geography/E12000007
+e06000032,Luton,E06000032,,205,,http://statistics.data.gov.uk/id/statistical-geography/E06000032
+e07000110,Maidstone,E07000110,,206,,http://statistics.data.gov.uk/id/statistical-geography/E07000110
+e07000074,Maldon,E07000074,,207,,http://statistics.data.gov.uk/id/statistical-geography/E07000074
+e07000235,Malvern Hills,E07000235,,208,,http://statistics.data.gov.uk/id/statistical-geography/E07000235
+e08000003,Manchester,E08000003,,209,,http://statistics.data.gov.uk/id/statistical-geography/E08000003
+e07000174,Mansfield,E07000174,,210,,http://statistics.data.gov.uk/id/statistical-geography/E07000174
+e06000035,Medway,E06000035,,211,,http://statistics.data.gov.uk/id/statistical-geography/E06000035
+e07000133,Melton,E07000133,,212,,http://statistics.data.gov.uk/id/statistical-geography/E07000133
+e07000187,Mendip,E07000187,,213,,http://statistics.data.gov.uk/id/statistical-geography/E07000187
+e11000002,Merseyside,E11000002,,214,,http://statistics.data.gov.uk/id/statistical-geography/E11000002
+w06000024,Merthyr Tydfil,W06000024,,215,,http://statistics.data.gov.uk/id/statistical-geography/W06000024
+e09000024,Merton,E09000024,,216,,http://statistics.data.gov.uk/id/statistical-geography/E09000024
+e07000042,Mid Devon,E07000042,,217,,http://statistics.data.gov.uk/id/statistical-geography/E07000042
+e07000203,Mid Suffolk,E07000203,,218,,http://statistics.data.gov.uk/id/statistical-geography/E07000203
+e07000228,Mid Sussex,E07000228,,219,,http://statistics.data.gov.uk/id/statistical-geography/E07000228
+n09000009,Mid Ulster,N09000009,,220,,http://statistics.data.gov.uk/id/statistical-geography/N09000009
+n09000008,Mid and East Antrim,N09000008,,221,,http://statistics.data.gov.uk/id/statistical-geography/N09000008
+e06000002,Middlesbrough,E06000002,,222,,http://statistics.data.gov.uk/id/statistical-geography/E06000002
+s12000019,Midlothian,S12000019,,223,,http://statistics.data.gov.uk/id/statistical-geography/S12000019
+e06000042,Milton Keynes,E06000042,,224,,http://statistics.data.gov.uk/id/statistical-geography/E06000042
+e07000210,Mole Valley,E07000210,,225,,http://statistics.data.gov.uk/id/statistical-geography/E07000210
+w06000021,Monmouthshire,W06000021,,226,,http://statistics.data.gov.uk/id/statistical-geography/W06000021
+s12000020,Moray,S12000020,,227,,http://statistics.data.gov.uk/id/statistical-geography/S12000020
+s12000013,Na h-Eileanan Siar,S12000013,,228,,http://statistics.data.gov.uk/id/statistical-geography/S12000013
+w06000012,Neath Port Talbot,W06000012,,229,,http://statistics.data.gov.uk/id/statistical-geography/W06000012
+e07000091,New Forest,E07000091,,230,,http://statistics.data.gov.uk/id/statistical-geography/E07000091
+e07000175,Newark and Sherwood,E07000175,,231,,http://statistics.data.gov.uk/id/statistical-geography/E07000175
+e08000021,Newcastle upon Tyne,E08000021,,232,,http://statistics.data.gov.uk/id/statistical-geography/E08000021
+e07000195,Newcastle-under-Lyme,E07000195,,233,,http://statistics.data.gov.uk/id/statistical-geography/E07000195
+e09000025,Newham,E09000025,,234,,http://statistics.data.gov.uk/id/statistical-geography/E09000025
+w06000022,Newport,W06000022,,235,,http://statistics.data.gov.uk/id/statistical-geography/W06000022
+n09000010,"Newry, Mourne and Down",N09000010,,236,,http://statistics.data.gov.uk/id/statistical-geography/N09000010
+e10000020,Norfolk,E10000020,,237,,http://statistics.data.gov.uk/id/statistical-geography/E10000020
+s12000021,North Ayrshire,S12000021,,238,,http://statistics.data.gov.uk/id/statistical-geography/S12000021
+e07000043,North Devon,E07000043,,239,,http://statistics.data.gov.uk/id/statistical-geography/E07000043
+e12000001,North East,E12000001,,240,,http://statistics.data.gov.uk/id/statistical-geography/E12000001
+e07000038,North East Derbyshire,E07000038,,241,,http://statistics.data.gov.uk/id/statistical-geography/E07000038
+e06000012,North East Lincolnshire,E06000012,,242,,http://statistics.data.gov.uk/id/statistical-geography/E06000012
+e07000099,North Hertfordshire,E07000099,,243,,http://statistics.data.gov.uk/id/statistical-geography/E07000099
+e07000139,North Kesteven,E07000139,,244,,http://statistics.data.gov.uk/id/statistical-geography/E07000139
+s12000050,North Lanarkshire,S12000050,,245,,http://statistics.data.gov.uk/id/statistical-geography/S12000050
+e06000013,North Lincolnshire,E06000013,,246,,http://statistics.data.gov.uk/id/statistical-geography/E06000013
+e07000147,North Norfolk,E07000147,,247,,http://statistics.data.gov.uk/id/statistical-geography/E07000147
+e06000061,North Northamptonshire,E06000061,,248,,http://statistics.data.gov.uk/id/statistical-geography/E06000061
+e06000024,North Somerset,E06000024,,249,,http://statistics.data.gov.uk/id/statistical-geography/E06000024
+e08000022,North Tyneside,E08000022,,250,,http://statistics.data.gov.uk/id/statistical-geography/E08000022
+e07000218,North Warwickshire,E07000218,,251,,http://statistics.data.gov.uk/id/statistical-geography/E07000218
+e12000002,North West,E12000002,,252,,http://statistics.data.gov.uk/id/statistical-geography/E12000002
+e07000134,North West Leicestershire,E07000134,,253,,http://statistics.data.gov.uk/id/statistical-geography/E07000134
+e10000023,North Yorkshire,E10000023,,254,,http://statistics.data.gov.uk/id/statistical-geography/E10000023
+n92000002,Northern Ireland,N92000002,,255,,http://statistics.data.gov.uk/id/statistical-geography/N92000002
+e06000057,Northumberland,E06000057,,256,,http://statistics.data.gov.uk/id/statistical-geography/E06000057
+e07000148,Norwich,E07000148,,257,,http://statistics.data.gov.uk/id/statistical-geography/E07000148
+e06000018,Nottingham,E06000018,,258,,http://statistics.data.gov.uk/id/statistical-geography/E06000018
+e10000024,Nottinghamshire,E10000024,,259,,http://statistics.data.gov.uk/id/statistical-geography/E10000024
+e07000219,Nuneaton and Bedworth,E07000219,,260,,http://statistics.data.gov.uk/id/statistical-geography/E07000219
+e07000135,Oadby and Wigston,E07000135,,261,,http://statistics.data.gov.uk/id/statistical-geography/E07000135
+e08000004,Oldham,E08000004,,262,,http://statistics.data.gov.uk/id/statistical-geography/E08000004
+s12000023,Orkney Islands,S12000023,,263,,http://statistics.data.gov.uk/id/statistical-geography/S12000023
+e13000002,Outer London,E13000002,,264,,http://statistics.data.gov.uk/id/statistical-geography/E13000002
+e07000178,Oxford,E07000178,,265,,http://statistics.data.gov.uk/id/statistical-geography/E07000178
+e10000025,Oxfordshire,E10000025,,266,,http://statistics.data.gov.uk/id/statistical-geography/E10000025
+w06000009,Pembrokeshire,W06000009,,267,,http://statistics.data.gov.uk/id/statistical-geography/W06000009
+e07000122,Pendle,E07000122,,268,,http://statistics.data.gov.uk/id/statistical-geography/E07000122
+s12000048,Perth and Kinross,S12000048,,269,,http://statistics.data.gov.uk/id/statistical-geography/S12000048
+e06000031,Peterborough,E06000031,,270,,http://statistics.data.gov.uk/id/statistical-geography/E06000031
+e06000026,Plymouth,E06000026,,271,,http://statistics.data.gov.uk/id/statistical-geography/E06000026
+e06000044,Portsmouth,E06000044,,272,,http://statistics.data.gov.uk/id/statistical-geography/E06000044
+w06000023,Powys,W06000023,,273,,http://statistics.data.gov.uk/id/statistical-geography/W06000023
+e07000123,Preston,E07000123,,274,,http://statistics.data.gov.uk/id/statistical-geography/E07000123
+e06000038,Reading,E06000038,,275,,http://statistics.data.gov.uk/id/statistical-geography/E06000038
+e09000026,Redbridge,E09000026,,276,,http://statistics.data.gov.uk/id/statistical-geography/E09000026
+e06000003,Redcar and Cleveland,E06000003,,277,,http://statistics.data.gov.uk/id/statistical-geography/E06000003
+e07000236,Redditch,E07000236,,278,,http://statistics.data.gov.uk/id/statistical-geography/E07000236
+e07000211,Reigate and Banstead,E07000211,,279,,http://statistics.data.gov.uk/id/statistical-geography/E07000211
+s12000038,Renfrewshire,S12000038,,280,,http://statistics.data.gov.uk/id/statistical-geography/S12000038
+w06000016,Rhondda Cynon Taf,W06000016,,281,,http://statistics.data.gov.uk/id/statistical-geography/W06000016
+e07000124,Ribble Valley,E07000124,,282,,http://statistics.data.gov.uk/id/statistical-geography/E07000124
+e09000027,Richmond upon Thames,E09000027,,283,,http://statistics.data.gov.uk/id/statistical-geography/E09000027
+e07000166,Richmondshire,E07000166,,284,,http://statistics.data.gov.uk/id/statistical-geography/E07000166
+e08000005,Rochdale,E08000005,,285,,http://statistics.data.gov.uk/id/statistical-geography/E08000005
+e07000075,Rochford,E07000075,,286,,http://statistics.data.gov.uk/id/statistical-geography/E07000075
+e07000125,Rossendale,E07000125,,287,,http://statistics.data.gov.uk/id/statistical-geography/E07000125
+e07000064,Rother,E07000064,,288,,http://statistics.data.gov.uk/id/statistical-geography/E07000064
+e08000018,Rotherham,E08000018,,289,,http://statistics.data.gov.uk/id/statistical-geography/E08000018
+e07000220,Rugby,E07000220,,290,,http://statistics.data.gov.uk/id/statistical-geography/E07000220
+e07000212,Runnymede,E07000212,,291,,http://statistics.data.gov.uk/id/statistical-geography/E07000212
+e07000176,Rushcliffe,E07000176,,292,,http://statistics.data.gov.uk/id/statistical-geography/E07000176
+e07000092,Rushmoor,E07000092,,293,,http://statistics.data.gov.uk/id/statistical-geography/E07000092
+e06000017,Rutland,E06000017,,294,,http://statistics.data.gov.uk/id/statistical-geography/E06000017
+e07000167,Ryedale,E07000167,,295,,http://statistics.data.gov.uk/id/statistical-geography/E07000167
+e08000006,Salford,E08000006,,296,,http://statistics.data.gov.uk/id/statistical-geography/E08000006
+e08000028,Sandwell,E08000028,,297,,http://statistics.data.gov.uk/id/statistical-geography/E08000028
+e07000168,Scarborough,E07000168,,298,,http://statistics.data.gov.uk/id/statistical-geography/E07000168
+s92000003,Scotland,S92000003,,299,,http://statistics.data.gov.uk/id/statistical-geography/S92000003
+s12000026,Scottish Borders,S12000026,,300,,http://statistics.data.gov.uk/id/statistical-geography/S12000026
+e07000188,Sedgemoor,E07000188,,301,,http://statistics.data.gov.uk/id/statistical-geography/E07000188
+e08000014,Sefton,E08000014,,302,,http://statistics.data.gov.uk/id/statistical-geography/E08000014
+e07000169,Selby,E07000169,,303,,http://statistics.data.gov.uk/id/statistical-geography/E07000169
+e07000111,Sevenoaks,E07000111,,304,,http://statistics.data.gov.uk/id/statistical-geography/E07000111
+e08000019,Sheffield,E08000019,,305,,http://statistics.data.gov.uk/id/statistical-geography/E08000019
+s12000027,Shetland Islands,S12000027,,306,,http://statistics.data.gov.uk/id/statistical-geography/S12000027
+e06000051,Shropshire,E06000051,,307,,http://statistics.data.gov.uk/id/statistical-geography/E06000051
+e06000039,Slough,E06000039,,308,,http://statistics.data.gov.uk/id/statistical-geography/E06000039
+e08000029,Solihull,E08000029,,309,,http://statistics.data.gov.uk/id/statistical-geography/E08000029
+e10000027,Somerset,E10000027,,310,,http://statistics.data.gov.uk/id/statistical-geography/E10000027
+e07000246,Somerset West and Taunton,E07000246,,311,,http://statistics.data.gov.uk/id/statistical-geography/E07000246
+s12000028,South Ayrshire,S12000028,,312,,http://statistics.data.gov.uk/id/statistical-geography/S12000028
+e07000012,South Cambridgeshire,E07000012,,313,,http://statistics.data.gov.uk/id/statistical-geography/E07000012
+e07000039,South Derbyshire,E07000039,,314,,http://statistics.data.gov.uk/id/statistical-geography/E07000039
+e12000008,South East,E12000008,,315,,http://statistics.data.gov.uk/id/statistical-geography/E12000008
+e06000025,South Gloucestershire,E06000025,,316,,http://statistics.data.gov.uk/id/statistical-geography/E06000025
+e07000044,South Hams,E07000044,,317,,http://statistics.data.gov.uk/id/statistical-geography/E07000044
+e07000140,South Holland,E07000140,,318,,http://statistics.data.gov.uk/id/statistical-geography/E07000140
+e07000141,South Kesteven,E07000141,,319,,http://statistics.data.gov.uk/id/statistical-geography/E07000141
+e07000031,South Lakeland,E07000031,,320,,http://statistics.data.gov.uk/id/statistical-geography/E07000031
+s12000029,South Lanarkshire,S12000029,,321,,http://statistics.data.gov.uk/id/statistical-geography/S12000029
+e07000149,South Norfolk,E07000149,,322,,http://statistics.data.gov.uk/id/statistical-geography/E07000149
+e07000179,South Oxfordshire,E07000179,,323,,http://statistics.data.gov.uk/id/statistical-geography/E07000179
+e07000126,South Ribble,E07000126,,324,,http://statistics.data.gov.uk/id/statistical-geography/E07000126
+e07000189,South Somerset,E07000189,,325,,http://statistics.data.gov.uk/id/statistical-geography/E07000189
+e07000196,South Staffordshire,E07000196,,326,,http://statistics.data.gov.uk/id/statistical-geography/E07000196
+e08000023,South Tyneside,E08000023,,327,,http://statistics.data.gov.uk/id/statistical-geography/E08000023
+e12000009,South West,E12000009,,328,,http://statistics.data.gov.uk/id/statistical-geography/E12000009
+e11000003,South Yorkshire,E11000003,,329,,http://statistics.data.gov.uk/id/statistical-geography/E11000003
+e06000045,Southampton,E06000045,,330,,http://statistics.data.gov.uk/id/statistical-geography/E06000045
+e06000033,Southend-on-Sea,E06000033,,331,,http://statistics.data.gov.uk/id/statistical-geography/E06000033
+e09000028,Southwark,E09000028,,332,,http://statistics.data.gov.uk/id/statistical-geography/E09000028
+e07000213,Spelthorne,E07000213,,333,,http://statistics.data.gov.uk/id/statistical-geography/E07000213
+e07000240,St Albans,E07000240,,334,,http://statistics.data.gov.uk/id/statistical-geography/E07000240
+e08000013,St. Helens,E08000013,,335,,http://statistics.data.gov.uk/id/statistical-geography/E08000013
+e07000197,Stafford,E07000197,,336,,http://statistics.data.gov.uk/id/statistical-geography/E07000197
+e10000028,Staffordshire,E10000028,,337,,http://statistics.data.gov.uk/id/statistical-geography/E10000028
+e07000198,Staffordshire Moorlands,E07000198,,338,,http://statistics.data.gov.uk/id/statistical-geography/E07000198
+e07000243,Stevenage,E07000243,,339,,http://statistics.data.gov.uk/id/statistical-geography/E07000243
+s12000030,Stirling,S12000030,,340,,http://statistics.data.gov.uk/id/statistical-geography/S12000030
+e08000007,Stockport,E08000007,,341,,http://statistics.data.gov.uk/id/statistical-geography/E08000007
+e06000004,Stockton-on-Tees,E06000004,,342,,http://statistics.data.gov.uk/id/statistical-geography/E06000004
+e06000021,Stoke-on-Trent,E06000021,,343,,http://statistics.data.gov.uk/id/statistical-geography/E06000021
+e07000221,Stratford-on-Avon,E07000221,,344,,http://statistics.data.gov.uk/id/statistical-geography/E07000221
+e07000082,Stroud,E07000082,,345,,http://statistics.data.gov.uk/id/statistical-geography/E07000082
+e10000029,Suffolk,E10000029,,346,,http://statistics.data.gov.uk/id/statistical-geography/E10000029
+e08000024,Sunderland,E08000024,,347,,http://statistics.data.gov.uk/id/statistical-geography/E08000024
+e10000030,Surrey,E10000030,,348,,http://statistics.data.gov.uk/id/statistical-geography/E10000030
+e07000214,Surrey Heath,E07000214,,349,,http://statistics.data.gov.uk/id/statistical-geography/E07000214
+e09000029,Sutton,E09000029,,350,,http://statistics.data.gov.uk/id/statistical-geography/E09000029
+e07000113,Swale,E07000113,,351,,http://statistics.data.gov.uk/id/statistical-geography/E07000113
+w06000011,Swansea,W06000011,,352,,http://statistics.data.gov.uk/id/statistical-geography/W06000011
+e06000030,Swindon,E06000030,,353,,http://statistics.data.gov.uk/id/statistical-geography/E06000030
+e08000008,Tameside,E08000008,,354,,http://statistics.data.gov.uk/id/statistical-geography/E08000008
+e07000199,Tamworth,E07000199,,355,,http://statistics.data.gov.uk/id/statistical-geography/E07000199
+e07000215,Tandridge,E07000215,,356,,http://statistics.data.gov.uk/id/statistical-geography/E07000215
+e07000045,Teignbridge,E07000045,,357,,http://statistics.data.gov.uk/id/statistical-geography/E07000045
+e06000020,Telford and Wrekin,E06000020,,358,,http://statistics.data.gov.uk/id/statistical-geography/E06000020
+e07000076,Tendring,E07000076,,359,,http://statistics.data.gov.uk/id/statistical-geography/E07000076
+e07000093,Test Valley,E07000093,,360,,http://statistics.data.gov.uk/id/statistical-geography/E07000093
+e07000083,Tewkesbury,E07000083,,361,,http://statistics.data.gov.uk/id/statistical-geography/E07000083
+e07000114,Thanet,E07000114,,362,,http://statistics.data.gov.uk/id/statistical-geography/E07000114
+e07000102,Three Rivers,E07000102,,363,,http://statistics.data.gov.uk/id/statistical-geography/E07000102
+e06000034,Thurrock,E06000034,,364,,http://statistics.data.gov.uk/id/statistical-geography/E06000034
+e07000115,Tonbridge and Malling,E07000115,,365,,http://statistics.data.gov.uk/id/statistical-geography/E07000115
+e06000027,Torbay,E06000027,,366,,http://statistics.data.gov.uk/id/statistical-geography/E06000027
+w06000020,Torfaen,W06000020,,367,,http://statistics.data.gov.uk/id/statistical-geography/W06000020
+e07000046,Torridge,E07000046,,368,,http://statistics.data.gov.uk/id/statistical-geography/E07000046
+e09000030,Tower Hamlets,E09000030,,369,,http://statistics.data.gov.uk/id/statistical-geography/E09000030
+e08000009,Trafford,E08000009,,370,,http://statistics.data.gov.uk/id/statistical-geography/E08000009
+e07000116,Tunbridge Wells,E07000116,,371,,http://statistics.data.gov.uk/id/statistical-geography/E07000116
+e11000007,Tyne and Wear,E11000007,,372,,http://statistics.data.gov.uk/id/statistical-geography/E11000007
+k02000001,United Kingdom,K02000001,,373,,http://statistics.data.gov.uk/id/statistical-geography/K02000001
+e07000077,Uttlesford,E07000077,,374,,http://statistics.data.gov.uk/id/statistical-geography/E07000077
+w06000014,Vale of Glamorgan,W06000014,,375,,http://statistics.data.gov.uk/id/statistical-geography/W06000014
+e07000180,Vale of White Horse,E07000180,,376,,http://statistics.data.gov.uk/id/statistical-geography/E07000180
+e08000036,Wakefield,E08000036,,377,,http://statistics.data.gov.uk/id/statistical-geography/E08000036
+w92000004,Wales,W92000004,,378,,http://statistics.data.gov.uk/id/statistical-geography/W92000004
+e08000030,Walsall,E08000030,,379,,http://statistics.data.gov.uk/id/statistical-geography/E08000030
+e09000031,Waltham Forest,E09000031,,380,,http://statistics.data.gov.uk/id/statistical-geography/E09000031
+e09000032,Wandsworth,E09000032,,381,,http://statistics.data.gov.uk/id/statistical-geography/E09000032
+e06000007,Warrington,E06000007,,382,,http://statistics.data.gov.uk/id/statistical-geography/E06000007
+e07000222,Warwick,E07000222,,383,,http://statistics.data.gov.uk/id/statistical-geography/E07000222
+e10000031,Warwickshire,E10000031,,384,,http://statistics.data.gov.uk/id/statistical-geography/E10000031
+e07000103,Watford,E07000103,,385,,http://statistics.data.gov.uk/id/statistical-geography/E07000103
+e07000216,Waverley,E07000216,,386,,http://statistics.data.gov.uk/id/statistical-geography/E07000216
+e07000065,Wealden,E07000065,,387,,http://statistics.data.gov.uk/id/statistical-geography/E07000065
+e07000241,Welwyn Hatfield,E07000241,,388,,http://statistics.data.gov.uk/id/statistical-geography/E07000241
+e06000037,West Berkshire,E06000037,,389,,http://statistics.data.gov.uk/id/statistical-geography/E06000037
+e07000047,West Devon,E07000047,,390,,http://statistics.data.gov.uk/id/statistical-geography/E07000047
+s12000039,West Dunbartonshire,S12000039,,391,,http://statistics.data.gov.uk/id/statistical-geography/S12000039
+e07000127,West Lancashire,E07000127,,392,,http://statistics.data.gov.uk/id/statistical-geography/E07000127
+e07000142,West Lindsey,E07000142,,393,,http://statistics.data.gov.uk/id/statistical-geography/E07000142
+s12000040,West Lothian,S12000040,,394,,http://statistics.data.gov.uk/id/statistical-geography/S12000040
+e12000005,West Midlands,E12000005,,395,,http://statistics.data.gov.uk/id/statistical-geography/E12000005
+e06000062,West Northamptonshire,E06000062,,396,,http://statistics.data.gov.uk/id/statistical-geography/E06000062
+e07000181,West Oxfordshire,E07000181,,397,,http://statistics.data.gov.uk/id/statistical-geography/E07000181
+e07000245,West Suffolk,E07000245,,398,,http://statistics.data.gov.uk/id/statistical-geography/E07000245
+e10000032,West Sussex,E10000032,,399,,http://statistics.data.gov.uk/id/statistical-geography/E10000032
+e11000006,West Yorkshire,E11000006,,400,,http://statistics.data.gov.uk/id/statistical-geography/E11000006
+e09000033,Westminster,E09000033,,401,,http://statistics.data.gov.uk/id/statistical-geography/E09000033
+e08000010,Wigan,E08000010,,402,,http://statistics.data.gov.uk/id/statistical-geography/E08000010
+e06000054,Wiltshire,E06000054,,403,,http://statistics.data.gov.uk/id/statistical-geography/E06000054
+e07000094,Winchester,E07000094,,404,,http://statistics.data.gov.uk/id/statistical-geography/E07000094
+e06000040,Windsor and Maidenhead,E06000040,,405,,http://statistics.data.gov.uk/id/statistical-geography/E06000040
+e08000015,Wirral,E08000015,,406,,http://statistics.data.gov.uk/id/statistical-geography/E08000015
+e07000217,Woking,E07000217,,407,,http://statistics.data.gov.uk/id/statistical-geography/E07000217
+e06000041,Wokingham,E06000041,,408,,http://statistics.data.gov.uk/id/statistical-geography/E06000041
+e08000031,Wolverhampton,E08000031,,409,,http://statistics.data.gov.uk/id/statistical-geography/E08000031
+e07000237,Worcester,E07000237,,410,,http://statistics.data.gov.uk/id/statistical-geography/E07000237
+e10000034,Worcestershire,E10000034,,411,,http://statistics.data.gov.uk/id/statistical-geography/E10000034
+e07000229,Worthing,E07000229,,412,,http://statistics.data.gov.uk/id/statistical-geography/E07000229
+w06000006,Wrexham,W06000006,,413,,http://statistics.data.gov.uk/id/statistical-geography/W06000006
+e07000238,Wychavon,E07000238,,414,,http://statistics.data.gov.uk/id/statistical-geography/E07000238
+e07000128,Wyre,E07000128,,415,,http://statistics.data.gov.uk/id/statistical-geography/E07000128
+e07000239,Wyre Forest,E07000239,,416,,http://statistics.data.gov.uk/id/statistical-geography/E07000239
+e06000014,York,E06000014,,417,,http://statistics.data.gov.uk/id/statistical-geography/E06000014
+e12000003,Yorkshire and The Humber,E12000003,,418,,http://statistics.data.gov.uk/id/statistical-geography/E12000003

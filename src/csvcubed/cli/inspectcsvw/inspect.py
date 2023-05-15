@@ -14,9 +14,9 @@ from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 from csvcubed.utils.tableschema import CsvWRdfManager
 
 _logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         codelist_hierarchy_info_printable,
         column_component_info_printable,
     ) = _generate_printables(
-        csvw_rdf_manager.csvw_inspector,
+        csvw_rdf_manager.csvw_repository,
     )
 
     print(f"{linesep}{type_printable}")
@@ -68,7 +68,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 
 def _generate_printables(
-    csvw_inspector: CsvWInspector,
+    csvw_repository: CsvWRepository,
 ) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -79,13 +79,13 @@ def _generate_printables(
     """
     metadata_printer: MetadataPrinter
 
-    csvw_type = csvw_inspector.csvw_type
+    csvw_type = csvw_repository.csvw_type
 
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_inspector = DataCubeInspector(csvw_inspector)
-        metadata_printer = MetadataPrinter(data_cube_inspector)
+        data_cube_repository = DataCubeRepository(csvw_repository)
+        metadata_printer = MetadataPrinter(data_cube_repository)
     else:
-        code_list_state = CodeListInspector(csvw_inspector)
+        code_list_state = CodeListRepository(csvw_repository)
         metadata_printer = MetadataPrinter(code_list_state)
 
     type_info_printable: str = metadata_printer.type_info_printable
