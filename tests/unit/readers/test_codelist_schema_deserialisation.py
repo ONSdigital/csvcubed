@@ -34,6 +34,16 @@ def test_get_code_list_schema_version_1_1():
     assert minor == CodeListConfigJsonSchemaMinorVersion.v1
 
 
+def test_get_code_list_schema_version_1_2():
+    """Test checking if the correct schema version is returned for the v1.2 schema"""
+    (major, minor) = _get_code_list_schema_version(
+        "https://purl.org/csv-cubed/code-list-config/v1.2"
+    )
+
+    assert major == CodeListConfigJsonSchemaMajorVersion.v1
+    assert minor == CodeListConfigJsonSchemaMinorVersion.v2
+
+
 def test_get_code_list_schema_version_1_latest():
     """Test checking if incase the version number doesn't contain a minor it will return the latest schema version
     Note: This will have to be updated when a newer version is added!
@@ -44,7 +54,7 @@ def test_get_code_list_schema_version_1_latest():
     )
 
     assert major == CodeListConfigJsonSchemaMajorVersion.v1
-    assert minor == CodeListConfigJsonSchemaMinorVersion.v1
+    assert minor == CodeListConfigJsonSchemaMinorVersion.v2
 
 
 def test_get_code_list_schema_version_error():
@@ -65,7 +75,7 @@ def test_get_deserialiser_for_code_list_schema():
     Note: The function assertion cannot be triggered. The _get_code_list_schema_version assertion will flag the error before.
     """
     code_list_config_deserialiser = get_deserialiser_for_code_list_schema(
-        "https://purl.org/csv-cubed/code-list-config/v1.1",
+        "https://purl.org/csv-cubed/code-list-config/v1.2",
         default_schema_uri=LATEST_CODELIST_SCHEMA_URL,
     )
 
@@ -79,7 +89,7 @@ def test_get_deserialiser_for_code_list_schema_dict():
     """Testing get_code_list_versioned_deserialiser does get the correct deserialiser
     when it is provided with a dict and not a PATH.
     """
-    code_list = {"$schema": "https://purl.org/csv-cubed/code-list-config/v1.1"}
+    code_list = {"$schema": "https://purl.org/csv-cubed/code-list-config/v1.2"}
 
     code_list_config_deserialiser = get_code_list_versioned_deserialiser(
         code_list,

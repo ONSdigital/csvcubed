@@ -42,11 +42,12 @@ In order to update the MINOR version of code-list config, please follow the belo
 
 _v1_0_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.0"
 _v1_1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.1"
+_v1_2_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.2"
 
 V1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 
-LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
+LATEST_V1_CODELIST_SCHEMA_URL = _v1_2_CODELIST_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
@@ -76,6 +77,7 @@ class CodeListConfigJsonSchemaMinorVersion(Enum):
 
     v0 = 0
     v1 = 1
+    v2 = 2
 
 
 def _extract_and_validate_code_list_v1(
@@ -156,6 +158,11 @@ def _get_code_list_schema_version(
         return (
             CodeListConfigJsonSchemaMajorVersion.v1,
             CodeListConfigJsonSchemaMinorVersion.v1,
+        )
+    elif schema_path == _v1_2_CODELIST_SCHEMA_URL:
+        return (
+            CodeListConfigJsonSchemaMajorVersion.v1,
+            CodeListConfigJsonSchemaMinorVersion.v2,
         )
     else:
         raise ValueError(

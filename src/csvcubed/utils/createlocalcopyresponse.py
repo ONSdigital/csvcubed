@@ -53,10 +53,15 @@ _hard_coded_map_url_to_file_path = {
     / "codelist-config"
     / "v1_1"
     / "schema.json",
+    "//purl.org/csv-cubed/codelist-config/v1.2": APP_ROOT_DIR_PATH
+    / "schema"
+    / "codelist-config"
+    / "v1_2"
+    / "schema.json",
     "//purl.org/csv-cubed/code-list-config/v1": APP_ROOT_DIR_PATH
     / "schema"
     / "codelist-config"
-    / "v1_1"
+    / "v1_2"
     / "schema.json",  # v1 defaults to latest minor version of v1.*.
 }
 

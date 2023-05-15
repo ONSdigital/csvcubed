@@ -36,8 +36,8 @@ def _assert_code_list_config_concepts(
                 assert concept.label == concept_json["label"]
                 assert concept.description == concept_json["description"]
                 assert concept.notation == concept_json["notation"]
-                if concept.same_as:
-                    assert concept.same_as == concept_json["same_as"]
+                if concept.exact_match:
+                    assert concept.exact_match == concept_json["same_as"]
                 if concept.children:
                     _assert_code_list_config_concepts(
                         concept.children, concept_json["children"]
