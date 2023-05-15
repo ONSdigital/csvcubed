@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema",
-    "id": "https://purl.org/csv-cubed/code-list-config/v1.1",
+    "id": "https://purl.org/csv-cubed/code-list-config/v1.2",
     "title": "Schema for a codelist.",
     "description": "A new code list to be associated with a dimension.",
     "type": "object",
@@ -10,7 +10,7 @@
     "properties": {
         "$schema": {
             "type": "string",
-            "default": "https://purl.org/csv-cubed/code-list-config/v1.1"
+            "default": "https://purl.org/csv-cubed/code-list-config/v1.2"
         },
         "id": {
             "description": "A unique id for the code list.",
