@@ -7,7 +7,7 @@ Utilities for CSV Datasets
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple, Optional
+from typing import Any, Dict, List, Optional, Set, Tuple
 from uuid import uuid1
 
 import pandas as pd
@@ -15,16 +15,6 @@ import uritemplate
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 from uritemplate.orderedset import OrderedSet
 
-from csvcubed.models.csvcubedexception import InvalidNumberOfRecordsException
-from csvcubed.models.inspectdataframeresults import DatasetSingleMeasureResult
-from csvcubed.models.sparqlresults import QubeComponentResult
-from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import (
-    ComponentField,
-    ComponentPropertyAttributeURI,
-    ComponentPropertyType,
-    get_component_property_as_relative_path,
-)
 from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
@@ -32,9 +22,15 @@ from csvcubed.models.csvcubedexception import (
     InvalidUnitColumnDefinition,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.inspectdataframeresults import DatasetSingleMeasureResult
 from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
+from csvcubed.utils.qb.components import (
+    ComponentField,
+    ComponentPropertyAttributeURI,
+    ComponentPropertyType,
+    get_component_property_as_relative_path,
+)
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 
 _logger = logging.getLogger(__name__)
@@ -315,7 +311,7 @@ def _melt_data_set(
         data_set,
         id_vars=id_cols,
         value_vars=value_cols,
-        value_name="Value",
+        value_name="value",
         var_name="Observation Value",
     )
 

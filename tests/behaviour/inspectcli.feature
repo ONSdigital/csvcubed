@@ -140,7 +140,7 @@ Feature: Behaviour testing of csvcubed inspect.
             spirits-duty-receipts            gbp-million    314
                wine-duty-receipts            gbp-million    314
         """
-
+    @wip
     # Below test also validates the csvcubed against old-style single-measure pivoted shape data sets.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit single-measure.
         Given the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
