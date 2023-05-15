@@ -38,6 +38,7 @@ class CodeListConfigConcept(DataClassBase):
     description: Optional[str] = field(default=None)
     sort_order: Optional[int] = field(default=None)
     exact_match: Optional[str] = field(default=None)
+    same_as: Optional[str] = field(default=None)
     children: List["CodeListConfigConcept"] = field(default_factory=list)
     uri_safe_identifier_override: Optional[str] = field(default=None)
 
@@ -191,6 +192,18 @@ class CodeListConfig(DataClassBase):
                             description=concept.description,
                             uri_safe_identifier_override=concept.uri_safe_identifier_override,
                             existing_concept_uri=concept.exact_match,
+                        )
+                    )
+                elif concept.same_as:
+                    new_qb_concepts.append(
+                        DuplicatedQbConcept(
+                            label=concept.label,
+                            code=concept.notation,
+                            parent_code=parent_code,
+                            sort_order=concept.sort_order,
+                            description=concept.description,
+                            uri_safe_identifier_override=concept.uri_safe_identifier_override,
+                            existing_concept_uri=concept.same_as,
                         )
                     )
                 else:
