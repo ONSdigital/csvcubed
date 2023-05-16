@@ -147,7 +147,7 @@ jobs:
         run: poetry install
 
       - name: Install pandas
-        run: poetry add pandas 1.5.3
+        run: poetry add pandas==1.5.3
 
       - name: Run pyright
         run: poetry run pyright . --lib
