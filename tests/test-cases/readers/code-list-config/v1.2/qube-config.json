@@ -1,0 +1,20 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Testing code-list-config-v1.2",
+    "columns": {
+        "Dimension": {
+            "type": "dimension",
+            "code_list": "code_list_config_hierarchical_v1_2.json"
+        },
+        "Measure": {
+            "type": "measures"
+        },
+        "Unit": {
+            "type": "units"
+        },
+        "Value": {
+            "type": "observations",
+            "data_type": "integer"
+        }
+    }
+}
