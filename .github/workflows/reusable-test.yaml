@@ -141,10 +141,13 @@ jobs:
           key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Removing pandas
-        run: |
-          poetry remove pandas
-          poetry shell
-          poetry add pandas 1.5.3
+        run: poetry remove pandas
+
+      - name: Install poetry
+        run: poetry install
+
+      - name: Install pandas
+        run: poetry add pandas 1.5.3
 
       - name: Run pyright
         run: poetry run pyright . --lib
