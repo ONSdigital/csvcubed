@@ -156,7 +156,7 @@ jobs:
         run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Run unittests
-        run: poetry run pytest --junitxml=pytest_results.xml
+        run: poetry run pytest --junitxml=pytest_older_pandas_version_results.xml
 
 
       - name: Run behaviour tests (Windows)
@@ -209,4 +209,6 @@ jobs:
           check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
           junit_files: |
             reports/*.xml
+            reports_older_pandas_version/*.xml
             pytest_results.xml
+            pytest_older_pandas_version_results.xml
