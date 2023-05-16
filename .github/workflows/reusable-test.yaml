@@ -92,6 +92,98 @@ jobs:
             pytest_results.xml
             reports/*.xml
 
+
+  run_tests_with_older_pandas:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+          # Necessary for running csvlint inside the Windows VM.
+      - uses: ruby/setup-ruby@v1
+        if: inputs.os == 'windows-latest'
+        with:
+          ruby-version: '2.4'
+
+      - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
+        id: windows-install
+        if: inputs.os == 'windows-latest'
+
+        run: .\windows-testing-setup.ps1 -verbose
+        shell: pwsh
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install pyright
+        run: npm install -g pyright@1.1.302
+
+      - name: Install markdown spell-checker
+        run: npm install -g spellchecker-cli
+
+      - name: Test spelling in external docs
+        run: cd external-docs && bash spell-check.sh
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pypoetry/virtualenvs
+            C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
+          key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Removing pandas
+        run: poetry remove pandas
+
+      - name: Install pandas version 1.5.3
+        run: poetry add pandas 1.5.3
+
+      - name: Run pyright
+        run: poetry run pyright . --lib
+
+      - name: Ensure ValidatedModel properties have validations provided
+        run: poetry run python tests/pref_improvement/pref_check.py
+
+      - name: Run unittests
+        run: poetry run pytest --junitxml=pytest_results.xml
+
+
+      - name: Run behaviour tests (Windows)
+        if: inputs.os == 'windows-latest'
+        run: |
+          $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
+          $sparqlTestsDir = "${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}"
+
+          $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
+        shell: pwsh
+
+      - name: Run behaviour tests (Ubuntu)
+        if: inputs.os == 'ubuntu-latest'
+        run: poetry run behave tests/behaviour --tags=-skip --junit --format progress
+
+      - name: Remove old pandas
+        run: poetry remove pandas
+
+      - name: Install newest version of pandas
+        run: poetry add pandas@latest
+
+      - name: Archive unit & behave test results from xml files
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
+          path: |
+            pytest_results.xml
+            reports/*.xml
+
   publish_test_results:
     needs: [test_in_environments]
     runs-on: ubuntu-latest
