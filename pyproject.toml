@@ -17,7 +17,7 @@ readme = "README.md"
 version = "0.1.0-dev"
 
 [tool.poetry.dependencies]
-pandas = "^2.0.1"
+pandas = ">=1.5.3,<2.0.2"
 python = ">=3.9,<3.12"
 jsonschema = "^4.4.0"
 requests = "^2.27.1"
