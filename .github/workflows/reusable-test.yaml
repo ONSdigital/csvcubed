@@ -184,8 +184,8 @@ jobs:
         with:
           name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
           path: |
-            pytest_results.xml
-            reports/*.xml
+            pytest_older_pandas_version_results.xml
+            reports_older_pandas_version/*.xml
 
   publish_test_results:
     needs: [test_in_environments]
