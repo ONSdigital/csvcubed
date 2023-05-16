@@ -1,0 +1,32 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Multi-Unit-Single_Measure DataSet for testing",
+    "columns": {
+        "Manufacture": {
+            "type": "dimension",
+            "label": "Dim1"
+        },
+        "Type": {
+            "type": "dimension",
+            "label": "Dim2"
+        },
+        "Measure": {
+            "type": "measures",
+            "values": true
+        },
+        "Unit": {
+            "type": "units",
+            "values": [
+                {
+                    "label": "Pounds"
+                },
+                {
+                    "label": "Dollars"
+                }
+            ]
+        },
+        "Observations": {
+            "type": "observations"
+        }
+    }
+}

@@ -311,7 +311,7 @@ def _melt_data_set(
         data_set,
         id_vars=id_cols,
         value_vars=value_cols,
-        value_name="Valueiudghskudhkljdsh",
+        value_name="Value",
         var_name="Observation Value",
     )
 

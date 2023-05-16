@@ -143,20 +143,15 @@ Feature: Behaviour testing of csvcubed inspect.
 
     # Below test also validates the csvcubed against old-style single-measure pivoted shape data sets.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit single-measure.
-        Given the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/ghg.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/ghg-grouped.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/ipcc-code.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/year.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-sector.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-sub-sector.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-category.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/source.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"
-        When the Metadata file path is detected and validated "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+        Given the existing test-case file "pandas2_0_testing/multi-unit-single_measure-dataset-for-testing.csv-metadata.json"
+        And the existing test-case file "pandas2_0_testing/multi-unit-single_measure-dataset-for-testing.csv"
+        And the existing test-case file "pandas2_0_testing/dim1.csv"
+        And the existing test-case file "pandas2_0_testing/dim1.csv-metadata.json"
+        And the existing test-case file "pandas2_0_testing/dim1.table.json"
+        And the existing test-case file "pandas2_0_testing/dim2.csv"
+        And the existing test-case file "pandas2_0_testing/dim2.csv-metadata.json"
+        And the existing test-case file "pandas2_0_testing/dim2.table.json"
+        When the Metadata file path is detected and validated "pandas2_0_testing/multi-unit-single_measure-dataset-for-testing.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -164,154 +159,61 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Catalog Metadata Printable should be
         """
         - The data cube has the following catalog metadata:
-            - Title: Final UK greenhouse gas emissions national statistics: 1990 to 2019
-            - Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
-            - Issued: 2021-02-02T09:30:00+00:00
-            - Modified: 2022-03-03T18:04:29.277945+00:00
-            - License: None
-            - Creator: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
-            - Publisher: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
-            - Landing Pages:
-                    -- https://www.gov.uk/government/statistics/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019
-            - Themes:
-                    -- http://gss-data.org.uk/def/gdp#climate-change
-            - Keywords: None
-            - Contact Point: None
-            - Identifier: Final UK greenhouse gas emissions national statistics: 1990 to 2019
-            - Comment: Final estimates of UK territorial greenhouse gas emissions.
-            - Description: This publication provides the final estimates of UK territorial greenhouse gas
-                    emissions going back to 1990.
-
-                    Estimates are presented by source in February of each year. They are updated
-                    each year:
-
-                    * in March, to include estimates by end-user and fuel type
-                    * in June, to include estimates by Standard Industrial Classification (SIC)
-
-                    The statistics covers emissions that occur within the UK’s borders. When
-                    emissions are reported by source, emissions are attributed to the sector that
-                    emits them directly. When emissions are reported by end-user, energy supply
-                    emissions by source are reallocated in accordance with where the end-use
-                    activity occurred. This reallocation of emissions is based on a modelling
-                    process. For example, all the carbon dioxide produced by a power station is
-                    allocated to the power station when reporting on a source basis. However, when
-                    applying the end-user method, these emissions are reallocated to the users of
-                    this electricity, such as domestic homes or large industrial users.
-
-                    BEIS does not estimate emissions outside the UK associated with UK
-                    consumption, however the Department for Environment, Food and Rural Affairs
-                    publishes estimates of the [UK’s carbon
-                    footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint)
-                    annually. The [alternative approaches to reporting UK greenhouse gas emissions
-                    report](https://www.gov.uk/government/publications/uk-greenhouse-gas-
-                    emissions-explanatory-notes) outlines the differences between them.
-
-                    For the purposes of reporting, greenhouse gas emissions are allocated into a
-                    small number of broad, high level sectors known as National Communication
-                    sectors, which are as follows: energy supply, business, transport, public,
-                    residential, agriculture, industrial processes, land use land use change and
-                    forestry (LULUCF), and waste management.
-
-                    These high-level sectors are made up of a number of more detailed sectors,
-                    which follow the definitions set out by the [International Panel on Climate
-                    Change (IPCC)](http://www.ipcc.ch/), and which are used in international
-                    reporting tables which are submitted to the [United Nations Framework
-                    Convention on Climate Change (UNFCCC)](https://unfccc.int/) every year. A
-                    [list of corresponding Global Warming Potentials (GWPs) used and a record of
-                    base year emissions](https://www.gov.uk/government/publications/uk-greenhouse-
-                    gas-emissions-explanatory-notes) are published separately.
-
-                    This is a National Statistics publication and complies with the Code of
-                    Practice for Statistics.
-
-                    Please check our [frequently asked
-                    questions](https://www.gov.uk/government/publications/uk-greenhouse-gas-
-                    emissions-statistics-user-guidance) or email
-                    [Climatechange.Statistics@beis.gov.uk](mailto:Climatechange.Statistics@beis.gov.uk)
-                    if you have any questions or comments about the information on this page.
-
-                    *[SIC]: Standard Industrial Classification
-                    *[LULUCF]: land use land use change and forestry
-                    *[IPCC]: International Panel on Climate Change
-                    *[UNFCCC]: United Nations Framework Convention on Climate Change
-                    *[GWPs]: Global Warming Potentials
+          - Title: Multi-Unit-Single_Measure DataSet for testing
+          - Label: Multi-Unit-Single_Measure DataSet for testing
+          - Issued: 2023-05-16T09:01:16.011380
+          - Modified: 2023-05-16T09:01:16.011380
+          - License: None
+          - Creator: None
+          - Publisher: None
+          - Landing Pages: None
+          - Themes: None
+          - Keywords: None
+          - Contact Point: None
+          - Identifier: Multi-Unit-Single_Measure DataSet for testing
+          - Comment: None
+          - Description: None
         """
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following column component information:
-            - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
+            - Dataset Label: Multi-Unit-Single_Measure DataSet for testing
             - Columns:
-                                   Title         Type Required                                                                                                       Property URL Observations Column Titles
-                                      GHG    Dimension     True                               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg                      Value
-                              GHG Grouped    Dimension     True                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped                      Value
-                                IPCC Code    Dimension     True                         final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code                      Value
-                                     Year    Dimension     True                              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year                      Value
-            National Communication Sector    Dimension     True     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector                      Value
-        National Communication Sub-sector    Dimension     True final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector                      Value
-          National Communication Category    Dimension     True   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category                      Value
-                                   Source    Dimension     True                            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source                      Value
-        National Communication Fuel Group    Dimension     True final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group                      Value
-              National Communication Fuel    Dimension     True       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel                      Value
-                            Activity Name    Dimension     True                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name                      Value
-                                    Value Observations     True               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4                      Value
-
+                Title         Type  Required                                                         Property URL Observations Column Titles
+            Manufacture    Dimension      True     multi-unit-single_measure-dataset-for-testing.csv#dimension/dim1
+                    Type    Dimension      True     multi-unit-single_measure-dataset-for-testing.csv#dimension/dim2
+                Measure     Measures      True                         http://purl.org/linked-data/cube#measureType               Observations
+                    Unit        Units      True          http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
+            Observations Observations      True multi-unit-single_measure-dataset-for-testing.csv#measure/{+measure}
             - Columns where suppress output is true: None
         """
         And the Code List Printable should be
         """
         - The data cube has the following code list information:
-                - Number of Code Lists: 11
+                - Number of Code Lists: 2
                 - Code Lists:
-                                                 Code List Code List Label                   Columns Used In
-                               activity-name.csv#code-list                                     Activity Name
-                                 ghg-grouped.csv#code-list                                       GHG Grouped
-                                         ghg.csv#code-list                                               GHG
-                                   ipcc-code.csv#code-list                                         IPCC Code
-             national-communication-category.csv#code-list                   National Communication Category
-           national-communication-fuel-group.csv#code-list                 National Communication Fuel Group
-                 national-communication-fuel.csv#code-list                       National Communication Fuel
-               national-communication-sector.csv#code-list                     National Communication Sector
-           national-communication-sub-sector.csv#code-list                 National Communication Sub-sector
-                                      source.csv#code-list                                            Source
-                                        year.csv#code-list                                              Year
+                Code List Code List Label Columns Used In
+        dim1.csv#code-list            Dim1     Manufacture
+        dim2.csv#code-list            Dim2            Type
         """
         And the Dataset Information Printable should be
         """
         - The data cube has the following dataset information:
-                - Number of Rows: 19
+                - Number of Observations: 3
                 - Number of Duplicates: 0
-                - First 10 Rows:
-        GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
-        c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
-        c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
-        c2f6        pfcs     2b9b3  1992          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
-        c2f6        pfcs     2b9b3  1993          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.003
-        c2f6        pfcs     2b9b3  1994          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.006
-        c2f6        pfcs     2b9b3  1995          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
-        c2f6        pfcs     2b9b3  1996          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.009
-        c2f6        pfcs     2b9b3  1997          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.005
-        c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.005
-        c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
-
-                - Last 10 Rows:
-        GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
-        c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
-        c2f6        pfcs     2b9b3  2000          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.003
-        c2f6        pfcs     2b9b3  2001          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.007
-        c2f6        pfcs     2b9b3  2002          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.007
-        c2f6        pfcs     2b9b3  2003          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
-        c2f6        pfcs     2b9b3  2004          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.013
-        c2f6        pfcs     2b9b3  2005          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.016
-        c2f6        pfcs     2b9b3  2006          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.013
-        c2f6        pfcs     2b9b3  2007          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
-        c2f6        pfcs     2b9b3  2008          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
-           """
+                - Observations:
+        Manufacture  Type      Measure    Unit  Observations
+            ford sedan retail-price  pounds        1000.0
+            audi sedan retail-price dollars         900.0
+            opel sedan retail-price dollars         900.0
+        """
         And the Dataset Value Counts Printable should be
         """
         - The data cube has the following value counts:
-            - Value counts broken-down by measure and unit (of measure):
-                            Measure                                          Unit  Count
-            gas emissions(gwp-ar4) millions of tonnes of carbon dioxide (mt co2)  19
+                - Value counts broken-down by measure and unit (of measure):
+            Measure    Unit  Count
+        retail-price dollars      2
+        retail-price  pounds      1
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit multi-measure.
