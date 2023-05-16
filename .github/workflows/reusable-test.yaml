@@ -143,6 +143,7 @@ jobs:
       - name: Removing pandas
         run: |
           poetry remove pandas
+          poetry shell
           poetry add pandas 1.5.3
 
       - name: Run pyright
