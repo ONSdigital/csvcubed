@@ -23,7 +23,7 @@
             "name": "parent_uri_identifier",
             "required": false,
             "propertyUrl": "skos:broader",
-            "valueUrl": "goverment-year.csv#{+parent_uri_identifier}"
+            "valueUrl": "government-year.csv#{+parent_uri_identifier}"
         },
         {
             "titles": "Sort Priority",
@@ -50,7 +50,7 @@
             "name": "virt_inScheme",
             "required": true,
             "propertyUrl": "skos:inScheme",
-            "valueUrl": "goverment-year.csv#code-list"
+            "valueUrl": "government-year.csv#code-list"
         },
         {
             "virtual": true,
@@ -60,6 +60,6 @@
             "valueUrl": "skos:Concept"
         }
     ],
-    "aboutUrl": "goverment-year.csv#{+uri_identifier}",
+    "aboutUrl": "government-year.csv#{+uri_identifier}",
     "primaryKey": "uri_identifier"
 }

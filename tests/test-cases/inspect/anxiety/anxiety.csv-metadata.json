@@ -46,8 +46,8 @@
                     {
                         "titles": "Period",
                         "name": "period",
-                        "propertyUrl": "anxiety.csv#dimension/goverment-year",
-                        "valueUrl": "goverment-year.csv#{+period}",
+                        "propertyUrl": "anxiety.csv#dimension/government-year",
+                        "valueUrl": "government-year.csv#{+period}",
                         "required": true
                     },
                     {
@@ -126,7 +126,7 @@
                     {
                         "columnReference": "period",
                         "reference": {
-                            "resource": "goverment-year.csv",
+                            "resource": "government-year.csv",
                             "columnReference": "uri_identifier"
                         }
                     }
@@ -145,8 +145,8 @@
             "suppressOutput": true
         },
         {
-            "url": "goverment-year.csv",
-            "tableSchema": "goverment-year.table.json",
+            "url": "government-year.csv",
+            "tableSchema": "government-year.table.json",
             "suppressOutput": true
         }
     ],
@@ -217,7 +217,7 @@
                     "@id": "anxiety.csv#component/observation-status"
                 },
                 {
-                    "@id": "anxiety.csv#component/goverment-year"
+                    "@id": "anxiety.csv#component/government-year"
                 },
                 {
                     "@id": "anxiety.csv#component/Mean%20(%20Where%200%20is%20'not%20at%20all%20anxious'%20and%2010%20is%20'completely%20anxious')"
@@ -258,7 +258,7 @@
                     "@id": "anxiety.csv#attribute/observation-status"
                 },
                 {
-                    "@id": "anxiety.csv#dimension/goverment-year"
+                    "@id": "anxiety.csv#dimension/government-year"
                 }
             ]
         },
@@ -344,7 +344,7 @@
             ]
         },
         {
-            "@id": "anxiety.csv#dimension/goverment-year",
+            "@id": "anxiety.csv#dimension/government-year",
             "@type": [
                 "http://purl.org/linked-data/cube#CodedProperty",
                 "http://purl.org/linked-data/cube#DimensionProperty",
@@ -354,18 +354,18 @@
             ],
             "http://purl.org/linked-data/cube#codeList": [
                 {
-                    "@id": "goverment-year.csv#code-list"
+                    "@id": "government-year.csv#code-list"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
                     "@language": "en",
-                    "@value": "Goverment Year"
+                    "@value": "government Year"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
-                    "@id": "anxiety.csv#class/goverment-year"
+                    "@id": "anxiety.csv#class/government-year"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
@@ -421,7 +421,7 @@
             ]
         },
         {
-            "@id": "anxiety.csv#component/goverment-year",
+            "@id": "anxiety.csv#component/government-year",
             "@type": [
                 "http://purl.org/linked-data/cube#ComponentSpecification",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
@@ -429,12 +429,12 @@
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "anxiety.csv#dimension/goverment-year"
+                    "@id": "anxiety.csv#dimension/government-year"
                 }
             ],
             "http://purl.org/linked-data/cube#dimension": [
                 {
-                    "@id": "anxiety.csv#dimension/goverment-year"
+                    "@id": "anxiety.csv#dimension/government-year"
                 }
             ],
             "http://purl.org/linked-data/cube#order": [
@@ -444,7 +444,7 @@
             ]
         },
         {
-            "@id": "anxiety.csv#class/goverment-year",
+            "@id": "anxiety.csv#class/government-year",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Class",
                 "http://www.w3.org/2000/01/rdf-schema#Resource"
@@ -687,19 +687,19 @@
             ]
         },
         {
-            "@id": "anxiety.csv#dependency/goverment-year",
+            "@id": "anxiety.csv#dependency/government-year",
             "@type": [
                 "http://rdfs.org/ns/void#Dataset",
                 "http://www.w3.org/2000/01/rdf-schema#Resource"
             ],
             "http://rdfs.org/ns/void#dataDump": [
                 {
-                    "@id": "./goverment-year.csv-metadata.json"
+                    "@id": "./government-year.csv-metadata.json"
                 }
             ],
             "http://rdfs.org/ns/void#uriSpace": [
                 {
-                    "@value": "goverment-year.csv#"
+                    "@value": "government-year.csv#"
                 }
             ]
         }
