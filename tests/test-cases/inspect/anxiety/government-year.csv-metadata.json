@@ -1,11 +1,11 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "goverment-year.csv#code-list",
-    "url": "goverment-year.csv",
-    "tableSchema": "goverment-year.table.json",
+    "@id": "government-year.csv#code-list",
+    "url": "government-year.csv",
+    "tableSchema": "government-year.table.json",
     "rdfs:seeAlso": [
         {
-            "@id": "goverment-year.csv#csvcubed-build-activity",
+            "@id": "government-year.csv#csvcubed-build-activity",
             "@type": [
                 "http://www.w3.org/ns/prov#Activity",
                 "http://www.w3.org/2000/01/rdf-schema#Resource"
@@ -17,7 +17,7 @@
             ]
         },
         {
-            "@id": "goverment-year.csv#code-list",
+            "@id": "government-year.csv#code-list",
             "@type": [
                 "http://www.w3.org/ns/prov#Entity",
                 "http://www.w3.org/2004/02/skos/core#ConceptScheme",
@@ -27,7 +27,7 @@
             ],
             "http://purl.org/dc/terms/identifier": [
                 {
-                    "@value": "Goverment Year"
+                    "@value": "government Year"
                 }
             ],
             "http://purl.org/dc/terms/issued": [
@@ -45,18 +45,18 @@
             "http://purl.org/dc/terms/title": [
                 {
                     "@language": "en",
-                    "@value": "Goverment Year"
+                    "@value": "government Year"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
                 {
                     "@language": "en",
-                    "@value": "Goverment Year"
+                    "@value": "government Year"
                 }
             ],
             "http://www.w3.org/ns/prov#wasGeneratedBy": [
                 {
-                    "@id": "goverment-year.csv#csvcubed-build-activity"
+                    "@id": "government-year.csv#csvcubed-build-activity"
                 }
             ]
         }
