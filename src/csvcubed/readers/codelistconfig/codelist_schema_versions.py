@@ -10,7 +10,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Union
 
-from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
+from csvcubed.models.codelistconfig.code_list_config import (
+    CodeListConfigV1,
+    CodeListConfigV2,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
@@ -45,6 +48,9 @@ _v1_1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.1"
 
 V1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
+_v2_0_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v2.0"
+
+V2_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v2"  # v2 defaults to the latest minor version of v2.*.
 
 LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
 """
@@ -53,7 +59,14 @@ LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-LATEST_CODELIST_SCHEMA_URL = LATEST_V1_CODELIST_SCHEMA_URL
+LATEST_V2_CODELIST_SCHEMA_URL = _v2_0_CODELIST_SCHEMA_URL
+"""
+    This holds the URL identifying the latest minor version of the V2 schema.
+
+    When adding a new minor version to the V2 schema, you must update this variable.
+"""
+
+LATEST_CODELIST_SCHEMA_URL = LATEST_V2_CODELIST_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
@@ -67,6 +80,7 @@ class CodeListConfigJsonSchemaMajorVersion(Enum):
     """
 
     v1 = 1
+    v2 = 2
 
 
 class CodeListConfigJsonSchemaMinorVersion(Enum):
@@ -87,11 +101,48 @@ def _extract_and_validate_code_list_v1(
     _logger.debug("Using schema minor version %s", schema_version_minor)
 
     if isinstance(code_list_config_path_or_dict, Path):
-        code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
+        code_list_config, code_list_config_dict = CodeListConfigV1.from_json_file(
             code_list_config_path_or_dict
         )
     else:
-        code_list_config = CodeListConfig.from_dict(code_list_config_path_or_dict)
+        code_list_config = CodeListConfigV1.from_dict(code_list_config_path_or_dict)
+        code_list_config_dict = code_list_config_path_or_dict
+
+    schema = load_resource(code_list_config.schema)
+
+    unmapped_schema_validation_errors = validate_dict_against_schema(
+        value=code_list_config_dict, schema=schema
+    )
+
+    code_list_schema_validation_errors = map_to_internal_validation_errors(
+        schema, unmapped_schema_validation_errors
+    )
+
+    code_list = NewQbCodeList(
+        code_list_config.metadata, code_list_config.new_qb_concepts
+    )
+
+    return (
+        code_list,
+        code_list_schema_validation_errors,
+        code_list.validate(),  # type: ignore
+    )
+
+
+def _extract_and_validate_code_list_v2(
+    code_list_config_path_or_dict: Union[Path, dict],
+    schema_version_minor: int,
+) -> Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]:
+    """Extract a code list form a JSON file and validate"""
+
+    _logger.debug("Using schema minor version %s", schema_version_minor)
+
+    if isinstance(code_list_config_path_or_dict, Path):
+        code_list_config, code_list_config_dict = CodeListConfigV2.from_json_file(
+            code_list_config_path_or_dict
+        )
+    else:
+        code_list_config = CodeListConfigV2.from_dict(code_list_config_path_or_dict)
         code_list_config_dict = code_list_config_path_or_dict
 
     schema = load_resource(code_list_config.schema)
@@ -137,6 +188,10 @@ def get_deserialiser_for_code_list_schema(
         return lambda config_path_or_dict: _extract_and_validate_code_list_v1(
             config_path_or_dict, schema_version_minor.value
         )
+    elif schema_version_major == CodeListConfigJsonSchemaMajorVersion.v2:
+        return lambda config_path_or_dict: _extract_and_validate_code_list_v2(
+            config_path_or_dict, schema_version_minor.value
+        )
     else:
         raise ValueError(f"Unhandled major schema version {schema_version_major}")
 
@@ -147,6 +202,9 @@ def _get_code_list_schema_version(
     if schema_path == V1_CODELIST_SCHEMA_URL:
         schema_path = LATEST_V1_CODELIST_SCHEMA_URL
 
+    if schema_path == V2_CODELIST_SCHEMA_URL:
+        schema_path = LATEST_V2_CODELIST_SCHEMA_URL
+
     if schema_path == _v1_0_CODELIST_SCHEMA_URL:
         return (
             CodeListConfigJsonSchemaMajorVersion.v1,
@@ -156,6 +214,11 @@ def _get_code_list_schema_version(
         return (
             CodeListConfigJsonSchemaMajorVersion.v1,
             CodeListConfigJsonSchemaMinorVersion.v1,
+        )
+    elif schema_path == _v2_0_CODELIST_SCHEMA_URL:
+        return (
+            CodeListConfigJsonSchemaMajorVersion.v2,
+            CodeListConfigJsonSchemaMinorVersion.v0,
         )
     else:
         raise ValueError(
