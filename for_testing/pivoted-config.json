@@ -1,0 +1,31 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Multi-Unit-Single_Measure DataSet for testing",
+    "columns": {
+        "Dim1": {
+            "type": "dimension",
+            "label": "Dim1"
+        },
+        "Dim2": {
+            "type": "dimension",
+            "label": "Dim2"
+        },
+        "Observations": {
+            "type": "observations",
+            "measure": {
+                "label": "velocity"
+            }
+        },
+        "Units": {
+            "type": "units",
+            "values": [
+                {
+                    "label": "Kph"
+                },
+                {
+                    "label": "Mph"
+                }
+            ]
+        }
+    }
+}

@@ -186,16 +186,25 @@ _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure = DataFram
     ]
 ).replace("", np.NAN)
 
+# _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFrame(
+#     [
+#         {
+#             "Measure": "gas emissions(gwp-ar4)",
+#             "Unit": "millions of tonnes of carbon dioxide (mt co2)",
+#             "Count": 19,
+#         }
+#     ]
+# ).replace("", np.NAN)
 _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFrame(
     [
         {
-            "Measure": "retail-price",
-            "Unit": "dollars",
-            "Count": 2,
+            "Measure": "velocity",
+            "Unit": "Kph",
+            "Count": 1,
         },
         {
-            "Measure": "retail-price",
-            "Unit": "pounds",
+            "Measure": "velocity",
+            "Unit": "Mph",
             "Count": 1,
         },
     ]
@@ -580,11 +589,15 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     """
     Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for multi-unit single-measure dataset.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_single-measure"
+    #     / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / ".."
-        / ".."
-        / "pandas2_0_testing"
+        / "for_testing_CR"
+        / "out copy"
         / "multi-unit-single_measure-dataset-for-testing.csv-metadata.json"
     )
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
