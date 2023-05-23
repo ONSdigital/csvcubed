@@ -10,10 +10,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Union
 
-from csvcubed.models.codelistconfig.code_list_config import (
-    CodeListConfigV1,
-    CodeListConfigV2,
-)
+from csvcubed.models.codelistconfig.code_list_configv1 import CodeListConfigV1
+from csvcubed.models.codelistconfig.code_list_configv2 import CodeListConfigV2
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
