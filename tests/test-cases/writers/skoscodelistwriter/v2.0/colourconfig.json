@@ -1,5 +1,5 @@
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.5",
     "title": "List of Colours",
     "columns": {
         "Colour": {

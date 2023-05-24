@@ -140,7 +140,7 @@ def test_code_list_config_with_hierarchy():
     """
 
     code_list_config_json_path = (
-        _test_case_readers_base_dir / "code_list_config_hierarchical.json"
+        _test_case_readers_base_dir / "code_list_config_hierarchical_v2_0.json"
     )
     code_list_config, code_list_config_json = CodeListConfigV2.from_json_file(
         Path(code_list_config_json_path)
@@ -237,9 +237,14 @@ def test_exact_match_field_in_output_csv():
         temp_dir = Path(temp_dir_path)
         output_dir = temp_dir / "out"
         config_path = (
-            _test_case_writers_base_dir / "skoscodelistwriter" / "colourconfig.json"
+            _test_case_writers_base_dir
+            / "skoscodelistwriter"
+            / "v2.0"
+            / "colourconfig.json"
         )
-        csv_path = _test_case_writers_base_dir / "skoscodelistwriter" / "colours.csv"
+        csv_path = (
+            _test_case_writers_base_dir / "skoscodelistwriter" / "v2.0" / "colours.csv"
+        )
 
         cli_build(
             output_directory=output_dir, csv_path=csv_path, config_path=config_path
