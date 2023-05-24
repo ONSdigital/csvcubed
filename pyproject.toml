@@ -25,6 +25,7 @@ click = ">=8.0.0"
 requests-cache = "^0.9.3"
 treelib = "^1.6.1"
 uritemplate = "^4.1.1"
+#This will keep the urlib3 under version 2.0 till teh issue that the update introduces is fixed
 urllib3 = "^1.0.0"
 python-dateutil = "^2.8.2"
 csvcubed-models = "0.1.6"
