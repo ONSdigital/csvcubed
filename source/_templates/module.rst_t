@@ -1,6 +1,13 @@
 {%- if show_headings %}
 {{- [basename, ""] | join(' ') | e | heading }}
 
+
+.. toctree::
+   :maxdepth: {{ maxdepth }}
+{% for docname in docnames %}
+   {{ docname }}
+{%- endfor %}
+
 {% endif -%}
 .. automodule:: {{ qualname }}
 {%- for option in automodule_options %}
