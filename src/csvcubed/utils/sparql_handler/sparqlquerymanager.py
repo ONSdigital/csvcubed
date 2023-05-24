@@ -28,9 +28,9 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
-    IsPivotedShapeMeasureResult,
+    IsPivotedShapeResult,
     MetadataDependenciesResult,
-    PrimaryKeyColNamesByDatasetUrlResult,
+    PrimaryKeyColNameByDatasetUrlResult,
     QubeComponentsResult,
     TableSchemaPropertiesResult,
     UnitResult,
@@ -39,7 +39,7 @@ from csvcubed.models.sparqlresults import (
     map_column_definition_results,
     map_csvw_table_schemas_file_dependencies_result,
     map_data_set_dsd_csv_url_result,
-    map_is_pivoted_shape_for_measures_in_data_set,
+    map_is_pivoted_shape_data_set,
     map_labels_for_resource_uris,
     map_metadata_dependency_results,
     map_primary_key_col_names_by_csv_url_result,
@@ -83,9 +83,7 @@ class SPARQLQueryName(Enum):
 
     SELECT_TABLE_SCHEMA_PROPERTIES = "select_table_schema_properties"
 
-    SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = (
-        "select_is_pivoted_shape_for_measures_in_data_set"
-    )
+    SELECT_IS_PIVOTED_SHAPE_DATA_SET = "select_is_pivoted_shape_data_set"
 
     SELECT_COLUMN_DEFINITIONS = "select_column_definitions"
 
@@ -161,7 +159,7 @@ def select_csvw_catalog_metadata(
 
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `CatalogMetadataResult`
+    :return: `List[CatalogMetadataResult]`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_CATALOG_METADATA),
@@ -176,6 +174,10 @@ def select_data_set_dsd_and_csv_url(
 ) -> List[CubeTableIdentifiers]:
     """
     Selects the dataset's DSD and CSV URL. Returns a list of cube table identifiers containing the results.
+
+    Member of :file:`./sparqlquerymanager.py`
+
+    :return: `List[CubeTableIdentifiers]`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DATA_SET_DSD_CSV_URL),
@@ -199,9 +201,7 @@ def select_csvw_dsd_qube_components(
     map_csv_url_to_cube_shape: Dict[str, CubeShape],
 ) -> Dict[str, QubeComponentsResult]:
     """
-    Queries the list of qube components.
-
-    Returns a map of csv_url to the `QubeComponentsResult`.
+    Queries the list of qube components. Returns a map of csv_url to the `QubeComponentsResult`.
 
     Member of :file:`./sparqlquerymanager.py`
 
@@ -221,24 +221,26 @@ def select_csvw_dsd_qube_components(
     )
 
 
-def select_is_pivoted_shape_for_measures_in_data_set(
+def select_is_pivoted_shape_data_set(
     rdf_graph: rdflib.ConjunctiveGraph,
     cube_table_identifiers: List[CubeTableIdentifiers],
-) -> List[IsPivotedShapeMeasureResult]:
+) -> List[IsPivotedShapeResult]:
     """
     Queries the measure and whether it is a part of a pivoted or standard shape cube.
+
+    Member of :file:`./sparqlquerymanager.py`
+
+    :return: `List[IsPivotedShapeMeasureResult]`
     """
     result_is_pivoted_shape: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET
-        ),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_DATA_SET),
         rdf_graph,
         values_bindings=[
             _cube_table_identifiers_to_values_binding(cube_table_identifiers)
         ],
     )
 
-    return map_is_pivoted_shape_for_measures_in_data_set(result_is_pivoted_shape)
+    return map_is_pivoted_shape_data_set(result_is_pivoted_shape)
 
 
 def _cube_table_identifiers_to_values_binding(
@@ -267,7 +269,7 @@ def select_labels_for_resource_uris(
     rdf_graph: rdflib.ConjunctiveGraph, resource_uris: List[str]
 ) -> Dict[str, str]:
     """
-    Queries a list of value uris and returns associated labels
+    Queries a list of value uris and returns associated labels.
 
     Member of :file:`./sparqlquerymanager.py`
 
@@ -291,7 +293,7 @@ def select_dsd_code_list_and_cols(
 
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `CodelistInfoSparqlResult`
+    :return: `Dict[str, CodelistsResult]`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_CODELISTS_AND_COLS),
@@ -308,7 +310,7 @@ def select_csvw_table_schema_file_dependencies(
 
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `CSVWTabelSchemasResult`
+    :return: `CSVWTableSchemaFileDependenciesResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
@@ -338,13 +340,13 @@ def select_units(rdf_graph: rdflib.ConjunctiveGraph) -> List[UnitResult]:
 
 def select_primary_key_col_names_by_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str
-) -> PrimaryKeyColNamesByDatasetUrlResult:
+) -> List[PrimaryKeyColNameByDatasetUrlResult]:
     """
     Queries the primary keys for the given table url.
 
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `PrimaryKeyColNamesByDatasetUrlResult`
+    :return: `List[PrimaryKeyColNameByDatasetUrlResult]`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(

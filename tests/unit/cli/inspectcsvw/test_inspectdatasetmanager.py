@@ -32,14 +32,14 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
+from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
 )
-from tests.helpers.inspectors_cache import (
-    get_code_list_inspector,
-    get_data_cube_inspector,
+from tests.helpers.repository_cache import (
+    get_code_list_repository,
+    get_data_cube_repository,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -257,46 +257,46 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
 
 
 def get_arguments_qb_dataset(
-    data_cube_inspector: DataCubeInspector,
+    data_cube_repository: DataCubeRepository,
 ) -> Tuple[DataFrame, List[QubeComponentResult], str]:
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    csvw_inspector = data_cube_inspector.csvw_inspector
+    csvw_repository = data_cube_repository.csvw_repository
 
     result_data_set_uri = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
+        data_cube_repository.csvw_repository.get_primary_catalog_metadata().dataset_uri
     )
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_repository.get_cube_identifiers_for_data_set(
         result_data_set_uri
     )
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
     dataset: DataFrame = load_csv_to_dataframe(
-        csvw_inspector.csvw_json_path, Path(identifiers.csv_url)
+        csvw_repository.csvw_json_path, Path(identifiers.csv_url)
     )
 
     return (dataset, result.qube_components, identifiers.csv_url)
 
 
 def _get_arguments_skos_codelist(
-    code_list_inspector: CodeListInspector,
+    code_list_repository: CodeListRepository,
 ) -> Tuple[DataFrame, str]:
     """
     Produces the ConceptScheme for skos:codelist.
     """
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
+        code_list_repository.csvw_repository.get_primary_catalog_metadata()
     )
-    csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
+    csv_url = code_list_repository.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(
-        code_list_inspector.csvw_inspector.csvw_json_path, Path(csv_url)
+        code_list_repository.csvw_repository.csvw_json_path, Path(csv_url)
     )
     return (dataset, csv_url)
 
@@ -397,16 +397,16 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
     result_data_set_uri = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
+        data_cube_repository.csvw_repository.get_primary_catalog_metadata().dataset_uri
     )
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_repository.get_cube_identifiers_for_data_set(
         result_data_set_uri
     )
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
@@ -425,16 +425,16 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
+        data_cube_repository.csvw_repository.get_primary_catalog_metadata()
     )
 
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_repository.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
@@ -453,16 +453,16 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         / "alcohol-bulletin.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
+        data_cube_repository.csvw_repository.get_primary_catalog_metadata()
     )
 
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_repository.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
@@ -481,16 +481,16 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
+        data_cube_repository.csvw_repository.get_primary_catalog_metadata()
     )
 
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_repository.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
@@ -510,16 +510,16 @@ def test_get_single_measure_label_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
 
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
+        data_cube_repository.csvw_repository.get_primary_catalog_metadata()
     )
 
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_repository.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_repository.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
@@ -545,16 +545,16 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_inspector,
+        data_cube_repository,
         dataset,
         csv_url,
         qube_components,
@@ -580,16 +580,16 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_inspector,
+        data_cube_repository,
         dataset,
         csv_url,
         qube_components,
@@ -615,16 +615,16 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_inspector,
+        data_cube_repository,
         dataset,
         csv_url,
         qube_components,
@@ -650,16 +650,16 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_inspector,
+        data_cube_repository,
         dataset,
         csv_url,
         qube_components,
@@ -685,16 +685,16 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_inspector,
+        data_cube_repository,
         dataset,
         csv_url,
         qube_components,
@@ -720,16 +720,16 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_inspector,
+        data_cube_repository,
         dataset,
         csv_url,
         qube_components,
@@ -755,15 +755,15 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
+    code_list_repository = get_code_list_repository(csvw_metadata_json_path)
 
-    (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
+    (dataset, csv_url) = _get_arguments_skos_codelist(code_list_repository)
 
     result_code_list_cols = (
-        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+        code_list_repository.csvw_repository.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_inspector.rdf_graph, csv_url
+        code_list_repository.csvw_repository.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -774,7 +774,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     )
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols,
-        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url[0].value,
     )
 
     result = get_concepts_hierarchy_info(
@@ -791,15 +791,15 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     Should produce the expected tree structure for the given codelist.
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
-    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
+    code_list_repository = get_code_list_repository(csvw_metadata_json_path)
 
-    (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
+    (dataset, csv_url) = _get_arguments_skos_codelist(code_list_repository)
 
     result_code_list_cols = (
-        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+        code_list_repository.csvw_repository.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_inspector.rdf_graph, csv_url
+        code_list_repository.csvw_repository.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -810,7 +810,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     )
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols,
-        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url[0].value,
     )
 
     result = get_concepts_hierarchy_info(
