@@ -54,7 +54,7 @@ class CodeListConfigV2(DataClassBase):
     def __post_init__(self):
         # Sorting top-level concepts.
         self.concepts = sort_concepts(self.concepts, self.sort)
-        apply_sort_to_child_concepts(self.concepts)
+        apply_sort_to_child_concepts(self.concepts, self)
 
     @classmethod
     def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfigV2", Dict]:
