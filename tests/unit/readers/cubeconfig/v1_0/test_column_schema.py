@@ -1,5 +1,11 @@
+from pandas import Series
+
+from csvcubed.readers.codelistconfig.codelist_schema_versions import (
+    get_code_list_versioned_deserialiser,
+)
 from csvcubed.readers.cubeconfig.v1.columnschema import (
     EXISTING_UNIT_DEFAULT_SCALING_FACTOR,
+    NewDimension,
     Unit,
     _get_unit_scaling_factor,
 )
@@ -39,3 +45,21 @@ def test_existing_unit_with_scaling_factor():
     scaling_factor = _get_unit_scaling_factor(unit)
 
     assert scaling_factor == 0.01
+
+
+def test_code_list_config_v1():
+    new_dimension = NewDimension(
+        "Dimension",
+        code_list={
+            "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
+            "title": "Code list title",
+        },
+    )
+    data = Series(data=["a", "b", "c"])
+    qb_dimension = new_dimension.map_to_new_qb_dimension(
+        "Dimension", data=data, cube_config_minor_version=2
+    )
+    code_list = new_dimension.code_list
+    deserialiser = get_code_list_versioned_deserialiser(code_list)
+
+    pass

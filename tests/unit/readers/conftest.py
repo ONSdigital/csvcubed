@@ -9,5 +9,5 @@ def mock_json_schemas_fixture():
     """
     Fixture which mocks the HTTP responses of the JSON schema files for testing.
     """
-    with session.cache_disabled(), mock_json_schemas(session):
+    with session.cache_disabled(), mock_json_schemas():
         yield session
