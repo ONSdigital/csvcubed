@@ -1957,8 +1957,7 @@ six = "*"
 
 [[package]]
 name = "urllib3"
-#This is only thill the the connection issue remains that the urllib3 2.0 version introduces.
-version = "< 2"
+version = "<1.26.15"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
