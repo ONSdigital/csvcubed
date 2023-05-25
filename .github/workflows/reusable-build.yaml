@@ -44,7 +44,7 @@ jobs:
 
       - name: Generate Inspect API Docs
         run: |
-          poetry run sphinx-apidoc -o source src/csvcubed/ -v "${{ github.event.release.tag_name }}" -f -d 20 -e -t source/_templates
+          poetry run sphinx-apidoc -o source src/csvcubed/ -v ${GITHUB_REF#refs/*/} -f -d 20 -e -t source/_templates
           poetry run make html
 
       - name: Archive package and documentation
