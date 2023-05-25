@@ -49,9 +49,6 @@ jobs:
         run: |
           poetry run sphinx-apidoc -o source src/csvcubed/ -v $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/') -f -d 20 -e -t source/_templates
           poetry run make html
-        else:
-          poetry run sphinx-apidoc -o source src/csvcubed/ -v 0.0.1-dev -f -d 20 -e -t source/_templates
-          poetry run make html
 
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
