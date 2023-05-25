@@ -43,6 +43,8 @@ jobs:
           poetry run mkdocs build
 
       - name: Generate Inspect API Docs
+        env:
+          GIT_REF: ${{ github.ref }}
         run: |
           poetry run sphinx-apidoc -o source src/csvcubed/ -v $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/') -f -d 20 -e -t source/_templates
           poetry run make html
