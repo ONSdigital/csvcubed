@@ -45,19 +45,22 @@ jobs:
       - name: Generate Inspect API Docs
         env:
           GIT_REF: ${{ github.ref }}
-        uses:
+        steps:
+        - uses:
 
+        - name: if it maches
           if: startsWith(github.ref, 'refs/tags/v')
           VERSION_TAG: $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
           run: |
             poetry run sphinx-apidoc -o source src/csvcubed/ -v $VERSION_TAG -f -d 20 -e -t source/_templates
             poetry run make html
 
-        if: "!startsWith(github.ref, 'refs/tags/v')"
-        VERSION_TAG: v0.0.1-Dev
-        run: |
-          poetry run sphinx-apidoc -o source src/csvcubed/ -v $VERSION_TAG -f -d 20 -e -t source/_templates
-          poetry run make html
+        - name: if it does not match
+          if: "!startsWith(github.ref, 'refs/tags/v')"
+          VERSION_TAG: v0.0.1-Dev
+          run: |
+            poetry run sphinx-apidoc -o source src/csvcubed/ -v $VERSION_TAG -f -d 20 -e -t source/_templates
+            poetry run make html
 
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
