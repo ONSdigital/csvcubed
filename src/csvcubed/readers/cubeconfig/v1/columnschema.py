@@ -206,27 +206,13 @@ class NewDimension(SchemaBaseClass):
         elif (
             cube_config_minor_version
             and cube_config_minor_version >= 1
-            and cube_config_minor_version < 5
             and isinstance(self.code_list, dict)
         ):
             deserialiser = get_code_list_versioned_deserialiser(
-                self.code_list, default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL
-            )
-
-            (
-                new_code_list,
-                json_schema_validation_errors,
-                _,
-            ) = deserialiser(self.code_list)
-
-            return (new_code_list, json_schema_validation_errors)
-        elif (
-            cube_config_minor_version
-            and cube_config_minor_version >= 5
-            and isinstance(self.code_list, dict)
-        ):
-            deserialiser = get_code_list_versioned_deserialiser(
-                self.code_list, default_schema_uri=LATEST_V2_CODELIST_SCHEMA_URL
+                self.code_list,
+                default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL
+                if cube_config_minor_version < 5
+                else LATEST_V2_CODELIST_SCHEMA_URL,
             )
 
             (

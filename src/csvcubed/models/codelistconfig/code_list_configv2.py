@@ -28,7 +28,7 @@ CODE_LIST_CONFIG_V2_DEFAULT_URL = "https://purl.org/csv-cubed/code-list-config/v
 
 @dataclass
 class CodeListConfigConceptV2(DataClassBase):
-    """Model for representing a code list concept in code list config."""
+    """Model for representing a code list concept in code list config v2."""
 
     label: str
     notation: str
@@ -41,7 +41,7 @@ class CodeListConfigConceptV2(DataClassBase):
 
 @dataclass
 class CodeListConfigV2(DataClassBase):
-    """Model for representing a code list config."""
+    """Model for representing a v2 code list config."""
 
     sort: Optional[CodeListConfigSort] = field(default=None)
     concepts: List[CodeListConfigConceptV2] = field(default_factory=list)
@@ -59,7 +59,7 @@ class CodeListConfigV2(DataClassBase):
     @classmethod
     def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfigV2", Dict]:
         """
-        Converts code list config json to `CodeListConfig`.
+        Converts code list config json to `CodeListConfigV2`.
         """
         code_list_dict = load_json_document(file_path)
         schema = code_list_dict.get("$schema", CODE_LIST_CONFIG_V2_DEFAULT_URL)
@@ -73,7 +73,7 @@ class CodeListConfigV2(DataClassBase):
     @classmethod
     def from_dict(cls, code_list_dict: Dict) -> "CodeListConfigV2":
         """
-        Converts code list config dict to `CodeListConfig`.
+        Converts code list config dict to `CodeListConfigV2`.
         """
         schema = code_list_dict.get("$schema", CODE_LIST_CONFIG_V2_DEFAULT_URL)
 
@@ -86,7 +86,7 @@ class CodeListConfigV2(DataClassBase):
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """
-        Converts concepts of type CodeListConfigConcept to concepts of type NewQbConcept whilst maintaining the hierarchy.
+        Converts concepts of type CodeListConfigConceptV2 to concepts of type NewQbConcept whilst maintaining the hierarchy.
         """
 
         new_qb_concepts: list[NewQbConcept] = []
