@@ -50,8 +50,8 @@ def test_existing_unit_with_scaling_factor():
 
 def test_code_list_config_v1_same_as():
     """
-    Tests that a code list can successfully be generated when given an input config with schema
-    version > 1.0 and <1.5 and using the same_as field.
+    Tests that a NewQBCodeList can successfully be generated when given an input config with schema
+    version > 1.0 and <1.5 and using the same_as field, with the correct version of the config deserialiser.
     """
     new_dimension = NewDimension(
         "Dimension",
@@ -67,10 +67,6 @@ def test_code_list_config_v1_same_as():
                 }
             ],
         },
-    )
-    data = Series(data=["a", "b", "c"])
-    qb_dimension = new_dimension.map_to_new_qb_dimension(
-        "Dimension", data=data, cube_config_minor_version=2
     )
     code_list = new_dimension.code_list
 
@@ -88,7 +84,7 @@ def test_code_list_config_v1_same_as():
 def test_code_list_config_v1_exact_match_error():
     """
     Tests that an error is raised as expected when trying to create a code list with
-    a schema version >=1.0 and <1.5 but using the exact_match field.
+    a schema version >=1.0 and <1.5 but using the exact_match field (Wrong version for the config deserialiser).
     """
     new_dimension = NewDimension(
         "Dimension",
@@ -126,7 +122,7 @@ def test_code_list_config_v1_exact_match_error():
 def test_code_list_config_v2_exact_match():
     """
     Tests that a code list can successfully be generated when given an input config with schema
-    version >= 1.5 and <=2.0 and using the exact_match field.
+    version >= 1.5 and <=2.0 and using the exact_match field, with the correct version of the config deserialiser.
     """
     new_dimension = NewDimension(
         "Dimension",
@@ -163,7 +159,7 @@ def test_code_list_config_v2_exact_match():
 def test_code_list_config_v2_same_as_error():
     """
     Tests that an error is raised as expected when trying to create a code list with
-    a schema version >=1.5 and <=2.0 but using the same_as field.
+    a schema version >=1.5 and <=2.0 but using the same_as field (Wrong version for the config deserialiser).
     """
     new_dimension = NewDimension(
         "Dimension",
