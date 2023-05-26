@@ -140,9 +140,7 @@ def test_code_list_config_v2_exact_match():
         },
     )
     data = Series(data=["a", "b", "c"])
-    qb_dimension = new_dimension.map_to_new_qb_dimension(
-        "Dimension", data=data, cube_config_minor_version=2
-    )
+
     code_list = new_dimension.code_list
 
     deserialiser = get_code_list_versioned_deserialiser(code_list)
