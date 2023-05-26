@@ -101,7 +101,7 @@ def test_code_list_config_v1_exact_match_error():
             ],
         },
     )
-    data = Series(data=["a", "b", "c"])
+
     code_list = new_dimension.code_list
 
     with pytest.raises(Exception) as err:
@@ -139,7 +139,6 @@ def test_code_list_config_v2_exact_match():
             ],
         },
     )
-    data = Series(data=["a", "b", "c"])
 
     code_list = new_dimension.code_list
 
@@ -174,7 +173,7 @@ def test_code_list_config_v2_same_as_error():
             ],
         },
     )
-    data = Series(data=["a", "b", "c"])
+
     code_list = new_dimension.code_list
 
     with pytest.raises(Exception) as err:
