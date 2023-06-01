@@ -326,7 +326,10 @@ class DataCubeRepository:
         ).csv_url
 
     def get_dataframe(
-        self, csv_url: str, dereference_uris: bool = True
+        self,
+        csv_url: str,
+        include_suppressed_cols: bool = True,
+        dereference_uris: bool = True,
     ) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
@@ -340,17 +343,25 @@ class DataCubeRepository:
             urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
         )
         (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
-
         if dereference_uris:
             code_lists = self.get_code_lists_and_cols(csv_url).codelists
             for col in cols:
                 col_values = df[col.column_definition.title].values
-                if isinstance(col_values, Categorical):
-                    df[col.column_definition.title] = col_values.rename_categories(
-                        self._get_new_category_labels_for_col(
-                            csv_url, col, col_values.categories, code_lists
+                if col.column_type.value != "Suppressed":
+                    if isinstance(col_values, Categorical):
+                        df[col.column_definition.title] = col_values.rename_categories(
+                            self._get_new_category_labels_for_col(
+                                csv_url, col, col_values.categories, code_lists
+                            )
                         )
-                    )
+                else:
+                    df[col.column_definition.title] == col_values
+        if not include_suppressed_cols:
+            cols_to_drop = []
+            for col in cols:
+                if col.column_type.value == "Suppressed":
+                    cols_to_drop.append(col.column_definition.title)
+            df = df.drop(cols_to_drop, axis=1)
         return df, _errors
 
     def _get_new_category_labels_for_col(
@@ -378,6 +389,8 @@ class DataCubeRepository:
         elif col.column_type.value == "Dimension":
             return self._dereference_uris_for_dimensions(code_lists, col)
         # Column is either an Attribute Literal or Observations
+        # elif col.column_type.value == "Suppressed":
+
         raise ValueError(
             f"Unhandled column type/configuration - {col.column_type.value}, {col.column_definition}"
         )

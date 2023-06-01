@@ -1090,6 +1090,7 @@ def test_load_pandas_df_dtypes_from_standard_shape_csv_url():
     assert dataframe["Units"].dtype == "category"
     assert dataframe["Measures"].dtype == "category"
     assert dataframe["Obs"].dtype == "short"
+    assert dataframe["Suppressed"].dtype == "category"
     assert not any(validation_errors)
 
 
@@ -1110,7 +1111,7 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
     csv_url = data_cube_repository.get_primary_csv_url()
 
     dataframe, validation_errors = data_cube_repository.get_dataframe(
-        csv_url, dereference_uris=True
+        csv_url, include_suppressed_cols=False, dereference_uris=True
     )
     expected_df = pd.DataFrame(
         data={
@@ -1133,6 +1134,9 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
                 ["Some Measure 1", "Some Measure 2", "Some Measure 3"], dtype="category"
             ),
             "Obs": pd.Series([127, 227, 327], dtype="int16"),
+            # "Suppressed": pd.Series(
+            #     ["suppressed-1", "suppressed-2", "suppressed-3"], dtype="category"
+            # ),
         }
     )
 
@@ -1179,6 +1183,9 @@ def test_load_pandas_df_standard_shape_without_dereferencing():
                 ["some-measure-1", "some-measure-2", "some-measure-3"], dtype="category"
             ),
             "Obs": pd.Series([127, 227, 327], dtype="int16"),
+            "Suppressed": pd.Series(
+                ["suppressed-1", "suppressed-2", "suppressed-3"], dtype="category"
+            ),
         }
     )
     assert_frame_equal(dataframe, expected_df)
@@ -1209,6 +1216,7 @@ def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     assert dataframe["Obs1"].dtype == "string"
     assert dataframe["Dim2"].dtype == "category"
     assert dataframe["Obs2"].dtype == "bool"
+    assert dataframe["Suppressed"].dtype == "category"
     assert not any(validation_errors)
 
 
@@ -1236,6 +1244,7 @@ def test_load_pandas_df_pivoted_shape_with_dereferencing():
             "Obs1": pd.Series(["01:02:03"], dtype="string"),
             "Dim2": pd.Series(["Value2"], dtype="category"),
             "Obs2": pd.Series([True], dtype="bool"),
+            "Suppressed": pd.Series(["suppressed-1"], dtype="category"),
         }
     )
     assert_frame_equal(dataframe, expected_df)
@@ -1266,6 +1275,7 @@ def test_load_pandas_df_pivoted_shape_without_dereferencing():
             "Obs1": pd.Series(["01:02:03"], dtype="string"),
             "Dim2": pd.Series(["value2"], dtype="category"),
             "Obs2": pd.Series([True], dtype="bool"),
+            "Suppressed": pd.Series(["suppressed-1"], dtype="category"),
         }
     )
     assert_frame_equal(dataframe, expected_df)
