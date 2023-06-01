@@ -1220,6 +1220,55 @@ def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     assert not any(validation_errors)
 
 
+def test_load_pandas_df_standard_shape_with_suppressed_cols():
+    """
+    Tests that using the get_dataframe function with suppressed columns included
+    correctly returns the expected dataframe.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "repository-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=True, dereference_uris=True
+    )
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(
+                data=["Something 1", "Something 2", "Something 3"], dtype="category"
+            ),
+            "Dim2": pd.Series(
+                ["Something Else 1", "Something Else 2", "Something Else 3"],
+                dtype="category",
+            ),
+            "Dim3": pd.Series([2021, 2022, 2023], dtype="category"),
+            "AttrResource": pd.Series(
+                ["Final", "Provisional", "Estimated"], dtype="category"
+            ),
+            "AttrLiteral": pd.Series([-90, -80, -70], dtype="Int64"),
+            "Units": pd.Series(
+                ["Some Unit 1", "Some Unit 2", "Some Unit 3"], dtype="category"
+            ),
+            "Measures": pd.Series(
+                ["Some Measure 1", "Some Measure 2", "Some Measure 3"], dtype="category"
+            ),
+            "Obs": pd.Series([127, 227, 327], dtype="int16"),
+            "Suppressed": pd.Series(
+                ["suppressed-1", "suppressed-2", "suppressed-3"], dtype="category"
+            ),
+        }
+    )
+
+    assert_frame_equal(dataframe, expected_df)
+    assert not any(validation_errors)
+
+
 def test_load_pandas_df_pivoted_shape_with_dereferencing():
     """
     Testing that a dataframe with columns represented in the correct data types
