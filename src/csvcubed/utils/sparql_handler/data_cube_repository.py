@@ -17,7 +17,10 @@ from csvcubedmodels.rdf.namespaces import XSD
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.inputs import pandas_input_to_columnar_str
+from csvcubed.inputs import (
+    pandas_input_to_columnar_optional_str,
+    pandas_input_to_columnar_str,
+)
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
@@ -518,7 +521,7 @@ class DataCubeRepository:
         return {
             name: [
                 uritemplate.expand(value_url, {name: av})
-                for av in pandas_input_to_columnar_str(
+                for av in pandas_input_to_columnar_optional_str(
                     dataframe[map_col_name_to_title[name]].unique()
                 )
             ]
