@@ -500,7 +500,7 @@ class DataCubeRepository:
         csv_url,
         map_col_name_to_title: Dict[str, str],
         map_resource_attr_col_name_to_value_url: Dict[str, str],
-    ) -> Dict[str, List[str]]:
+    ) -> Dict[str, List[Optional[str]]]:
         """
         Returns a dictionary of column name mapped to a list of all attribute value uris for that column
         """
