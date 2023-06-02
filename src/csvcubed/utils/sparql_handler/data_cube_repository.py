@@ -357,10 +357,11 @@ class DataCubeRepository:
                 else:
                     df[col.column_definition.title] == col_values
         if not include_suppressed_cols:
-            cols_to_drop = []
-            for col in cols:
-                if col.column_type.value == "Suppressed":
-                    cols_to_drop.append(col.column_definition.title)
+            cols_to_drop = [
+                col.column_definition.title
+                for col in cols
+                if col.column_type.value == "Suppressed"
+            ]
             df = df.drop(cols_to_drop, axis=1)
         return df, _errors
 
