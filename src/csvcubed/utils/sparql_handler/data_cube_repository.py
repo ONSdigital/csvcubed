@@ -335,6 +335,7 @@ class DataCubeRepository:
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
+        include_suppressed_cols=True means Suppressed columns will be included in the returned dataframe (not dereferenced to labels)
         dereference_uris=True means URIs of column values are converted to their human readable labels.
         """
         cols = self.get_column_component_info(csv_url)
@@ -347,6 +348,7 @@ class DataCubeRepository:
             code_lists = self.get_code_lists_and_cols(csv_url).codelists
             for col in cols:
                 col_values = df[col.column_definition.title].values
+                # Exclude suppressed columns from dereferencing as we don't know what component type they are in order to call the correct dereferencing function
                 if col.column_type.value != "Suppressed":
                     if isinstance(col_values, Categorical):
                         df[col.column_definition.title] = col_values.rename_categories(
@@ -390,8 +392,6 @@ class DataCubeRepository:
         elif col.column_type.value == "Dimension":
             return self._dereference_uris_for_dimensions(code_lists, col)
         # Column is either an Attribute Literal or Observations
-        # elif col.column_type.value == "Suppressed":
-
         raise ValueError(
             f"Unhandled column type/configuration - {col.column_type.value}, {col.column_definition}"
         )
