@@ -356,8 +356,6 @@ class DataCubeRepository:
                                 csv_url, col, col_values.categories, code_lists
                             )
                         )
-                else:
-                    df[col.column_definition.title] == col_values
         if not include_suppressed_cols:
             cols_to_drop = [
                 col.column_definition.title
