@@ -17,10 +17,7 @@ from csvcubedmodels.rdf.namespaces import XSD
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.inputs import (
-    pandas_input_to_columnar_optional_str,
-    pandas_input_to_columnar_str,
-)
+from csvcubed.inputs import pandas_input_to_columnar_optional_str
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
@@ -500,7 +497,7 @@ class DataCubeRepository:
         csv_url,
         map_col_name_to_title: Dict[str, str],
         map_resource_attr_col_name_to_value_url: Dict[str, str],
-    ) -> Dict[str, List[Optional[str]]]:
+    ) -> Dict[str, List[str]]:
         """
         Returns a dictionary of column name mapped to a list of all attribute value uris for that column
         """
@@ -524,6 +521,7 @@ class DataCubeRepository:
                 for av in pandas_input_to_columnar_optional_str(
                     dataframe[map_col_name_to_title[name]].unique()
                 )
+                if av is not None
             ]
             for name, value_url in map_resource_attr_col_name_to_value_url.items()
         }
