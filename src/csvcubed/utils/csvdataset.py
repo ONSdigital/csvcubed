@@ -15,6 +15,7 @@ import uritemplate
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 from uritemplate.orderedset import OrderedSet
 
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
 from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
@@ -22,8 +23,8 @@ from csvcubed.models.csvcubedexception import (
     InvalidUnitColumnDefinition,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.inspectdataframeresults import DatasetSingleMeasureResult
-from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
+from csvcubed.models.inspect.inspectdataframeresults import DatasetSingleMeasureResult
+from csvcubed.models.inspect.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import (
     ComponentField,
@@ -31,7 +32,6 @@ from csvcubed.utils.qb.components import (
     ComponentPropertyType,
     get_component_property_as_relative_path,
 )
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 
 _logger = logging.getLogger(__name__)
 

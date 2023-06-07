@@ -6,7 +6,7 @@ from pandas.testing import assert_frame_equal
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import (
+from csvcubed.models.inspect.sparqlresults import (
     CodelistResult,
     CodelistsResult,
     CubeTableIdentifiers,
@@ -20,9 +20,7 @@ from tests.helpers.repository_cache import (
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )
-from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
-    get_arguments_qb_dataset,
-)
+from tests.unit.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

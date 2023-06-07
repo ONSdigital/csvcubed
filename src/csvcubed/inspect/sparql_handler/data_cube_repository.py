@@ -18,10 +18,21 @@ from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.inputs import pandas_input_to_columnar_str
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
+    select_csvw_dsd_qube_components,
+    select_data_set_dsd_and_csv_url,
+    select_dsd_code_list_and_cols,
+    select_is_pivoted_shape_data_set,
+    select_labels_for_resource_uris,
+    select_units,
+)
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
-from csvcubed.models.sparqlresults import (
+from csvcubed.models.inspect.column_component_info import ColumnComponentInfo
+from csvcubed.models.inspect.sparqlresults import (
     CodelistResult,
     CodelistsResult,
     ColumnDefinition,
@@ -36,17 +47,6 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_dsd_qube_components,
-    select_data_set_dsd_and_csv_url,
-    select_dsd_code_list_and_cols,
-    select_is_pivoted_shape_data_set,
-    select_labels_for_resource_uris,
-    select_units,
-)
 from csvcubed.utils.uri import file_uri_to_path
 
 _XSD_BASE_URI: str = XSD[""].toPython()

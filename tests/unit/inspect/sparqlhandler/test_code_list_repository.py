@@ -1,6 +1,9 @@
 import pytest
 
-from csvcubed.models.sparqlresults import CatalogMetadataResult, CodeListTableIdentifers
+from csvcubed.models.inspect.sparqlresults import (
+    CatalogMetadataResult,
+    CodeListTableIdentifers,
+)
 from tests.helpers.repository_cache import (
     get_code_list_repository,
     get_csvw_rdf_manager,
