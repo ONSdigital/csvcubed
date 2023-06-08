@@ -75,7 +75,6 @@ def test_rdf_dependency_loaded() -> None:
     """
     Ensure that the CsvWRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
-    dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
 
     csvw_rdf_manager = get_csvw_rdf_manager(metadata_file)

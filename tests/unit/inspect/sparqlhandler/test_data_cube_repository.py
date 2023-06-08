@@ -107,7 +107,7 @@ def test_get_cube_identifiers_for_data_set_error():
         )
         assert cube_identifers is None
 
-    assert (f"Could not find the data_set with URI ''.") in str(exception.value)
+    assert ("Could not find the data_set with URI ''.") in str(exception.value)
 
 
 def test_get_cube_identifiers_for_csv():
