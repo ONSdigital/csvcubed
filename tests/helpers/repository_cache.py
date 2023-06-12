@@ -7,9 +7,9 @@ Caches repository objects for data sets which are commonly used as test cases
 from pathlib import Path
 from typing import Dict
 
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
-from csvcubed.utils.tableschema import CsvWRdfManager
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.inspect.tableschema import CsvWRdfManager
 
 _csvw_rdf_manager_cache: Dict[str, CsvWRdfManager] = {}
 _data_cube_repository_cache: Dict[str, DataCubeRepository] = {}

@@ -5,11 +5,11 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 
 SELECT DISTINCT ?tablePrimaryKey
-WHERE {   
+WHERE {
 
     ?table csvw:tableSchema ?tableSchema;
            csvw:url ?tableUrl.
-           
+
     ?tableSchema csvw:primaryKey ?tablePrimaryKey.
 
     BIND (?table_url as ?tableUrlStr).

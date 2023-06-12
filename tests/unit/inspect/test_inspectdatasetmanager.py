@@ -7,20 +7,28 @@ from pandas import DataFrame
 from pandas.testing import assert_frame_equal
 from treelib import Tree
 
-from csvcubed.cli.inspectcsvw.inspectdatasetmanager import (
+from csvcubed.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
 )
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
+    select_primary_key_col_names_by_csv_url,
+)
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.validationerrors import BothMeasureTypesDefinedError
-from csvcubed.models.inspectdataframeresults import (
+from csvcubed.models.inspect.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
-from csvcubed.models.sparqlresults import QubeComponentResult, QubeComponentsResult
+from csvcubed.models.inspect.sparqlresults import (
+    QubeComponentResult,
+    QubeComponentsResult,
+)
 from csvcubed.utils.csvdataset import (
     get_single_measure_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
@@ -31,11 +39,6 @@ from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
-)
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_primary_key_col_names_by_csv_url,
 )
 from tests.helpers.repository_cache import (
     get_code_list_repository,

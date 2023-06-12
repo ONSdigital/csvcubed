@@ -4,8 +4,8 @@ from pathlib import PosixPath, WindowsPath
 import pytest
 import rdflib
 
+from csvcubed.inspect.sparql_handler.sparql import path_to_file_uri_for_rdflib, select
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib, select
 
 
 def test_path_to_file_uri_for_rdflib():
@@ -51,7 +51,7 @@ def test_values_binding():
     results = select(
         """
             SELECT ?a ?b ?c
-            WHERE {} 
+            WHERE {}
         """,
         rdflib.Graph(),
         values_bindings=[

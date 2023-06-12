@@ -16,13 +16,13 @@ from rdflib import Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.inspect.sparql_handler.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
     InvalidNumberOfRecordsException,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparql.valuesbinding import ValuesBinding
-from csvcubed.models.sparqlresults import (
+from csvcubed.models.inspect.sparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
     ColumnDefinition,
@@ -47,7 +47,7 @@ from csvcubed.models.sparqlresults import (
     map_table_schema_properties_results,
     map_units,
 )
-from csvcubed.utils.sparql_handler.sparql import ask, select
+from csvcubed.models.sparql.valuesbinding import ValuesBinding
 
 _logger = logging.getLogger(__name__)
 
@@ -102,7 +102,7 @@ def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
 
     file_path: Path = (
         APP_ROOT_DIR_PATH
-        / "utils"
+        / "inspect"
         / "sparql_handler"
         / "sparql_queries"
         / (query_type.value + ".sparql")

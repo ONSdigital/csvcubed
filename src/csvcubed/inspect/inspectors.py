@@ -11,9 +11,9 @@ from functools import cache
 from typing import List, Optional, TypeVar
 
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
-from csvcubed.models.sparqlresults import CatalogMetadataResult
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.models.inspect.sparqlresults import CatalogMetadataResult
 
 TClass = TypeVar("TClass")
 TRet = TypeVar("TRet")
