@@ -12,14 +12,14 @@ from urllib.parse import urljoin, urlparse
 
 from csvcubedmodels.rdf.namespaces import SKOS
 
-from csvcubed.models.sparqlresults import (
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.models.inspect.sparqlresults import (
     CatalogMetadataResult,
     CodeListTableIdentifers,
     ColumnDefinition,
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.pandas import read_csv
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import file_uri_to_path, looks_like_uri
 from csvcubed.writers.skoscodelistwriter import (

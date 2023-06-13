@@ -17,10 +17,10 @@ from urllib.parse import urljoin, urlparse
 import rdflib
 from requests.exceptions import HTTPError
 
+from csvcubed.inspect.tableschema import add_triples_for_file_dependencies
 from csvcubed.utils.cache import session
 from csvcubed.utils.json import load_json_document
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 from csvcubed.utils.uri import file_uri_to_path, looks_like_uri
 
 _logger = logging.getLogger(__name__)

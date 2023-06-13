@@ -9,7 +9,7 @@ style column types and the underlying RDF Data Cube DataStructureDefinition Comp
 from dataclasses import dataclass
 from typing import Optional
 
-from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
+from csvcubed.models.inspect.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.qb.components import EndUserColumnType
 
 
@@ -26,5 +26,5 @@ class ColumnComponentInfo:
     """
     The component may be None in situations such as:
         * The column is marked as `suppressed`,
-        * The column is an observations column in a standard shape cube. 
+        * The column is an observations column in a standard shape cube.
     """

@@ -9,11 +9,8 @@ import logging
 from pathlib import Path
 from typing import List, Set, Union
 
-from rdflib import Graph
-
 from csvcubed.utils.rdf import parse_graph_retain_relative
 
-from .json import load_json_document
 from .uri import looks_like_uri
 
 _logger = logging.getLogger(__name__)
@@ -100,30 +97,3 @@ def _get_base_path(preliminary_base_path: Path, table_group: dict) -> Union[Path
             else:
                 return preliminary_base_path / base
     return preliminary_base_path
-
-
-def load_table_schema_file_to_graph(
-    table_schema_file_path: Union[str, Path],
-    table_schema_file_identifier: str,
-    graph: Graph,
-) -> None:
-    """
-    Given a tableSchema file definition at :obj:`table_schema_file_path`,
-     load the metadata as CSV-W flavoured RDF into the graph :obj:`graph`.
-    """
-    table_schema_document = load_json_document(table_schema_file_path)
-
-    # > When a schema is referenced by URL, this URL becomes the value of the @id property in the
-    # > normalized schema description, and thus the value of the schema annotation on the table.
-    #
-    # https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#table-schema
-    table_schema_document["@id"] = table_schema_file_identifier
-
-    # Provide the context to help generate all of the necessary RDF.
-    table_schema_document["@context"] = "http://www.w3.org/ns/csvw"
-
-    table_schema_document_json = json.dumps(table_schema_document)
-
-    parse_graph_retain_relative(
-        data=table_schema_document_json, format="json-ld", graph=graph
-    )

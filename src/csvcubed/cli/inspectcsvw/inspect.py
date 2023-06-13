@@ -12,12 +12,12 @@ from typing import Tuple
 
 from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.inspect.tableschema import CsvWRdfManager
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
-from csvcubed.utils.tableschema import CsvWRdfManager
 
 _logger = logging.getLogger(__name__)
 

@@ -13,6 +13,7 @@ from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib.query import ResultRow
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI
+from csvcubed.inspect.sparql_handler.sparql import none_or_map
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.qb.components import (
@@ -20,7 +21,6 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
     get_component_property_type,
 )
-from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
 

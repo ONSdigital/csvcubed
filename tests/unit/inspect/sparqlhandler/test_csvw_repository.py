@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 from rdflib import ConjunctiveGraph
 
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.sparqlresults import ColumnDefinition
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
+from csvcubed.models.inspect.sparqlresults import ColumnDefinition
 from tests.helpers.repository_cache import (
     get_code_list_repository,
     get_csvw_rdf_manager,

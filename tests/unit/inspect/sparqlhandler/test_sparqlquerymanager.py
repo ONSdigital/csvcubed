@@ -3,13 +3,13 @@ from pathlib import Path
 import pytest
 from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
-from csvcubed.models.sparqlresults import MetadataDependenciesResult
-from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
     select_csvw_table_schema_file_dependencies,
     select_metadata_dependencies,
 )
-from csvcubed.utils.tableschema import add_triples_for_file_dependencies
+from csvcubed.inspect.tableschema import add_triples_for_file_dependencies
+from csvcubed.models.inspect.sparqlresults import MetadataDependenciesResult
+from csvcubed.utils.rdf import parse_graph_retain_relative
 from tests.helpers.repository_cache import (
     get_code_list_repository,
     get_csvw_rdf_manager,
@@ -75,7 +75,6 @@ def test_rdf_dependency_loaded() -> None:
     """
     Ensure that the CsvWRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
-    dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
 
     csvw_rdf_manager = get_csvw_rdf_manager(metadata_file)

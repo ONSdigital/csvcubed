@@ -1,7 +1,7 @@
 from csvcubedmodels.rdf.namespaces import CSVW
 from rdflib import Literal, URIRef
 
-from csvcubed.utils.tableschema import CsvWRdfManager
+from csvcubed.inspect.tableschema import CsvWRdfManager
 from tests.helpers.repository_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
