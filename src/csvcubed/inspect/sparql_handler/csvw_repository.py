@@ -13,22 +13,22 @@ from typing import Dict, List
 
 import rdflib
 
-from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult,
-    ColumnDefinition,
-    TableSchemaPropertiesResult,
-)
-from csvcubed.utils.dict import get_from_dict_ensure_exists
-from csvcubed.utils.iterables import group_by
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+from csvcubed.inspect.sparql_handler.sparql import path_to_file_uri_for_rdflib
+from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_column_definitions,
     select_csvw_catalog_metadata,
     select_table_schema_properties,
 )
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.inspect.sparqlresults import (
+    CatalogMetadataResult,
+    ColumnDefinition,
+    TableSchemaPropertiesResult,
+)
+from csvcubed.utils.dict import get_from_dict_ensure_exists
+from csvcubed.utils.iterables import group_by
 
 
 @dataclass

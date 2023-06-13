@@ -4,9 +4,9 @@ PREFIX om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
 PREFIX qudt: <http://qudt.org/schema/qudt/>
 
 SELECT DISTINCT ?unit ?unitLabel
-WHERE {   
+WHERE {
     ?unit a ?unitType.
     FILTER(?unitType IN (qudt:Unit, om2:Unit)).
 
     ?unit rdfs:label ?unitLabel.
-}    
+}
