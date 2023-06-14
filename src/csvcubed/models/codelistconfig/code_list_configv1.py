@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Tuple
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from csvcubed.models.codelistconfig.code_list_config import (
+from csvcubed.models.codelistconfig.code_list_config_sort import (
     CodeListConfigSort,
     apply_sort_to_child_concepts,
     sort_concepts,

@@ -50,8 +50,8 @@ def test_existing_unit_with_scaling_factor():
 
 def test_code_list_config_v1_same_as():
     """
-    Tests that a NewQBCodeList can successfully be generated when given an input config with schema
-    version > 1.0 and <1.5 and using the same_as field, with the correct version of the config deserialiser.
+    Tests that a NewQBCodeList is successfully be generated when given an input config with codelist schema
+    version 1.x and using the same_as field, with the correct version of the config deserialiser.
     """
     new_dimension = NewDimension(
         "Dimension",
@@ -78,13 +78,25 @@ def test_code_list_config_v1_same_as():
         validation_errors,
     ) = deserialiser(code_list)
 
-    assert code_list
+    concept = code_list.concepts[0]
+
+    assert len(code_list.concepts) == 1
+    assert len(json_schema_validation_errors) == 0
+    assert len(validation_errors) == 0
+    assert code_list.metadata.title == "Code list title"
+    assert concept.label == "A"
+    assert concept.code == "a"
+    assert concept.description == "A data record"
+    assert (
+        concept.existing_concept_uri
+        == "http://example.com/concepts/some-existing-concept"
+    )
 
 
 def test_code_list_config_v1_exact_match_error():
     """
     Tests that an error is raised as expected when trying to create a code list with
-    a schema version >=1.0 and <1.5 but using the exact_match field (Wrong version for the config deserialiser).
+    codelist schema version 1.x but using the exact_match field (Wrong version for the config deserialiser).
     """
     new_dimension = NewDimension(
         "Dimension",
@@ -121,8 +133,8 @@ def test_code_list_config_v1_exact_match_error():
 
 def test_code_list_config_v2_exact_match():
     """
-    Tests that a code list can successfully be generated when given an input config with schema
-    version >= 1.5 and <=2.0 and using the exact_match field, with the correct version of the config deserialiser.
+    Tests that a NewQBCodeList is successfully be generated when given an input config with codelist schema
+    version 2.x and using the exact_match field, with the correct version of the config deserialiser.
     """
     new_dimension = NewDimension(
         "Dimension",
@@ -150,13 +162,25 @@ def test_code_list_config_v2_exact_match():
         validation_errors,
     ) = deserialiser(code_list)
 
-    assert code_list
+    concept = code_list.concepts[0]
+
+    assert len(code_list.concepts) == 1
+    assert len(json_schema_validation_errors) == 0
+    assert len(validation_errors) == 0
+    assert code_list.metadata.title == "Code list title"
+    assert concept.label == "A"
+    assert concept.code == "a"
+    assert concept.description == "A data record"
+    assert (
+        concept.existing_concept_uri
+        == "http://example.com/concepts/some-existing-concept"
+    )
 
 
 def test_code_list_config_v2_same_as_error():
     """
     Tests that an error is raised as expected when trying to create a code list with
-    a schema version >=1.5 and <=2.0 but using the same_as field (Wrong version for the config deserialiser).
+    codelist schema version 2.x but using the same_as field (Wrong version for the config deserialiser).
     """
     new_dimension = NewDimension(
         "Dimension",

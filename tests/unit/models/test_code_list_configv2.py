@@ -21,7 +21,10 @@ from tests.unit.test_baseunit import get_test_cases_dir
 _test_case_readers_base_dir = (
     get_test_cases_dir() / "readers" / "code-list-config" / "v2.0"
 )
-_test_case_writers_base_dir = get_test_cases_dir() / "writers"
+
+_test_case_writers_base_dir = (
+    get_test_cases_dir() / "writers" / "skoscodelistwriter" / "v1.0"
+)
 
 
 def _assert_code_list_config_concepts(
@@ -236,15 +239,8 @@ def test_exact_match_field_in_output_csv():
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
         output_dir = temp_dir / "out"
-        config_path = (
-            _test_case_writers_base_dir
-            / "skoscodelistwriter"
-            / "v2.0"
-            / "colourconfig.json"
-        )
-        csv_path = (
-            _test_case_writers_base_dir / "skoscodelistwriter" / "v2.0" / "colours.csv"
-        )
+        config_path = _test_case_writers_base_dir / "colourconfig.json"
+        csv_path = _test_case_writers_base_dir / "colours.csv"
 
         cli_build(
             output_directory=output_dir, csv_path=csv_path, config_path=config_path
