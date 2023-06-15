@@ -23,7 +23,7 @@ _test_case_readers_base_dir = (
 )
 
 _test_case_writers_base_dir = (
-    get_test_cases_dir() / "writers" / "skoscodelistwriter" / "v1.0"
+    get_test_cases_dir() / "writers" / "skoscodelistwriter" / "v2.0"
 )
 
 

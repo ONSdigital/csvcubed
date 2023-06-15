@@ -150,7 +150,7 @@ class SkosCodeListWriter(WriterBase):
                     "titles": "Original Concept URI",
                     "name": "uri",
                     "required": True,
-                    "propertyUrl": "owl:sameAs",
+                    "propertyUrl": "skos:exactMatch",
                     "valueUrl": "{+uri}",
                 }
             )
