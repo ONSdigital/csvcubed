@@ -326,12 +326,16 @@ class DataCubeRepository:
         ).csv_url
 
     def get_dataframe(
-        self, csv_url: str, dereference_uris: bool = True
+        self,
+        csv_url: str,
+        include_suppressed_cols: bool = True,
+        dereference_uris: bool = True,
     ) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
+        include_suppressed_cols=True means Suppressed columns will be included in the returned dataframe (not dereferenced to labels)
         dereference_uris=True means URIs of column values are converted to their human readable labels.
         """
         cols = self.get_column_component_info(csv_url)
@@ -340,17 +344,25 @@ class DataCubeRepository:
             urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
         )
         (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
-
         if dereference_uris:
             code_lists = self.get_code_lists_and_cols(csv_url).codelists
             for col in cols:
                 col_values = df[col.column_definition.title].values
-                if isinstance(col_values, Categorical):
-                    df[col.column_definition.title] = col_values.rename_categories(
-                        self._get_new_category_labels_for_col(
-                            csv_url, col, col_values.categories, code_lists
+                # Exclude suppressed columns from dereferencing as we don't know what component type they are in order to call the correct dereferencing function
+                if col.column_type.value != "Suppressed":
+                    if isinstance(col_values, Categorical):
+                        df[col.column_definition.title] = col_values.rename_categories(
+                            self._get_new_category_labels_for_col(
+                                csv_url, col, col_values.categories, code_lists
+                            )
                         )
-                    )
+        if not include_suppressed_cols:
+            cols_to_drop = [
+                col.column_definition.title
+                for col in cols
+                if col.column_type.value == "Suppressed"
+            ]
+            df = df.drop(cols_to_drop, axis=1)
         return df, _errors
 
     def _get_new_category_labels_for_col(
