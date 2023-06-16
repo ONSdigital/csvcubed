@@ -19,7 +19,7 @@ structure of a *code list configuration file*:
 
 ```json
 {
-  "$schema": "https://purl.org/csv-cubed/code-list-config/v1",
+  "$schema": "https://purl.org/csv-cubed/code-list-config/v2",
   "title": "Biscuit Varieties",
   "summary": "Common biscuit varieties.",
   "description": "A code list of common generic biscuit varieties available in supermarkets across the UK.",
@@ -127,7 +127,7 @@ The following fields can be defined for each of the concept defined in the conce
 | `description`  | Description of the concept                             | *none*            |
 | `notation`     | Notation of the concept                                | *none*            |
 | `sort_order`   | A numeric value defining the sort order of the concept | *none*            |
-| `same_as`      | A link to a concept defined elsewhere                  | *none*            |
+| `exact_match`  | A link to a concept defined elsewhere                  | *none*            |
 | `children`     | List of child concepts                                 | *none*            |
 
 #### Using `sort_order`
@@ -136,9 +136,9 @@ The `sort_order` field allows sorting a code list on per concept basis.
 
 *If both the aforementioned `sort` field and the concept's `sort_order` are defined, csvcubed first sorts the concepts with `sort_order`, and then sorts the rest of the concepts according to the `sort` field. In other words, the concept's `sort_order` field has priority over the code list's `sort` field.*
 
-#### Using `same_as`
+#### Using `exact_match`
 
-The `same_as` field allows using a concept defined elsewhere in the internet (e.g. [E92 concept in Geography Linked Data](http://statistics.data.gov.uk/id/statistical-geography/E92000001)).
+The `exact_match` field allows using a concept defined elsewhere on the internet (e.g. the [E92 concept in Geography Linked Data](http://statistics.data.gov.uk/id/statistical-geography/E92000001)).
 
 ### Referencing a code list configuration file
 
