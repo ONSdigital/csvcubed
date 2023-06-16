@@ -26,12 +26,12 @@ from csvcubed.inspect.inspectorcomponents import (
     Unit,
 )
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
-from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.models.inspect.column_component_info import ColumnComponentInfo
+from csvcubed.models.inspect.sparqlresults import QubeComponentResult
 from csvcubed.utils.iterables import first, single
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 
 
 @dataclass(frozen=True)

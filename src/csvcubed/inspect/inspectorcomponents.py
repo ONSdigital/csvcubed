@@ -9,7 +9,7 @@ within an inspector column.
 from dataclasses import dataclass, field
 
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
-from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.models.inspect.sparqlresults import QubeComponentResult
 
 
 @dataclass(frozen=True)

@@ -6,9 +6,9 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
 from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
 from tests.helpers.repository_cache import get_csvw_rdf_manager
 
 

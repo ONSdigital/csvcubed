@@ -6,7 +6,7 @@ from pandas.testing import assert_frame_equal
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import (
+from csvcubed.models.inspect.sparqlresults import (
     CodelistResult,
     CodelistsResult,
     CubeTableIdentifiers,
@@ -20,9 +20,7 @@ from tests.helpers.repository_cache import (
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )
-from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
-    get_arguments_qb_dataset,
-)
+from tests.unit.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -109,7 +107,7 @@ def test_get_cube_identifiers_for_data_set_error():
         )
         assert cube_identifers is None
 
-    assert (f"Could not find the data_set with URI ''.") in str(exception.value)
+    assert ("Could not find the data_set with URI ''.") in str(exception.value)
 
 
 def test_get_cube_identifiers_for_csv():
@@ -1090,6 +1088,7 @@ def test_load_pandas_df_dtypes_from_standard_shape_csv_url():
     assert dataframe["Units"].dtype == "category"
     assert dataframe["Measures"].dtype == "category"
     assert dataframe["Obs"].dtype == "short"
+    assert dataframe["Suppressed"].dtype == "category"
     assert not any(validation_errors)
 
 
@@ -1110,7 +1109,103 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
     csv_url = data_cube_repository.get_primary_csv_url()
 
     dataframe, validation_errors = data_cube_repository.get_dataframe(
-        csv_url, dereference_uris=True
+        csv_url, include_suppressed_cols=True, dereference_uris=True
+    )
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(
+                data=["Something 1", "Something 2", "Something 3"], dtype="category"
+            ),
+            "Dim2": pd.Series(
+                ["Something Else 1", "Something Else 2", "Something Else 3"],
+                dtype="category",
+            ),
+            "Dim3": pd.Series([2021, 2022, 2023], dtype="category"),
+            "AttrResource": pd.Series(
+                ["Final", "Provisional", "Estimated"], dtype="category"
+            ),
+            "AttrLiteral": pd.Series([-90, -80, -70], dtype="Int64"),
+            "Units": pd.Series(
+                ["Some Unit 1", "Some Unit 2", "Some Unit 3"], dtype="category"
+            ),
+            "Measures": pd.Series(
+                ["Some Measure 1", "Some Measure 2", "Some Measure 3"], dtype="category"
+            ),
+            "Obs": pd.Series([127, 227, 327], dtype="int16"),
+            "Suppressed": pd.Series(
+                ["suppressed-1", "suppressed-2", "suppressed-3"], dtype="category"
+            ),
+        }
+    )
+
+    assert_frame_equal(dataframe, expected_df)
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_standard_shape_without_dereferencing():
+    """
+    Checks that turning off the dereferencing parameter of the get_dataframe function
+    correctly returns the unchanged values from the created dataframe.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "repository-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=True, dereference_uris=False
+    )
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(
+                data=["something-1", "something-2", "something-3"], dtype="category"
+            ),
+            "Dim2": pd.Series(
+                ["something-else-1", "something-else-2", "something-else-3"],
+                dtype="category",
+            ),
+            "Dim3": pd.Series(["2021", "2022", "2023"], dtype="category"),
+            "AttrResource": pd.Series(
+                ["final", "provisional", "estimated"], dtype="category"
+            ),
+            "AttrLiteral": pd.Series([-90, -80, -70], dtype="Int64"),
+            "Units": pd.Series(
+                ["some-unit-1", "some-unit-2", "some-unit-3"], dtype="category"
+            ),
+            "Measures": pd.Series(
+                ["some-measure-1", "some-measure-2", "some-measure-3"], dtype="category"
+            ),
+            "Obs": pd.Series([127, 227, 327], dtype="int16"),
+            "Suppressed": pd.Series(
+                ["suppressed-1", "suppressed-2", "suppressed-3"], dtype="category"
+            ),
+        }
+    )
+    assert_frame_equal(dataframe, expected_df)
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_standard_shape_without_suppressed_cols():
+    """
+    Tests that using the get_dataframe function with suppressed columns not included correctly returns the expected dataframe.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "repository-load-dataframe"
+        / "standard-shape"
+        / "standard-shape-out"
+        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=False, dereference_uris=True
     )
     expected_df = pd.DataFrame(
         data={
@@ -1140,51 +1235,6 @@ def test_load_pandas_df_standard_shape_with_dereferencing():
     assert not any(validation_errors)
 
 
-def test_load_pandas_df_standard_shape_without_dereferencing():
-    """
-    Checks that turning off the dereferencing parameter of the get_dataframe function
-    correctly returns the unchanged values from the created dataframe.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "repository-load-dataframe"
-        / "standard-shape"
-        / "standard-shape-out"
-        / "testing-converting-a-standard-shape-csvw-to-pandas-dataframe.csv-metadata.json"
-    )
-    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
-    csv_url = data_cube_repository.get_primary_csv_url()
-
-    dataframe, validation_errors = data_cube_repository.get_dataframe(
-        csv_url, dereference_uris=False
-    )
-    expected_df = pd.DataFrame(
-        data={
-            "Dim1": pd.Series(
-                data=["something-1", "something-2", "something-3"], dtype="category"
-            ),
-            "Dim2": pd.Series(
-                ["something-else-1", "something-else-2", "something-else-3"],
-                dtype="category",
-            ),
-            "Dim3": pd.Series(["2021", "2022", "2023"], dtype="category"),
-            "AttrResource": pd.Series(
-                ["final", "provisional", "estimated"], dtype="category"
-            ),
-            "AttrLiteral": pd.Series([-90, -80, -70], dtype="Int64"),
-            "Units": pd.Series(
-                ["some-unit-1", "some-unit-2", "some-unit-3"], dtype="category"
-            ),
-            "Measures": pd.Series(
-                ["some-measure-1", "some-measure-2", "some-measure-3"], dtype="category"
-            ),
-            "Obs": pd.Series([127, 227, 327], dtype="int16"),
-        }
-    )
-    assert_frame_equal(dataframe, expected_df)
-    assert not any(validation_errors)
-
-
 def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     """
     Testing that a dataframe with columns represented in the correct data types
@@ -1200,15 +1250,17 @@ def test_load_pandas_df_dtypes_from_pivoted_shape_csv_url():
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url, False)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=True, dereference_uris=False
+    )
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Dim1"].dtype == "category"
-    # Expecting data type of Obs1 column to be "string" because the data type
-    # property has been defined as "time" in the json config file.
+    # Expecting data type of Obs1 column to be "string" because the data type property has been defined as "time" in the json config file.
     assert dataframe["Obs1"].dtype == "string"
     assert dataframe["Dim2"].dtype == "category"
     assert dataframe["Obs2"].dtype == "bool"
+    assert dataframe["Suppressed"].dtype == "category"
     assert not any(validation_errors)
 
 
@@ -1228,7 +1280,9 @@ def test_load_pandas_df_pivoted_shape_with_dereferencing():
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url, True)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=False, dereference_uris=True
+    )
 
     expected_df = pd.DataFrame(
         data={
@@ -1258,13 +1312,46 @@ def test_load_pandas_df_pivoted_shape_without_dereferencing():
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
     csv_url = data_cube_repository.get_primary_csv_url()
 
-    dataframe, validation_errors = data_cube_repository.get_dataframe(csv_url, False)
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=True, dereference_uris=False
+    )
 
     expected_df = pd.DataFrame(
         data={
             "Dim1": pd.Series(["value1"], dtype="category"),
             "Obs1": pd.Series(["01:02:03"], dtype="string"),
             "Dim2": pd.Series(["value2"], dtype="category"),
+            "Obs2": pd.Series([True], dtype="bool"),
+            "Suppressed": pd.Series(["suppressed-1"], dtype="category"),
+        }
+    )
+    assert_frame_equal(dataframe, expected_df)
+    assert not any(validation_errors)
+
+
+def test_load_pandas_df_pivoted_shape_without_suppressed_columns():
+    """
+    Tests that using the get_dataframe function with suppressed columns not included correctly returns the expected dataframe.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "repository-load-dataframe"
+        / "pivoted-shape"
+        / "pivoted-shape-out"
+        / "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, include_suppressed_cols=False, dereference_uris=True
+    )
+
+    expected_df = pd.DataFrame(
+        data={
+            "Dim1": pd.Series(["Value1"], dtype="category"),
+            "Obs1": pd.Series(["01:02:03"], dtype="string"),
+            "Dim2": pd.Series(["Value2"], dtype="category"),
             "Obs2": pd.Series([True], dtype="bool"),
         }
     )

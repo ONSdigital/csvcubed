@@ -31,6 +31,7 @@ jobs:
         shell: pwsh
 
       - uses: actions/setup-python@v4
+        id: install-python
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -55,7 +56,7 @@ jobs:
           path: |
             ~/.cache/pypoetry/virtualenvs
             C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
-          key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+          key: ${{ inputs.os }}-${{ steps.install-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}-
 
       - name: Install python packages
         run: poetry install --sync

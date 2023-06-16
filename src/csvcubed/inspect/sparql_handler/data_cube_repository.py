@@ -17,11 +17,22 @@ from csvcubedmodels.rdf.namespaces import XSD
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.inputs import pandas_input_to_columnar_str
+from csvcubed.inputs import pandas_input_to_columnar_optional_str
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
+    select_csvw_dsd_qube_components,
+    select_data_set_dsd_and_csv_url,
+    select_dsd_code_list_and_cols,
+    select_is_pivoted_shape_data_set,
+    select_labels_for_resource_uris,
+    select_units,
+)
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
-from csvcubed.models.sparqlresults import (
+from csvcubed.models.inspect.column_component_info import ColumnComponentInfo
+from csvcubed.models.inspect.sparqlresults import (
     CodelistResult,
     CodelistsResult,
     ColumnDefinition,
@@ -36,17 +47,6 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_dsd_qube_components,
-    select_data_set_dsd_and_csv_url,
-    select_dsd_code_list_and_cols,
-    select_is_pivoted_shape_data_set,
-    select_labels_for_resource_uris,
-    select_units,
-)
 from csvcubed.utils.uri import file_uri_to_path
 
 _XSD_BASE_URI: str = XSD[""].toPython()
@@ -326,12 +326,16 @@ class DataCubeRepository:
         ).csv_url
 
     def get_dataframe(
-        self, csv_url: str, dereference_uris: bool = True
+        self,
+        csv_url: str,
+        include_suppressed_cols: bool = True,
+        dereference_uris: bool = True,
     ) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
         Returns DuplicateColumnTitleError in the event of two instances of the
         same columns being defined.
+        include_suppressed_cols=True means Suppressed columns will be included in the returned dataframe (not dereferenced to labels)
         dereference_uris=True means URIs of column values are converted to their human readable labels.
         """
         cols = self.get_column_component_info(csv_url)
@@ -340,17 +344,25 @@ class DataCubeRepository:
             urljoin(self.csvw_repository.csvw_json_path.as_uri(), csv_url)
         )
         (df, _errors) = read_csv(absolute_csv_url, dtype=dict_of_types)
-
         if dereference_uris:
             code_lists = self.get_code_lists_and_cols(csv_url).codelists
             for col in cols:
                 col_values = df[col.column_definition.title].values
-                if isinstance(col_values, Categorical):
-                    df[col.column_definition.title] = col_values.rename_categories(
-                        self._get_new_category_labels_for_col(
-                            csv_url, col, col_values.categories, code_lists
+                # Exclude suppressed columns from dereferencing as we don't know what component type they are in order to call the correct dereferencing function
+                if col.column_type.value != "Suppressed":
+                    if isinstance(col_values, Categorical):
+                        df[col.column_definition.title] = col_values.rename_categories(
+                            self._get_new_category_labels_for_col(
+                                csv_url, col, col_values.categories, code_lists
+                            )
                         )
-                    )
+        if not include_suppressed_cols:
+            cols_to_drop = [
+                col.column_definition.title
+                for col in cols
+                if col.column_type.value == "Suppressed"
+            ]
+            df = df.drop(cols_to_drop, axis=1)
         return df, _errors
 
     def _get_new_category_labels_for_col(
@@ -518,9 +530,10 @@ class DataCubeRepository:
         return {
             name: [
                 uritemplate.expand(value_url, {name: av})
-                for av in pandas_input_to_columnar_str(
+                for av in pandas_input_to_columnar_optional_str(
                     dataframe[map_col_name_to_title[name]].unique()
                 )
+                if av is not None
             ]
             for name, value_url in map_resource_attr_col_name_to_value_url.items()
         }
