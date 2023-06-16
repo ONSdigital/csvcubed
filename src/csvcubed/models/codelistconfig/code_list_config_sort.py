@@ -1,8 +1,8 @@
 """
-Code List Config
+Code List Config Sort
 ----------------
 
-Models for representing code list config.
+Models for sorting code lists.
 """
 
 from dataclasses import dataclass
@@ -39,11 +39,11 @@ def sort_concepts(concepts: Any, sort: Any):
     # Step 3: If the sort object is defined, concepts without a sort order will be sorted by the sort object first.
     if sort is not None:
         if sort.by != "label" and sort.by != "notation":
-            raise Exception(
+            raise ValueError(
                 f"Unsupported sort by {sort.by}. The supported options are 'label' and 'notation'."
             )
         if sort.method != "ascending" and sort.by != "descending":
-            raise Exception(
+            raise ValueError(
                 f"Unsupported sort method {sort.method}. The supported options are 'ascending' and 'descending'."
             )
 
