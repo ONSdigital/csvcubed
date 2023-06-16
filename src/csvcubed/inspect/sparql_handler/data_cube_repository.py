@@ -17,7 +17,7 @@ from csvcubedmodels.rdf.namespaces import XSD
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.inputs import pandas_input_to_columnar_str
+from csvcubed.inputs import pandas_input_to_columnar_optional_str
 from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
 from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
 from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
@@ -530,9 +530,10 @@ class DataCubeRepository:
         return {
             name: [
                 uritemplate.expand(value_url, {name: av})
-                for av in pandas_input_to_columnar_str(
+                for av in pandas_input_to_columnar_optional_str(
                     dataframe[map_col_name_to_title[name]].unique()
                 )
+                if av is not None
             ]
             for name, value_url in map_resource_attr_col_name_to_value_url.items()
         }
