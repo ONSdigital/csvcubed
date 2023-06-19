@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+from textwrap import dedent
 
 from behave import Given, When, then
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
@@ -123,3 +124,14 @@ def step_imp(context, config_file: Path):
         fail_when_validation_error_occurs=True,
         validation_errors_file_name=None,
     )
+
+
+@then('the file at "{file}" should contain the line')
+def step_impl(context, file):
+    temp_dir = get_context_temp_dir_path(context)
+    with open(temp_dir / file, "r") as f:
+        file_contents = dedent(f.read()).strip().splitlines(keepends=True)
+    expected_contents = dedent(context.text).strip().splitlines(keepends=True)
+    isitthere = [ex for ex in file_contents if ex == expected_contents[0]]
+    assert any(isitthere)
+    # assert not set(expected_contents).isdisjoint(set(file_contents))

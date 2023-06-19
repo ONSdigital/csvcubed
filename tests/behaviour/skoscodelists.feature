@@ -1,11 +1,16 @@
 Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
 
+  @wip
   Scenario: A basic code list can be serialised to a valid CSV-W described in SKOS containing csvcubed version specific rdf.
     Given a NewQbCodeList named "Basic Code-list"
     When the code list is serialised to CSV-W
     Then the file at "basic-code-list.csv" should exist
     And the file at "basic-code-list.csv-metadata.json" should exist
     And the file at "basic-code-list.table.json" should exist
+    And the file at "basic-code-list.table.json" should contain the line
+    """
+    "@context": "http://www.w3.org/ns/csvw"
+    """
     And csvlint validation of "basic-code-list.csv-metadata.json" should succeed
     And csv2rdf on "basic-code-list.csv-metadata.json" should succeed
     And the RDF should pass "skos" SPARQL tests
@@ -54,7 +59,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     """
       @prefix basicCodeList: <{{rdf_input_directory}}/basic-code-list.csv#>.
       @prefix prov: <http://www.w3.org/ns/prov#> .
-        
+
       basicCodeList:csvcubed-build-activity a prov:Activity;
                                             prov:used <{{csvcubed_version_identifier}}>.
     """
