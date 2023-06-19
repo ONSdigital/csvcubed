@@ -126,11 +126,16 @@ def step_imp(context, config_file: Path):
     )
 
 
+# Adding a step to demonstrate that the table.json files will now begin with
+# "@context": "http://www.w3.org/ns/csvw" which makes the csvw pass the
+# csvw-check tool (addresses: https://app.zenhub.com/workspaces/features-squad-61b72275ac896c0010a1b00b/issues/gh/gss-cogs/csvcubed/822).
+#
+# This step should be removed after completing the ticket which integrates
+# csvw-check into our behaviour tests by replacing the csvlint steps.
 @then('the file at "{file}" should contain the line')
 def step_impl(context, file):
     temp_dir = get_context_temp_dir_path(context)
     with open(temp_dir / file, "r") as f:
         file_contents = dedent(f.read()).strip().splitlines(keepends=True)
     expected_contents = dedent(context.text).strip().splitlines(keepends=True)
-    isitthere = [ex for ex in file_contents if expected_contents[0] in ex]
-    assert any(isitthere)
+    assert any([ex for ex in file_contents if expected_contents[0] in ex])
