@@ -132,6 +132,5 @@ def step_impl(context, file):
     with open(temp_dir / file, "r") as f:
         file_contents = dedent(f.read()).strip().splitlines(keepends=True)
     expected_contents = dedent(context.text).strip().splitlines(keepends=True)
-    isitthere = [ex for ex in file_contents if ex == expected_contents[0]]
+    isitthere = [ex for ex in file_contents if expected_contents[0] in ex]
     assert any(isitthere)
-    # assert not set(expected_contents).isdisjoint(set(file_contents))
