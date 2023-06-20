@@ -17,7 +17,7 @@ _test_case_base_dir = (
 )
 
 
-def test_rdf_manager():
+def test_geographies():
     code_list_json_path = (
         _test_case_base_dir
         / "out_hierarchy"
@@ -32,7 +32,6 @@ def test_rdf_manager():
         "http://statistics.data.gov.uk/id/statistical-geography/" + label
         for label in concept_labels
     ]
-
     rdf_manager = get_csvw_rdf_manager(code_list_json_path)
     codelist_graph = rdf_manager.rdf_graph
     results = select_geography_hierarchy(codelist_graph, concept_labels_with_prefix)

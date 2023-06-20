@@ -10,8 +10,8 @@ WHERE {
         ?within pmd:displayName ?parentName.
     }
     # VALUES (?conceptLabel) {
-    #     (geo:K02000001)
-    #     (geo:K03000001)
-    #     (geo:E92000001)
+    #     (geo:K02000001) # No parent
+    #     (geo:K03000001) # K02000001
+    #     (geo:E92000001) # K02000001 and K03000001
     # }
 }

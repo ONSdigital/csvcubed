@@ -404,16 +404,15 @@ def _uris_to_values_binding(uris: List[str]) -> ValuesBinding:
 
 
 def _concepts_to_values_binding(concept_labels: List[str]) -> ValuesBinding:
-    values_binding = ValuesBinding(
+    return ValuesBinding(
         variable_names=["conceptLabel"],
         rows=[[URIRef(concept_label)] for concept_label in concept_labels],
     )
-    return values_binding
 
 
 def select_geography_hierarchy(
     rdf_graph: rdflib.Graph, concept_labels: List[str]
-) -> List:
+) -> List[ResultRow]:
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_GEOGRAPHY_HIERARCHY),
         rdf_graph,
