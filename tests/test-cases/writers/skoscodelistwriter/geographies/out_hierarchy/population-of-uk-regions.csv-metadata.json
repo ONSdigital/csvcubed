@@ -1,0 +1,397 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "population-of-uk-regions.csv#dataset",
+    "tables": [
+        {
+            "url": "population-of-uk-regions.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Region",
+                        "name": "region",
+                        "propertyUrl": "population-of-uk-regions.csv#dimension/region",
+                        "valueUrl": "region-with-hierarchy.csv#{+region}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Value",
+                        "name": "value",
+                        "aboutUrl": "population-of-uk-regions.csv#obs/{region}@population",
+                        "propertyUrl": "population-of-uk-regions.csv#measure/population",
+                        "datatype": "decimal",
+                        "required": true
+                    },
+                    {
+                        "name": "virt_slice",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Slice"
+                    },
+                    {
+                        "name": "virt_slice_structure",
+                        "virtual": true,
+                        "propertyUrl": "qb:sliceStructure",
+                        "valueUrl": "population-of-uk-regions.csv#slice/cross-measures"
+                    },
+                    {
+                        "name": "virt_obs_value",
+                        "virtual": true,
+                        "propertyUrl": "qb:observation",
+                        "valueUrl": "population-of-uk-regions.csv#obs/{region}@population"
+                    },
+                    {
+                        "name": "virt_obs_value_meas",
+                        "virtual": true,
+                        "aboutUrl": "population-of-uk-regions.csv#obs/{region}@population",
+                        "propertyUrl": "qb:measureType",
+                        "valueUrl": "population-of-uk-regions.csv#measure/population"
+                    },
+                    {
+                        "name": "virt_obs_value_unit",
+                        "virtual": true,
+                        "aboutUrl": "population-of-uk-regions.csv#obs/{region}@population",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "population-of-uk-regions.csv#unit/count"
+                    },
+                    {
+                        "name": "virt_dim_value_region",
+                        "virtual": true,
+                        "aboutUrl": "population-of-uk-regions.csv#obs/{region}@population",
+                        "propertyUrl": "population-of-uk-regions.csv#dimension/region",
+                        "valueUrl": "region-with-hierarchy.csv#{+region}"
+                    },
+                    {
+                        "name": "virt_obs_value_type",
+                        "virtual": true,
+                        "aboutUrl": "population-of-uk-regions.csv#obs/{region}@population",
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Observation"
+                    },
+                    {
+                        "name": "virt_dataSet_value",
+                        "virtual": true,
+                        "aboutUrl": "population-of-uk-regions.csv#obs/{region}@population",
+                        "propertyUrl": "qb:dataSet",
+                        "valueUrl": "population-of-uk-regions.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "region",
+                        "reference": {
+                            "resource": "region-with-hierarchy.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "region"
+                ],
+                "aboutUrl": "population-of-uk-regions.csv#slice/{region}"
+            }
+        },
+        {
+            "url": "region-with-hierarchy.csv",
+            "tableSchema": "region-with-hierarchy.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "population-of-uk-regions.csv#structure",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataStructureDefinition"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "population-of-uk-regions.csv#component/region"
+                },
+                {
+                    "@id": "population-of-uk-regions.csv#component/population"
+                },
+                {
+                    "@id": "population-of-uk-regions.csv#component/unit"
+                },
+                {
+                    "@id": "population-of-uk-regions.csv#component/measure-type"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "population-of-uk-regions.csv#measure/population"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "population-of-uk-regions.csv#dimension/region"
+                }
+            ],
+            "http://purl.org/linked-data/cube#sliceKey": [
+                {
+                    "@id": "population-of-uk-regions.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#dimension/region",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "region-with-hierarchy.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Region"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "population-of-uk-regions.csv#class/region"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#component/measure-type",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#slice/cross-measures",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#SliceKey"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "population-of-uk-regions.csv#dimension/region"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#component/unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#component/region",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "population-of-uk-regions.csv#dimension/region"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "population-of-uk-regions.csv#dimension/region"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#class/region",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#measure/population",
+            "@type": [
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Population"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#component/population",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "population-of-uk-regions.csv#measure/population"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "population-of-uk-regions.csv#measure/population"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#dataset",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://purl.org/linked-data/cube#Attachable"
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Population of UK regions"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-06-19T13:30:40.397386"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-06-19T13:30:40.397386"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Population of UK regions"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "population-of-uk-regions.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Population of UK regions"
+                }
+            ],
+            "http://www.w3.org/ns/prov#wasGeneratedBy": [
+                {
+                    "@id": "population-of-uk-regions.csv#csvcubed-build-activity"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#dependency/region-with-hierarchy",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://rdfs.org/ns/void#Dataset"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./region-with-hierarchy.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "region-with-hierarchy.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "population-of-uk-regions.csv#unit/count",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Count"
+                }
+            ]
+        }
+    ]
+}

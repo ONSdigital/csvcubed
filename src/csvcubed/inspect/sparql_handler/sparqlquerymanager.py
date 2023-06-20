@@ -89,6 +89,8 @@ class SPARQLQueryName(Enum):
 
     SELECT_LABELS_FOR_RESOURCE_URIS = "select_labels_for_resource_uris"
 
+    SELECT_GEOGRAPHY_HIERARCHY = "select_geography_hierarchy"
+
 
 def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
     """
@@ -243,28 +245,6 @@ def select_is_pivoted_shape_data_set(
     return map_is_pivoted_shape_data_set(result_is_pivoted_shape)
 
 
-def _cube_table_identifiers_to_values_binding(
-    csv_dsd_dataset_uris: List[CubeTableIdentifiers],
-) -> ValuesBinding:
-    return ValuesBinding(
-        variable_names=["csvUrl", "dataSet", "dsd"],
-        rows=[
-            [
-                Literal(uris.csv_url, datatype=XSD.anyURI),
-                URIRef(uris.data_set_url),
-                URIRef(uris.dsd_uri),
-            ]
-            for uris in csv_dsd_dataset_uris
-        ],
-    )
-
-
-def _uris_to_values_binding(uris: List[str]) -> ValuesBinding:
-    return ValuesBinding(
-        variable_names=["resourceValUri"], rows=[[URIRef(uri)] for uri in uris]
-    )
-
-
 def select_labels_for_resource_uris(
     rdf_graph: rdflib.ConjunctiveGraph, resource_uris: List[str]
 ) -> Dict[str, str]:
@@ -399,3 +379,45 @@ def select_column_definitions(
     )
 
     return map_column_definition_results(results)
+
+
+def _cube_table_identifiers_to_values_binding(
+    csv_dsd_dataset_uris: List[CubeTableIdentifiers],
+) -> ValuesBinding:
+    return ValuesBinding(
+        variable_names=["csvUrl", "dataSet", "dsd"],
+        rows=[
+            [
+                Literal(uris.csv_url, datatype=XSD.anyURI),
+                URIRef(uris.data_set_url),
+                URIRef(uris.dsd_uri),
+            ]
+            for uris in csv_dsd_dataset_uris
+        ],
+    )
+
+
+def _uris_to_values_binding(uris: List[str]) -> ValuesBinding:
+    return ValuesBinding(
+        variable_names=["resourceValUri"], rows=[[URIRef(uri)] for uri in uris]
+    )
+
+
+def _concepts_to_values_binding(concept_labels: List[str]) -> ValuesBinding:
+    values_binding = ValuesBinding(
+        variable_names=["conceptLabel"],
+        rows=[[URIRef(concept_label)] for concept_label in concept_labels],
+    )
+    return values_binding
+
+
+def select_geography_hierarchy(
+    rdf_graph: rdflib.Graph, concept_labels: List[str]
+) -> List:
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_GEOGRAPHY_HIERARCHY),
+        rdf_graph,
+        values_bindings=[_concepts_to_values_binding(concept_labels)],
+    )
+
+    return results

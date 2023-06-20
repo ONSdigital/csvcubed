@@ -1,0 +1,17 @@
+PREFIX geo: <http://statistics.data.gov.uk/id/statistical-geography/>
+PREFIX pmd: <http://publishmydata.com/def/ontology/foi/>
+
+SELECT ?name ?within ?parentName
+WHERE {
+    SERVICE <https://statistics.data.gov.uk/sparql>
+    {
+        ?conceptLabel pmd:within ?within;
+                      pmd:displayName ?name.
+        ?within pmd:displayName ?parentName.
+    }
+    # VALUES (?conceptLabel) {
+    #     (geo:K02000001)
+    #     (geo:K03000001)
+    #     (geo:E92000001)
+    # }
+}

@@ -1,0 +1,63 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Population of UK regions",
+    "columns": {
+        "Region": {
+            "type": "dimension",
+            "code_list": {
+                "title": "Region with hierarchy",
+                "concepts": [
+                    {
+                        "label": "K02000001",
+                        "notation": "k02000001",
+                        "description": "United Kingdom",
+                        "sort_order": 0,
+                        "children": [
+                            {
+                                "label": "K03000001",
+                                "notation": "k03000001",
+                                "description": "Great Britain",
+                                "sort_order": 1,
+                                "children": [
+                                    {
+                                        "label": "E92000001",
+                                        "notation": "e92000001",
+                                        "description": "England",
+                                        "sort_order": 3
+                                    },
+                                    {
+                                        "label": "S92000003",
+                                        "notation": "s92000003",
+                                        "description": "Scotland",
+                                        "sort_order": 4
+                                    },
+                                    {
+                                        "label": "W92000004",
+                                        "notation": "w92000004",
+                                        "description": "Wales",
+                                        "sort_order": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "label": "N92000002",
+                                "notation": "n92000002",
+                                "description": "Northern Ireland",
+                                "sort_order": 2
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Value": {
+            "type": "observations",
+            "measure": {
+                "label": "Population"
+            },
+            "unit": {
+                "label": "Count"
+            }
+        }
+    }
+}
