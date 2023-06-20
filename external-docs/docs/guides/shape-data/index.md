@@ -40,25 +40,25 @@ Examples of single measure and multiple measure **standard** shape data sets are
 
 ### Single Measure
 
-In this example, the single measure observed is `Number of Arthur's Bakes` and the corresponding unit is `Count`.
+In this example, the single measure observed is `Count of Arthur's Bakes` and the corresponding unit is `Number`.
 
-| Year | Location  | Value |      Status |                  Measure |  Unit |
-|:-----|:----------|------:|------------:|-------------------------:|------:|
-| 2022 | London    |    35 | Provisional | Number of Arthur's Bakes | Count |
-| 2021 | Cardiff   |    26 |       Final | Number of Arthur's Bakes | Count |
-| 2020 | Edinburgh |    90 |       Final | Number of Arthur's Bakes | Count |
-| 2021 | Belfast   |     0 |       Final | Number of Arthur's Bakes | Count |
+| Year | Location  | Value |      Status |                 Measure |   Unit |
+|:-----|:----------|------:|------------:|------------------------:|-------:|
+| 2022 | London    |    35 | Provisional | Count of Arthur's Bakes | Number |
+| 2021 | Cardiff   |    26 |       Final | Count of Arthur's Bakes | Number |
+| 2020 | Edinburgh |    90 |       Final | Count of Arthur's Bakes | Number |
+| 2021 | Belfast   |     0 |       Final | Count of Arthur's Bakes | Number |
 
 ### Multiple Measures
 
-In this example, there are two measures recorded - `Number of Arthur's Bakes` and `Revenue`. The corresponding units are `Count` and `GBP Sterling, Millions` respectively.
+In this example, there are two measures recorded - `Count of Arthur's Bakes` and `Revenue`. The corresponding units are `Number` and `GBP Sterling, Millions` respectively.
 
-| Year | Location | Value |      Status |                  Measure |                   Unit |
-|:-----|:---------|------:|------------:|-------------------------:|-----------------------:|
-| 2022 | London   |    35 | Provisional | Number of Arthur's Bakes |                  Count |
-| 2022 | London   |    25 | Provisional |                  Revenue | GBP Sterling, Millions |
-| 2021 | Cardiff  |    26 |       Final | Number of Arthur's Bakes |                  Count |
-| 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |
+| Year | Location | Value |      Status |                 Measure |                   Unit |
+|:-----|:---------|------:|------------:|------------------------:|-----------------------:|
+| 2022 | London   |    35 | Provisional | Count of Arthur's Bakes |                 Number |
+| 2022 | London   |    25 | Provisional |                 Revenue | GBP Sterling, Millions |
+| 2021 | Cardiff  |    26 |       Final | Count of Arthur's Bakes |                 Number |
+| 2021 | Cardiff  |    18 |       Final |                 Revenue | GBP Sterling, Millions |
 
 ## Pivoted Shape
 
@@ -66,20 +66,20 @@ Examples of single measure and multiple measure **pivoted** shape data sets are 
 
 ### Single Measure
 
-In this example, the single measure recorded is `Number of Arthur's Bakes`.
+In this example, the single measure recorded is `Count of Arthur's Bakes`.
 
-| Year | Location  | Number of Arthur's Bakes | Status      |
-|:-----|:----------|-------------------------:|:------------|
-| 2022 | London    |                       35 | Provisional |
-| 2021 | Cardiff   |                       26 | Final       |
-| 2020 | Edinburgh |                       90 | Final       |
-| 2021 | Belfast   |                        0 | Final       |
+| Year | Location  | Count of Arthur's Bakes | Status      |
+|:-----|:----------|------------------------:|:------------|
+| 2022 | London    |                      35 | Provisional |
+| 2021 | Cardiff   |                      26 | Final       |
+| 2020 | Edinburgh |                      90 | Final       |
+| 2021 | Belfast   |                       0 | Final       |
 
 ### Multiple Measures
 
-In this example, there are two measures recorded - `Number of Arthur's Bakes` and `Revenue`.
+In this example, there are two measures recorded - `Count of Arthur's Bakes` and `Revenue`.
 
-| Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
-|:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|
-| 2022 | London   |                       35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
-| 2021 | Cardiff  |                       26 | Final                   |      18 | GBP (Sterling) | Final          |
+| Year | Location | Count of Arthur's Bakes | Count of Stores Status | Revenue | Revenue Units  | Revenue Status |
+|:-----|:---------|------------------------:|:-----------------------|--------:|:---------------|:---------------|
+| 2022 | London   |                      35 | Provisional            |      25 | GBP (Sterling) | Provisional    |
+| 2021 | Cardiff  |                      26 | Final                  |      18 | GBP (Sterling) | Final          |
