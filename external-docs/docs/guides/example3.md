@@ -146,13 +146,13 @@ array([[ 0.89912209,  0.02503715,  0.        ],
        [ 0.5034576 ,  0.42293552,  0.        ]])
 ```
 
-## Other analysis example: Generalised Linear Model
+## Another example: Generalised Linear Model
 
 This is another example of how information can be retrieved from a CSVW with the help of the Inspect API. The purpose of this example is to highlight how Inspector objects and the information they give access to can streamline exploration of data and avoid the requirement of any thorough knowledge of the data set or its details in order to retrieve information to use in analysis.
 
 Here, we will be using the Inspect API to acquire all the information we need to then create a basic GLM (Generalised Linear Model) using the statsmodels library.
 
-Say we want to make a model on a data set where we want the response variable to be modelled on the observation values from our input data set, and we want it to depend on the values contained within a time period column, i.e. dimension column. But we do not want to look through the data set to know the exact names of the columns we want to use, or their location within the data set.
+Say we want to make a model on a data set where we want the response variable to be modelled on the observation values from our input data set, and we want it to depend on the values contained within a time period column, i.e. dimension column. But we do not want to look through the data set to know the exact names of the columns we want to use, or their location within the data set. We also might want to run this analysis on several data sets where the columns with the data we want have different names or an in different indices.
 
 After loading the Inspector object, we can get the information we need from it. Refer to the previous example [Exploring data](./example3.md/#exploring-the-data) for accessing information using an Inspector, e.g. the data set's primary table and then the columns. It will work the same way, all we need to do is provide a valid input file.
 
