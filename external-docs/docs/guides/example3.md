@@ -152,9 +152,7 @@ This is another example of how information can be retrieved from a CSVW with the
 
 Here, we will be using the Inspect API to acquire all the information we need to then create a basic GLM (Generalised Linear Model) using the statsmodels library.
 
-Say we want to make a model on a data set where we want the response variable to be modelled on the observation values from our input data set, and we want it to depend on the values contained within a time period column, i.e. dimension column. But we do not want to look through the data set to know the exact names of the columns we want to use, or their location within the data set. We also might want to run this analysis on several data sets where the columns with the data we want have different names or an in different indices.
-
-After loading the Inspector object, we can get the information we need from it. Refer to the previous example [Exploring data](./example3.md/#exploring-the-data) for accessing information using an Inspector, e.g. the data set's primary table and then the columns. It will work the same way, all we need to do is provide a valid input file.
+Say we want to make a model on a data set where we want the response variable to be modelled on the observation values from our input data set, and we want it to depend on the values contained within a time period column, i.e. dimension column.
 
 ```python
 >>> gross_pay_inspector = Inspector('gross-median-weekly-pay.csv-metadata.json')
@@ -162,9 +160,11 @@ After loading the Inspector object, we can get the information we need from it. 
 >>> gross_pay_columns = gross_pay_table.columns
 ```
 
+After loading the Inspector object, we can get the information we need from it. Refer to the previous example [Exploring data](./example3.md/#exploring-the-data) for accessing information using an Inspector, e.g. the data set's primary table and then the columns. It will work the same way, all we need to do is provide a valid input file.
+
 Then we can get the dimensions columns from the data set. Note for an analysis like this, we assume there is only one observations column in the data set with an assocciated dimension. Otherwise, you would obviously need to know which set of observations you want to analyse and specify it.
 
-The previous example's [Formatting data](./example3.md/#formatting-the-data) section shows how to acquire columns of a specific component type using the Inspector object we created. We can do the same here to get the observation and dimension column titles.
+The previous example's [Formatting data](./example3.md/#formatting-the-data) section shows how to acquire columns of a specific type using the Inspector object. We can do the same here to get the observation and dimension column titles.
 
 ```python
 >>> dimension_col_title = [title for title, column in gross_pay_columns.items() if isinstance(column, DimensionColumn)]
