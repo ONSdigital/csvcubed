@@ -1,5 +1,5 @@
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.5",
     "title": "List of Colours",
     "columns": {
         "Colour": {
@@ -11,7 +11,7 @@
                     {
                         "label": "Red",
                         "notation": "Red",
-                        "same_as": "http://example.org/red"
+                        "exact_match": "http://example.org/red"
                     }
                 ]
             }

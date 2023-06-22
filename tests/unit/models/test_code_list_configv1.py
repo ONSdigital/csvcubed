@@ -5,10 +5,10 @@ from typing import Dict, List
 import pandas as pd
 
 from csvcubed.cli.buildcsvw.build import build_csvw as cli_build
-from csvcubed.models.codelistconfig.code_list_config import (
-    CODE_LIST_CONFIG_DEFAULT_URL,
-    CodeListConfig,
-    CodeListConfigConcept,
+from csvcubed.models.codelistconfig.code_list_configv1 import (
+    CODE_LIST_CONFIG_V1_DEFAULT_URL,
+    CodeListConfigConceptV1,
+    CodeListConfigV1,
 )
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
@@ -21,11 +21,13 @@ from tests.unit.test_baseunit import get_test_cases_dir
 _test_case_readers_base_dir = (
     get_test_cases_dir() / "readers" / "code-list-config" / "v1.0"
 )
-_test_case_writers_base_dir = get_test_cases_dir() / "writers"
+_test_case_writers_base_dir = (
+    get_test_cases_dir() / "writers" / "skoscodelistwriter" / "v1.0"
+)
 
 
 def _assert_code_list_config_concepts(
-    concepts: List[CodeListConfigConcept], concepts_jsons: List[Dict]
+    concepts: List[CodeListConfigConceptV1], concepts_jsons: List[Dict]
 ):
     """
     Asserts the concepts data provided in the code list config.
@@ -50,7 +52,7 @@ def _assert_code_list_config_concepts(
 
 
 def _assert_code_list_concept_sorting(
-    concepts: List[CodeListConfigConcept], expected_sort_orders: Dict
+    concepts: List[CodeListConfigConceptV1], expected_sort_orders: Dict
 ):
     """
     Asserts the sort order of concepts.
@@ -60,7 +62,7 @@ def _assert_code_list_concept_sorting(
 
 
 def _assert_code_list_config_data(
-    code_list_config: CodeListConfig, code_list_config_json: Dict
+    code_list_config: CodeListConfigV1, code_list_config_json: Dict
 ):
     """
     Asserts the catalog meta data provided in code list config.
@@ -96,7 +98,7 @@ def test_code_list_config():
     code_list_config_json_path = (
         _test_case_readers_base_dir / "code_list_config_none_hierarchical.json"
     )
-    code_list_config, code_list_config_json = CodeListConfig.from_json_file(
+    code_list_config, code_list_config_json = CodeListConfigV1.from_json_file(
         Path(code_list_config_json_path)
     )
 
@@ -119,11 +121,11 @@ def test_code_list_config_without_schema():
         _test_case_readers_base_dir
         / "code_list_config_none_hierarchical_without_schema.json"
     )
-    code_list_config, code_list_config_json = CodeListConfig.from_json_file(
+    code_list_config, code_list_config_json = CodeListConfigV1.from_json_file(
         Path(code_list_config_json_path)
     )
 
-    assert code_list_config.schema == CODE_LIST_CONFIG_DEFAULT_URL
+    assert code_list_config.schema == CODE_LIST_CONFIG_V1_DEFAULT_URL
     _assert_code_list_config_data(code_list_config, code_list_config_json)
     _assert_code_list_config_concepts(
         code_list_config.concepts, code_list_config_json["concepts"]
@@ -142,7 +144,7 @@ def test_code_list_config_with_hierarchy():
     code_list_config_json_path = (
         _test_case_readers_base_dir / "code_list_config_hierarchical.json"
     )
-    code_list_config, code_list_config_json = CodeListConfig.from_json_file(
+    code_list_config, code_list_config_json = CodeListConfigV1.from_json_file(
         Path(code_list_config_json_path)
     )
 
@@ -166,7 +168,7 @@ def test_code_list_config_with_concepts_defined_elsewhere():
         _test_case_readers_base_dir
         / "code_list_config_with_concepts_defined_elsewhere.json"
     )
-    code_list_config, code_list_config_json = CodeListConfig.from_json_file(
+    code_list_config, code_list_config_json = CodeListConfigV1.from_json_file(
         Path(code_list_config_json_path)
     )
 
@@ -236,10 +238,8 @@ def test_same_as_field_in_output_csv():
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
         output_dir = temp_dir / "out"
-        config_path = (
-            _test_case_writers_base_dir / "skoscodelistwriter" / "colourconfig.json"
-        )
-        csv_path = _test_case_writers_base_dir / "skoscodelistwriter" / "colours.csv"
+        config_path = _test_case_writers_base_dir / "colourconfig.json"
+        csv_path = _test_case_writers_base_dir / "colours.csv"
 
         cli_build(
             output_directory=output_dir, csv_path=csv_path, config_path=config_path
