@@ -1,0 +1,24 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Multi unit single measure dataset",
+    "columns": {
+        "Year": {
+            "label": "Year",
+            "type": "dimension"
+        },
+        "Region": {
+            "label": "Region",
+            "type": "dimension"
+        },
+        "Measure": {
+            "type": "measures"
+        },
+        "Unit": {
+            "type": "units"
+        },
+        "Value": {
+            "type": "observations",
+            "data_type": "int"
+        }
+    }
+}

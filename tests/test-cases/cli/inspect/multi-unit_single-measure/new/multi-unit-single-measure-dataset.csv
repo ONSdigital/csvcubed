@@ -1,0 +1,13 @@
+Year,Region,Measure,Unit,Value
+2021,england,tax-receipts,gbp,20000000000
+2021,scotland,tax-receipts,gbp,5000000000
+2021,wales,tax-receipts,gbp-million,40000
+2021,northern-ireland,tax-receipts,gbp-million,30000
+2022,england,tax-receipts,gbp,19000000000
+2022,scotland,tax-receipts,gbp,4500000000
+2022,wales,tax-receipts,gbp-million,39000
+2022,northern-ireland,tax-receipts,gbp-million,29000
+2023,england,tax-receipts,gbp,18000000000
+2023,scotland,tax-receipts,gbp,3900000000
+2023,wales,tax-receipts,gbp-million,38000
+2023,northern-ireland,tax-receipts,gbp-million,28000
