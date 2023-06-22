@@ -66,6 +66,7 @@ Cymru
 Darlington
 dataframe
 Dataframe
+DataFrame
 Deepcut
 Derbyshire
 Despatch
@@ -98,6 +99,7 @@ Geffrye
 Geospatial
 Gillingham
 GitHub
+GLM
 Gowers
 Granby
 gregorian-instant
@@ -107,6 +109,7 @@ Hadley
 Hartlepool
 Harwich
 Haslam
+heatmap
 Hillsborough
 Holderness
 Horniman
@@ -200,6 +203,7 @@ SPARQL
 Speke
 Stackoverflow
 Staffordshire
+statsmodels
 Sunderland
 teleporting
 Telford

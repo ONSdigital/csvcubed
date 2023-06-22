@@ -1,4 +1,4 @@
-# Worked example 3 (Factor Analysis)
+# Worked example 3
 
 The Inspect API facilitates statistical analysis of CSV-Ws by leveraging the formal structure of a data cube to identify the data set's components and pass this information into an existing statistical model. These models can therefore be generalised and applied to multiple data cubes simply by providing the file path to the metadata JSON file.
 
@@ -88,7 +88,7 @@ In this example, the data set is in the [standard shape](../shape-data/standard-
 | 1962 | Inger Berggren | Sol och vår           | Swedish  |        7.0 |          4.0 |             1.0 |
 ```
 
-## Analysing the data
+## Analysing the data (Factor Analysis)
 
 With the data set available as a DataFrame, you can apply any appropriate statistical analysis - for example, imagine that you want to visualise how the three observed variables (`Final Rank`, `Final Points` and `People on Stage`) are correlated with each other:
 
@@ -162,7 +162,7 @@ Say we want to make a model on a data set where we want the response variable to
 
 After loading the Inspector object, we can get the information we need from it. Refer to the previous example [Exploring data](./example3.md/#exploring-the-data) for accessing information using an Inspector, e.g. the data set's primary table and then the columns. It will work the same way, all we need to do is provide a valid input file.
 
-Then we can get the dimensions columns from the data set. Note for an analysis like this, we assume there is only one observations column in the data set with an assocciated dimension. Otherwise, you would obviously need to know which set of observations you want to analyse and specify it.
+Then we can get the dimensions columns from the data set. Note for an analysis like this, we assume there is only one observations column in the data set with an associated dimension. Otherwise, you would obviously need to know which set of observations you want to analyse and specify it.
 
 The previous example's [Formatting data](./example3.md/#formatting-the-data) section shows how to acquire columns of a specific type using the Inspector object. We can do the same here to get the observation and dimension column titles.
 
