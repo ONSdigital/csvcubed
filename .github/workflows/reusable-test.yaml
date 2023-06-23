@@ -8,6 +8,9 @@ on:
       python-version:
         required: true
         type: string
+      pandas-version:
+        required: true
+        type: string
 
 jobs:
   test_in_environments:
@@ -56,10 +59,13 @@ jobs:
           path: |
             ~/.cache/pypoetry/virtualenvs
             C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
-          key: ${{ inputs.os }}-${{ steps.install-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}-
+          key: ${{ inputs.os }}-${{ steps.install-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}-${{ inputs.pandas-version }}
 
       - name: Install python packages
         run: poetry install --sync
+
+      - name: Select pandas version
+        run: poetry add pandas${{ inputs.pandas-version }}
 
       - name: Run pyright
         run: poetry run pyright . --lib
