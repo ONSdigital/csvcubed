@@ -55,11 +55,20 @@ jobs:
         run: pip install poetry
 
       - uses: actions/cache@v3
+        if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11'
         with:
           path: |
             ~/.cache/pypoetry/virtualenvs
             C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
           key: ${{ inputs.os }}-${{ steps.install-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}-${{ inputs.pandas-version }}
+
+      - uses: actions/cache@v3
+        if: (inputs.os == 'ubuntu-latest' && inputs.python-version == '3.9') || inputs.os == 'windows-latest'
+        with:
+          path: |
+            ~/.cache/pypoetry/virtualenvs
+            C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
+          key: ${{ inputs.os }}-${{ steps.install-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}-
 
       - name: Install python packages
         run: poetry install --sync
