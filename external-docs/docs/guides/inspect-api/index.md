@@ -6,11 +6,11 @@ The Inspect API allows you to access a variety of csvcubed methods in a simple u
 
 ## Worked example 1
 
-Text here
+To follow
 
 ## Worked example 2
 
-Text here
+To follow
 
 ## Worked example 3
 
