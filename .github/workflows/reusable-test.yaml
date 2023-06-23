@@ -64,8 +64,9 @@ jobs:
       - name: Install python packages
         run: poetry install --sync
 
-      - name: Select pandas version
-        run: poetry add pandas${{ inputs.pandas-version }}
+      - name: Specify pandas version (Ubuntu & Python 3.11)
+        if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11'
+        run: poetry add ${{ inputs.pandas-version }}
 
       - name: Run pyright
         run: poetry run pyright . --lib
