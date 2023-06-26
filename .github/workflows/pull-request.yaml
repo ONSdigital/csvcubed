@@ -7,15 +7,18 @@ jobs:
     strategy:
       matrix:
         # Test on linux with the oldest and newest versions of python.
-        python-version: ['3.9', '3.11']
+        python-version: ['3.11']
         os: [ubuntu-latest]
+        pandas-version: ['pandas^1.3', 'pandas@latest']
         include:
           # Test in windows with the newest supported version of python.
           - os: windows-latest
             python-version: '3.11'
+          - os: ubuntu-latest
+            python-version: '3.9'
 
     uses: ./.github/workflows/reusable-test.yaml
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-  
+      pandas-version: ${{ matrix.pandas-version }}

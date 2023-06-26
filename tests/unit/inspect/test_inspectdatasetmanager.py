@@ -192,10 +192,15 @@ _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure = DataFram
 _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFrame(
     [
         {
-            "Measure": "gas emissions(gwp-ar4)",
-            "Unit": "millions of tonnes of carbon dioxide (mt co2)",
-            "Count": 19,
-        }
+            "Measure": "tax-receipts",
+            "Unit": "gbp",
+            "Count": 6,
+        },
+        {
+            "Measure": "tax-receipts",
+            "Unit": "gbp-million",
+            "Count": 6,
+        },
     ]
 ).replace("", np.NAN)
 
@@ -581,7 +586,8 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "multi-unit_single-measure"
-        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+        / "new"
+        / "multi-unit-single-measure-dataset.csv-metadata.json"
     )
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
