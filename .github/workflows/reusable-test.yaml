@@ -104,7 +104,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
+          name: ${{ inputs.os }}-python${{ inputs.python-version }}-${{ inputs.pandas-version }}behave test results
           path: |
             pytest_results.xml
             reports/*.xml
@@ -116,7 +116,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
+          name: ${{ inputs.os }}-python${{ inputs.python-version }}-${{ inputs.pandas-version }} behave test results
 
       - name: Remove broken characters from xml test files
         # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
@@ -128,7 +128,7 @@ jobs:
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
+          check_name: ${{ inputs.os }}-python${{ inputs.python-version }}-${{ inputs.pandas-version }} test results
           junit_files: |
             reports/*.xml
             pytest_results.xml
