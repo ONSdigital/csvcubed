@@ -55,6 +55,7 @@ jobs:
         run: pip install poetry
 
       - uses: actions/cache@v3
+        # Include pandas version in cache key for Ubuntu/Python 3.11
         if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11'
         with:
           path: |
@@ -74,7 +75,7 @@ jobs:
         run: poetry install --sync
 
       - name: Specify pandas version (Ubuntu & Python 3.11)
-        if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11'
+        if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11' && inputs.pandas-version != ''
         run: poetry add ${{ inputs.pandas-version }}
 
       - name: Run pyright
