@@ -8,9 +8,6 @@ on:
       python-version:
         required: true
         type: string
-      pandas-version:
-        required: true
-        type: string
 
 jobs:
   test_in_environments:
@@ -55,15 +52,6 @@ jobs:
         run: pip install poetry
 
       - uses: actions/cache@v3
-        if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11'
-        with:
-          path: |
-            ~/.cache/pypoetry/virtualenvs
-            C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
-          key: ${{ inputs.os }}-${{ steps.install-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}-${{ inputs.pandas-version }}
-
-      - uses: actions/cache@v3
-        if: (inputs.os == 'ubuntu-latest' && inputs.python-version == '3.9') || inputs.os == 'windows-latest'
         with:
           path: |
             ~/.cache/pypoetry/virtualenvs
@@ -73,10 +61,6 @@ jobs:
       - name: Install python packages
         run: poetry install --sync
 
-      - name: Specify pandas version (Ubuntu & Python 3.11)
-        if: inputs.os == 'ubuntu-latest' && inputs.python-version == '3.11'
-        run: poetry add ${{ inputs.pandas-version }}
-
       - name: Run pyright
         run: poetry run pyright . --lib
 
@@ -85,6 +69,7 @@ jobs:
 
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
+
 
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
@@ -103,7 +88,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.os }}-python${{ inputs.python-version }}-${{ inputs.pandas-version }} behave test results
+          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
           path: |
             pytest_results.xml
             reports/*.xml
@@ -115,7 +100,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.os }}-python${{ inputs.python-version }}-${{ inputs.pandas-version }} behave test results
+          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
 
       - name: Remove broken characters from xml test files
         # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
@@ -127,7 +112,7 @@ jobs:
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: ${{ inputs.os }}-python${{ inputs.python-version }}-${{ inputs.pandas-version }} test results
+          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
           junit_files: |
             reports/*.xml
             pytest_results.xml
