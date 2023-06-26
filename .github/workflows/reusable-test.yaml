@@ -86,7 +86,6 @@ jobs:
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
 
-
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
         run: |
