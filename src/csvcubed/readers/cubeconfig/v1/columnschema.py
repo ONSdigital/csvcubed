@@ -46,6 +46,7 @@ from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
     LATEST_V1_CODELIST_SCHEMA_URL,
+    LATEST_V2_CODELIST_SCHEMA_URL,
 )
 from csvcubed.utils.file import code_list_config_json_exists
 from csvcubed.utils.uri import csvw_column_name_safe, looks_like_uri
@@ -133,6 +134,7 @@ class NewDimension(SchemaBaseClass):
             elif (
                 cube_config_minor_version
                 and cube_config_minor_version >= 1
+                and cube_config_minor_version < 5
                 and cube_config_path
                 and code_list_config_json_exists(
                     Path(self.code_list), cube_config_path.parent
@@ -151,6 +153,36 @@ class NewDimension(SchemaBaseClass):
                 deserialiser = get_code_list_versioned_deserialiser(
                     code_list_config_path,
                     default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL,
+                )
+
+                (
+                    new_code_list,
+                    json_schema_validation_errors,
+                    _,
+                ) = deserialiser(code_list_config_path)
+
+                return (new_code_list, json_schema_validation_errors)
+            elif (
+                cube_config_minor_version
+                and cube_config_minor_version >= 5
+                and cube_config_path
+                and code_list_config_json_exists(
+                    Path(self.code_list), cube_config_path.parent
+                )
+            ):
+                code_list_path = Path(self.code_list)
+                code_list_config_path = (
+                    code_list_path
+                    if code_list_path.is_absolute()
+                    else (cube_config_path.parent / code_list_path).resolve()
+                )
+                _logger.info(
+                    f"Loading code list from local file path: {code_list_config_path}"
+                )
+
+                deserialiser = get_code_list_versioned_deserialiser(
+                    code_list_config_path,
+                    default_schema_uri=LATEST_V2_CODELIST_SCHEMA_URL,
                 )
 
                 (
@@ -193,7 +225,10 @@ class NewDimension(SchemaBaseClass):
             and isinstance(self.code_list, dict)
         ):
             deserialiser = get_code_list_versioned_deserialiser(
-                self.code_list, default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL
+                self.code_list,
+                default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL
+                if cube_config_minor_version < 5
+                else LATEST_V2_CODELIST_SCHEMA_URL,
             )
 
             (

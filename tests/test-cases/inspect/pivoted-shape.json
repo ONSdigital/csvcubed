@@ -1,0 +1,58 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Testing Inspector (pivoted shape)",
+    "description": "Testing the Inspector functionality with a pivoted shape cube generated using csvcubed",
+    "summary": "Inspector test - pivoted shape",
+    "columns": {
+        "LocalDimension": {
+            "type": "dimension",
+            "code_list": {
+                "title": "Local dimension code list",
+                "description": "Code list for a locally defined dimension",
+                "summary": "Code list - local dimension",
+                "concepts": [
+                    {
+                        "label": "LocalDim1",
+                        "notation": "localdim1"
+                    },
+                    {
+                        "label": "LocalDim2",
+                        "notation": "localdim2"
+                    },
+                    {
+                        "label": "LocalDim3",
+                        "notation": "localdim3"
+                    },
+                    {
+                        "label": "LocalDim4",
+                        "notation": "localdim4"
+                    }
+                ]
+            }
+        },
+        "ExternalDimension": {
+            "type": "dimension",
+            "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+            "cell_uri_template": "http://www.example.org/code-lists/regions/{+externaldimension}"
+        },
+        "SuppressedDimension": false,
+        "LocalAttribute": {
+            "type": "attribute",
+            "data_type": "decimal"
+        },
+        "ExternalAttribute": {
+            "type": "attribute",
+            "cell_uri_template": "http://www.example.org/status/{+externalattribute}"
+        },
+        "Observations": {
+            "type": "observations",
+            "data_type": "integer",
+            "measure": {
+                "label": "Some Measure"
+            },
+            "unit": {
+                "label": "Some Unit"
+            }
+        }
+    }
+}

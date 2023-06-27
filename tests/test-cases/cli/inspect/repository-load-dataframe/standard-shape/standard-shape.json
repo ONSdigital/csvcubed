@@ -1,0 +1,67 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Testing converting a standard shape CSVW to pandas dataframe",
+    "columns": {
+        "Dim1": {
+            "type": "dimension"
+        },
+        "Dim2": {
+            "type": "dimension"
+        },
+        "Dim3": {
+            "type": "dimension"
+        },
+        "Attr Resource": {
+            "type": "attribute",
+            "label": "An attribute resource",
+            "values": [
+                {
+                    "label": "Final"
+                },
+                {
+                    "label": "Provisional"
+                },
+                {
+                    "label": "Estimated"
+                }
+            ]
+        },
+        "Attr Literal": {
+            "type": "attribute",
+            "label": "An attribute literal",
+            "data_type": "nonPositiveInteger"
+        },
+        "Units": {
+            "type": "units",
+            "values": [
+                {
+                    "label": "Some Unit 1"
+                },
+                {
+                    "label": "Some Unit 2"
+                },
+                {
+                    "label": "Some Unit 3"
+                }
+            ]
+        },
+        "Measures": {
+            "type": "measures",
+            "values": [
+                {
+                    "label": "Some Measure 1"
+                },
+                {
+                    "label": "Some Measure 2"
+                },
+                {
+                    "label": "Some Measure 3"
+                }
+            ]
+        },
+        "Obs": {
+            "type": "observations",
+            "data_type": "short"
+        }
+    }
+}

@@ -7,6 +7,7 @@ from csvcubed.readers.codelistconfig.codelist_schema_versions import (
     CodeListConfigJsonSchemaMajorVersion,
     CodeListConfigJsonSchemaMinorVersion,
     _extract_and_validate_code_list_v1,
+    _extract_and_validate_code_list_v2,
     _get_code_list_schema_version,
     get_code_list_versioned_deserialiser,
     get_deserialiser_for_code_list_schema,
@@ -34,6 +35,16 @@ def test_get_code_list_schema_version_1_1():
     assert minor == CodeListConfigJsonSchemaMinorVersion.v1
 
 
+def test_get_code_list_schema_version_2_0():
+    """Test checking if the correct schema version is returned for the v1.1 schema"""
+    (major, minor) = _get_code_list_schema_version(
+        "https://purl.org/csv-cubed/code-list-config/v2.0"
+    )
+
+    assert major == CodeListConfigJsonSchemaMajorVersion.v2
+    assert minor == CodeListConfigJsonSchemaMinorVersion.v0
+
+
 def test_get_code_list_schema_version_1_latest():
     """Test checking if incase the version number doesn't contain a minor it will return the latest schema version
     Note: This will have to be updated when a newer version is added!
@@ -45,6 +56,19 @@ def test_get_code_list_schema_version_1_latest():
 
     assert major == CodeListConfigJsonSchemaMajorVersion.v1
     assert minor == CodeListConfigJsonSchemaMinorVersion.v1
+
+
+def test_get_code_list_schema_version_2_latest():
+    """Test checking if incase the version number doesn't contain a minor it will return the latest schema version
+    Note: This will have to be updated when a newer version is added!
+    """
+
+    (major, minor) = _get_code_list_schema_version(
+        "https://purl.org/csv-cubed/code-list-config/v2"
+    )
+
+    assert major == CodeListConfigJsonSchemaMajorVersion.v2
+    assert minor == CodeListConfigJsonSchemaMinorVersion.v0
 
 
 def test_get_code_list_schema_version_error():
@@ -59,7 +83,7 @@ def test_get_code_list_schema_version_error():
     )
 
 
-def test_get_deserialiser_for_code_list_schema():
+def test_get_deserialiser_for_code_list_schema_v1():
     """Testing when the correct Schema version is passed in it will call the correct function and return
     a CodeListConfigDeserialiser(Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]).
     Note: The function assertion cannot be triggered. The _get_code_list_schema_version assertion will flag the error before.
@@ -75,7 +99,23 @@ def test_get_deserialiser_for_code_list_schema():
     )
 
 
-def test_get_deserialiser_for_code_list_schema_dict():
+def test_get_deserialiser_for_code_list_schema_v2():
+    """Testing when the correct Schema version is passed in it will call the correct function and return
+    a CodeListConfigDeserialiser(Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]).
+    Note: The function assertion cannot be triggered. The _get_code_list_schema_version assertion will flag the error before.
+    """
+    code_list_config_deserialiser = get_deserialiser_for_code_list_schema(
+        "https://purl.org/csv-cubed/code-list-config/v2.0",
+        default_schema_uri=LATEST_CODELIST_SCHEMA_URL,
+    )
+
+    # Let's check that it ends up calling the v2 deserialiser function, dodgy code ahead:
+    assert _extract_and_validate_code_list_v2.__name__ in inspect.getsource(
+        code_list_config_deserialiser
+    )
+
+
+def test_get_deserialiser_for_code_list_schema_v1_dict():
     """Testing get_code_list_versioned_deserialiser does get the correct deserialiser
     when it is provided with a dict and not a PATH.
     """
@@ -88,5 +128,22 @@ def test_get_deserialiser_for_code_list_schema_dict():
 
     # Let's check that it ends up calling the v1 deserialiser function, dodgy code ahead:
     assert _extract_and_validate_code_list_v1.__name__ in inspect.getsource(
+        code_list_config_deserialiser
+    )
+
+
+def test_get_deserialiser_for_code_list_schema_v2_dict():
+    """Testing get_code_list_versioned_deserialiser does get the correct deserialiser
+    when it is provided with a dict and not a PATH.
+    """
+    code_list = {"$schema": "https://purl.org/csv-cubed/code-list-config/v2.0"}
+
+    code_list_config_deserialiser = get_code_list_versioned_deserialiser(
+        code_list,
+        default_schema_uri=LATEST_CODELIST_SCHEMA_URL,
+    )
+
+    # Let's check that it ends up calling the v1 deserialiser function, dodgy code ahead:
+    assert _extract_and_validate_code_list_v2.__name__ in inspect.getsource(
         code_list_config_deserialiser
     )

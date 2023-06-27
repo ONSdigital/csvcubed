@@ -674,33 +674,24 @@ interactions:
       User-Agent:
       - python-requests/2.28.1
     method: GET
-    uri: https://purl.org/csv-cubed/code-list-config/v1.1
+    uri: https://purl.org/csv-cubed/code-list-config/v2.0
   response:
     body:
-      string: '<!DOCTYPE HTML>
+      string: '<!doctype html>
 
-        <html>
+        <html lang=en>
 
-        <head>
+        <title>404 Not Found</title>
 
-        <title>302 Found</title>
+        <h1>Not Found</h1>
 
-        </head>
+        <p>The requested URL was not found on the server. If you entered the URL manually
+        please check your spelling and try again.</p>
 
-        <body>
-
-        <h1>Found</h1>
-
-        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json">here</a>.<p>
-
-        </body>
-
-        </html>'
+        '
     headers:
-      access-control-allow-origin:
-      - '*'
       content-length:
-      - '272'
+      - '207'
       content-type:
       - text/html; charset=utf-8
       date:

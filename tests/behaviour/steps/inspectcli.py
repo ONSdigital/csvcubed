@@ -6,10 +6,10 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
 from csvcubed.cli.inspectcsvw.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from tests.helpers.repository_cache import get_csvw_rdf_manager
 
 
 def _unformat_multiline_string(string: str) -> str:
@@ -56,13 +56,13 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
-    csvw_inspector = CsvWInspector(
+    csvw_repository = CsvWRepository(
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    data_cube_inspector = DataCubeInspector(csvw_inspector)
+    data_cube_repository = DataCubeRepository(csvw_repository)
 
-    metadata_printer = MetadataPrinter(data_cube_inspector)
+    metadata_printer = MetadataPrinter(data_cube_repository)
     # TODO: Remove below once all the tests are updated to not match strings
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
@@ -87,7 +87,7 @@ def step_impl(context):
     )
     # TODO: Remove above once all the tests are updated to not match strings
 
-    context.result_type_info = metadata_printer.state.csvw_inspector.csvw_type
+    context.result_type_info = metadata_printer.state.csvw_repository.csvw_type
     context.result_catalog_metadata = metadata_printer.result_catalog_metadata
     context.result_dataset_observations_info = (
         metadata_printer.result_dataset_observations_info
@@ -103,13 +103,13 @@ def step_impl(context):
 
 @When("the Printables for code list are generated")
 def step_impl(context):
-    csvw_inspector = CsvWInspector(
+    csvw_repository = CsvWRepository(
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    code_list_inspector = CodeListInspector(csvw_inspector)
+    code_list_repository = CodeListRepository(csvw_repository)
 
-    metadata_printer = MetadataPrinter(code_list_inspector)
+    metadata_printer = MetadataPrinter(code_list_repository)
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
     context.dataset_observations_info_printable = (

@@ -38,17 +38,19 @@ _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
 _v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
 _v1_3_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.3"
 _v1_4_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.4"
+_v1_5_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.5"
+
 V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 
-_LATEST_V1_SCHEMA_URL = _v1_4_SCHEMA_URL
+_LATEST_V1_SCHEMA_URL = _v1_5_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-_LATEST_SCHEMA_URL = _v1_4_SCHEMA_URL
+_LATEST_SCHEMA_URL = _v1_5_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
@@ -74,6 +76,7 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
     v2 = 2
     v3 = 3
     v4 = 4
+    v5 = 5
 
 
 def get_deserialiser_for_schema(
@@ -129,6 +132,11 @@ def _get_schema_version(
         return (
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v4,
+        )
+    elif schema_path == _v1_5_SCHEMA_URL:
+        return (
+            QubeConfigJsonSchemaMajorVersion.v1,
+            QubeConfigJsonSchemaMinorVersion.v5,
         )
     else:
         raise ValueError(

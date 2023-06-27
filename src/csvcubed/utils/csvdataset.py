@@ -7,7 +7,7 @@ Utilities for CSV Datasets
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple, Optional
+from typing import Any, Dict, List, Optional, Set, Tuple
 from uuid import uuid1
 
 import pandas as pd
@@ -15,16 +15,7 @@ import uritemplate
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 from uritemplate.orderedset import OrderedSet
 
-from csvcubed.models.csvcubedexception import InvalidNumberOfRecordsException
-from csvcubed.models.inspectdataframeresults import DatasetSingleMeasureResult
-from csvcubed.models.sparqlresults import QubeComponentResult
-from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import (
-    ComponentField,
-    ComponentPropertyAttributeURI,
-    ComponentPropertyType,
-    get_component_property_as_relative_path,
-)
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
 from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
@@ -32,10 +23,15 @@ from csvcubed.models.csvcubedexception import (
     InvalidUnitColumnDefinition,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
+from csvcubed.models.inspect.inspectdataframeresults import DatasetSingleMeasureResult
+from csvcubed.models.inspect.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
+from csvcubed.utils.qb.components import (
+    ComponentField,
+    ComponentPropertyAttributeURI,
+    ComponentPropertyType,
+    get_component_property_as_relative_path,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -178,7 +174,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     col_name: str,
     melted_df: pd.DataFrame,
     column_definitions: List[ColumnDefinition],
-    data_cube_inspector: DataCubeInspector,
+    data_cube_repository: DataCubeRepository,
     measure_uris: Set[str],
 ):
     """
@@ -222,7 +218,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
         unit_uri = _get_unit_uri_for_maybe_template(
             unit_column.value_url, column_definitions, row
         )
-        maybe_unit = data_cube_inspector.get_unit_for_uri(unit_uri)
+        maybe_unit = data_cube_repository.get_unit_for_uri(unit_uri)
         if maybe_unit is None:
             melted_df.loc[idx, col_name] = unit_uri
         else:
@@ -322,14 +318,14 @@ def _melt_data_set(
 
 def _get_unit_measure_col_for_standard_shape_cube(
     qube_components: List[QubeComponentResult],
-    data_cube_inspector: DataCubeInspector,
+    data_cube_repository: DataCubeRepository,
     canonical_shape_dataset: pd.DataFrame,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
     unit_col_retrived = get_standard_shape_unit_col_name_from_dsd(qube_components)
     if unit_col_retrived is None:
         unit_col = f"Unit_{str(uuid1())}"
-        units = data_cube_inspector.get_units()
+        units = data_cube_repository.get_units()
         if len(units) != 1:
             raise InvalidNumberOfRecordsException(
                 record_description=f"result for the `get_units()` function call",
@@ -358,7 +354,7 @@ def _get_unit_measure_col_for_standard_shape_cube(
 
 def _melt_pivoted_shape(
     csv_url: str,
-    data_cube_inspector: DataCubeInspector,
+    data_cube_repository: DataCubeRepository,
     qube_components: List[QubeComponentResult],
     canonical_shape_dataset: pd.DataFrame,
 ) -> Tuple[pd.DataFrame, str, str]:
@@ -366,7 +362,7 @@ def _melt_pivoted_shape(
         raise ValueError("csv_url cannot be None.")
 
     column_definitions = (
-        data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+        data_cube_repository.csvw_repository.get_column_definitions_for_csv(csv_url)
     )
 
     measure_components = filter_components_from_dsd(
@@ -388,7 +384,7 @@ def _melt_pivoted_shape(
         measure_col, melted_df, measure_components
     )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        unit_col, melted_df, column_definitions, data_cube_inspector, measure_uris
+        unit_col, melted_df, column_definitions, data_cube_repository, measure_uris
     )
 
     canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)
@@ -397,7 +393,7 @@ def _melt_pivoted_shape(
 
 
 def transform_dataset_to_canonical_shape(
-    data_cube_inspector: DataCubeInspector,
+    data_cube_repository: DataCubeRepository,
     dataset: pd.DataFrame,
     csv_url: str,
     qube_components: List[QubeComponentResult],
@@ -411,17 +407,17 @@ def transform_dataset_to_canonical_shape(
     """
     canonical_shape_dataset = dataset.copy()
 
-    cube_shape = data_cube_inspector.get_shape_for_csv(csv_url)
+    cube_shape = data_cube_repository.get_shape_for_csv(csv_url)
 
     if cube_shape == CubeShape.Standard:
         return _get_unit_measure_col_for_standard_shape_cube(
             qube_components,
-            data_cube_inspector,
+            data_cube_repository,
             canonical_shape_dataset,
-            data_cube_inspector.csvw_inspector.csvw_json_path,
+            data_cube_repository.csvw_repository.csvw_json_path,
         )
     else:
         # In pivoted shape
         return _melt_pivoted_shape(
-            csv_url, data_cube_inspector, qube_components, canonical_shape_dataset
+            csv_url, data_cube_repository, qube_components, canonical_shape_dataset
         )

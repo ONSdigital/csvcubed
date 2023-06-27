@@ -9,12 +9,12 @@ from pathlib import Path
 
 import rdflib
 
-from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+from csvcubed.inspect.sparql_handler.sparql import path_to_file_uri_for_rdflib
+from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
+from csvcubed.models.csvwtype import CSVWType
 
 
 @dataclass
