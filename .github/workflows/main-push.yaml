@@ -15,7 +15,9 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-  
+      # Setting pandas-version to '' as this variable is required in pull-request.yaml following #809 (pandas 2.x upgrade)
+      pandas-version: ''
+
   build_package_and_documentation:
     if: needs.test_in_environments.result == 'success'
     needs: [test_in_environments]
