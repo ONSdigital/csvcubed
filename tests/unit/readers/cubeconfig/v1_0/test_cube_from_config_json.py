@@ -977,6 +977,11 @@ def test_exception_raised_when_code_list_is_some_code_list_config_json_and_cell_
         assert code_list is not None
         assert isinstance(code_list, ExistingQbCodeList)
         assert code_list.concepts
+        assert len(code_list.concepts) == 3
+        assert isinstance(code_list.concepts[0], NewQbConcept)
+        assert code_list.concepts[0] == NewQbConcept(label="a", code="a")
+        assert isinstance(code_list.concepts[2], NewQbConcept)
+        assert code_list.concepts[2] == NewQbConcept(label="c", code="c")
 
         _check_new_dimension_column(
             column, dimension_config, column_data, "New Dimension"
@@ -1010,6 +1015,9 @@ def test_code_list_is_true_by_default():
     assert code_list is not None
     assert isinstance(code_list, NewQbCodeList)
     assert code_list.concepts
+    assert len(code_list.concepts) == 3
+    assert isinstance(code_list.concepts[1], NewQbConcept)
+    assert code_list.concepts[1] == NewQbConcept(label="b", code="b")
 
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
@@ -1034,6 +1042,11 @@ def test_new_code_lists_are_created_from_unique_values_when_there_are_predefined
     assert code_list is not None
     assert isinstance(code_list, NewQbCodeList)
     assert code_list.concepts
+    assert len(code_list.concepts) == 3
+    assert isinstance(code_list.concepts[0], NewQbConcept)
+    assert code_list.concepts[0] == NewQbConcept(label="a", code="a")
+    assert isinstance(code_list.concepts[2], NewQbConcept)
+    assert code_list.concepts[2] == NewQbConcept(label="c", code="c")
 
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
