@@ -954,42 +954,45 @@ def test_describes_obs_val_new_attribute_resource_column():
 
 
 @pytest.mark.vcr
-def test_case_5():
+def test_exception_raised_when_code_list_is_some_code_list_config_json_and_cell_uri_template_defined():
     """
-    {
-    // setting "code_list": some code-list-config.json and definging
-    // cell_uri_template gives conflicting instruction. Stop this and raise error
-    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
-    }
+    Setting code list to some code-list-config.json and defining cell_uri_template gives
+    conflicting instruction. We want to stop this and raise an exception.
     """
-    column_data = ["a", "b", "c"]
-    dimension_config = {
-        "code_list": "my_eurovision_code_list_config.json",
-        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
-    }
-    data = pd.Series(column_data, name="Dimension Heading")
+    with pytest.raises(Exception) as excinfo:
+        column_data = ["a", "b", "c"]
+        dimension_config = {
+            "code_list": "../../code-list-config/v1.0/code_list_config_hierarchical.json",
+            "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
+        }
+        data = pd.Series(column_data, name="Dimension Heading")
 
-    (column, _) = map_column_to_qb_component(
-        "New Dimension", dimension_config, data, cube_config_minor_version=0
-    )
-    assert isinstance(
-        column.structural_definition, NewQbDimension
-    ), column.structural_definition
-    code_list = column.structural_definition.code_list
-    assert code_list is not None
-    assert isinstance(code_list, NewQbCodeList)
-    # assert code_list.concepts
+        (column, _) = map_column_to_qb_component(
+            "New Dimension", dimension_config, data, cube_config_minor_version=0
+        )
+        assert isinstance(
+            column.structural_definition, NewQbDimension
+        ), column.structural_definition
+        code_list = column.structural_definition.code_list
+        assert code_list is not None
+        assert isinstance(code_list, ExistingQbCodeList)
+        assert code_list.concepts
 
-    # _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+        _check_new_dimension_column(
+            column, dimension_config, column_data, "New Dimension"
+        )
+
+        assert (
+            f"Setting the code_list to be a code-list-config.json is not doable when also provided with a cell_uri_template."
+            in str(excinfo)
+        )
+        assert f"blah." in str(excinfo)
 
 
 @pytest.mark.vcr
-def test_case_4():
+def test_code_list_is_true_by_default():
     """
-    {
-    // default: "code_list": true
-    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
-    }
+    When codelist is not specified and cell uri template is, default code list to be true
     """
     column_data = ["a", "b", "c"]
     dimension_config = {
@@ -1006,21 +1009,15 @@ def test_case_4():
     code_list = column.structural_definition.code_list
     assert code_list is not None
     assert isinstance(code_list, NewQbCodeList)
-    # assert code_list.concepts
+    assert code_list.concepts
 
-    # _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+    _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
 @pytest.mark.vcr
-def test_case_3():
+def test_new_code_lists_are_created_from_unique_values_when_there_are_predefined_concepts():
     """
-    {
-    // todo: Reconcile this with the ticket atm.
-    // In this example we have a bunch of concepts already defined and we want csvcubed to create a code list for us from the unique values.
-    // I don't think we support this atm.
-    "code_list": true,
-    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
-    }
+    In this example we have a bunch of concepts already defined and we want csvcubed to create a code list for us from the unique values.
     """
     column_data = ["a", "b", "c"]
     dimension_config = {
@@ -1036,19 +1033,15 @@ def test_case_3():
     code_list = column.structural_definition.code_list
     assert code_list is not None
     assert isinstance(code_list, NewQbCodeList)
-    # assert code_list.concepts
+    assert code_list.concepts
 
-    # _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
+    _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
 @pytest.mark.vcr
-def test_case_2():
+def test_newly_defined_dimension_do_not_have_code_list():
     """
-    {
-    // In this case we don't want any code list for our newly defined dimension, we just point at a bunch of URIs.
-    "code_list": false,
-    "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}"
-    }
+    In this case we don't want any code list for our newly defined dimension, we just point at a bunch of URIs.
     """
     column_data = ["a", "b", "c"]
     dimension_config = {
@@ -1063,19 +1056,12 @@ def test_case_2():
     assert isinstance(column.structural_definition, NewQbDimension)
     code_list = column.structural_definition.code_list
     assert code_list is None
-    # assert code_list.concepts
-
-    # _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
 @pytest.mark.vcr
-def test_case_1():
+def test_existing_dimension_are_reused_with_or_without_a_code_list():
     """
-    {
-    // When reusing an existing dimension which either has a code-list or doesn't have a code list (we don't care)
-    "from_existing": "http://example.com/dimensions/some_dimension",
-    "cell_uri_template": "http://example.com/code-lists/the-corresponding/code-list/{+column_name}"
-    }
+    When reusing an existing dimension which either has a code-list or doesn't have a code list (we don't care)
     """
     column_data = ["a", "b", "c"]
     dimension_config = {
@@ -1091,9 +1077,6 @@ def test_case_1():
     dimension_uri = column.structural_definition.dimension_uri
     assert dimension_uri is not None
     assert isinstance(dimension_uri, str)
-    # assert code_list.concepts
-
-    # _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
 if __name__ == "__main__":
