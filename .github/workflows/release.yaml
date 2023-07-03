@@ -15,6 +15,7 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
+      pandas-version: ${{ matrix.pandas-version }}
 
   build_package_and_documentation:
     if: needs.test_in_environments.result == 'success'
