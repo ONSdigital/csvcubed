@@ -5,11 +5,13 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+from csvcubed import __version__
 
 project = "csvcubed"
-copyright = "2023, ONS"
-author = "ONS"
-release = "0.3.5"
+author = "Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"
+version = __version__
+release = __version__
+license = "Apache-2.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
