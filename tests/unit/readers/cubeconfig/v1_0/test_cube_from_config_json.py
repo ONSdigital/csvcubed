@@ -957,41 +957,40 @@ def test_describes_obs_val_new_attribute_resource_column():
 def test_exception_raised_when_code_list_is_some_code_list_config_json_and_cell_uri_template_defined():
     """
     Setting code list to some code-list-config.json and defining cell_uri_template gives
-    conflicting instruction. We want to stop this and raise an exception.
+    conflicting instructions. We want to stop this and raise an exception.
     """
-    with pytest.raises(Exception) as excinfo:
-        column_data = ["a", "b", "c"]
-        dimension_config = {
-            "code_list": "../../code-list-config/v1.0/code_list_config_hierarchical.json",
-            "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
-        }
-        data = pd.Series(column_data, name="Dimension Heading")
 
+    column_data = ["a", "b", "c"]
+    dimension_config = {
+        "code_list": TEST_CASE_DIR / "code_list_config_produces_error.json",
+        "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+
+    with pytest.raises(Exception) as excinfo:
         (column, _) = map_column_to_qb_component(
             "New Dimension", dimension_config, data, cube_config_minor_version=0
         )
-        assert isinstance(
-            column.structural_definition, NewQbDimension
-        ), column.structural_definition
-        code_list = column.structural_definition.code_list
-        assert code_list is not None
-        assert isinstance(code_list, ExistingQbCodeList)
-        assert code_list.concepts
-        assert len(code_list.concepts) == 3
-        assert isinstance(code_list.concepts[0], NewQbConcept)
-        assert code_list.concepts[0] == NewQbConcept(label="a", code="a")
-        assert isinstance(code_list.concepts[2], NewQbConcept)
-        assert code_list.concepts[2] == NewQbConcept(label="c", code="c")
+        # assert isinstance(
+        #     column.structural_definition, NewQbDimension
+        # ), column.structural_definition
+        # code_list = column.structural_definition.code_list
+        # assert code_list is not None
+        # assert isinstance(code_list, ExistingQbCodeList)
+        # assert code_list.concepts
+        # assert len(code_list.concepts) == 3
+        # assert isinstance(code_list.concepts[0], NewQbConcept)
+        # assert code_list.concepts[0] == NewQbConcept(label="a", code="a")
+        # assert isinstance(code_list.concepts[2], NewQbConcept)
+        # assert code_list.concepts[2] == NewQbConcept(label="c", code="c")
 
-        _check_new_dimension_column(
-            column, dimension_config, column_data, "New Dimension"
-        )
-
-        assert (
-            f"Setting the code_list to be a code-list-config.json is not doable when also provided with a cell_uri_template."
-            in str(excinfo)
-        )
-        assert f"blah." in str(excinfo)
+        # _check_new_dimension_column(
+        #     column, dimension_config, column_data, "New Dimension"
+        # )
+    assert (
+        f"Setting the code_list to be a code-list-config.json is not doable when also provided with a cell_uri_template."
+        in str(excinfo)
+    )
 
 
 @pytest.mark.vcr

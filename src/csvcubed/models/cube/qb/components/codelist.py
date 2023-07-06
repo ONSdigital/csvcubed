@@ -117,16 +117,12 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def from_data(
         metadata: CatalogMetadata,
         data: PandasDataTypes,
-        csv_column_title: Optional[str] = None,
+        csv_column_title: str,
         uri_style: Optional[URIStyle] = None,
         cell_uri_template: Optional[str] = None,
     ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
-        # todo: If the cell_uri_template is defined these should be DuplicatedQbConcepts instead of NewQbConcepts
-        # todo: DuplicatedQbConcept()
-        # todo: Generate the URI for each concept using: uritemplate.expand(csv_column_uri_template, {csvw_column_name: m})
-        # csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
-        csvw_safe_col_name = csvw_column_name_safe(metadata.get_identifier())
+        csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
         if cell_uri_template:
             concepts = [
                 DuplicatedQbConcept(

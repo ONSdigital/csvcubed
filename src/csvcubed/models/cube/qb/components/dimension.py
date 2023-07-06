@@ -114,7 +114,11 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             label=label,
             description=description,
             code_list=NewQbCodeList.from_data(
-                CatalogMetadata(label), data, code_list_uri_style, cell_uri_template
+                metadata=CatalogMetadata(label),
+                data=data,
+                csv_column_title=label,
+                uri_style=code_list_uri_style,
+                cell_uri_template=cell_uri_template,
             ),
             parent_dimension_uri=parent_dimension_uri,
             source_uri=source_uri,
