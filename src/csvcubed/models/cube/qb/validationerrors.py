@@ -281,7 +281,7 @@ class IncompatibleComponentsError(SpecificValidationError, ABC):
         self.message = (
             f"Both {_get_description_for_component(self.component_one)} "
             + f"and {_get_description_for_component(self.component_two)} have been defined. "
-            + f"These components cannot be used together."
+            + "These components cannot be used together."
         )
         if self.additional_explanation is not None:
             self.message += " " + self.additional_explanation
@@ -351,7 +351,7 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.measure_col_titles)
-        self.message = f"The cube is in pivoted shape, but 1 or more measure columns have been defined. These two approaches are incompatible."
+        self.message = "The cube is in pivoted shape, but 1 or more measure columns have been defined. These two approaches are incompatible."
 
 
 @dataclass

@@ -187,7 +187,7 @@ def _validate_observation_value(
     else:
         if num_obs_val_columns == 1 and any(multi_unit_columns):
             errors.append(BothUnitTypesDefinedError())
-        elif not (num_obs_val_columns == 1) and any(
+        elif (num_obs_val_columns != 1) and any(
             [
                 c
                 for c in multi_unit_columns

@@ -513,7 +513,6 @@ class DsdToRdfModelsHelper:
                 attribute.parent_attribute_uri
             )
             component.attribute.source = maybe_existing_resource(attribute.source_uri)
-            # TODO: Find some way to link the codelist we have to the ComponentProperty?
             if isinstance(attribute, QbAttributeLiteral):
                 component.attribute.range = ExistingResource(
                     get_data_type_uri_from_str(attribute.data_type)
