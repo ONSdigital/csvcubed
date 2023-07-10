@@ -150,7 +150,7 @@ class SkosCodeListWriter(WriterBase):
                     "titles": "Original Concept URI",
                     "name": "uri",
                     "required": True,
-                    "propertyUrl": "owl:sameAs",
+                    "propertyUrl": "skos:exactMatch",
                     "valueUrl": "{+uri}",
                 }
             )
@@ -175,6 +175,7 @@ class SkosCodeListWriter(WriterBase):
             }
         )
         return {
+            "@context": "http://www.w3.org/ns/csvw",
             "columns": csvw_columns,
             "aboutUrl": self.uri_helper.get_concept_uri("{+uri_identifier}"),
             "primaryKey": "uri_identifier",

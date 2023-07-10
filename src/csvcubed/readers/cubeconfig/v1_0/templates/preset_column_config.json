@@ -17,5 +17,6 @@
     "gregorian-interval": "gregorian-interval.json",
     "observation-status": "observation-status.json",
     "qudt": "qudt-units.json",
-    "statistical-geography": "statistical-geography.json"
+    "statistical-geography": "statistical-geography.json",
+    "obseration-status-af": "observation-status-af.json"
 }

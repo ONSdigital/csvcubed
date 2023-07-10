@@ -1,0 +1,10 @@
+PREFIX void: <http://rdfs.org/ns/void#>
+
+SELECT DISTINCT ?dataset ?dataDump ?uriSpace
+WHERE {
+        ?dataset a void:Dataset;
+                void:uriSpace ?uriSpace;
+                void:dataDump ?dataDump.
+
+        # ?dataset void:sparqlEndpoint ?sparqlEndpoint. # We may want to support SPARQL endpoints at some later point in time but it doesn't benefit us much right now.
+}

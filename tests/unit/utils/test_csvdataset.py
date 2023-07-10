@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import pytest
 from csvcubedmodels.rdf import XSD, SDMX_Attribute
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidObservationColumnTitle,
     InvalidUnitColumnDefinition,
 )
-from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
+from csvcubed.models.inspect.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
     _create_unit_col_in_melted_data_set_for_pivoted_shape,
@@ -20,9 +20,7 @@ from tests.helpers.repository_cache import (
     get_csvw_rdf_manager,
     get_data_cube_repository,
 )
-from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
-    get_arguments_qb_dataset,
-)
+from tests.unit.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

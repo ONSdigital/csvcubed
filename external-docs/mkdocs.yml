@@ -46,6 +46,9 @@ nav:
         - Standard shape: guides/shape-data/standard-shape.md
         - Pivoted shape: guides/shape-data/pivoted-shape.md
         - Shape conversion: guides/shape-data/shape-conversion.md
+      - Inspect API:
+        - guides/inspect-api/index.md
+        - Worked example 3: guides/inspect-api/example3.md
       - Handling missing observed values: guides/missing-observed-values.md
       - Errors:
         - guides/errors/index.md

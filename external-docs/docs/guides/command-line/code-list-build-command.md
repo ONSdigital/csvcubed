@@ -45,7 +45,7 @@ When the code list is built the default output path is `./out`. This may be chan
 
 To build a code list you must only provide a code-list config JSON file.
 
-The code list config JSON file must adhere to the structures defined in the [code list config schema](https://purl.org/csv-cubed/code-list-config/v1.1).
+The code list config JSON file must adhere to the structures defined in the [code list config schema](https://purl.org/csv-cubed/code-list-config/v2.0).
 
 For help on constructing the code-list config JSON refer to the [code-list-config guide](../configuration/qube-config/code-list-config.md)
 

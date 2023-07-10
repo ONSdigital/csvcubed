@@ -1,0 +1,34 @@
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT ?dsdUri ?component ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType (COALESCE(?componentRequired, false) as ?required)
+WHERE {
+
+    ?dsdUri qb:component ?component.
+    ?component qb:order ?componentOrder
+
+    {
+        ?component qb:dimension ?componentProperty.
+        BIND (qb:DimensionProperty as ?componentPropertyType).
+        BIND (true as ?componentRequired)
+    } UNION {
+        # https://www.w3.org/TR/vocab-data-cube/#dfn-qb-measuredimension
+        ?component qb:measureDimension ?componentProperty.
+        BIND (qb:MeasureProperty as ?componentPropertyType).
+        BIND (true as ?componentRequired)
+    } UNION {
+        ?component qb:measure ?componentProperty.
+        BIND (qb:MeasureProperty as ?componentPropertyType).
+        BIND (true as ?componentRequired)
+    } UNION {
+        ?component qb:attribute ?componentProperty.
+        BIND (qb:AttributeProperty as ?componentPropertyType).
+
+        OPTIONAL { ?component qb:componentRequired ?componentRequired. }
+    }
+
+    OPTIONAL { ?componentProperty rdfs:label ?componentPropertyLabel. }
+}
+ORDER BY ASC(?componentOrder)

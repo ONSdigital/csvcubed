@@ -25,15 +25,15 @@ from csvcubed.inspect.inspectorcolumns import (
 )
 from csvcubed.inspect.inspectors import MetadataInspector, TableInspector
 from csvcubed.inspect.lazyfuncdescriptor import lazy_func_field
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
+from csvcubed.inspect.tableschema import CsvWRdfManager
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import CatalogMetadataResult
+from csvcubed.models.inspect.column_component_info import ColumnComponentInfo
+from csvcubed.models.inspect.sparqlresults import CatalogMetadataResult
 from csvcubed.utils.iterables import single
 from csvcubed.utils.qb.components import EndUserColumnType
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
-from csvcubed.utils.tableschema import CsvWRdfManager
 
 
 @dataclass(frozen=True)

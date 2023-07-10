@@ -1,0 +1,48 @@
+{
+  "title": "Title of the code list",
+  "description": "Description of the code list",
+  "summary": "Summary of the code list",
+  "creator": "http://purl.org/dc/aboutdcmi#DCMI",
+  "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
+  "dataset_issued": "2023-05-24T08:00:00Z",
+  "dataset_modified": "2023-05-24T08:00:00Z",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "themes": [
+    "http://example.com/themes/theme"
+  ],
+  "keywords": [
+    "keyword1",
+    "keyword2"
+  ],
+  "sort": {
+    "by": "label",
+    "method": "ascending"
+  },
+  "concepts": [
+    {
+      "label": "A",
+      "description": "A data record",
+      "notation": "a"
+    },
+    {
+      "label": "B",
+      "description": "B data record",
+      "notation": "b"
+    },
+    {
+      "label": "C",
+      "description": "C data record",
+      "notation": "c"
+    },
+    {
+      "label": "D",
+      "description": "D data record",
+      "notation": "d"
+    },
+    {
+      "label": "E",
+      "description": "E data record",
+      "notation": "e"
+    }
+  ]
+}

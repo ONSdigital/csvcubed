@@ -37,6 +37,11 @@
                         "required": true
                     },
                     {
+                        "titles": "Suppressed",
+                        "name": "suppressed",
+                        "suppressOutput": true
+                    },
+                    {
                         "name": "virt_slice",
                         "virtual": true,
                         "propertyUrl": "rdf:type",

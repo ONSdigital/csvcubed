@@ -6,6 +6,10 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     Then the file at "basic-code-list.csv" should exist
     And the file at "basic-code-list.csv-metadata.json" should exist
     And the file at "basic-code-list.table.json" should exist
+    And the file at "basic-code-list.table.json" should contain the line
+    """
+    "@context": "http://www.w3.org/ns/csvw"
+    """
     And csvlint validation of "basic-code-list.csv-metadata.json" should succeed
     And csv2rdf on "basic-code-list.csv-metadata.json" should succeed
     And the RDF should pass "skos" SPARQL tests
@@ -54,7 +58,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     """
       @prefix basicCodeList: <{{rdf_input_directory}}/basic-code-list.csv#>.
       @prefix prov: <http://www.w3.org/ns/prov#> .
-        
+
       basicCodeList:csvcubed-build-activity a prov:Activity;
                                             prov:used <{{csvcubed_version_identifier}}>.
     """
@@ -95,21 +99,21 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
           <http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative>.
 
       compositeCodeList:wales a <http://www.w3.org/2004/02/skos/core#Concept>;
-      <http://www.w3.org/2002/07/owl#sameAs> <http://data.europa.eu/nuts/code/UKL>;
+      <http://www.w3.org/2004/02/skos/core#exactMatch> <http://data.europa.eu/nuts/code/UKL>;
       <http://www.w3.org/2000/01/rdf-schema#label> "Wales";
       <http://www.w3.org/2004/02/skos/core#notation> "wales";
       <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;
       <http://www.w3.org/ns/ui#sortPriority> 0.
 
       compositeCodeList:scotland a <http://www.w3.org/2004/02/skos/core#Concept>;
-      <http://www.w3.org/2002/07/owl#sameAs> <http://data.europa.eu/nuts/code/UKM>;
+      <http://www.w3.org/2004/02/skos/core#exactMatch> <http://data.europa.eu/nuts/code/UKM>;
       <http://www.w3.org/2000/01/rdf-schema#label> "Scotland";
       <http://www.w3.org/2004/02/skos/core#notation> "scotland";
       <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;
       <http://www.w3.org/ns/ui#sortPriority> 1.
 
       compositeCodeList:england a <http://www.w3.org/2004/02/skos/core#Concept>;
-      <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E92000001>;
+      <http://www.w3.org/2004/02/skos/core#exactMatch> <http://statistics.data.gov.uk/id/statistical-geography/E92000001>;
       <http://www.w3.org/2000/01/rdf-schema#label> "England";
       <http://www.w3.org/2004/02/skos/core#notation> "england";
       <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;

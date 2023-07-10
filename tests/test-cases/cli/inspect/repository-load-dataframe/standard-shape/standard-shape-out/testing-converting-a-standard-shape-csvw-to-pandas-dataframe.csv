@@ -1,4 +1,4 @@
-Dim1,Dim2,Dim3,AttrResource,AttrLiteral,Units,Measures,Obs
-something-1,something-else-1,2021,final,-90,some-unit-1,some-measure-1,127
-something-2,something-else-2,2022,provisional,-80,some-unit-2,some-measure-2,227
-something-3,something-else-3,2023,estimated,-70,some-unit-3,some-measure-3,327
+Dim1,Dim2,Dim3,AttrResource,AttrLiteral,Units,Measures,Obs,Suppressed
+something-1,something-else-1,2021,final,-90,some-unit-1,some-measure-1,127,suppressed-1
+something-2,something-else-2,2022,provisional,-80,some-unit-2,some-measure-2,227,suppressed-2
+something-3,something-else-3,2023,estimated,-70,some-unit-3,some-measure-3,327,suppressed-3

@@ -1,0 +1,6 @@
+{
+    "type": "attribute",
+    "label": "Observation Status",
+    "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+    "cell_uri_template": "https://purl.org/csv-cubed/resources/attributes/af-obs-marker#{+<column_name>}"
+  }

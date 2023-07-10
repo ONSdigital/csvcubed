@@ -1,4 +1,0 @@
-ASK 
-WHERE {
-    ?qbDataSet a <http://purl.org/linked-data/cube#DataSet>.
-}

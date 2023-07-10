@@ -7,20 +7,20 @@ from csvcubed.cli.inspectcsvw.metadataprinter import MetadataPrinter
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.inspectdataframeresults import (
+from csvcubed.models.inspect.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
-from csvcubed.models.sparqlresults import CodelistsResult
+from csvcubed.models.inspect.sparqlresults import CodelistsResult
 from tests.helpers.repository_cache import get_data_cube_repository
-from tests.unit.cli.inspectcsvw.test_inspectdatasetmanager import (
+from tests.unit.inspect.sparqlhandler.test_data_cube_repository import (
+    get_arguments_qb_dataset,
+)
+from tests.unit.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
     expected_dataframe_pivoted_single_measure,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
-from tests.unit.utils.sparqlhandler.test_data_cube_repository import (
-    get_arguments_qb_dataset,
-)
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 

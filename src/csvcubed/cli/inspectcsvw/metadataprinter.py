@@ -13,23 +13,27 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from pandas import DataFrame
 
-from csvcubed.cli.inspectcsvw.inspectdatasetmanager import (
+from csvcubed.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
 )
+from csvcubed.inspect.sparql_handler.code_list_repository import CodeListRepository
+from csvcubed.inspect.sparql_handler.csvw_repository import CsvWRepository
+from csvcubed.inspect.sparql_handler.data_cube_repository import DataCubeRepository
 from csvcubed.models.csvcubedexception import (
     InputNotSupportedException,
     UnsupportedNumOfPrimaryKeyColNamesException,
 )
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.inspectdataframeresults import (
+from csvcubed.models.inspect.column_component_info import ColumnComponentInfo
+from csvcubed.models.inspect.inspectdataframeresults import (
     CodelistHierarchyInfoResult,
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
-from csvcubed.models.sparqlresults import (
+from csvcubed.models.inspect.sparqlresults import (
     CatalogMetadataResult,
     CodelistResult,
     CodelistsResult,
@@ -47,10 +51,6 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.code_list_repository import CodeListRepository
-from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
-from csvcubed.utils.sparql_handler.csvw_repository import CsvWRepository
-from csvcubed.utils.sparql_handler.data_cube_repository import DataCubeRepository
 
 
 @dataclass
