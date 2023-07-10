@@ -43,15 +43,19 @@ class TestQbMeasure(QbMeasure, UriIdentifiable):
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        """placeholder for getter"""
         pass
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        """placeholder for getter"""
         pass
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        """placeholder for getter"""
         pass
 
     def get_identifier(self) -> str:
+        """placeholder for getter"""
         pass
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
