@@ -1,0 +1,83 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Datacube title",
+    "columns": {
+        "Region True": {
+            "type": "dimension",
+            "code_list": true
+        },
+        "Region False": {
+            "type": "dimension",
+            "code_list": false
+        },
+        "Region Inline": {
+            "type": "dimension",
+            "code_list": {
+                "title": "Region Inline",
+                "concepts": [
+                    {
+                        "label": "E92000001",
+                        "notation": "e92000001",
+                        "description": "England"
+                    },
+                    {
+                        "label": "N92000002",
+                        "notation": "n92000002",
+                        "description": "Northern Ireland"
+                    },
+                    {
+                        "label": "S92000003",
+                        "notation": "s92000003",
+                        "description": "Scotland"
+                    },
+                    {
+                        "label": "W92000004",
+                        "notation": "w92000004",
+                        "description": "Wales"
+                    }
+                ]
+            }
+        },
+        "Region JSON": {
+            "type": "dimension",
+            "code_list": "region.json"
+        },
+        "Region URL": {
+            "type": "dimension",
+            "code_list": "http://statistics.data.gov.uk/data/statistical-geography/code-lists"
+        },
+        "Value": {
+            "type": "observations",
+            "data_type": "int"
+        },
+        "Unit": {
+            "type": "units",
+            "values": true
+        },
+        "Measure": {
+            "type": "measures",
+            "values": true
+        },
+        "Attribute True": {
+            "type": "attribute",
+            "values": true,
+            "required": false
+        },
+        "Attribute False": {
+            "type": "attribute",
+            "required": false
+        },
+        "Attribute Values": {
+            "type": "attribute",
+            "values": [
+                {
+                    "label": "Final"
+                },
+                {
+                    "label": "Provisional"
+                }
+            ],
+            "required": false
+        }
+    }
+}

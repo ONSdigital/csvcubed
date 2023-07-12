@@ -1,0 +1,26 @@
+{
+    "$schema": "https://purl.org/csv-cubed/code-list-config/v2",
+    "title": "Region JSON",
+    "concepts": [
+        {
+            "label": "E92000001",
+            "notation": "e92000001",
+            "description": "England"
+        },
+        {
+            "label": "N92000002",
+            "notation": "n92000002",
+            "description": "Northern Ireland"
+        },
+        {
+            "label": "S92000003",
+            "notation": "s92000003",
+            "description": "Scotland"
+        },
+        {
+            "label": "W92000004",
+            "notation": "w92000004",
+            "description": "Wales"
+        }
+    ]
+}

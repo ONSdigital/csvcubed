@@ -6,10 +6,10 @@ Represent code lists in an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Dict, Generic, List, Optional, Set, TypeVar
 
-from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import (
@@ -116,8 +116,15 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         data: PandasDataTypes,
         uri_style: Optional[URIStyle] = None,
     ) -> "NewQbCodeList":
-        columnar_data = pandas_input_to_columnar_str(data)
-        concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
+        # columnar_data = pandas_input_to_columnar_str(data)
+        # concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
+        # return NewQbCodeList(metadata, concepts, uri_style=uri_style)
+
+        columnar_data = pandas_input_to_columnar_optional_str(data)
+        concepts = [
+            NewQbConcept(c)
+            for c in sorted(set([d for d in columnar_data if d is not None]))
+        ]
         return NewQbCodeList(metadata, concepts, uri_style=uri_style)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:

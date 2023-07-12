@@ -17,6 +17,7 @@ import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.cli.codelist.build_code_list import get_code_list_versioned_deserialiser
+from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components.attribute import (
@@ -24,7 +25,6 @@ from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttributeLiteral,
     NewQbAttribute,
     NewQbAttributeLiteral,
-    NewQbAttributeValue,
 )
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
@@ -285,34 +285,32 @@ class ExistingAttributeLiteral(SchemaBaseClass):
 @dataclass
 class ExistingAttributeResource(SchemaBaseClass):
     from_existing: str
-    values: Union[bool, List[AttributeValue]] = True
+    # values: Union[bool, List[AttributeValue]] = True
     required: bool = False
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
-    def map_to_existing_qb_attribute(
-        self, data: PandasDataTypes
-    ) -> ExistingQbAttribute:
-        if self.cell_uri_template:
-            if isinstance(self.values, bool):
-                _logger.warning(
-                    "Attribute values will not be created as `cell_uri_template` is set"
-                )
-                return ExistingQbAttribute(
-                    attribute_uri=self.from_existing,
-                    is_required=self.required,
-                    observed_value_col_title=self.describes_observations,
-                )
-            raise ValueError(
-                "Conflict between `cell_uri_template` and list of attribute values provided"
-            )
-        else:
-            return ExistingQbAttribute(
-                attribute_uri=self.from_existing,
-                new_attribute_values=_get_new_attribute_values(data, self.values),
-                is_required=self.required,
-                observed_value_col_title=self.describes_observations,
-            )
+    def map_to_existing_qb_attribute(self) -> ExistingQbAttribute:
+        # if self.cell_uri_template:
+        #     if isinstance(self.values, bool):
+        #         _logger.warning(
+        #             "Attribute values will not be created as `cell_uri_template` is set"
+        #         )
+        #         return ExistingQbAttribute(
+        #             attribute_uri=self.from_existing,
+        #             is_required=self.required,
+        #             observed_value_col_title=self.describes_observations,
+        #         )
+        #     raise ValueError(
+        #         "Conflict between `cell_uri_template` and list of attribute values provided"
+        #     )
+        # else:
+        return ExistingQbAttribute(
+            attribute_uri=self.from_existing,
+            # new_attribute_values=_get_new_attribute_values(data, self.values),
+            is_required=self.required,
+            observed_value_col_title=self.describes_observations,
+        )
 
 
 @dataclass
@@ -373,15 +371,39 @@ class NewAttributeResource(SchemaBaseClass):
                 "Conflict between `cell_uri_template` and list of attribute values provided"
             )
         else:
-            return NewQbAttribute(
-                label=label,
-                description=self.description,
-                new_attribute_values=_get_new_attribute_values(data, self.values),
-                parent_attribute_uri=self.from_existing,
-                source_uri=self.definition_uri,
-                is_required=self.required,
-                observed_value_col_title=self.describes_observations,
-            )
+            if isinstance(self.values, bool):
+                if self.values:
+                    return NewQbAttribute.from_data(
+                        label=label,
+                        data=data,
+                        description=self.description,
+                        parent_attribute_uri=self.from_existing,
+                        source_uri=self.definition_uri,
+                        is_required=self.required,
+                        observed_value_col_title=self.describes_observations,
+                    )
+                else:
+                    return NewQbAttribute(
+                        label=label,
+                        description=self.description,
+                        parent_attribute_uri=self.from_existing,
+                        source_uri=self.definition_uri,
+                        is_required=self.required,
+                        observed_value_col_title=self.describes_observations,
+                    )
+            else:
+                return NewQbAttribute(
+                    label=label,
+                    description=self.description,
+                    code_list=NewQbCodeList(
+                        CatalogMetadata(label),
+                        concepts=_get_new_attribute_values(self.values),
+                    ),
+                    parent_attribute_uri=self.from_existing,
+                    source_uri=self.definition_uri,
+                    is_required=self.required,
+                    observed_value_col_title=self.describes_observations,
+                )
 
 
 @dataclass
@@ -550,23 +572,23 @@ def _map_measure(resource: Measure) -> NewQbMeasure:
     )
 
 
-def _map_attribute_values(
-    new_attribute_values_from_schema: List[AttributeValue],
-) -> List[NewQbAttributeValue]:
-    new_attribute_values = []
-    for attr_val in new_attribute_values_from_schema:
-        if not isinstance(attr_val, AttributeValue):
-            raise ValueError(f"Found unexpected attribute value {attr_val}")
+# def _map_attribute_values(
+#     new_attribute_values_from_schema: List[AttributeValue],
+# ) -> List[NewQbConcept]:
+#     new_attribute_values = []
+#     for attr_val in new_attribute_values_from_schema:
+#         if not isinstance(attr_val, AttributeValue):
+#             raise ValueError(f"Found unexpected attribute value {attr_val}")
 
-        new_attribute_values.append(
-            NewQbAttributeValue(
-                label=attr_val.label,
-                description=attr_val.description,
-                source_uri=attr_val.definition_uri,
-                # uri_safe_identifier_override=attr_val.path,
-            )
-        )
-    return new_attribute_values
+#         new_attribute_values.append(
+#             NewQbConcept(
+#                 label=attr_val.label,
+#                 description=attr_val.description,
+#                 # source_uri=attr_val.definition_uri,
+#                 # uri_safe_identifier_override=attr_val.path,
+#             )
+#         )
+#     return new_attribute_values
 
 
 def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
@@ -585,25 +607,40 @@ def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
 
 
 def _get_new_attribute_values(
-    data: PandasDataTypes,
-    new_attribute_values: Union[bool, List[AttributeValue]],
-) -> List[NewQbAttributeValue]:
+    # data: PandasDataTypes,
+    # new_attribute_values: Union[bool, List[AttributeValue]],
+    new_attribute_values_from_schema: List[AttributeValue],
+) -> List[NewQbConcept]:
     """
     Returns a list of new attribute value objects. If cell_uri_template is True, then the list is created with
     the list comprehension. If cell_uri_template is not used (new_attribute_values is a list object)
     then use _map_attribute_values.
     """
 
-    if isinstance(new_attribute_values, bool):
-        if new_attribute_values:
-            columnar_data: List[str] = [
-                v for v in pandas_input_to_columnar_optional_str(data) if v is not None
-            ]
-            return [NewQbAttributeValue(v) for v in sorted(set(columnar_data))]
+    # if isinstance(new_attribute_values, bool):
+    #     if new_attribute_values:
+    #         columnar_data: List[str] = [
+    #             v for v in pandas_input_to_columnar_optional_str(data) if v is not None
+    #         ]
+    #         return [NewQbConcept(v) for v in sorted(set(columnar_data))]
 
-        return []
-    elif isinstance(new_attribute_values, list):
-        return _map_attribute_values(new_attribute_values)
+    #     return []
+    # elif isinstance(new_attribute_values, list):
+    new_attribute_values = []
+    for attr_val in new_attribute_values_from_schema:
+        if not isinstance(attr_val, AttributeValue):
+            raise ValueError(f"Found unexpected attribute value {attr_val}")
+
+        new_attribute_values.append(
+            NewQbConcept(
+                label=attr_val.label,
+                description=attr_val.description,
+                # source_uri=attr_val.definition_uri,
+                # uri_safe_identifier_override=attr_val.path,
+            )
+        )
+    return new_attribute_values
+    # return _map_attribute_values(new_attribute_values)
 
     raise ValueError(
         f"Unexpected value for 'newAttributeValues': {new_attribute_values}"

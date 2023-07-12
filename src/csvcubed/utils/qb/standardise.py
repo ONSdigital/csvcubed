@@ -9,6 +9,7 @@ from typing import Dict, List
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
+from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.models.cube.cube import QbColumn, QbCube
 from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
@@ -170,19 +171,30 @@ def convert_data_values_to_uri_safe_values(
             )
 
     for attribute_column in cube.get_columns_of_dsd_type(QbAttribute):
-        attribute = attribute_column.structural_definition
-        new_attribute_values: List[NewQbAttributeValue] = attribute.new_attribute_values  # type: ignore
-        if (
-            not isinstance(attribute, QbAttributeLiteral)
-            and len(new_attribute_values) > 0
-        ):
+        # attribute = attribute_column.structural_definition
+        # new_attribute_values: List[NewQbAttributeValue] = attribute.new_attribute_values  # type: ignore
+        # if (
+        #     not isinstance(attribute, QbAttributeLiteral)
+        #     and len(new_attribute_values) > 0
+        # ):
+        #     map_attr_val_labels_to_uri_identifiers = dict(
+        #         [
+        #             (new_attribute_value.label, new_attribute_value.uri_safe_identifier)
+        #             for new_attribute_value in new_attribute_values
+        #         ]
+        #     )
+        if isinstance(attribute_column.structural_definition.code_list, NewQbCodeList):
+            new_code_list = attribute_column.structural_definition.code_list
             map_attr_val_labels_to_uri_identifiers = dict(
                 [
-                    (new_attribute_value.label, new_attribute_value.uri_safe_identifier)
-                    for new_attribute_value in new_attribute_values
+                    (concept.label, concept.uri_safe_identifier)
+                    for concept in new_code_list.concepts
+                ]
+                + [
+                    (concept.code, concept.uri_safe_identifier)
+                    for concept in new_code_list.concepts
                 ]
             )
-
             _overwrite_labels_for_columns(
                 cube,
                 [attribute_column],
