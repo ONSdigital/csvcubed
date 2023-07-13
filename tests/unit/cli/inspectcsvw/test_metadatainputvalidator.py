@@ -83,7 +83,7 @@ def test_detect_invalid_csvw_metadata_input():
 
     assert (
         str(exception.value)
-        == f"The input metadata is invalid as it is not a data cube or a code list."
+        == "The input metadata is invalid as it is not a data cube or a code list."
     )
 
 

@@ -89,7 +89,7 @@ def test_output_new_code_list_csvws_urls():
             temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
         )
         assert (
-            URIRef(f"file://relative/some-dimension.csv#code-list"),
+            URIRef("file://relative/some-dimension.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
@@ -121,7 +121,7 @@ def test_output_new_code_list_csws_urls_with_uri_style_without_file_extensions()
             temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
         )
         assert (
-            URIRef(f"file://relative/some-dimension#code-list"),
+            URIRef("file://relative/some-dimension#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph

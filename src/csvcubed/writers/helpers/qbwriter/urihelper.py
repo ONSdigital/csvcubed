@@ -381,7 +381,7 @@ class UriHelper:
             col_title,
         )
         if num_of_obs_val_cols != 1:
-            raise Exception(
+            raise AssertionError(
                 f'Could not find one observation value column. Found {num_of_obs_val_cols} for title: "{col_title}".'
             )
         return obs_columns_for_column[0]
