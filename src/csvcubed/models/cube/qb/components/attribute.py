@@ -213,32 +213,12 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        if len(self.code_list.concepts) > 0:  # type: ignore
-            # Previous code:
-            # expected_values = {
-            #     av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
-            # }
-
-            # Two ways to do validation from data:
-            # 1:
-            expected_values = {
-                av.code_list.concepts.code for av in self.code_list.concepts  # type: ignore
-            }
-            actual_values = {
-                uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
-            }
-            undefined_values = expected_values - actual_values
-
-            if len(undefined_values) > 0:
-                return [UndefinedAttributeValueUrisError(self, undefined_values)]
+        # return self._validate_data_new_attribute_values(data)
+        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
+        if isinstance(self.code_list, NewQbCodeList):
+            return self.code_list.validate_data(data, column_csv_title)
 
         return []
-        # 2 (from dimension.py):
-        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
-        # if isinstance(self.code_list, NewQbCodeList):
-        #     return self.code_list.validate_data(data, column_csv_title)
-
-        # return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {

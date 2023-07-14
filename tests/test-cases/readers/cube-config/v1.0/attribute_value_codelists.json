@@ -1,0 +1,57 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.4",
+    "title": "Attribute value codelists",
+    "columns": {
+        "Dimension1": {
+            "type": "dimension",
+            "code_list": true
+        },
+        "Value": {
+            "type": "observations",
+            "measure": {
+                "label": "Measure"
+            },
+            "unit": {
+                "label": "Unit"
+            }
+        },
+        "Attr1": {
+            "type": "attribute",
+            "required": false,
+            "values": true
+        },
+        "Attr2": {
+            "type": "attribute",
+            "required": false,
+            "values": false
+        },
+        "Attr3": {
+            "type": "attribute",
+            "required": false,
+            "values": [
+                {
+                    "label": "Attribute A"
+                },
+                {
+                    "label": "Attribute B"
+                },
+                {
+                    "label": "Attribute C"
+                }
+            ]
+        },
+        "Attr4": {
+            "type": "attribute",
+            "required": false,
+            "cell_uri_template": "http://example.org/attribute4/{+attr4}"
+        },
+        "Dimension2": {
+            "type": "dimension",
+            "code_list": false
+        },
+        "Dimension3": {
+            "type": "dimension",
+            "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+        }
+    }
+}

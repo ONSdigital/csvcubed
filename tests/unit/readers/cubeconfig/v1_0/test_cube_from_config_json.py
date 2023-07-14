@@ -135,6 +135,21 @@ def _check_new_dimension_column(
         assert concept.uri_safe_identifier_override is None
 
 
+def test_new_qb_attr_resource():
+    config = Path(TEST_CASE_DIR, "attribute_value_codelists.json")
+    csv = Path(TEST_CASE_DIR, "attribute_value_codelists.csv")
+    output = Path(TEST_CASE_DIR, "out")
+    cube, errors = cli_build(
+        csv,
+        config,
+        output,
+        fail_when_validation_error_occurs=True,
+        validation_errors_file_name="errors.json",
+    )
+
+    pass
+
+
 @pytest.mark.vcr
 def test_build_config_ok():
     """
