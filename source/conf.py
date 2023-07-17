@@ -5,7 +5,7 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-from src.csvcubed import __version__
+from csvcubed import __version__
 
 project = "csvcubed"
 author = "Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"
