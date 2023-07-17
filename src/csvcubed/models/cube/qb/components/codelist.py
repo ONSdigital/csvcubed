@@ -6,10 +6,14 @@ Represent code lists in an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import Dict, Generic, List, Optional, Set, TypeVar
+from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
 from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
-from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
+from csvcubed.inputs import (
+    PandasDataTypes,
+    pandas_input_to_columnar_optional_str,
+    pandas_input_to_columnar_str,
+)
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import (
@@ -115,6 +119,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         metadata: CatalogMetadata,
         data: PandasDataTypes,
         uri_style: Optional[URIStyle] = None,
+        # OK to have optional values for attributes but not dimensions
     ) -> "NewQbCodeList":
         # columnar_data = pandas_input_to_columnar_str(data)
         # concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]

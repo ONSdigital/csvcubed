@@ -11,23 +11,19 @@ from typing import Dict, List, Optional, Set
 
 import pandas as pd
 
-from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
-from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
-from csvcubed.utils.uri import uri_safe
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
 from .datastructuredefinition import QbColumnStructuralDefinition
-from .validationerrors import UndefinedAttributeValueUrisError
 
 
 @dataclass
@@ -157,8 +153,8 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     # def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
     #     return self.new_attribute_values
-    def get_new_attribute_values(self) -> List[NewQbConcept]:
-        return self.code_list.concepts
+    # def get_new_attribute_values(self) -> List[NewQbConcept]:
+    #     return self.code_list.concepts
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Property
@@ -174,6 +170,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     @staticmethod
     def from_data(
+        self,
         label: str,
         data: PandasDataTypes,
         description: Optional[str] = None,

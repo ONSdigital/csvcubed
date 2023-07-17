@@ -88,6 +88,11 @@ class DsdToRdfModelsHelper:
         for dependencies in self._get_rdf_file_dependencies():
             see_also += rdf_resource_to_json_ld(dependencies)
 
+        # if FLAG:
+        # write out all of the code lists for the new attribute resources
+        # else:
+        # Writing the Attribute values our in 'legacy mode'.
+        # We know they're stored in the code list object, but we're going to write them out of `rdf:Resource`s anyway.
         for attribute_value in self._get_new_attribute_value_resources():
             see_also += rdf_resource_to_json_ld(attribute_value)
 

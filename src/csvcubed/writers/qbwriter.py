@@ -9,7 +9,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, Union
 
 import pandas as pd
 
@@ -17,7 +17,11 @@ from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    QbAttribute,
+    QbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension, QbDimension
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
@@ -142,14 +146,16 @@ class QbWriter(WriterBase):
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
 
-    def _get_columns_for_foreign_keys(self) -> List[QbColumn[NewQbDimension]]:
+    def _get_columns_for_foreign_keys(
+        self,
+    ) -> List[QbColumn[Union[NewQbDimension, NewQbAttribute]]]:
         columns = []
         for col in self.cube.get_columns_of_dsd_type(NewQbDimension):
             if col.structural_definition.code_list is not None and isinstance(
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-
+        # TODO get_columns_of_dsd_type(NewQbAttribute)
         return columns
 
     def _get_table_references_needed_for_foreign_keys(self) -> List[dict]:
