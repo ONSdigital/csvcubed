@@ -19,6 +19,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           poetry version "$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')"
+        env:
+          CSVCUBED_VERSION: ("$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')")
 
       - name: Update version for dev
         # uses a version identifier derived from the Git hash for this commit.
@@ -44,11 +46,6 @@ jobs:
         working-directory: external-docs
         run: |
           poetry run mkdocs build
-
-      - name: Set version number for API Docs
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          CSVCUBED_VERSION: ("$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')")
 
       - name: Generate Inspect API Docs
         env:
