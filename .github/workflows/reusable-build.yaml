@@ -2,6 +2,9 @@ name: Build csvcubed whl and documentation
 on:
   workflow_call:
 
+env:
+  CSVCUBED_VERSION: "v0.1.0-dev"
+
 jobs:
   build_package_and_documentation:
     runs-on: ubuntu-latest
@@ -42,11 +45,16 @@ jobs:
         run: |
           poetry run mkdocs build
 
+      - name: Set version number for API Docs
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          CSVCUBED_VERSION: ("$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')")
+
       - name: Generate Inspect API Docs
         env:
           GIT_REF: ${{ github.ref }}
         run: |
-          poetry run sphinx-apidoc -o source src/csvcubed/ -V $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/' -f -d 20 -e -t source/_templates
+          poetry run sphinx-apidoc -o source src/csvcubed/ -V $CSVCUBED_VERSION -R $CSVCUBED_VERSION -f -d 20 -e -t source/_templates
           poetry run make html
 
       - name: Archive package and documentation
