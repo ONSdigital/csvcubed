@@ -9,7 +9,6 @@ from typing import Dict, List
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
-from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.models.cube.cube import QbColumn, QbCube
 from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList

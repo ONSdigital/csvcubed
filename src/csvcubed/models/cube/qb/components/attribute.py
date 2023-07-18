@@ -170,7 +170,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     @staticmethod
     def from_data(
-        self,
         label: str,
         data: PandasDataTypes,
         description: Optional[str] = None,

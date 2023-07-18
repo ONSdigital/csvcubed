@@ -71,10 +71,11 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                 #     c.csv_column_uri_template is None
                 #     and len(c.structural_definition.new_attribute_values) == 0  # type: ignore
                 # ):
-                if (
-                    c.csv_column_uri_template is None
-                    and len(c.structural_definition.code_list.concepts) == 0  # type: ignore
-                ):
+                if c.csv_column_uri_template is None and (
+                    len(c.structural_definition.code_list.concepts) == 0
+                    or c.structural_definition.code_list is None
+                    # TODO Manage ExistingQbAttribute with no code_list defined against it
+                ):  # type: ignore
                     errors.append(
                         NoUriTemplateOrAttrValuesError(
                             c.csv_column_title,

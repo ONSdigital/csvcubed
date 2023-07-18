@@ -8,7 +8,6 @@ from abc import ABC
 from dataclasses import dataclass, field
 from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
-from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.inputs import (
     PandasDataTypes,
     pandas_input_to_columnar_optional_str,

@@ -17,7 +17,6 @@ import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.cli.codelist.build_code_list import get_code_list_versioned_deserialiser
-from csvcubed.flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components.attribute import (
@@ -297,7 +296,8 @@ class ExistingAttributeResource(SchemaBaseClass):
         if self.cell_uri_template:
             if isinstance(self.values, bool):
                 _logger.warning(
-                    "Attribute values will not be created as `cell_uri_template` is set"
+                    "Attribute values for %s will not be created as `cell_uri_template` is set",
+                    column_title,
                 )
                 return ExistingQbAttribute(
                     attribute_uri=self.from_existing,
@@ -305,13 +305,16 @@ class ExistingAttributeResource(SchemaBaseClass):
                     observed_value_col_title=self.describes_observations,
                 )
             raise ValueError(
-                "Conflict between `cell_uri_template` and list of attribute values provided"
+                "Conflict between `cell_uri_template` and list of attribute values provided for %s",
+                column_title,
             )
         else:
             if isinstance(self.values, bool) and not self.values:
                 raise ValueError(
-                    "Values should be set to `true` or `cell_uri_template` should be provided"
+                    "Values should be set to `true` or `cell_uri_template` should be provided for %s",
+                    column_title,
                 )
+            # TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right?
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=column_title,
@@ -332,7 +335,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                 return NewQbAttribute(
                     label=column_title,
                     code_list=NewQbCodeList(
-                        self, CatalogMetadata(column_title), concepts=concepts
+                        CatalogMetadata(column_title), concepts=concepts
                     ),
                     parent_attribute_uri=self.from_existing,
                     is_required=self.required,
@@ -375,6 +378,7 @@ class NewAttributeResource(SchemaBaseClass):
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
+    # TODO - what happens if the CSV file contains attribute values that don't appear in the `values` config and vice versa?
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
@@ -383,7 +387,8 @@ class NewAttributeResource(SchemaBaseClass):
         if self.cell_uri_template:
             if isinstance(self.values, bool):
                 _logger.warning(
-                    "Attribute values will not be created as `cell_uri_template` is set"
+                    "Attribute values for %s will not be created as `cell_uri_template` is set",
+                    column_title,
                 )
                 return NewQbAttribute(
                     label=label,
@@ -395,7 +400,8 @@ class NewAttributeResource(SchemaBaseClass):
                 )
 
             raise ValueError(
-                "Conflict between `cell_uri_template` and list of attribute values provided"
+                "Conflict between `cell_uri_template` and list of attribute values provided for %s",
+                column_title,
             )
         else:
             if isinstance(self.values, bool):

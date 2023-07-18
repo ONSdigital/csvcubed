@@ -14,6 +14,7 @@ from typing import Any, Dict, Iterable, List, Union
 import pandas as pd
 
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
+from csvcubed.feature_flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
