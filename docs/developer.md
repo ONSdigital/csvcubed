@@ -96,8 +96,6 @@ See the python [typing documentation](https://docs.python.org/3/library/typing.h
 >* [pmd docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvcubed-pmd/docs/_build/html/index.html)
 >* [devtools docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/docs/_build/html/index.html)
 
-TODO: #220 Update the links to the build docs in developer.md
-
 We use [sphinx](https://www.sphinx-doc.org/) with [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html) and [sphinx.ext.autodoc](https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) to automatically generate API documentation for each of our projects. This is meant to provide a searchable and browsable set of documentation for the entire code-base excluding tests.
 
 In order to support sphinx as well as to provide helpful documentation when using an IDE's intellisense, **you should follow the following rules when writing code**:
