@@ -76,7 +76,9 @@ def test_output_new_code_list_csvws_urls():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "New Dimension", data["New Dimension"]
+                ),
             )
         ],
     )
@@ -107,7 +109,9 @@ def test_output_new_code_list_csws_urls_with_uri_style_without_file_extensions()
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "New Dimension", data["New Dimension"]
+                ),
             )
         ],
         uri_style=URIStyle.WithoutFileExtensions,
@@ -228,7 +232,9 @@ def test_csv_col_required_for_pivoted_multi_measure():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Units",
@@ -423,7 +429,9 @@ def test_output_integer_obs_val_with_missing_values():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Value",

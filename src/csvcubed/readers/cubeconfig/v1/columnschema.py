@@ -96,6 +96,7 @@ class NewDimension(SchemaBaseClass):
 
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
+            csv_column_title=csv_column_title,
             data=data,
             description=self.description,
             parent_dimension_uri=self.from_existing,

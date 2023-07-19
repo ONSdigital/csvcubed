@@ -715,7 +715,9 @@ def test_about_url_generation():
         ),
         QbColumn(
             "Local Dimension",
-            NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
+            NewQbDimension.from_data(
+                "Name of New Dimension", "Local Dimension", data["Local Dimension"]
+            ),
         ),
         QbColumn(
             "Value",
@@ -760,7 +762,9 @@ def test_about_url_generation_with_multiple_measures():
         ),
         QbColumn(
             "Local Dimension",
-            NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
+            NewQbDimension.from_data(
+                "Name of New Dimension", "Local Dimension", data["Local Dimension"]
+            ),
         ),
         QbColumn("Value", QbObservationValue("number")),
         QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),

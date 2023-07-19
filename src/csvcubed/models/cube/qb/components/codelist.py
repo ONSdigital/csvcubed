@@ -116,8 +116,8 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     @staticmethod
     def from_data(
         metadata: CatalogMetadata,
-        data: PandasDataTypes,
         csv_column_title: str,
+        data: PandasDataTypes,
         uri_style: Optional[URIStyle] = None,
         cell_uri_template: Optional[str] = None,
     ) -> "NewQbCodeList":

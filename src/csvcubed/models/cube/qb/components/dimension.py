@@ -97,6 +97,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
     @staticmethod
     def from_data(
         label: str,
+        csv_column_title: str,
         data: PandasDataTypes,
         description: Optional[str] = None,
         parent_dimension_uri: Optional[str] = None,
@@ -116,7 +117,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             code_list=NewQbCodeList.from_data(
                 metadata=CatalogMetadata(label),
                 data=data,
-                csv_column_title=label,
+                csv_column_title=csv_column_title,
                 uri_style=code_list_uri_style,
                 cell_uri_template=cell_uri_template,
             ),
