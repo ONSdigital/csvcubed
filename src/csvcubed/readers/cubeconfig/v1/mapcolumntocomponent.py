@@ -51,9 +51,6 @@ def map_column_to_qb_component(
             else schema_mapping.cell_uri_template
         )
 
-        # if schema_mapping.cell_uri_template and structural_definition.code_list:
-        #     raise "error"
-
         return (
             QbColumn(
                 column_title,
