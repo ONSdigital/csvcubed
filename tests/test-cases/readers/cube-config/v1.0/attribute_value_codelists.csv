@@ -1,5 +1,5 @@
-Dimension1,Value,Attr1,Attr2,Attr3,Attr4,Attr5,Attr6,Attr7,Attr8,Attr9,Attr10
-Dimension11,10,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A
-Dimension12,10,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B
-Dimension13,30,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C
-Dimension14,40,,,,,,,,,,
+Dimension,Value,Attr1,Attr4,Attr5,Attr6,Attr7,Attr9,Attr10
+Dimension 1,10,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A,Attribute A
+Dimension 2,20,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B,Attribute B
+Dimension 3,30,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C,Attribute C
+Dimension 4,40,,,,,,,

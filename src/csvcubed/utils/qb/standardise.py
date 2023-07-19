@@ -10,7 +10,11 @@ import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.models.cube.cube import QbColumn, QbCube
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    QbAttribute,
+    QbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension, QbDimension
 from csvcubed.models.cube.qb.components.measure import NewQbMeasure
@@ -169,7 +173,7 @@ def convert_data_values_to_uri_safe_values(
                 raise_missing_value_exceptions,
             )
 
-    for attribute_column in cube.get_columns_of_dsd_type(QbAttribute):
+    for attribute_column in cube.get_columns_of_dsd_type(NewQbAttribute):
         # attribute = attribute_column.structural_definition
         # new_attribute_values: List[NewQbAttributeValue] = attribute.new_attribute_values  # type: ignore
         # if (

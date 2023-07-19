@@ -102,10 +102,13 @@ class QbWriter(WriterBase):
                 },
             }
         ]
-
+        # 820 TODO Incorporate Attribute table refs
         tables += self._get_table_references_needed_for_foreign_keys()
 
-        self._output_new_code_list_csvws(output_folder)
+        self._output_new_dimension_code_list_csvws(output_folder)
+
+        if ATTRIBUTE_VALUE_CODELISTS:
+            self._output_new_attribute_code_list_csvws(output_folder)
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
@@ -124,12 +127,27 @@ class QbWriter(WriterBase):
             _logger.debug("Writing CSV to %s", csv_output_file_path)
             self.cube.data.to_csv(csv_output_file_path, index=False)
 
-    def _output_new_code_list_csvws(self, output_folder: Path) -> None:
+    def _output_new_dimension_code_list_csvws(self, output_folder: Path) -> None:
         for column in self.cube.get_columns_of_dsd_type(NewQbDimension):
             code_list = column.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
                 _logger.debug(
-                    "Writing code list %s to '%s' directory.", code_list, output_folder
+                    "Writing dimension code list %s to '%s' directory.",
+                    code_list,
+                    output_folder,
+                )
+
+                code_list_writer = self._get_writer_for_code_list(code_list)
+                code_list_writer.write(output_folder)
+
+    def _output_new_attribute_code_list_csvws(self, output_folder: Path) -> None:
+        for column in self.cube.get_columns_of_dsd_type(NewQbAttribute):
+            code_list = column.structural_definition.code_list
+            if isinstance(code_list, NewQbCodeList):
+                _logger.debug(
+                    "Writing attribute code list %s to '%s' directory.",
+                    code_list,
+                    output_folder,
                 )
 
                 code_list_writer = self._get_writer_for_code_list(code_list)
@@ -156,7 +174,7 @@ class QbWriter(WriterBase):
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-        # TODO get_columns_of_dsd_type(NewQbAttribute)
+        # 820 TODO get_columns_of_dsd_type(NewQbAttribute)
         return columns
 
     def _get_table_references_needed_for_foreign_keys(self) -> List[dict]:

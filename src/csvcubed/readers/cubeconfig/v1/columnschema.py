@@ -314,7 +314,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                     "Values should be set to `true` or `cell_uri_template` should be provided for %s",
                     column_title,
                 )
-            # TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right?
+            # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right?
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=column_title,
@@ -378,7 +378,7 @@ class NewAttributeResource(SchemaBaseClass):
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
-    # TODO - what happens if the CSV file contains attribute values that don't appear in the `values` config and vice versa?
+    # 820 TODO - what happens if the CSV file contains attribute values that don't appear in the `values` config and vice versa?
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
