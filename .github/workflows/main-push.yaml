@@ -10,13 +10,18 @@ jobs:
       matrix:
         # Test on Windows + Ubuntu on oldest + newest supported versions of python.
         python-version: ['3.9', '3.11']
+        pandas-version: ['pandas@latest']
         os: [ubuntu-latest, windows-latest]
+        #including a specific test case for testing older pandas version
+        include:
+          - os: ubuntu-latest
+            python-version: 3.11
+            pandas-version: pandas@^1.3
     uses: ./.github/workflows/reusable-test.yaml
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      # Setting pandas-version to '' as this variable is required in pull-request.yaml following #809 (pandas 2.x upgrade)
-      pandas-version: ''
+      pandas-version: ${{ matrix.pandas-version }}
 
   build_package_and_documentation:
     if: needs.test_in_environments.result == 'success'

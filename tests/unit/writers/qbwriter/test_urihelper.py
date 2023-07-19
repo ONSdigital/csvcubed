@@ -329,7 +329,7 @@ def test_default_property_value_uris_multi_units_local_and_existing():
             ]
         ),
     )
-    with pytest.raises(Exception) as exception:
+    with pytest.raises(Exception):
 
         def fetch_exception():
             empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
@@ -390,7 +390,7 @@ def test_default_property_value_uris_multi_measure_local_and_existing():
         ),
     )
 
-    with pytest.raises(Exception) as exception:
+    with pytest.raises(Exception):
 
         def fetch_exception():
             empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
