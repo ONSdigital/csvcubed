@@ -959,15 +959,10 @@ def test_exception_raised_when_code_list_is_some_code_list_config_json_and_cell_
     Setting code list to some code-list-config.json and defining cell_uri_template gives
     conflicting instructions. We want to stop this and raise an exception.
     """
-    CODE_LIST_CONFIG_TEST_CASE_DIR = (
-        get_test_cases_dir().absolute() / "readers" / "code-list-config" / "v1.0"
-    )
     with pytest.raises(Exception) as excinfo:
         column_data = ["a", "b", "c"]
         dimension_config = {
-            "code_list": CODE_LIST_CONFIG_TEST_CASE_DIR
-            / "code_list_config_produces_error.json",
-            # "code_list": "/workspaces/csvcubed/tests/test-cases/readers/code-list-config/v1.0/code_list_config_produces_error.json",
+            "code_list": "code_list_config_produces_error.json",
             "cell_uri_template": "http://reference.data.gov.uk/id/year/{+column_name}",
         }
         data = pd.Series(column_data, name="Dimension Heading")

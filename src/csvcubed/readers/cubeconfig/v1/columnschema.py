@@ -85,22 +85,17 @@ class NewDimension(SchemaBaseClass):
         config_path: Optional[Path] = None,
     ) -> Tuple[NewQbDimension, List[JsonSchemaValidationError]]:
 
-        if self.cell_uri_template is True and self.code_list is True:
+        if self.cell_uri_template and self.code_list:
             # Checking to see if the code_list provided is a code-list-config.json.
             # If so, then the code_list provided is not a boolean value or looks like an uri.
-            if (
-                looks_like_uri(self.code_list) == False
-                and self.code_list != True
-                and self.code_list != False
-            ):
-                raise Exception(
-                    "Setting the code_list to be a code-list-config.json is not doable when also provided with a cell_uri_template."
-                )
+            if not isinstance(self.code_list, bool):
+                if looks_like_uri(self.code_list) == False:
+                    raise Exception(
+                        "Setting the code_list to be a code-list-config.json is not doable when also provided with a cell_uri_template."
+                    )
 
-        # Do we need to be able to pass the cell_uri_template into here to generate the code list pointing to the existing concepts?
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
-            csv_column_title=csv_column_title,
             data=data,
             description=self.description,
             parent_dimension_uri=self.from_existing,
