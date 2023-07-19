@@ -87,7 +87,7 @@ class NewDimension(SchemaBaseClass):
 
         if self.cell_uri_template is True and self.code_list is True:
             # Checking to see if the code_list provided is a code-list-config.json.
-            # In this instance, the code_list is not a uri or a boolean value.
+            # If so, then the code_list provided is not a boolean value or looks like an uri.
             if (
                 looks_like_uri(self.code_list) == False
                 and self.code_list != True
@@ -100,6 +100,7 @@ class NewDimension(SchemaBaseClass):
         # Do we need to be able to pass the cell_uri_template into here to generate the code list pointing to the existing concepts?
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
+            csv_column_title=csv_column_title,
             data=data,
             description=self.description,
             parent_dimension_uri=self.from_existing,
