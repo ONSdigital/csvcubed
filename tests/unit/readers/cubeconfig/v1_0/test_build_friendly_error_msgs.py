@@ -324,6 +324,7 @@ def test_val_errors_undefined_attr_uri():
     Test for:-
         UndefinedAttributeValueUrisError
     """
+    # 820 TODO Need a new validation error to check if the CSV file contains attribute values that don't appear in the `values` config and vice versa - see columnschema.py L381
     config = Path(_test_case_dir, "undefined_attribute_value_uris.json")
     csv = Path(_test_case_dir, "undefined_attribute_value_uris.csv")
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
@@ -473,7 +474,7 @@ def test_val_errors_uri_conflict():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
     _assert_in_log(
-        "ERROR - Validation Error: A URI collision has been detected in an attribute column."
+        "ERROR - Validation Error: A URI collision has been detected in a code list."
     )
     _assert_in_log(
         "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"

@@ -2,7 +2,11 @@ from typing import List
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    QbAttribute,
+    QbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.dimension import (
     ExistingQbDimension,
     QbDimension,
@@ -65,22 +69,16 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                             + "cannot have a uri_tempate as it holds literal values",
                         )
                     )
-            else:
-                # Not a QbAttributeLiteral
-                # if (
-                #     c.csv_column_uri_template is None
-                #     and len(c.structural_definition.new_attribute_values) == 0  # type: ignore
-                # ):
-                if c.csv_column_uri_template is None and (
-                    len(c.structural_definition.code_list.concepts) == 0
-                    or c.structural_definition.code_list is None
-                    # 820 TODO Manage ExistingQbAttribute with no code_list defined against it
-                ):  # type: ignore
+            # Not a QbAttributeLiteral
+            elif isinstance(c.structural_definition, NewQbAttribute):
+                if c.csv_column_uri_template is None and c.structural_definition.code_list is None:  # type: ignore
                     errors.append(
                         NoUriTemplateOrAttrValuesError(
                             c.csv_column_title,
                             f"{c.structural_definition.__class__.__name__} using existing attribute values",
                         )
                     )
-
+            else:
+                # 820 TODO Validate ExistingQbAttribute?
+                pass
     return errors

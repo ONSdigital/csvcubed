@@ -96,14 +96,15 @@ def _check_new_attribute_column(
     assert sd.parent_attribute_uri == column_config.get("from_existing")
     assert sd.source_uri == column_config.get("definition_uri")
     assert isinstance(sd.arbitrary_rdf, list)
-    assert isinstance(sd.new_attribute_values, list)
-    for av in sd.new_attribute_values:
-        assert isinstance(av, NewQbAttributeValue)
-        assert hasattr(av, "label")
-        if isinstance(column_config["values"], bool):
-            assert av.label in column_data
-        else:
-            assert av.label in [v["label"] for v in column_config["values"]]
+    if sd.code_list is not None:
+        assert isinstance(sd.code_list, NewQbCodeList)
+        for av in sd.code_list.concepts:
+            assert isinstance(av, NewQbConcept)
+            assert hasattr(av, "label")
+            if isinstance(column_config["values"], bool):
+                assert av.label in column_data
+            else:
+                assert av.label in [v["label"] for v in column_config["values"]]
 
 
 def _check_new_dimension_column(
@@ -195,7 +196,7 @@ def test_new_qb_attr_resource():
         },
     }
     data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
-    cube = _get_cube_from_config_json_dict(data, config, 0)[0]
+    cube = _get_cube_from_config_json_dict(data, config, 4)[0]
     # components = {
     #     k: map_column_to_qb_component(k, v, data[k], None, None)
     #     for k, v in config.items()
@@ -214,8 +215,9 @@ def test_new_qb_attr_resource():
     #     qb_writer._generate_csvw_column_definition(col) for col in cube.columns
     # ]
     # csvw_cols = qb_writer._generate_csvw_columns_for_cube()
+    # foreign_keys = qb_writer._get_columns_for_foreign_keys()
     dsd = dsd_helper.generate_data_structure_definitions()
-    writing = qb_writer.write(Path("."))
+    # writing = qb_writer.write(Path("."))
     pass
 
 
@@ -278,9 +280,9 @@ def test_build_config_ok():
 
     col_attr_1 = cube.columns[3]
     assert isinstance(col_attr_1.structural_definition, NewQbAttribute)
-    assert isinstance(col_attr_1.structural_definition.new_attribute_values, list)
+    assert isinstance(col_attr_1.structural_definition.code_list, NewQbCodeList)
     assert isinstance(
-        col_attr_1.structural_definition.new_attribute_values[0], NewQbAttributeValue
+        col_attr_1.structural_definition.code_list.concepts[0], NewQbConcept
     )
 
     col_observation = cube.columns[4]
@@ -440,6 +442,7 @@ def test_attribute_existing_resource():
     Populates options for an Existing Attribute resource, checking all properties are mapped
     through correctly
     """
+    # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right? See columnschema.py L317
     column_data = ["a", "b", "c", "a"]
     column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")
@@ -462,6 +465,7 @@ def test_attribute_existing_resource():
 
 @pytest.mark.vcr
 def test_attribute_existing_cell_uri_template():
+    # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right? See columnschema.py L317
     column_data = [
         "confidential",
         "revised",
@@ -538,6 +542,7 @@ def test_attribute_existing_resource_has_values():
     """
     Checks that new (non nul) values are created from data for an existing attribute
     """
+    # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right? See columnschema.py L317
     column_data = ["a", "b", None, "a"]
     column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")

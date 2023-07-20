@@ -4,6 +4,7 @@ New Attribute Value
 """
 from typing import Annotated, Optional
 
+import csvcubedmodels.rdf.rdfs as rdfs
 from csvcubedmodels.rdf import (
     ExistingResource,
     MaybeResource,
@@ -12,7 +13,8 @@ from csvcubedmodels.rdf import (
     Triple,
     map_resource_to_uri,
 )
-from csvcubedmodels.rdf.namespaces import RDFS, SKOS
+from csvcubedmodels.rdf.namespaces import QB, RDFS, SKOS
+from csvcubedmodels.rdf.qb import AttributeProperty, CodedProperty, ComponentProperty
 
 
 class NewAttributeValueResource(NewMetadataResource):
@@ -32,3 +34,19 @@ class NewAttributeValueResource(NewMetadataResource):
 
     def __init__(self, uri: str):
         NewMetadataResource.__init__(self, uri)
+
+
+class CodedAttributeProperty(CodedProperty, AttributeProperty):
+    """Attribute with code list property - The class of components which represent attributes of observations in the cube,
+    e.g. unit of measurement, which have code lists associated with them"""
+
+    # range: Annotated[
+    #     MaybeResource[rdfs.Class],
+    #     Triple(RDFS.range, PropertyStatus.optional, map_resource_to_uri),
+    # ]
+    """range - the `rdfs:range` associated with this attribute property."""
+
+    def __init__(self, uri: str):
+        CodedProperty.__init__(self, uri)
+        ComponentProperty.__init__(self, uri)
+        self.rdf_types.add(QB.AttributeProperty)

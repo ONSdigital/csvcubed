@@ -83,7 +83,7 @@ def test_output_new_code_list_csvws_urls():
     qb_writer = QbWriter(cube)
     with TemporaryDirectory() as temp_dir:
         temp_dir = Path(temp_dir)
-        qb_writer._output_new_code_list_csvws(temp_dir)
+        qb_writer._output_new_dimension_code_list_csvws(temp_dir)
         graph = Graph()
         graph.parse(
             temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
@@ -115,7 +115,7 @@ def test_output_new_code_list_csws_urls_with_uri_style_without_file_extensions()
     qb_writer = QbWriter(cube)
     with TemporaryDirectory() as temp_dir:
         temp_dir = Path(temp_dir)
-        qb_writer._output_new_code_list_csvws(temp_dir)
+        qb_writer._output_new_dimension_code_list_csvws(temp_dir)
         graph = Graph()
         graph.parse(
             temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"

@@ -48,6 +48,7 @@ def test_existing_qb_attribute_resource_no_values():
     Ensures an existing resource attribute column with no values inside and no cell_uri_template
     defined successfully returns an error.
     """
+    # 820 TODO ExistingQbAttribute no longer has values associated with it so delete this test?
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
         data=None,
@@ -64,7 +65,6 @@ def test_existing_qb_attribute_resource_no_values():
                 "Some Attribute",
                 ExistingQbAttribute(
                     attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
-                    new_attribute_values=[],
                 ),
             ),
         ],

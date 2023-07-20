@@ -500,34 +500,34 @@ class UriHelper:
     def _get_default_property_value_uris_for_attribute(
         self, column: QbColumn[QbAttribute]
     ) -> Tuple[str, str]:
-        if ATTRIBUTE_VALUE_CODELISTS:
-            attribute = column.structural_definition
-            column_uri_fragment = self._get_column_uri_template_fragment(column)
-            value_uri = self._get_column_uri_template_fragment(column)
+        attribute = column.structural_definition
+        column_uri_fragment = self._get_column_uri_template_fragment(column)
+        value_uri = self._get_column_uri_template_fragment(column)
 
-            attribute_uri = self.get_attribute_uri(attribute)
+        attribute_uri = self.get_attribute_uri(attribute)
 
-            if isinstance(attribute, ExistingQbAttribute):
-                # if len(attribute.new_attribute_values) > 0:
-                #     _logger.debug(
-                #         "Existing Attribute has new attribute values which define the valueUrl."
-                #     )
-                #     # NewQbAttributeValues defined here.
-                #     value_uri = self._new_resource_uri_generator.get_attribute_value_uri(
-                #         column.uri_safe_identifier, column_uri_fragment
-                #     )
-                # else:
-                _logger.debug("Existing Attribute does not have new attribute values.")
+        if isinstance(attribute, ExistingQbAttribute):
+            # if len(attribute.new_attribute_values) > 0:
+            #     _logger.debug(
+            #         "Existing Attribute has new attribute values which define the valueUrl."
+            #     )
+            #     # NewQbAttributeValues defined here.
+            #     value_uri = self._new_resource_uri_generator.get_attribute_value_uri(
+            #         column.uri_safe_identifier, column_uri_fragment
+            #     )
+            # else:
+            _logger.debug("Existing Attribute does not have new attribute values.")
 
-                # N.B. We can't do mix-and-match New/Existing attribute values.
+            # N.B. We can't do mix-and-match New/Existing attribute values.
 
-                return attribute_uri, value_uri
-            elif isinstance(attribute, NewQbAttribute):
-                if attribute.code_list is None:
-                    _logger.debug(
-                        "Attribute does not have a code list; valueUrl defaults directly to column value"
-                    )
-                else:
+            return attribute_uri, value_uri
+        elif isinstance(attribute, NewQbAttribute):
+            if attribute.code_list is None:
+                _logger.debug(
+                    "Attribute does not have a code list; valueUrl defaults directly to column value"
+                )
+            else:
+                if ATTRIBUTE_VALUE_CODELISTS:
                     _logger.debug(
                         "Attribute valueUrl determined by code list %s",
                         attribute.code_list,
@@ -535,25 +535,27 @@ class UriHelper:
                     value_uri = self._get_default_value_uri_for_code_list_concepts(
                         column, attribute.code_list
                     )
-                # if (
-                #     attribute.code_list is not None
-                #     and len(attribute.code_list.concepts) > 0
-                # ):
-                #     _logger.debug(
-                #         "New Attribute has new attribute values which define the valueUrl."
-                #     )
-                #     # NewQbAttributeValues defined here.
-                #     value_uri = self.get_new_attribute_value_uri(
-                #         attribute.uri_safe_identifier, column_uri_fragment
-                #     )
-                # else:
-                #     _logger.debug("New Attribute does not have new attribute values.")
+                else:
+                    _logger.debug("New Attribute does not have new attribute values.")
+            # if (
+            #     attribute.code_list is not None
+            #     and len(attribute.code_list.concepts) > 0
+            # ):
+            #     _logger.debug(
+            #         "New Attribute has new attribute values which define the valueUrl."
+            #     )
+            #     # NewQbAttributeValues defined here.
+            #     value_uri = self.get_new_attribute_value_uri(
+            #         attribute.uri_safe_identifier, column_uri_fragment
+            #     )
+            # else:
+            #     _logger.debug("New Attribute does not have new attribute values.")
 
-                # N.B. We can't do mix-and-match New/Existing attribute values.
+            # N.B. We can't do mix-and-match New/Existing attribute values.
 
-                return attribute_uri, value_uri
-            else:
-                raise TypeError(f"Unhandled attribute type {type(attribute)}")
+            return attribute_uri, value_uri
+        else:
+            raise TypeError(f"Unhandled attribute type {type(attribute)}")
 
     def _get_default_property_value_uris_for_multi_units(
         self, column: QbColumn[QbMultiUnits]

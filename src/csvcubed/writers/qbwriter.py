@@ -105,17 +105,16 @@ class QbWriter(WriterBase):
         # 820 TODO Incorporate Attribute table refs
         tables += self._get_table_references_needed_for_foreign_keys()
 
-        self._output_new_dimension_code_list_csvws(output_folder)
-
-        if ATTRIBUTE_VALUE_CODELISTS:
-            self._output_new_attribute_code_list_csvws(output_folder)
-
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._uris.get_dataset_uri(),
             "tables": tables,
             "rdfs:seeAlso": self._dsd.generate_data_structure_definitions(),
         }
+
+        self._output_new_dimension_code_list_csvws(output_folder)
+        if ATTRIBUTE_VALUE_CODELISTS:
+            self._output_new_attribute_code_list_csvws(output_folder)
 
         metadata_json_output_path = output_folder / self.csv_metadata_file_name
         with open(metadata_json_output_path, "w+") as f:
@@ -174,7 +173,13 @@ class QbWriter(WriterBase):
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-        # 820 TODO get_columns_of_dsd_type(NewQbAttribute)
+        # 820 DONE get_columns_of_dsd_type(NewQbAttribute)
+        if ATTRIBUTE_VALUE_CODELISTS:
+            for col in self.cube.get_columns_of_dsd_type(NewQbAttribute):
+                if col.structural_definition.code_list is not None and isinstance(
+                    col.structural_definition.code_list, NewQbCodeList
+                ):
+                    columns.append(col)
         return columns
 
     def _get_table_references_needed_for_foreign_keys(self) -> List[dict]:

@@ -32,41 +32,14 @@ class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
     def get_is_required(self) -> bool:
         pass
 
-    # @abstractmethod
-    # def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
-    #     pass
-
     @abstractmethod
     def get_observed_value_col_title(self) -> Optional[str]:
         pass
-
-    # def _validate_data_new_attribute_values(
-    #     self, data: pd.Series
-    # ) -> List[ValidationError]:
-    #     """
-    #     Validate that all of the values in :obj`data` are defined in :attr:`new_attribute_values` if values are defined.
-    #     """
-    #     if len(self.new_attribute_values) > 0:  # type: ignore
-    #         expected_values = {
-    #             av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
-    #         }
-    #         actual_values = {
-    #             uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
-    #         }
-    #         undefined_values = expected_values - actual_values
-
-    #         if len(undefined_values) > 0:
-    #             return [UndefinedAttributeValueUrisError(self, undefined_values)]
-
-    #     return []
 
 
 @dataclass
 class ExistingQbAttribute(QbAttribute):
     attribute_uri: str
-    # new_attribute_values: List[NewQbAttributeValue] = field(
-    #     default_factory=list, repr=False
-    # )
     is_required: bool = field(default=False, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
     observed_value_col_title: Optional[str] = field(default=None, repr=False)
@@ -79,9 +52,6 @@ class ExistingQbAttribute(QbAttribute):
 
     def get_is_required(self) -> bool:
         return self.is_required
-
-    # def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
-    #     return self.new_attribute_values
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
@@ -98,33 +68,14 @@ class ExistingQbAttribute(QbAttribute):
     ) -> List[ValidationError]:
         # No validation possible since we don't have the attribute's code-list locally.
         return []
-        # return self._validate_data_new_attribute_values(data)
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "attribute_uri": v.uri,
-            # "new_attribute_values": v.all_of(
-            #     v.list(v.validated_model(NewQbAttributeValue)),
-            #     self._validate_attribute_values_non_conflicting,
-            # ),
             "is_required": v.boolean,
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": v.optional(v.string),
         }
-
-    # @staticmethod
-    # def _validate_attribute_values_non_conflicting(
-    #     new_attribute_values: List[NewQbAttributeValue], property_path: List[str]
-    # ) -> List[ValidateModelPropertiesError]:
-    #     """
-    #     Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
-    #     """
-    #     return ensure_no_uri_safe_conflicts(
-    #         [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
-    #         ExistingQbAttribute,
-    #         property_path,
-    #         new_attribute_values,
-    #     )
 
 
 @dataclass
@@ -132,9 +83,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     label: str
     description: Optional[str] = field(default=None, repr=False)
     code_list: Optional[QbCodeList] = field(default=None, repr=False)
-    # new_attribute_values: List[NewQbAttributeValue] = field(
-    #     default_factory=list, repr=False
-    # )
     parent_attribute_uri: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
     is_required: bool = field(default=False, repr=False)
@@ -150,11 +98,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     def get_is_required(self) -> bool:
         return self.is_required
-
-    # def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
-    #     return self.new_attribute_values
-    # def get_new_attribute_values(self) -> List[NewQbConcept]:
-    #     return self.code_list.concepts
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Property
@@ -190,7 +133,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         return NewQbAttribute(
             label=label,
             description=description,
-            # new_attribute_values=new_attribute_values_from_column,
             code_list=NewQbCodeList.from_data(
                 CatalogMetadata(label), data, code_list_uri_style
             ),
@@ -209,7 +151,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        # return self._validate_data_new_attribute_values(data)
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
         if isinstance(self.code_list, NewQbCodeList):
             return self.code_list.validate_data(data, column_csv_title)
@@ -220,10 +161,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         return {
             "label": v.string,
             "description": v.optional(v.string),
-            # "new_attribute_values": v.all_of(
-            #     v.list(v.validated_model(NewQbAttributeValue)),
-            #     self._validate_concepts_non_conflicting,
-            # ),
             "code_list": v.optional(v.validated_model(QbCodeList)),
             "parent_attribute_uri": v.optional(v.uri),
             "source_uri": v.optional(v.uri),
@@ -232,20 +169,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": v.optional(v.string),
         }
-
-    # @staticmethod
-    # def _validate_concepts_non_conflicting(
-    #     new_attribute_values: List[NewQbAttributeValue], property_path: List[str]
-    # ) -> List[ValidateModelPropertiesError]:
-    #     """
-    #     Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
-    #     """
-    #     return ensure_no_uri_safe_conflicts(
-    #         [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
-    #         NewQbAttribute,
-    #         property_path,
-    #         new_attribute_values,
-    #     )
 
 
 @dataclass

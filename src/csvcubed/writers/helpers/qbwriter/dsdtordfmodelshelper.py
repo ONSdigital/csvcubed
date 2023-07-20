@@ -55,7 +55,10 @@ from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit, QbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.rdf import prov
-from csvcubed.models.rdf.newattributevalueresource import NewAttributeValueResource
+from csvcubed.models.rdf.newattributevalueresource import (
+    CodedAttributeProperty,
+    NewAttributeValueResource,
+)
 from csvcubed.models.rdf.newunitresource import NewUnitResource
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
@@ -96,14 +99,12 @@ class DsdToRdfModelsHelper:
         # else:
         # Writing the Attribute values our in 'legacy mode'.
         # We know they're stored in the code list object, but we're going to write them out as `rdf:Resource`s anyway.
-        if ATTRIBUTE_VALUE_CODELISTS:
-            pass
-        else:
+        if not ATTRIBUTE_VALUE_CODELISTS:
             for attribute_value in self._get_new_attribute_value_resources():
                 see_also += rdf_resource_to_json_ld(attribute_value)
 
-            for unit in self._get_new_unit_resources():
-                see_also += rdf_resource_to_json_ld(unit)
+        for unit in self._get_new_unit_resources():
+            see_also += rdf_resource_to_json_ld(unit)
 
         return see_also
 
@@ -136,7 +137,27 @@ class DsdToRdfModelsHelper:
                 )
 
                 rdf_file_dependencies.append(dependency)
-
+        if ATTRIBUTE_VALUE_CODELISTS:
+            attribute_columns = self.cube.get_columns_of_dsd_type(NewQbAttribute)
+            for column in attribute_columns:
+                attribute = column.structural_definition
+                code_list = attribute.code_list
+                if isinstance(code_list, NewQbCodeList):
+                    dependency = RdfGraphDependency(
+                        self._uris.get_void_dataset_dependency_uri(
+                            code_list.metadata.uri_safe_identifier
+                        )
+                    )
+                    code_list_writer = SkosCodeListWriter(
+                        code_list, self.cube.uri_style
+                    )
+                    dependency.uri_space = (
+                        code_list_writer.uri_helper.get_uri_prefix_for_doc()
+                    )
+                    dependency.dependent_rdf_file_location = ExistingResource(
+                        f"./{code_list_writer.csv_metadata_file_name}"
+                    )
+                    rdf_file_dependencies.append(dependency)
         return rdf_file_dependencies
 
     def _get_new_attribute_value_resources(self) -> List[NewAttributeValueResource]:
@@ -518,7 +539,14 @@ class DsdToRdfModelsHelper:
             component = rdf.qb.AttributeComponentSpecification(
                 self._uris.get_component_uri(attribute.uri_safe_identifier)
             )
-            component.attribute = rdf.qb.AttributeProperty(attribute_uri)
+            if ATTRIBUTE_VALUE_CODELISTS:
+                component.attribute = CodedAttributeProperty(attribute_uri)
+                if attribute.code_list is not None:
+                    component.attribute.code_list = self._get_code_list_resource(
+                        attribute.code_list
+                    )
+            else:
+                component.attribute = rdf.qb.AttributeProperty(attribute_uri)
             component.attribute.label = attribute.label
             component.attribute.comment = attribute.description
             component.attribute.subPropertyOf = maybe_existing_resource(
@@ -536,10 +564,6 @@ class DsdToRdfModelsHelper:
                     RdfSerialisationHint.Property: component.attribute,
                 }
             )
-            if attribute.code_list is not None:
-                component.attribute.code_list = self._get_code_list_resource(
-                    attribute.code_list
-                )
         else:
             raise TypeError(f"Unhandled attribute component type {type(attribute)}.")
 

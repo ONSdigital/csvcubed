@@ -15,6 +15,7 @@ from csvcubed.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
     NewQbCodeList,
 )
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.dimension import (
     ExistingQbDimension,
     NewQbDimension,
@@ -235,17 +236,14 @@ def test_default_property_value_uris_existing_attribute_new_values():
     """
     column = QbColumn(
         "Some Column",
-        ExistingQbAttribute(
-            "http://base-uri/attributes/existing-attribute",
-            new_attribute_values=[NewQbAttributeValue("Some Attribute Value")],
-        ),
+        ExistingQbAttribute("http://base-uri/attributes/existing-attribute"),
     )
     (
         default_property_uri,
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
     assert "http://base-uri/attributes/existing-attribute" == default_property_uri
-    assert "cube-name.csv#attribute/some-column/{+some_column}" == default_value_uri
+    assert "{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_new_attribute_existing_values():
@@ -269,7 +267,9 @@ def test_default_property_value_uris_new_attribute_new_values():
         "Some Column",
         NewQbAttribute(
             "This New Attribute",
-            new_attribute_values=[NewQbAttributeValue("Something")],
+            code_list=NewQbCodeList(
+                CatalogMetadata("This New Attribute"), [NewQbConcept("Something")]
+            ),
         ),
     )
     (
@@ -277,9 +277,7 @@ def test_default_property_value_uris_new_attribute_new_values():
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
     assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
-    assert (
-        "cube-name.csv#attribute/this-new-attribute/{+some_column}" == default_value_uri
-    )
+    assert "{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_units_all_new():
