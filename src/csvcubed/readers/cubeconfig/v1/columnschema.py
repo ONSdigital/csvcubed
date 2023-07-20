@@ -89,7 +89,7 @@ class NewDimension(SchemaBaseClass):
             # Checking to see if the code_list provided is a code-list-config.json.
             # If so, then the code_list provided is not a boolean value or looks like an uri.
             if not isinstance(self.code_list, bool):
-                if looks_like_uri(self.code_list) == False:
+                if looks_like_uri(str(self.code_list)) == False:
                     raise Exception(
                         "Setting the code_list to be a code-list-config.json is not doable when also provided with a cell_uri_template."
                     )
