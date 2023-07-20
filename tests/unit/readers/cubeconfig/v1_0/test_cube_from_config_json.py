@@ -120,8 +120,10 @@ def _check_new_dimension_column(
     assert isinstance(column.structural_definition.code_list.concepts, list)
     assert isinstance(column.structural_definition.code_list.concepts[0], NewQbConcept)
 
+    # If the code list is a CompositeQbCodeList, the uri template is reset to point at the newly
+    # created composite code list
     if isinstance(column.structural_definition.code_list, CompositeQbCodeList):
-        assert column.csv_column_uri_template == None
+        assert column.csv_column_uri_template is None
     else:
         assert column.csv_column_uri_template == column_config.get("cell_uri_template")
 

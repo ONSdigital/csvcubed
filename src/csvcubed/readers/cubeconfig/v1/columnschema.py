@@ -265,7 +265,6 @@ class NewDimension(SchemaBaseClass):
 @dataclass
 class ExistingDimension(SchemaBaseClass):
     from_existing: str
-    # todo: Should cell_uri_template be required here?
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_dimension(self) -> ExistingQbDimension:
