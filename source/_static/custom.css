@@ -1,0 +1,27 @@
+div.sphinxsidebarwrapper {
+    overflow-x: auto !important;
+}
+
+div.sphinxsidebarwrapper li,
+div.sphinxsidebarwrapper ul {
+    overflow-wrap: break-word;
+
+}
+
+div.sphinxsidebar {
+    overflow-wrap: break-word;
+    width: 350px;
+}
+
+div.bodywrapper {
+    margin-left: 350px;
+}
+
+a.current {
+    background-color: pink;
+}
+
+.toctree-wrapper {
+
+    display: none;
+}

@@ -2,6 +2,9 @@ name: Build csvcubed whl and documentation
 on:
   workflow_call:
 
+env:
+  CSVCUBED_VERSION: "v0.1.0-dev"
+
 jobs:
   build_package_and_documentation:
     runs-on: ubuntu-latest
@@ -16,6 +19,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           poetry version "$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')"
+        env:
+          CSVCUBED_VERSION: ("$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')")
 
       - name: Update version for dev
         # uses a version identifier derived from the Git hash for this commit.
@@ -29,11 +34,25 @@ jobs:
       - name: Build whl package
         run: poetry build
 
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Install python packages
+        run: poetry install
+
       - name: Build documentation
         working-directory: external-docs
         run: |
-          python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
-          python3 -m mkdocs build
+          poetry run mkdocs build
+
+      - name: Generate Inspect API Docs
+        env:
+          GIT_REF: ${{ github.ref }}
+        run: |
+          poetry run sphinx-apidoc -o source src/csvcubed/ -V $CSVCUBED_VERSION -R $CSVCUBED_VERSION -f -d 20 -e -t source/_templates
+          poetry run make html
 
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
@@ -42,3 +61,4 @@ jobs:
           path: |
             **/dist/*.whl
             **/external-docs/site/**/*
+            **/build/html/**/*
