@@ -119,7 +119,11 @@ def _check_new_dimension_column(
 
     assert isinstance(column.structural_definition.code_list.concepts, list)
     assert isinstance(column.structural_definition.code_list.concepts[0], NewQbConcept)
-    assert column.csv_column_uri_template == column_config.get("cell_uri_template")
+
+    if isinstance(column.structural_definition.code_list, CompositeQbCodeList):
+        assert column.csv_column_uri_template == None
+    else:
+        assert column.csv_column_uri_template == column_config.get("cell_uri_template")
 
     unique_column_data = list(sorted(set(column_data)))
     assert len(column.structural_definition.code_list.concepts) == len(
@@ -979,7 +983,7 @@ def test_exception_raised_when_code_list_is_some_code_list_config_json_and_cell_
 @pytest.mark.vcr
 def test_code_list_is_true_by_default():
     """
-    When codelist is not specified and cell uri template is, default code list to be true
+    When codelist is not specified but cell uri template is, default code list to be true
     """
     column_data = ["a", "b", "c"]
     dimension_config = {
@@ -995,10 +999,17 @@ def test_code_list_is_true_by_default():
     ), column.structural_definition
     code_list = column.structural_definition.code_list
     assert code_list is not None
+    assert isinstance(code_list, CompositeQbCodeList)
     assert isinstance(code_list, NewQbCodeList)
     assert code_list.concepts
     assert len(code_list.concepts) == 3
     assert isinstance(code_list.concepts[1], NewQbConcept)
+    assert isinstance(code_list.concepts[1], DuplicatedQbConcept)
+    assert code_list.concepts[1] == DuplicatedQbConcept(
+        existing_concept_uri="http://reference.data.gov.uk/id/year/",
+        label="b",
+        code="b",
+    )
     assert code_list.concepts[1] == NewQbConcept(label="b", code="b")
 
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
@@ -1023,12 +1034,25 @@ def test_new_code_lists_are_created_from_unique_values_when_there_are_predefined
     code_list = column.structural_definition.code_list
     assert code_list is not None
     assert isinstance(code_list, NewQbCodeList)
+    assert isinstance(code_list, CompositeQbCodeList)
     assert code_list.concepts
     assert len(code_list.concepts) == 3
     assert isinstance(code_list.concepts[0], NewQbConcept)
+    assert isinstance(code_list.concepts[0], DuplicatedQbConcept)
     assert code_list.concepts[0] == NewQbConcept(label="a", code="a")
+    assert code_list.concepts[0] == DuplicatedQbConcept(
+        existing_concept_uri="http://reference.data.gov.uk/id/year/",
+        label="a",
+        code="a",
+    )
     assert isinstance(code_list.concepts[2], NewQbConcept)
+    assert isinstance(code_list.concepts[2], DuplicatedQbConcept)
     assert code_list.concepts[2] == NewQbConcept(label="c", code="c")
+    assert code_list.concepts[2] == DuplicatedQbConcept(
+        existing_concept_uri="http://reference.data.gov.uk/id/year/",
+        label="c",
+        code="c",
+    )
 
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
