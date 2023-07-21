@@ -197,13 +197,13 @@ def test_new_qb_attr_resource():
     }
     data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
     cube = _get_cube_from_config_json_dict(data, config, 4)[0]
-    # components = {
-    #     k: map_column_to_qb_component(k, v, data[k], None, None)
-    #     for k, v in config.items()
-    # }
-    # structural_definitions = [
-    #     col[0].structural_definition for title, col in components.items()
-    # ]
+    components = {
+        k: map_column_to_qb_component(k, v, data[k], None, None)
+        for k, v in config["columns"].items()
+    }
+    structural_definitions = [
+        col[0].structural_definition for title, col in components.items()
+    ]
     uris = [
         UriHelper(cube).get_default_property_value_uris_for_column(col)
         for col in cube.columns
@@ -211,13 +211,13 @@ def test_new_qb_attr_resource():
     uri_helper = UriHelper(cube)
     dsd_helper = DsdToRdfModelsHelper(cube, uri_helper)
     qb_writer = QbWriter(cube)
-    # csv_col_defs = [
-    #     qb_writer._generate_csvw_column_definition(col) for col in cube.columns
-    # ]
-    # csvw_cols = qb_writer._generate_csvw_columns_for_cube()
-    # foreign_keys = qb_writer._get_columns_for_foreign_keys()
+    csv_col_defs = [
+        qb_writer._generate_csvw_column_definition(col) for col in cube.columns
+    ]
+    csvw_cols = qb_writer._generate_csvw_columns_for_cube()
+    foreign_keys = qb_writer._get_columns_for_foreign_keys()
     dsd = dsd_helper.generate_data_structure_definitions()
-    # writing = qb_writer.write(Path("."))
+    writing = qb_writer.write(Path("."))
     pass
 
 

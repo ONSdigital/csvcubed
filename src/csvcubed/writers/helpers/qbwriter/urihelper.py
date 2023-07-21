@@ -536,7 +536,12 @@ class UriHelper:
                         column, attribute.code_list
                     )
                 else:
-                    _logger.debug("New Attribute does not have new attribute values.")
+                    _logger.debug(
+                        "New Attribute has new attribute values which define the valueUrl."
+                    )
+                    value_uri = self.get_new_attribute_value_uri(
+                        attribute.uri_safe_identifier, column_uri_fragment
+                    )
             # if (
             #     attribute.code_list is not None
             #     and len(attribute.code_list.concepts) > 0
@@ -545,9 +550,9 @@ class UriHelper:
             #         "New Attribute has new attribute values which define the valueUrl."
             #     )
             #     # NewQbAttributeValues defined here.
-            #     value_uri = self.get_new_attribute_value_uri(
-            #         attribute.uri_safe_identifier, column_uri_fragment
-            #     )
+            # value_uri = self.get_new_attribute_value_uri(
+            #     attribute.uri_safe_identifier, column_uri_fragment
+            # )
             # else:
             #     _logger.debug("New Attribute does not have new attribute values.")
 

@@ -277,7 +277,9 @@ def test_default_property_value_uris_new_attribute_new_values():
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
     assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
-    assert "{+some_column}" == default_value_uri
+    assert (
+        "cube-name.csv#attribute/this-new-attribute/{+some_column}" == default_value_uri
+    )
 
 
 def test_default_property_value_uris_multi_units_all_new():

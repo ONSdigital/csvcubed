@@ -102,7 +102,7 @@ class QbWriter(WriterBase):
                 },
             }
         ]
-        # 820 TODO Incorporate Attribute table refs
+
         tables += self._get_table_references_needed_for_foreign_keys()
 
         csvw_metadata = {
@@ -173,7 +173,6 @@ class QbWriter(WriterBase):
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-        # 820 DONE get_columns_of_dsd_type(NewQbAttribute)
         if ATTRIBUTE_VALUE_CODELISTS:
             for col in self.cube.get_columns_of_dsd_type(NewQbAttribute):
                 if col.structural_definition.code_list is not None and isinstance(
