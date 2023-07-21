@@ -1,5 +1,0 @@
-Region True,Region False,Region Inline,Region JSON,Region URL,Value,Measure,Unit,Attribute True,Attribute False,Attribute Values
-E92000001,E92000001,E92000001,E92000001,E92000001,100,Some measure,Some unit,Final,Final,Final
-N92000002,N92000002,N92000002,N92000002,N92000002,200,Some measure,Some unit,Provisional,Provisional,Provisional
-S92000003,S92000003,S92000003,S92000003,S92000003,300,Some measure,Some unit,,,
-W92000004,W92000004,W92000004,W92000004,W92000004,400,Some measure,Some unit,,,

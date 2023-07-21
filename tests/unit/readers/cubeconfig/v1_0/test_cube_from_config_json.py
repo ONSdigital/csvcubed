@@ -217,7 +217,7 @@ def test_new_qb_attr_resource():
     csvw_cols = qb_writer._generate_csvw_columns_for_cube()
     foreign_keys = qb_writer._get_columns_for_foreign_keys()
     dsd = dsd_helper.generate_data_structure_definitions()
-    writing = qb_writer.write(Path("."))
+    # writing = qb_writer.write(Path("."))
     pass
 
 
