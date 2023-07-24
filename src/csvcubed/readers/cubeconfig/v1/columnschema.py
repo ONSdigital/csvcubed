@@ -314,7 +314,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                     "Values should be set to `true` or `cell_uri_template` should be provided for %s",
                     column_title,
                 )
-            # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right?
+            # `values` defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=column_title,

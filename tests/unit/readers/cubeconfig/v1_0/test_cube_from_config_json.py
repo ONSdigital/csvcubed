@@ -145,57 +145,93 @@ def _check_new_dimension_column(
 
 
 def test_new_qb_attr_resource():
+    # config = {
+    #     "title": "Cube title",
+    #     "columns": {
+    #         "Dimension": {"type": "dimension", "code_list": True},
+    #         "Value": {
+    #             "type": "observations",
+    #             "unit": {"label": "Some unit"},
+    #             "measure": {"label": "Some measure"},
+    #         },
+    #         "Attr1": {
+    #             "type": "attribute",
+    #             "cell_uri_template": "http://example.org/attribute1/{+attr1}",
+    #         },
+    #         "Attr4": {
+    #             "type": "attribute",
+    #             "values": True,
+    #         },
+    #         "Attr5": {
+    #             "type": "attribute",
+    #             "values": False,
+    #         },
+    #         "Attr6": {
+    #             "type": "attribute",
+    #             "values": [
+    #                 {"label": "Attribute A"},
+    #                 {"label": "Attribute B"},
+    #                 {"label": "Attribute C"},
+    #             ],
+    #         },
+    #         "Attr7": {
+    #             "type": "attribute",
+    #             "from_existing": "http://example.org/attribute7",
+    #             "values": True,
+    #         },
+    #         "Attr9": {
+    #             "type": "attribute",
+    #             "from_existing": "http://example.org/attribute9",
+    #             "values": [
+    #                 {"label": "Attribute A"},
+    #                 {"label": "Attribute B"},
+    #                 {"label": "Attribute C"},
+    #             ],
+    #         },
+    #         "Attr10": {
+    #             "type": "attribute",
+    #             "from_existing": "http://example.org/attribute10",
+    #             "cell_uri_template": "http://example.org/attribute10/{+attr10}",
+    #         },
+    #     },
+    # }
     config = {
         "title": "Cube title",
         "columns": {
-            "Dimension": {"type": "dimension", "code_list": True},
+            "Dimension 1": {
+                "type": "dimension",
+                "code_list": {
+                    "title": "Code list 1",
+                    "concepts": [
+                        {"label": "Concept 1", "notation": "concept-1"},
+                        {"label": "Concept 2", "notation": "concept-2"},
+                        {"label": "Concept 3", "notation": "concept-3"},
+                    ],
+                },
+            },
+            "Dimension 2": {
+                "type": "dimension",
+                "code_list": {
+                    "title": "Code list 2",
+                    "concepts": [
+                        {"label": "Concept 1", "notation": "concept-1"},
+                        {"label": "Concept 2", "notation": "concept-2"},
+                    ],
+                },
+            },
             "Value": {
                 "type": "observations",
                 "unit": {"label": "Some unit"},
                 "measure": {"label": "Some measure"},
             },
-            "Attr1": {
-                "type": "attribute",
-                "cell_uri_template": "http://example.org/attribute1/{+attr1}",
-            },
-            "Attr4": {
-                "type": "attribute",
-                "values": True,
-            },
-            "Attr5": {
-                "type": "attribute",
-                "values": False,
-            },
-            "Attr6": {
-                "type": "attribute",
-                "values": [
-                    {"label": "Attribute A"},
-                    {"label": "Attribute B"},
-                    {"label": "Attribute C"},
-                ],
-            },
-            "Attr7": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute7",
-                "values": True,
-            },
-            "Attr9": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute9",
-                "values": [
-                    {"label": "Attribute A"},
-                    {"label": "Attribute B"},
-                    {"label": "Attribute C"},
-                ],
-            },
-            "Attr10": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute10",
-                "cell_uri_template": "http://example.org/attribute10/{+attr10}",
-            },
         },
     }
-    data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
+    # data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
+    data = pd.DataFrame(
+        {"Dimension 1": ["Concept 1", "Concept 2", "Concept 4"]},
+        {"Dimension 2": ["Concept 1", "Concept 2", "Concept 3"]},
+        {"Value": [1, 2, 3]},
+    )
     cube = _get_cube_from_config_json_dict(data, config, 4)[0]
     components = {
         k: map_column_to_qb_component(k, v, data[k], None, None)
@@ -442,7 +478,7 @@ def test_attribute_existing_resource():
     Populates options for an Existing Attribute resource, checking all properties are mapped
     through correctly
     """
-    # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right? See columnschema.py L317
+
     column_data = ["a", "b", "c", "a"]
     column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")
@@ -450,22 +486,35 @@ def test_attribute_existing_resource():
     (column, _) = map_column_to_qb_component(
         "Existing Resource Attribute", column_config, data, cube_config_minor_version=0
     )
+    concepts = {
+        concept.label for concept in column.structural_definition.code_list.concepts
+    }
+    concepts_from_column_data = set(column_data)
+
+    # `values` defaults to `true` so if not defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
     assert hasattr(column, "type") is False
 
     # And the Column is of the expected type
-    assert isinstance(column.structural_definition, ExistingQbAttribute)
-    assert not hasattr(column.structural_definition, "code_list")
-    assert column.structural_definition.attribute_uri == column_config["from_existing"]
+    assert isinstance(column.structural_definition, NewQbAttribute)
+    assert hasattr(column.structural_definition, "code_list")
+    assert concepts == concepts_from_column_data
+    assert (
+        column.structural_definition.parent_attribute_uri
+        == column_config["from_existing"]
+    )
+    assert (
+        column.structural_definition.uri_safe_identifier
+        == "existing-resource-attribute"
+    )
     assert isinstance(column.structural_definition.arbitrary_rdf, list)
     assert column.structural_definition.arbitrary_rdf == []
 
 
 @pytest.mark.vcr
 def test_attribute_existing_cell_uri_template():
-    # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right? See columnschema.py L317
     column_data = [
         "confidential",
         "revised",
@@ -485,12 +534,12 @@ def test_attribute_existing_cell_uri_template():
     assert hasattr(column, "type") is False
 
     # And the Column is of the expected type
+    assert column.csv_column_uri_template == column_config["cell_uri_template"]
     assert isinstance(column.structural_definition, ExistingQbAttribute)
     assert not hasattr(column.structural_definition, "code_list")
     assert column.structural_definition.attribute_uri == column_config["from_existing"]
     assert isinstance(column.structural_definition.arbitrary_rdf, list)
     assert column.structural_definition.arbitrary_rdf == []
-    assert column.structural_definition.new_attribute_values == []
     assert column.structural_definition.is_required == False
 
 
@@ -542,7 +591,6 @@ def test_attribute_existing_resource_has_values():
     """
     Checks that new (non nul) values are created from data for an existing attribute
     """
-    # 820 TODO Values defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values - is this right? See columnschema.py L317
     column_data = ["a", "b", None, "a"]
     column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")
@@ -551,14 +599,15 @@ def test_attribute_existing_resource_has_values():
         "Existing Attribute", column_config, data, cube_config_minor_version=0
     )
 
+    # `values` defaults to `true` so if not defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values
+
     assert isinstance(column, QbColumn)
     assert hasattr(column, "type") is False
 
     sd = column.structural_definition
-    assert isinstance(sd, ExistingQbAttribute)
-    assert not hasattr(sd, "code_list")
-    # assert sd.definition_uri == column_config.get('from_existing')
-    assert sd.attribute_uri == column_config.get("from_existing", "")
+    assert isinstance(sd, NewQbAttribute)
+    assert hasattr(sd, "code_list")
+    assert sd.parent_attribute_uri == column_config.get("from_existing", "")
     assert sd.is_required == column_config.get("required")
     assert isinstance(sd.arbitrary_rdf, list)
     assert sd.arbitrary_rdf == []
@@ -566,8 +615,8 @@ def test_attribute_existing_resource_has_values():
         data_vals = set(column_data)
     else:
         data_vals = set([v for v in column_data if v])
-    assert len(sd.new_attribute_values) == len(list(data_vals))
-    for value in sd.new_attribute_values:
+    assert len(sd.code_list.concepts) == len(list(data_vals))
+    for value in sd.code_list.concepts:
         assert hasattr(value, "label")
         assert value.label in data_vals
 

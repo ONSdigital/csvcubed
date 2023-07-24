@@ -405,6 +405,11 @@ def test_existing_attribute_csv_column_uri_template_required():
                 "Existing Attribute 2",
                 ExistingQbAttribute(
                     "http://example.org/attributes/example",
+                    # new_attribute_values=[
+                    #     NewQbAttributeValue("Val4"),
+                    #     NewQbAttributeValue("Val5"),
+                    #     NewQbAttributeValue("Val6"),
+                    # ],
                 ),
                 # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
             ),
