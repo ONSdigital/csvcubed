@@ -263,6 +263,16 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
     ]
 ).replace("", np.NAN)
 
+_expected_by_measure_and_unit_val_counts_df_with_column_titled_value = DataFrame(
+    [
+        {
+            "Measure": "gas emissions(gwp-ar4)",
+            "Unit": "millions of tonnes of carbon dioxide (mt co2)",
+            "Count": 19,
+        }
+    ]
+).replace("", np.NAN)
+
 
 def get_arguments_qb_dataset(
     data_cube_repository: DataCubeRepository,
@@ -589,6 +599,17 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "new"
         / "multi-unit-single-measure-dataset.csv-metadata.json"
     )
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_single-measure"
+    #     / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+    # )
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_single-measure"
+    #     / "out"
+    #     / "cardiovascular-mortality-considered-preventable-in-persons-aged-under-75.csv-metadata.json"
+    # )
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
@@ -829,3 +850,45 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     assert isinstance(result.tree, Tree)
     assert result.tree.depth() == 2
     assert len(result.tree.all_nodes_itr()) == 10
+
+
+def test_melt_works_when_column_titled_value_exists():
+    """
+    When a df with a column titled "Value" is passed to the melt function in
+    pandas 2.0 a ValueError is produced because of the column title. This test
+    uses a dataset with a "Value" titled column and should be melted when
+    transform_dataset_to_canonical_shape is called. In this case, the "value_name
+    parameter of melt() is given a different string (default is "Value") and then
+    we rename this column back to "Value" in the returned melted df.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "multi-unit_single-measure"
+        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+    )
+
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)
+
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        data_cube_repository,
+        dataset,
+        csv_url,
+        qube_components,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    assert result is not None
+    assert set(dataset.columns).issubset(set(canonical_shape_dataset.columns))
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_with_column_titled_value,
+    )

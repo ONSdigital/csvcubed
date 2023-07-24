@@ -306,14 +306,27 @@ def _melt_data_set(
     ]
     id_cols = list(set(data_set.columns) - set(value_cols))
 
+    # Checking for any columns with the title "Value" and changing the value_name
+    # parameter passed to the melt function to "Not-Value" so that we don't
+    # trigger a pandas ValueError.
+    value_name = "Value"
+    if "Value" in value_cols:
+        value_name = "Not-Value"
+
     # Melting the data set using pandas melt function.
-    return pd.melt(
+    melted_df = pd.melt(
         data_set,
         id_vars=id_cols,
         value_vars=value_cols,
-        value_name="Value",
+        value_name=value_name,
         var_name="Observation Value",
     )
+
+    # Renaming columns in the returned melted df to their original title "Value"
+    if value_name == "Not-Value":
+        melted_df.rename(columns={"Not-Value": "Value"}, inplace=True)
+
+    return melted_df
 
 
 def _get_unit_measure_col_for_standard_shape_cube(
