@@ -15,11 +15,15 @@ from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
+from csvcubed.models.cube.qb.components.validationerrors import (
+    UndefinedAttributeValueUrisError,
+)
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
+from csvcubed.utils.uri import uri_safe
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
@@ -124,12 +128,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         observed_value_col_title: Optional[str] = None,
         code_list_uri_style: Optional[URIStyle] = None,
     ) -> "NewQbAttribute":
-        # columnar_data = pandas_input_to_columnar_optional_str(data)
-        # new_attribute_values_from_column = [
-        #     NewQbAttributeValue(v)
-        #     for v in sorted(set([d for d in columnar_data if d is not None]))
-        # ]
-
         return NewQbAttribute(
             label=label,
             description=description,
@@ -152,9 +150,16 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         column_csv_title: str,
     ) -> List[ValidationError]:
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
-        if isinstance(self.code_list, NewQbCodeList):
-            return self.code_list.validate_data(data, column_csv_title)
-
+        # if isinstance(self.code_list, NewQbCodeList):
+        #     return self.code_list.validate_data(data, column_csv_title)
+        if len(self.code_list.concepts) > 0:
+            expected_values = {concept.code for concept in self.code_list.concepts}
+            actual_values = {
+                uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
+            }
+            undefined_values = expected_values - actual_values
+            if len(undefined_values) > 0:
+                return [UndefinedAttributeValueUrisError(self, undefined_values)]
         return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:

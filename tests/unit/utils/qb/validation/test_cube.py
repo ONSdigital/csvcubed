@@ -3,6 +3,7 @@ import pytest
 from csvcubed.models.cube.cube import CatalogMetadata, Cube, QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
+    NewQbAttribute,
     NewQbAttributeLiteral,
 )
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension
@@ -43,12 +44,11 @@ def test_new_qb_attribute_literal_string_with_template():
     )
 
 
-def test_existing_qb_attribute_resource_no_values():
+def test_new_qb_attribute_resource_no_values():
     """
-    Ensures an existing resource attribute column with no values inside and no cell_uri_template
+    Ensures an new resource attribute column with no values inside and no cell_uri_template
     defined successfully returns an error.
     """
-    # 820 TODO ExistingQbAttribute no longer has values associated with it so delete this test?
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
         data=None,
@@ -63,8 +63,8 @@ def test_existing_qb_attribute_resource_no_values():
             ),
             QbColumn(
                 "Some Attribute",
-                ExistingQbAttribute(
-                    attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+                NewQbAttribute(
+                    label="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
                 ),
             ),
         ],

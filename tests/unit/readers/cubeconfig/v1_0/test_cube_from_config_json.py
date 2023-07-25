@@ -144,94 +144,60 @@ def _check_new_dimension_column(
         assert concept.uri_safe_identifier_override is None
 
 
-def test_new_qb_attr_resource():
-    # config = {
-    #     "title": "Cube title",
-    #     "columns": {
-    #         "Dimension": {"type": "dimension", "code_list": True},
-    #         "Value": {
-    #             "type": "observations",
-    #             "unit": {"label": "Some unit"},
-    #             "measure": {"label": "Some measure"},
-    #         },
-    #         "Attr1": {
-    #             "type": "attribute",
-    #             "cell_uri_template": "http://example.org/attribute1/{+attr1}",
-    #         },
-    #         "Attr4": {
-    #             "type": "attribute",
-    #             "values": True,
-    #         },
-    #         "Attr5": {
-    #             "type": "attribute",
-    #             "values": False,
-    #         },
-    #         "Attr6": {
-    #             "type": "attribute",
-    #             "values": [
-    #                 {"label": "Attribute A"},
-    #                 {"label": "Attribute B"},
-    #                 {"label": "Attribute C"},
-    #             ],
-    #         },
-    #         "Attr7": {
-    #             "type": "attribute",
-    #             "from_existing": "http://example.org/attribute7",
-    #             "values": True,
-    #         },
-    #         "Attr9": {
-    #             "type": "attribute",
-    #             "from_existing": "http://example.org/attribute9",
-    #             "values": [
-    #                 {"label": "Attribute A"},
-    #                 {"label": "Attribute B"},
-    #                 {"label": "Attribute C"},
-    #             ],
-    #         },
-    #         "Attr10": {
-    #             "type": "attribute",
-    #             "from_existing": "http://example.org/attribute10",
-    #             "cell_uri_template": "http://example.org/attribute10/{+attr10}",
-    #         },
-    #     },
-    # }
+def test_new_qb_attr_resource(tests_env_vars_setup_and_teardown):
     config = {
         "title": "Cube title",
         "columns": {
-            "Dimension 1": {
-                "type": "dimension",
-                "code_list": {
-                    "title": "Code list 1",
-                    "concepts": [
-                        {"label": "Concept 1", "notation": "concept-1"},
-                        {"label": "Concept 2", "notation": "concept-2"},
-                        {"label": "Concept 3", "notation": "concept-3"},
-                    ],
-                },
-            },
-            "Dimension 2": {
-                "type": "dimension",
-                "code_list": {
-                    "title": "Code list 2",
-                    "concepts": [
-                        {"label": "Concept 1", "notation": "concept-1"},
-                        {"label": "Concept 2", "notation": "concept-2"},
-                    ],
-                },
-            },
+            "Dimension": {"type": "dimension", "code_list": True},
             "Value": {
                 "type": "observations",
                 "unit": {"label": "Some unit"},
                 "measure": {"label": "Some measure"},
             },
+            "Attr1": {
+                "type": "attribute",
+                "cell_uri_template": "http://example.org/attribute1/{+attr1}",
+            },
+            "Attr4": {
+                "type": "attribute",
+                "values": True,
+            },
+            "Attr5": {
+                "type": "attribute",
+                "values": False,
+            },
+            "Attr6": {
+                "type": "attribute",
+                "values": [
+                    {"label": "Attribute A"},
+                    {"label": "Attribute B"},
+                    {"label": "Attribute C"},
+                ],
+            },
+            "Attr7": {
+                "type": "attribute",
+                "from_existing": "http://example.org/attribute7",
+                "values": True,
+            },
+            "Attr9": {
+                "type": "attribute",
+                "from_existing": "http://example.org/attribute9",
+                "values": [
+                    {"label": "Attribute A"},
+                    {"label": "Attribute B"},
+                    {"label": "Attribute C"},
+                ],
+            },
+            "Attr10": {
+                "type": "attribute",
+                "from_existing": "http://example.org/attribute10",
+                "cell_uri_template": "http://example.org/attribute10/{+attr10}",
+            },
         },
     }
-    # data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
-    data = pd.DataFrame(
-        {"Dimension 1": ["Concept 1", "Concept 2", "Concept 4"]},
-        {"Dimension 2": ["Concept 1", "Concept 2", "Concept 3"]},
-        {"Value": [1, 2, 3]},
-    )
+
+    data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
+
     cube = _get_cube_from_config_json_dict(data, config, 4)[0]
     components = {
         k: map_column_to_qb_component(k, v, data[k], None, None)

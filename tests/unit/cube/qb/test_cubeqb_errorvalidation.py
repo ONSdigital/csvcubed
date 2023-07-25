@@ -373,17 +373,16 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
     assert error.actual_number == 2
 
 
-def test_existing_attribute_csv_column_uri_template_required():
+def test_new_attribute_values_required():
     """
-    An ExistingQbAttribute using Existing Attribute Values must have an csv_column_uri_template defined by the user,
+    An NewQbAttribute using Existing Attribute Values must have an list of values defined by the user,
      if not it's an error
     """
-    # 820 TODO ExistingQbAttribute no longer has values associated with it so delete this test?
     data = pd.DataFrame(
         {
             "Existing Dimension": ["A", "B", "C"],
             "Existing Attribute 1": ["Val1", "Val2", "Val3"],
-            "Existing Attribute 2": ["Val4", "Val5", "Val6"],
+            "New Attribute 2": ["Val4", "Val5", "Val6"],
             "Obs": [6, 7, 8],
         }
     )
@@ -399,19 +398,14 @@ def test_existing_attribute_csv_column_uri_template_required():
             QbColumn(
                 "Existing Attribute 1",
                 ExistingQbAttribute("http://example.org/attributes/example"),
-                # No NewQbAttributeValues - so csv_column_uri_template is *required*
+                # ExistingQbAttribute - so csv_column_uri_template is not required
             ),
             QbColumn(
-                "Existing Attribute 2",
-                ExistingQbAttribute(
+                "New Attribute 2",
+                NewQbAttribute(
                     "http://example.org/attributes/example",
-                    # new_attribute_values=[
-                    #     NewQbAttributeValue("Val4"),
-                    #     NewQbAttributeValue("Val5"),
-                    #     NewQbAttributeValue("Val6"),
-                    # ],
                 ),
-                # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
+                # NewQbAttribute so csv_column_uri_template or list of Attribute Values is **required**
             ),
             QbColumn(
                 "Obs",
@@ -425,13 +419,13 @@ def test_existing_attribute_csv_column_uri_template_required():
 
     error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, NoUriTemplateOrAttrValuesError)
-    assert error.csv_column_name == "Existing Attribute 1"
-    assert error.component_type == "ExistingQbAttribute using existing attribute values"
+    assert error.csv_column_name == "New Attribute 2"
+    assert error.component_type == "NewQbAttribute using existing attribute values"
 
 
 def test_new_attribute_csv_column_uri_template_required():
     """
-    A NewQbAttribute using existing attribute vluaes must have an csv_column_uri_template defined by the user,
+    A NewQbAttribute using existing attribute values must have an csv_column_uri_template defined by the user,
      if not it's an error
     """
 
@@ -455,7 +449,7 @@ def test_new_attribute_csv_column_uri_template_required():
             QbColumn(
                 "New Attribute 1",
                 NewQbAttribute("Some New Attribute 1"),
-                # No NewQbAttributeValues - so csv_column_uri_template is *required*
+                # No NewQbCodeList - so csv_column_uri_template is *required*
             ),
             QbColumn(
                 "New Attribute 2",
@@ -470,7 +464,7 @@ def test_new_attribute_csv_column_uri_template_required():
                         ],
                     ),
                 ),
-                # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
+                # NewQbCodeList defined - so csv_column_uri_template is **not** required
             ),
             QbColumn(
                 "Obs",
@@ -725,50 +719,6 @@ def test_conflict_new_attribute_value_uri_values_error():
     error = _get_single_validation_error_for_qube(qube)
     assert isinstance(error, ConflictingUriSafeValuesError)
     assert error.component_type == NewQbCodeList
-    assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
-
-
-def test_conflict_existing_attribute_value_uri_values_error():
-    """
-    Test that a validation error is raised when the user defines new attribute value labels (on an existing attribute)
-     which are distinct but map to the same URI-safe value.
-    """
-    # 820 TODO ExistingQbAttribute no longer has values associated with it so delete this test?
-    data = pd.DataFrame(
-        {
-            "New Dimension": ["A", "B"],
-            "Existing Attribute": ["A B", "A.B"],
-            "Value": [2, 2],
-        }
-    )
-
-    qube = Cube(
-        metadata=CatalogMetadata("Some Qube"),
-        data=data,
-        columns=[
-            QbColumn(
-                "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
-            ),
-            QbColumn(
-                "Existing Attribute",
-                ExistingQbAttribute(
-                    "http://example.com/attributes/existing-attribute",
-                    [NewQbAttributeValue("A B"), NewQbAttributeValue("A.B")],
-                ),
-            ),
-            QbColumn(
-                "Value",
-                QbObservationValue(
-                    NewQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
-                ),
-            ),
-        ],
-    )
-    error = _get_single_validation_error_for_qube(qube)
-    assert isinstance(error, ConflictingUriSafeValuesError)
-    assert error.component_type == ExistingQbAttribute
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
 

@@ -259,10 +259,11 @@ def test_default_property_value_uris_new_attribute_existing_values():
     assert "{+some_column}" == default_value_uri
 
 
-def test_default_property_value_uris_new_attribute_new_values():
+def test_default_property_value_uris_new_attribute_new_values_codelist_false():
     """
     When a new attribute is defined, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
     """
+    # 820 TODO pytest fixture needed
     column = QbColumn(
         "Some Column",
         NewQbAttribute(
@@ -280,6 +281,29 @@ def test_default_property_value_uris_new_attribute_new_values():
     assert (
         "cube-name.csv#attribute/this-new-attribute/{+some_column}" == default_value_uri
     )
+
+
+def test_default_property_value_uris_new_attribute_new_values_codelist_true(
+    set_env_vars,
+):
+    """
+    When a new attribute is defined, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
+    """
+    column = QbColumn(
+        "Some Column",
+        NewQbAttribute(
+            "This New Attribute",
+            code_list=NewQbCodeList(
+                CatalogMetadata("This New Attribute"), [NewQbConcept("Something")]
+            ),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
+    assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
+    assert "this-new-attribute.csv#{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_units_all_new():

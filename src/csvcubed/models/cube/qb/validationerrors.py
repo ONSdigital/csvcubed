@@ -53,7 +53,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
 @dataclass
 class NoUriTemplateOrAttrValuesError(SpecificValidationError):
     """
-    Represents an error where the user has defined a Resource attribute but there are no values in the column and no csv_column_uri_template has been specified.
+    Represents an error where the user has defined a New Resource attribute but there are no values in the column and no csv_column_uri_template has been specified.
     """
 
     csv_column_name: str
@@ -439,7 +439,6 @@ class HybridShapeError(SpecificValidationError):
         return "http://purl.org/csv-cubed/err/hybrid-shape"
 
     def __post_init__(self):
-
         not_linked_cols = ", ".join(str(self.not_linked_obs_val_cols))
         measure_cols = ", ".join(str(self.measure_cols))
         self.message = (

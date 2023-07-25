@@ -17,8 +17,17 @@ _user_log_dir = Path(PlatformDirs("csvcubed_testing", "csvcubed").user_log_dir)
 @pytest.fixture
 def tests_env_vars_setup_and_teardown():
     feature_flags.ATTRIBUTE_VALUE_CODELISTS = True
-    yield
+    yield feature_flags.ATTRIBUTE_VALUE_CODELISTS
     feature_flags.ATTRIBUTE_VALUE_CODELISTS = False
+
+
+@pytest.fixture
+def set_env_vars():
+    old_environ = dict(os.environ)
+    os.environ.update({"OUTPUT_ATTR_VAL_CODE_LISTS": "true"})
+    yield
+    os.environ.clear()
+    os.environ.update(old_environ)
 
 
 @pytest.fixture(autouse=True, scope="session")
