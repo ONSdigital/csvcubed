@@ -7,10 +7,10 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     And the file at "basic-code-list.csv-metadata.json" should exist
     And the file at "basic-code-list.table.json" should exist
     And the file at "basic-code-list.table.json" should contain the line
-    """
-    "@context": "http://www.w3.org/ns/csvw"
-    """
-    And csvlint validation of "basic-code-list.csv-metadata.json" should succeed
+      """
+      "@context": "http://www.w3.org/ns/csvw"
+      """
+    And csvwcheck validation of "basic-code-list.csv-metadata.json" should succeed
     And csv2rdf on "basic-code-list.csv-metadata.json" should succeed
     And the RDF should pass "skos" SPARQL tests
     And the RDF should contain
@@ -18,7 +18,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       @prefix basicCodeList: <{{rdf_input_directory}}/basic-code-list.csv#>.
 
       basicCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
-        <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
+      <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -48,25 +48,25 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       @prefix prov: <http://www.w3.org/ns/prov#> .
 
       basicCodeList:code-list a prov:Entity ;
-        prov:wasGeneratedBy basicCodeList:csvcubed-build-activity.
+      prov:wasGeneratedBy basicCodeList:csvcubed-build-activity.
 
       basicCodeList:csvcubed-build-activity a prov:Activity.
 
       """
     Given the version identifier
     Then the RDF should contain
-    """
+      """
       @prefix basicCodeList: <{{rdf_input_directory}}/basic-code-list.csv#>.
       @prefix prov: <http://www.w3.org/ns/prov#> .
 
       basicCodeList:csvcubed-build-activity a prov:Activity;
-                                            prov:used <{{csvcubed_version_identifier}}>.
-    """
+      prov:used <{{csvcubed_version_identifier}}>.
+      """
 
   Scenario: A code list with duplicate notations fails validation.
     Given a NewQbCodeList named "Contains Duplicates" containing duplicates
     When the code list is serialised to CSV-W
-    Then csvlint validation of "contains-duplicates.csv-metadata.json" should fail with "duplicate_key"
+    Then csvwcheck validation of "contains-duplicates.csv-metadata.json" should fail with "key already present - 1st-concept"
 
   Scenario: A composite code list can be serialised to a valid CSV-W described in SKOS.
     Given a CompositeQbCodeList named "Composite Code List"
@@ -74,7 +74,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     Then the file at "composite-code-list.csv" should exist
     And the file at "composite-code-list.csv-metadata.json" should exist
     And the file at "composite-code-list.table.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos" SPARQL tests
     And the RDF should contain
@@ -82,7 +82,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       @prefix compositeCodeList: <{{rdf_input_directory}}/composite-code-list.csv#>.
 
       compositeCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
-        <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
+      <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -95,8 +95,8 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
       <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>;
       <http://rdf-vocabulary.ddialliance.org/xkos#variant>
-          <http://data.europa.eu/nuts/scheme/2016>,
-          <http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative>.
+      <http://data.europa.eu/nuts/scheme/2016>,
+      <http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative>.
 
       compositeCodeList:wales a <http://www.w3.org/2004/02/skos/core#Concept>;
       <http://www.w3.org/2004/02/skos/core#exactMatch> <http://data.europa.eu/nuts/code/UKL>;
