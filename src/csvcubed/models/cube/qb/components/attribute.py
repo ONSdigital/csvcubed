@@ -153,7 +153,10 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
         # if isinstance(self.code_list, NewQbCodeList):
         #     return self.code_list.validate_data(data, column_csv_title)
-        if len(self.code_list.concepts) > 0:
+        if (
+            isinstance(self.code_list, NewQbCodeList)
+            and len(self.code_list.concepts) > 0
+        ):
             expected_values = {concept.code for concept in self.code_list.concepts}
             actual_values = {
                 uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
