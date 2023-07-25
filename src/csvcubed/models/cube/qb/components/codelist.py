@@ -118,8 +118,8 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         metadata: CatalogMetadata,
         data: PandasDataTypes,
         uri_style: Optional[URIStyle] = None,
-        # 820 TODO Allow optional values for attributes but not dimensions
     ) -> "NewQbCodeList":
+        # 820 TODO Allow optional values for attributes but not dimensions
         # columnar_data = pandas_input_to_columnar_str(data)
         # concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
         # return NewQbCodeList(metadata, concepts, uri_style=uri_style)

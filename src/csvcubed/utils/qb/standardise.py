@@ -174,18 +174,6 @@ def convert_data_values_to_uri_safe_values(
             )
 
     for attribute_column in cube.get_columns_of_dsd_type(NewQbAttribute):
-        # attribute = attribute_column.structural_definition
-        # new_attribute_values: List[NewQbAttributeValue] = attribute.new_attribute_values  # type: ignore
-        # if (
-        #     not isinstance(attribute, QbAttributeLiteral)
-        #     and len(new_attribute_values) > 0
-        # ):
-        #     map_attr_val_labels_to_uri_identifiers = dict(
-        #         [
-        #             (new_attribute_value.label, new_attribute_value.uri_safe_identifier)
-        #             for new_attribute_value in new_attribute_values
-        #         ]
-        #     )
         if isinstance(attribute_column.structural_definition.code_list, NewQbCodeList):
             new_code_list = attribute_column.structural_definition.code_list
             map_attr_val_labels_to_uri_identifiers = dict(

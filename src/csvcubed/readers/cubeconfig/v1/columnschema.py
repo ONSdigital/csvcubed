@@ -324,18 +324,12 @@ class ExistingAttributeResource(SchemaBaseClass):
                     observed_value_col_title=self.describes_observations,
                 )
             else:
-                concepts = [
-                    NewQbConcept(
-                        label=value.label,
-                        description=value.description,
-                        parent_code=value.from_existing,
-                    )
-                    for value in self.values
-                ]
+                # `values` is a list of AttributeValues objects
                 return NewQbAttribute(
                     label=column_title,
                     code_list=NewQbCodeList(
-                        CatalogMetadata(column_title), concepts=concepts
+                        CatalogMetadata(column_title),
+                        concepts=_get_new_attribute_values(self.values),
                     ),
                     parent_attribute_uri=self.from_existing,
                     is_required=self.required,
@@ -605,25 +599,6 @@ def _map_measure(resource: Measure) -> NewQbMeasure:
     )
 
 
-# def _map_attribute_values(
-#     new_attribute_values_from_schema: List[AttributeValue],
-# ) -> List[NewQbConcept]:
-#     new_attribute_values = []
-#     for attr_val in new_attribute_values_from_schema:
-#         if not isinstance(attr_val, AttributeValue):
-#             raise ValueError(f"Found unexpected attribute value {attr_val}")
-
-#         new_attribute_values.append(
-#             NewQbConcept(
-#                 label=attr_val.label,
-#                 description=attr_val.description,
-#                 # source_uri=attr_val.definition_uri,
-#                 # uri_safe_identifier_override=attr_val.path,
-#             )
-#         )
-#     return new_attribute_values
-
-
 def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
     """
     If the user wishes to, they should be able to specify the scaling factor (if relevant),
@@ -640,25 +615,12 @@ def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
 
 
 def _get_new_attribute_values(
-    # data: PandasDataTypes,
-    # new_attribute_values: Union[bool, List[AttributeValue]],
     new_attribute_values_from_schema: List[AttributeValue],
 ) -> List[NewQbConcept]:
     """
-    Returns a list of new attribute value objects. If cell_uri_template is True, then the list is created with
-    the list comprehension. If cell_uri_template is not used (new_attribute_values is a list object)
-    then use _map_attribute_values.
+    Returns a list of NewQbConcept objects from a list of AttributeValue objects
     """
 
-    # if isinstance(new_attribute_values, bool):
-    #     if new_attribute_values:
-    #         columnar_data: List[str] = [
-    #             v for v in pandas_input_to_columnar_optional_str(data) if v is not None
-    #         ]
-    #         return [NewQbConcept(v) for v in sorted(set(columnar_data))]
-
-    #     return []
-    # elif isinstance(new_attribute_values, list):
     new_attribute_values = []
     for attr_val in new_attribute_values_from_schema:
         if not isinstance(attr_val, AttributeValue):
@@ -668,13 +630,8 @@ def _get_new_attribute_values(
             NewQbConcept(
                 label=attr_val.label,
                 description=attr_val.description,
-                # source_uri=attr_val.definition_uri,
-                # uri_safe_identifier_override=attr_val.path,
+                parent_code=attr_val.from_existing
+                # attr_val.definition_uri unused here
             )
         )
     return new_attribute_values
-    # return _map_attribute_values(new_attribute_values)
-
-    raise ValueError(
-        f"Unexpected value for 'newAttributeValues': {new_attribute_values}"
-    )

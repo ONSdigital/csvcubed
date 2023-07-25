@@ -507,19 +507,7 @@ class UriHelper:
         attribute_uri = self.get_attribute_uri(attribute)
 
         if isinstance(attribute, ExistingQbAttribute):
-            # if len(attribute.new_attribute_values) > 0:
-            #     _logger.debug(
-            #         "Existing Attribute has new attribute values which define the valueUrl."
-            #     )
-            #     # NewQbAttributeValues defined here.
-            #     value_uri = self._new_resource_uri_generator.get_attribute_value_uri(
-            #         column.uri_safe_identifier, column_uri_fragment
-            #     )
-            # else:
             _logger.debug("Existing Attribute does not have new attribute values.")
-
-            # N.B. We can't do mix-and-match New/Existing attribute values.
-
             return attribute_uri, value_uri
         elif isinstance(attribute, NewQbAttribute):
             if attribute.code_list is None:
@@ -542,19 +530,6 @@ class UriHelper:
                     value_uri = self.get_new_attribute_value_uri(
                         attribute.uri_safe_identifier, column_uri_fragment
                     )
-            # if (
-            #     attribute.code_list is not None
-            #     and len(attribute.code_list.concepts) > 0
-            # ):
-            #     _logger.debug(
-            #         "New Attribute has new attribute values which define the valueUrl."
-            #     )
-            #     # NewQbAttributeValues defined here.
-            # value_uri = self.get_new_attribute_value_uri(
-            #     attribute.uri_safe_identifier, column_uri_fragment
-            # )
-            # else:
-            #     _logger.debug("New Attribute does not have new attribute values.")
 
             # N.B. We can't do mix-and-match New/Existing attribute values.
 

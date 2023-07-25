@@ -27,7 +27,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     NewQbAttribute,
-    NewQbAttributeValue,
     QbAttribute,
     QbAttributeLiteral,
 )
@@ -93,12 +92,7 @@ class DsdToRdfModelsHelper:
         for dependencies in self._get_rdf_file_dependencies():
             see_also += rdf_resource_to_json_ld(dependencies)
 
-        # 820 TODO
-        # if FLAG:
-        # write out all of the code lists for the new attribute resources
-        # else:
-        # Writing the Attribute values our in 'legacy mode'.
-        # We know they're stored in the code list object, but we're going to write them out as `rdf:Resource`s anyway.
+        # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False, generate attribute value resources to be added to rdfs:seeAlso
         if not ATTRIBUTE_VALUE_CODELISTS:
             for attribute_value in self._get_new_attribute_value_resources():
                 see_also += rdf_resource_to_json_ld(attribute_value)
@@ -137,6 +131,7 @@ class DsdToRdfModelsHelper:
                 )
 
                 rdf_file_dependencies.append(dependency)
+        # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True, include Attribute codelists in the RDF file dependencies
         if ATTRIBUTE_VALUE_CODELISTS:
             attribute_columns = self.cube.get_columns_of_dsd_type(NewQbAttribute)
             for column in attribute_columns:
@@ -539,6 +534,7 @@ class DsdToRdfModelsHelper:
             component = rdf.qb.AttributeComponentSpecification(
                 self._uris.get_component_uri(attribute.uri_safe_identifier)
             )
+            # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True, generate the Attribute codelist resource
             if ATTRIBUTE_VALUE_CODELISTS:
                 component.attribute = CodedAttributeProperty(attribute_uri)
                 if attribute.code_list is not None:
