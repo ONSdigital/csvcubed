@@ -310,9 +310,9 @@ def _melt_data_set(
     # parameter passed to the melt function to a random string so that we don't
     # trigger a pandas ValueError.
     value_name = "Value"
+    rand_value_name = f"Value_{str(uuid1())}"
     for col_title in value_cols:
         if col_title == "Value":
-            rand_value_name = str(uuid1())
             value_name = rand_value_name
 
     # Melting the data set using pandas melt function.
