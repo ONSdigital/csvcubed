@@ -307,12 +307,13 @@ def _melt_data_set(
     id_cols = list(set(data_set.columns) - set(value_cols))
 
     # Checking for any columns with the title "Value" and changing the value_name
-    # parameter passed to the melt function to "Not-Value" so that we don't
+    # parameter passed to the melt function to a random string so that we don't
     # trigger a pandas ValueError.
     value_name = "Value"
     for col_title in value_cols:
         if col_title == "Value":
-            value_name = "Not-Value"
+            rand_value_name = str(uuid1())
+            value_name = rand_value_name
 
     # Melting the data set using pandas melt function.
     melted_df = pd.melt(
@@ -324,8 +325,8 @@ def _melt_data_set(
     )
 
     # Renaming columns in the returned melted df to their original title "Value"
-    if value_name == "Not-Value":
-        melted_df.rename(columns={"Not-Value": "Value"}, inplace=True)
+    if value_name == rand_value_name:
+        melted_df.rename(columns={rand_value_name: "Value"}, inplace=True)
 
     return melted_df
 
