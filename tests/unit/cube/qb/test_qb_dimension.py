@@ -11,7 +11,9 @@ def test_newqbdimension_extracts_newqbcodelist_newqbconcept():
     # New dimension with some repeated & distinct values
     data = pd.DataFrame({"New Dimension": ["A", "A", "C", "D", "E", "G", "G"]})
 
-    new_dimension = NewQbDimension.from_data("Some Dataset", data["New Dimension"])
+    new_dimension = NewQbDimension.from_data(
+        "Some Dataset", "New Dimension", data["New Dimension"]
+    )
 
     # To see if there is a code_list for the new_dimension and is of type NewQbCodeList
     assert new_dimension.code_list is not None
