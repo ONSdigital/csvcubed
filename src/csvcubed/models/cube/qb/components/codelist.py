@@ -139,7 +139,6 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
             )
         else:
             concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-            # todo: do we want to return a CompositeQbCodeList here?
             return NewQbCodeList(metadata, concepts, uri_style=uri_style)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
