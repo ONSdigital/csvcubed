@@ -599,17 +599,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "new"
         / "multi-unit-single-measure-dataset.csv-metadata.json"
     )
-    # csvw_metadata_json_path = (
-    #     _test_case_base_dir
-    #     / "multi-unit_single-measure"
-    #     / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
-    # )
-    # csvw_metadata_json_path = (
-    #     _test_case_base_dir
-    #     / "multi-unit_single-measure"
-    #     / "out"
-    #     / "cardiovascular-mortality-considered-preventable-in-persons-aged-under-75.csv-metadata.json"
-    # )
+
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_repository)

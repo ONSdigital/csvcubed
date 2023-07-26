@@ -310,8 +310,9 @@ def _melt_data_set(
     # parameter passed to the melt function to "Not-Value" so that we don't
     # trigger a pandas ValueError.
     value_name = "Value"
-    if "Value" in value_cols:
-        value_name = "Not-Value"
+    for col_title in value_cols:
+        if col_title == "Value":
+            value_name = "Not-Value"
 
     # Melting the data set using pandas melt function.
     melted_df = pd.melt(
