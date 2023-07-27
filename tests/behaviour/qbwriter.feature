@@ -432,7 +432,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 1"
     When the cube is serialised to CSV-W
     # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
-    Then csvwcheck validation of "bad-qube.csv-metadata.json" should fail with "Column: 3"
+    Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"
 
   Scenario: Observation Values are Optional where an `sdmxa:ObsStatus` Attribute is Present
     Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
