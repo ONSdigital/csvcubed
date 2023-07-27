@@ -36,7 +36,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Some Qube" with codes not defined in the code-list
     When the cube is serialised to CSV-W (suppressing missing uri value exceptions)
     Then the file at "a-code-list.csv-metadata.json" should exist
-    And csvwcheck validation of "some-qube.csv-metadata.json" should fail with "c"
+    And csvlint validation of "some-qube.csv-metadata.json" should fail with "unmatched_foreign_key_reference"
 
   Scenario: A QbCube with existing dimensions should not do foreign key checks.
     Given a single-measure QbCube named "Some Qube" with existing dimensions
@@ -46,7 +46,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A single-measure QbCube with duplicate rows should fail validation
     Given a single-measure QbCube named "Duplicate Qube" with duplicate rows
     When the cube is serialised to CSV-W
-    Then csvwcheck validation of "duplicate-qube.csv-metadata.json" should fail with "key already present - a"
+    Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
   Scenario: A multi-measure QbCube should pass validation
     Given a multi-measure QbCube named "Duplicate Qube"
@@ -56,7 +56,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A multi-measure QbCube with duplicate rows should fail validation
     Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
     When the cube is serialised to CSV-W
-    Then csvwcheck validation of "duplicate-qube.csv-metadata.json" should fail with "key already present - a_height, height"
+    Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
   Scenario: QbCube new attribute values and units should be serialised
     Given a single-measure QbCube named "Some Qube" with new attribute values and units
