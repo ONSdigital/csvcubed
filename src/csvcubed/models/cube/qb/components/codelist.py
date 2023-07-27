@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Generic, List, Optional, Set, TypeVar
 
+import uritemplate
+
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction
@@ -19,6 +21,7 @@ from csvcubed.models.validationerror import (
 )
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
+from csvcubed.utils.uri import csvw_column_name_safe
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
@@ -113,12 +116,30 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     @staticmethod
     def from_data(
         metadata: CatalogMetadata,
+        csv_column_title: str,
         data: PandasDataTypes,
         uri_style: Optional[URIStyle] = None,
+        cell_uri_template: Optional[str] = None,
     ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
-        concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-        return NewQbCodeList(metadata, concepts, uri_style=uri_style)
+        csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
+        if cell_uri_template:
+            return CompositeQbCodeList(
+                metadata,
+                concepts=[
+                    DuplicatedQbConcept(
+                        label=c,
+                        existing_concept_uri=uritemplate.expand(
+                            cell_uri_template, {csvw_safe_col_name: c}
+                        ),
+                    )
+                    for c in sorted(set(columnar_data))
+                ],
+                uri_style=uri_style,
+            )
+        else:
+            concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
+            return NewQbCodeList(metadata, concepts, uri_style=uri_style)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {
