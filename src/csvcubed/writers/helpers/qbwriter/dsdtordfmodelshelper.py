@@ -19,8 +19,8 @@ from csvcubedmodels.rdf import (
 )
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 
+from csvcubed import feature_flags
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.feature_flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
@@ -93,7 +93,7 @@ class DsdToRdfModelsHelper:
             see_also += rdf_resource_to_json_ld(dependencies)
 
         # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False, generate attribute value resources to be added to rdfs:seeAlso
-        if not ATTRIBUTE_VALUE_CODELISTS:
+        if not feature_flags.ATTRIBUTE_VALUE_CODELISTS:
             for attribute_value in self._get_new_attribute_value_resources():
                 see_also += rdf_resource_to_json_ld(attribute_value)
 
@@ -132,7 +132,7 @@ class DsdToRdfModelsHelper:
 
                 rdf_file_dependencies.append(dependency)
         # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True, include Attribute codelists in the RDF file dependencies
-        if ATTRIBUTE_VALUE_CODELISTS:
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
             attribute_columns = self.cube.get_columns_of_dsd_type(NewQbAttribute)
             for column in attribute_columns:
                 attribute = column.structural_definition
@@ -535,7 +535,7 @@ class DsdToRdfModelsHelper:
                 self._uris.get_component_uri(attribute.uri_safe_identifier)
             )
             # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True, generate the Attribute codelist resource
-            if ATTRIBUTE_VALUE_CODELISTS:
+            if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
                 component.attribute = CodedAttributeProperty(attribute_uri)
                 if attribute.code_list is not None:
                     component.attribute.code_list = self._get_code_list_resource(

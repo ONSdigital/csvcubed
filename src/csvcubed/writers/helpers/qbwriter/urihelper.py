@@ -3,8 +3,8 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
+from csvcubed import feature_flags
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.feature_flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.cube import QbColumnarDsdType, QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -515,7 +515,7 @@ class UriHelper:
                     "Attribute does not have a code list; valueUrl defaults directly to column value"
                 )
             else:
-                if ATTRIBUTE_VALUE_CODELISTS:
+                if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
                     _logger.debug(
                         "Attribute valueUrl determined by code list %s",
                         attribute.code_list,

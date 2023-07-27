@@ -13,8 +13,8 @@ from typing import Any, Dict, Iterable, List, Union
 
 import pandas as pd
 
+from csvcubed import feature_flags
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
-from csvcubed.feature_flags import ATTRIBUTE_VALUE_CODELISTS
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -113,7 +113,7 @@ class QbWriter(WriterBase):
         }
 
         self._output_new_dimension_code_list_csvws(output_folder)
-        if ATTRIBUTE_VALUE_CODELISTS:
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
             self._output_new_attribute_code_list_csvws(output_folder)
 
         metadata_json_output_path = output_folder / self.csv_metadata_file_name
@@ -173,7 +173,7 @@ class QbWriter(WriterBase):
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-        if ATTRIBUTE_VALUE_CODELISTS:
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
             for col in self.cube.get_columns_of_dsd_type(NewQbAttribute):
                 if col.structural_definition.code_list is not None and isinstance(
                     col.structural_definition.code_list, NewQbCodeList

@@ -268,8 +268,8 @@ class AttributeValue(SchemaBaseClass):
 
 @dataclass
 class ExistingAttributeLiteral(SchemaBaseClass):
-    from_existing: str
     data_type: str
+    from_existing: str
     required: bool = False
     describes_observations: Optional[str] = None
 
@@ -314,7 +314,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                     "Values should be set to `true` or `cell_uri_template` should be provided for %s",
                     column_title,
                 )
-            # `values` defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values
+            # `values` defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column data
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=column_title,
@@ -324,7 +324,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                     observed_value_col_title=self.describes_observations,
                 )
             else:
-                # `values` is a list of AttributeValues objects
+                # `values` is a list of AttributeValue objects
                 return NewQbAttribute(
                     label=column_title,
                     code_list=NewQbCodeList(
@@ -340,12 +340,12 @@ class ExistingAttributeResource(SchemaBaseClass):
 @dataclass
 class NewAttributeLiteral(SchemaBaseClass):
     data_type: str
-    label: Optional[str] = None
-    description: Optional[str] = None
     from_existing: Optional[str] = None
-    definition_uri: Optional[str] = None
     required: bool = False
     describes_observations: Optional[str] = None
+    label: Optional[str] = None
+    description: Optional[str] = None
+    definition_uri: Optional[str] = None
 
     def map_to_new_qb_attribute(self, column_title: str) -> NewQbAttributeLiteral:
         label = self.label or column_title
@@ -372,7 +372,6 @@ class NewAttributeResource(SchemaBaseClass):
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
-    # 820 TODO - what happens if the CSV file contains attribute values that don't appear in the `values` config and vice versa?
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
@@ -419,6 +418,7 @@ class NewAttributeResource(SchemaBaseClass):
                         observed_value_col_title=self.describes_observations,
                     )
             else:
+                # 820 TODO - raise ValidationError if the CSV file contains attribute values that don't appear in the `values` config and vice versa
                 return NewQbAttribute(
                     label=label,
                     description=self.description,

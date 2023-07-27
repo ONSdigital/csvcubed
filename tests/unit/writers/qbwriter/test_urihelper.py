@@ -283,8 +283,31 @@ def test_default_property_value_uris_new_attribute_new_values_codelist_false():
     )
 
 
+def test_default_property_value_uris_new_attribute_new_values_codelist_false():
+    """
+    When a new attribute is defined, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
+    """
+    column = QbColumn(
+        "Some Column",
+        NewQbAttribute(
+            "This New Attribute",
+            code_list=NewQbCodeList(
+                CatalogMetadata("This New Attribute"), [NewQbConcept("Something")]
+            ),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
+    assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
+    assert (
+        "cube-name.csv#attribute/this-new-attribute/{+some_column}" == default_value_uri
+    )
+
+
 def test_default_property_value_uris_new_attribute_new_values_codelist_true(
-    set_env_vars,
+    tests_env_vars_setup_and_teardown,
 ):
     """
     When a new attribute is defined, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
