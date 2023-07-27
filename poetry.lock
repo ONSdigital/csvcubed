@@ -365,13 +365,13 @@ test-no-images = ["pytest", "pytest-cov", "wurlitzer"]
 
 [[package]]
 name = "csvcubed-devtools"
-version = "0.1.9"
+version = "0.2.0"
 description = "Development tools and dependencies for use in the csvcubed tooling."
 category = "dev"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "csvcubed_devtools-0.1.9-py3-none-any.whl", hash = "sha256:99177629bc57d6c0a7a9659df65997faf232dded9894ecb5cbb48ed35f02e570"},
+    {file = "csvcubed_devtools-0.2.0-py3-none-any.whl", hash = "sha256:99177629bc57d6c0a7a9659df65997faf232dded9894ecb5cbb48ed35f02e570"},
 ]
 
 [package.dependencies]
