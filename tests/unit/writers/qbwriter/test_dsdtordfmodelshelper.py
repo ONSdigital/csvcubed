@@ -337,7 +337,6 @@ def test_arbitrary_rdf_serialisation_new_dimension():
                 "New Dimension",
                 NewQbDimension.from_data(
                     "Some Dimension",
-                    "New Dimension",
                     data["New Dimension"],
                     arbitrary_rdf=[
                         TripleFragment(RDFS.label, "New Dimension Property"),
@@ -389,7 +388,6 @@ def test_arbitrary_rdf_serialisation_new_dimension_with_cube_uri_style_without_f
                 "New Dimension",
                 NewQbDimension.from_data(
                     "Some Dimension",
-                    "New Dimension",
                     data["New Dimension"],
                     arbitrary_rdf=[
                         TripleFragment(RDFS.label, "New Dimension Property"),
@@ -447,9 +445,7 @@ def test_arbitrary_rdf_serialisation_existing_dimension():
             QbColumn(
                 "Existing Dimension",
                 NewQbDimension.from_data(
-                    "Existing Dimension",
-                    "Existing Dimension",
-                    data["Existing Dimension"],
+                    "Existing Dimension", data["Existing Dimension"]
                 ),
             ),
             QbColumn(
@@ -490,9 +486,7 @@ def test_arbitrary_rdf_serialisation_new_measure():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "New Dimension", data["New Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
             ),
             QbColumn(
                 "Value",
@@ -543,9 +537,7 @@ def test_qb_order_of_components():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "New Dimension", data["New Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
             ),
             QbColumn(
                 "Value",

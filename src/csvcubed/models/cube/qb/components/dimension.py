@@ -97,7 +97,6 @@ class NewQbDimension(QbDimension, UriIdentifiable):
     @staticmethod
     def from_data(
         label: str,
-        csv_column_title: str,
         data: PandasDataTypes,
         description: Optional[str] = None,
         parent_dimension_uri: Optional[str] = None,
@@ -106,7 +105,6 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = [],
         code_list_uri_style: Optional[URIStyle] = None,
-        cell_uri_template: Optional[str] = None,
     ) -> "NewQbDimension":
         """
         Creates a new dimension and code list from the columnar data provided.
@@ -115,11 +113,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             label=label,
             description=description,
             code_list=NewQbCodeList.from_data(
-                metadata=CatalogMetadata(label),
-                data=data,
-                csv_column_title=csv_column_title,
-                uri_style=code_list_uri_style,
-                cell_uri_template=cell_uri_template,
+                CatalogMetadata(label), data, code_list_uri_style
             ),
             parent_dimension_uri=parent_dimension_uri,
             source_uri=source_uri,

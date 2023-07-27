@@ -44,9 +44,7 @@ def test_qbcube_data_is_categorical():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "Some Dimension", data["Some Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
             ),
             QbColumn(
                 "Some Resource Attribute",
@@ -107,9 +105,7 @@ def test_convert_data_values_to_uri_safe_values():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "Some Dimension", data["Some Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
             ),
             QbColumn(
                 "Some Resource Attribute",
@@ -197,9 +193,7 @@ def test_qbcube_catagorical_numeric():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "Some Dimension", data["Some Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
             ),
             QbColumn(
                 "Observed Value",
@@ -240,9 +234,7 @@ def test_coerce_signed_integer_with_missing_obs_values():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "New Dimension", data["New Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
             ),
             QbColumn(
                 "Value",
@@ -277,9 +269,7 @@ def test_coerce_unsigned_integer_with_missing_obs_values():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "New Dimension", data["New Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
             ),
             QbColumn(
                 "Value",
@@ -316,9 +306,7 @@ def test_coerce_attribute_value_with_missing_values():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data(
-                    "Some Dimension", "New Dimension", data["New Dimension"]
-                ),
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
             ),
             QbColumn(
                 "Value",

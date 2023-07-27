@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Wed, 14 Jun 2023 07:52:46 GMT
+      - Wed, 24 May 2023 13:54:15 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -324,16 +324,14 @@ interactions:
       - default-src 'none'; style-src 'unsafe-inline'; sandbox
       Content-Type:
       - text/plain; charset=utf-8
-      Cross-Origin-Resource-Policy:
-      - cross-origin
       Date:
-      - Wed, 14 Jun 2023 07:52:46 GMT
+      - Wed, 24 May 2023 13:54:15 GMT
       ETag:
       - W/"c2c4afa5dd344a2efddea38fdf484a9aaeba0ed0bc78613f93c616583f7b96bf"
       Expires:
-      - Wed, 14 Jun 2023 07:57:46 GMT
+      - Wed, 24 May 2023 13:59:15 GMT
       Source-Age:
-      - '123'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -347,15 +345,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - a1f36600c77459434166f2d3b301e7dc1ba53086
+      - 877d5161335f23393ac672ddc8b0cc287db2c440
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 169E:EF48:1CBDEC8:1DD9411:64896E50
+      - CC9C:0192:49DE95:4BFA3C:646E15A0
       X-Served-By:
-      - cache-lon420100-LON
+      - cache-lhr7385-LHR
       X-Timer:
-      - S1686729167.969450,VS0,VE1
+      - S1684936456.515523,VS0,VE165
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -427,7 +425,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Wed, 14 Jun 2023 07:52:47 GMT
+      - Wed, 24 May 2023 13:54:18 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -477,16 +475,14 @@ interactions:
       - default-src 'none'; style-src 'unsafe-inline'; sandbox
       Content-Type:
       - text/plain; charset=utf-8
-      Cross-Origin-Resource-Policy:
-      - cross-origin
       Date:
-      - Wed, 14 Jun 2023 07:52:47 GMT
+      - Wed, 24 May 2023 13:54:18 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Wed, 14 Jun 2023 07:57:47 GMT
+      - Wed, 24 May 2023 13:59:18 GMT
       Source-Age:
-      - '122'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -500,15 +496,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 3ebe79ae5f17bd94aeb5a3e94402183c497de834
+      - a94267f432ffedbbd840a037853e44c02d5eed72
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 0AB8:FEF5:30281F6:321FAAB:64896E4F
+      - 3122:0EFA:4443305:46F4D03:646DB972
       X-Served-By:
-      - cache-lon420100-LON
+      - cache-lhr7359-LHR
       X-Timer:
-      - S1686729168.885545,VS0,VE1
+      - S1684936458.370601,VS0,VE163
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -580,7 +576,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Wed, 14 Jun 2023 07:52:48 GMT
+      - Wed, 24 May 2023 13:54:22 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -625,16 +621,14 @@ interactions:
       - default-src 'none'; style-src 'unsafe-inline'; sandbox
       Content-Type:
       - text/plain; charset=utf-8
-      Cross-Origin-Resource-Policy:
-      - cross-origin
       Date:
-      - Wed, 14 Jun 2023 07:52:48 GMT
+      - Wed, 24 May 2023 13:54:22 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Wed, 14 Jun 2023 07:57:48 GMT
+      - Wed, 24 May 2023 13:59:22 GMT
       Source-Age:
-      - '122'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -648,15 +642,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 3fa530250ad504818ea9e61a552895930ca2ad22
+      - 9823d25c5d9fea96dab2fabe4307e8b8f5b6051f
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - A968:75E4:11D55A4:1284A3D:64896E38
+      - A0E4:9C9F:3695E49:38B9E3E:646E0C97
       X-Served-By:
-      - cache-lon420093-LON
+      - cache-lhr7384-LHR
       X-Timer:
-      - S1686729169.791013,VS0,VE8
+      - S1684936463.790633,VS0,VE170
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -695,104 +689,10 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Wed, 14 Jun 2023 07:52:49 GMT
-      location:
-      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
+      - Wed, 24 May 2023 13:54:29 GMT
       server:
       - gunicorn
     status:
-      code: 302
-      message: FOUND
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.28.1
-    method: GET
-    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
-  response:
-    body:
-      string: !!binary |
-        H4sIAAAAAAAAA8VYS2/bOBC+51cQaQ8tEFt2srstcgvQS4DFdtGkly4Mg5ZGFruSqJJUDCPwf1++
-        REsy9XLSrQ9BRM3MNzOcp54vkPxdvuVhAhm+vEWXiRAFvw2C75zmM3M8p2wbRAzHYrb4EFjSK8NJ
-        ojpTUbJUU4f8aRaWG4iCkEYwSwkXs5DmMdkGT8v5suIWRKSgBDxooSimDGGkWBTHvCKLgIeMFILQ
-        XBHfoRx2mgopMiQo2gDCnNOQYAER2hGRSDkRySDnkskJEvtCw9HNdwhFdcrgR0kYKEv+0Sc13fTz
-        yhIWjBbABAEuSZ+PpEf3HQ8beFwwkm8tnnsbQYzLVJzlQCfpcBRqLuO5DdLyXZmTHyUgEmlviwSO
-        npy3NWzp7wWt7nAIV9O9EmZT+BBySvMtqp0iGr+CDrzMMsz2I/B5QplAlv51wEMGWFA2CP6okAzt
-        CTB6VzLy/gT+LYO4Ckl/RDLgtGQh8ECe45xwrOD4XJWMN4EUyv1KF+VG4iYwTm1H/esVj7DAHMSa
-        cF7CcI59kkVIhnsm/yRYtHTfYY5ITgTBabp3RkbyDN0/fEYf/1gsVZJkWFwhmG/n6HpxfT1b3Mxu
-        lkhe4vHpcXl9+/tvtzeLb+elkLUpoxGJyWtYlWL5TyXuF1qWklCW/eGS9PXLvTGFQSEjA3LBrVXF
-        npFtIpCVhHBRpHuJpzqNSAjvSd4pQWjFD8ef1Cpr9ZwG2JtAthIdVDKaVX9YBJrlUXqrQ+S/sN9R
-        Fk0Tapl6xHJZ6QYd/6DLoWAyoLb7WkfIQygE77zzRtN2b73N273d7Fv0+jQDkdDosvFi1ZLb0evr
-        kn3nPntTvIEUvbPt/r0K9pwKXXs82jVs9g4OjgryMvPa7Sg0dAe7JnCKeElWHcC1ycUgnJAdut0+
-        1m2Yy/SIVNo1XKeozPnPdh4eAHJKW6pzXYi7JRwu/E+NWcAmzqRUdkwXTeEHN3I7huasq7hPkTp1
-        cD6qXeyfqmPIpl4xqQ7ROxJpIdWtYsawN6vNYHsvIFNqCFaCh4jY1x0hOOyxwTu68npmlGPuKpdM
-        84i3MGqK3uKoKfoKRE9x8ET1UMWswXW91iTtYNHF042A2j0+bzj+rhGh/vNUJw/2eCU/+ZaLn6uq
-        u5spev5lmf4vJTnOYI2748Gn4xeIgYHUS01b2GWEzkc5TULKYSe3ApiidA+lmUgVrZy/Jlon55i1
-        nIc8C02fgXr80WznXAPJ5dQkESdpGiYkjaRT+/Wc1C7GwEqPrjmOYU0iOV2rvYCt6RMwJp8nuewr
-        I0gJQkdB7bnx5TE8sbDXJuxxtV0zqAkmtf3PjPVmBzHUG9AmxTQs+eCHAo2Co0jfE07/HlF+aQ6f
-        496hp/tOtIC+jUO5wuwdfgd7nDgBWQtWk0Nv4Djy049ADaf3RcsRcmDiOGHoHy5OyF/qzOp3Grnj
-        3vrfrCbmQWMpHJcJlqWeC9U+KpfxFJ5wLsyuPRT+/QF9Xq0zvrcKTSp4PXhjY2lkDL1Qf23DyCq4
-        6r190X3tJnrHbnt3SH2PsWVQLX3YpGpXpk760mKT3vedpcMwDVH5cLwNpsE0zbBSOg0Zak6dO6BZ
-        2C4O/wF42rn+xRkAAA==
-    headers:
-      Accept-Ranges:
-      - bytes
-      Access-Control-Allow-Origin:
-      - '*'
-      Cache-Control:
-      - max-age=300
-      Connection:
-      - keep-alive
-      Content-Encoding:
-      - gzip
-      Content-Length:
-      - '1210'
-      Content-Security-Policy:
-      - default-src 'none'; style-src 'unsafe-inline'; sandbox
-      Content-Type:
-      - text/plain; charset=utf-8
-      Cross-Origin-Resource-Policy:
-      - cross-origin
-      Date:
-      - Wed, 14 Jun 2023 07:52:49 GMT
-      ETag:
-      - W/"f58600e567f59e279a956de20b9455d9b890b4bf43861015943b6928eb8990fe"
-      Expires:
-      - Wed, 14 Jun 2023 07:57:49 GMT
-      Source-Age:
-      - '23'
-      Strict-Transport-Security:
-      - max-age=31536000
-      Vary:
-      - Authorization,Accept-Encoding,Origin
-      Via:
-      - 1.1 varnish
-      X-Cache:
-      - HIT
-      X-Cache-Hits:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Fastly-Request-ID:
-      - c7df865dc8709429ed6e76e8c0d80048c7ea1dc9
-      X-Frame-Options:
-      - deny
-      X-GitHub-Request-Id:
-      - BF9A:02A5:854A19:8A85AA:64896E39
-      X-Served-By:
-      - cache-lon420142-LON
-      X-Timer:
-      - S1686729169.416725,VS0,VE6
-      X-XSS-Protection:
-      - 1; mode=block
-    status:
-      code: 200
-      message: OK
+      code: 404
+      message: NOT FOUND
 version: 1

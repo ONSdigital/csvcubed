@@ -7,7 +7,8 @@
       "Dim-1": {
         "label": "Column label 1 that exists",
         "type": "dimension",
-        "code_list": true
+        "code_list": true,
+        "cell_uri_template": "http://example.com/dimensions/{+not_a_column_name}"
       },
       "Dim-2": {
         "label": "Column label 2 that exists",
@@ -19,7 +20,7 @@
       },
       "Measure": {
         "type": "measures",
-        "cell_uri_template": "http://example.com/dimensions/{+not_a_column_name}"
+        "values": true
       },
       "Units": {
         "type": "units",
