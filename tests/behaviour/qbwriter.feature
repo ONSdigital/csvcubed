@@ -5,7 +5,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10002.csv" should exist
     And the file at "qb-id-10002.csv-metadata.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -28,7 +28,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Some Qube"
     When the cube is serialised to CSV-W
     Then the file at "a-code-list.csv-metadata.json" should exist
-    And csvlint validation of "some-qube.csv-metadata.json" should succeed
+    And csvwcheck validation of "some-qube.csv-metadata.json" should succeed
     And csv2rdf on "some-qube.csv-metadata.json" should succeed
     And the RDF should not contain any instances of "http://www.w3.org/2004/02/skos/core#ConceptScheme"
 
@@ -41,7 +41,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A QbCube with existing dimensions should not do foreign key checks.
     Given a single-measure QbCube named "Some Qube" with existing dimensions
     When the cube is serialised to CSV-W
-    Then csvlint validation of "some-qube.csv-metadata.json" should succeed
+    Then csvwcheck validation of "some-qube.csv-metadata.json" should succeed
 
   Scenario: A single-measure QbCube with duplicate rows should fail validation
     Given a single-measure QbCube named "Duplicate Qube" with duplicate rows
@@ -51,7 +51,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A multi-measure QbCube should pass validation
     Given a multi-measure QbCube named "Duplicate Qube"
     When the cube is serialised to CSV-W
-    Then csvlint validation of "duplicate-qube.csv-metadata.json" should succeed
+    Then csvwcheck validation of "duplicate-qube.csv-metadata.json" should succeed
 
   Scenario: A multi-measure QbCube with duplicate rows should fail validation
     Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
@@ -63,7 +63,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the file at "some-qube.csv" should exist
     And the file at "some-qube.csv-metadata.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -91,7 +91,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: QbCube extended units (and new base units) should be serialised correctly.
     Given a single-measure QbCube named "Some Qube" with one new unit extending another new unit
     When the cube is serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -118,7 +118,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Qube with string literals" with "new" "string" attribute
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
+    Then csvwcheck validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -135,7 +135,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Qube with int literals" with "new" "int" attribute
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
+    Then csvwcheck validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -152,7 +152,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Qube with date literals" with "new" "date" attribute
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
+    Then csvwcheck validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -169,7 +169,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Qube with string literals" with "existing" "string" attribute
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
+    Then csvwcheck validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -184,7 +184,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Qube with int literals" with "existing" "int" attribute
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
+    Then csvwcheck validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -199,7 +199,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Qube with date literals" with "existing" "date" attribute
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
+    Then csvwcheck validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -214,24 +214,24 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Default URI style qube"
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs with file endings
-    And csvlint validation of "default-uri-style-qube.csv-metadata.json" should succeed
+    And csvwcheck validation of "default-uri-style-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube configured with Standard URI style should include file endings in URIs
     Given a single-measure QbCube named "Standard URI style qube" configured with "Standard" URI style
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs with file endings
-    And csvlint validation of "standard-uri-style-qube.csv-metadata.json" should succeed
+    And csvwcheck validation of "standard-uri-style-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube configured with WithoutFileExtensions URI style should exclude file endings in URIs
     Given a single-measure QbCube named "WithoutFileExtensions URI style qube" configured with "WithoutFileExtensions" URI style
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs without file endings
-    And csvlint validation of "withoutfileextensions-uri-style-qube.csv-metadata.json" should succeed
+    And csvwcheck validation of "withoutfileextensions-uri-style-qube.csv-metadata.json" should succeed
 
   Scenario: A single-measure QbCube should pass skos+qb SPARQL test constraints
     Given a single-measure QbCube named "Some Qube"
     When the cube is serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
   # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
@@ -240,7 +240,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A multi-measure QbCube should pass skos+qb SPARQL test constraints
     Given a multi-measure QbCube named "Some Qube"
     When the cube is serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
   # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
@@ -249,14 +249,14 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A locally defined single-measure dataset (with code-lists) can be serialised to a standard CSV-qb
     Given a single-measure QbCube named "single-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
     When the cube is serialised to CSV-W
-    Then csvlint validation of "single-measure-qube-with-new-definitions.csv-metadata.json" should succeed
+    Then csvwcheck validation of "single-measure-qube-with-new-definitions.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
 
   Scenario: A locally defined multi-measure dataset (with code-lists) can be serialised to a standard CSV-qb
     Given a multi-measure QbCube named "multi-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
     When the cube is serialised to CSV-W
-    Then csvlint validation of "multi-measure-qube-with-new-definitions.csv-metadata.json" should succeed
+    Then csvwcheck validation of "multi-measure-qube-with-new-definitions.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
     And the RDF should contain
@@ -274,7 +274,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
     Given a single measure QbCube named "single-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
     When the cube is serialised to CSV-W
-    Then csvlint validation of "single-measure-qube-with-existing-resources.csv-metadata.json" should succeed
+    Then csvwcheck validation of "single-measure-qube-with-existing-resources.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And some additional turtle is appended to the resulting RDF
       """
@@ -325,7 +325,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A multi-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
     Given a multi measure QbCube named "multi-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
     When the cube is serialised to CSV-W
-    Then csvlint validation of "multi-measure-qube-with-existing-resources.csv-metadata.json" should succeed
+    Then csvwcheck validation of "multi-measure-qube-with-existing-resources.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And some additional turtle is appended to the resulting RDF
       """
@@ -408,7 +408,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
 
   Scenario: Each Observation should have Type http://purl.org/linked-data/cube#Observation and be part of the dataset
     Given a single-measure QbCube named "Some Qube"
@@ -438,7 +438,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvlint validation of "good-qube.csv-metadata.json" should succeed
+    Then csvwcheck validation of "good-qube.csv-metadata.json" should succeed
 
   Scenario: Observation Values are Required where an `sdmxa:ObsStatus` Attribute Column is present but no value is set.
     Given a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
@@ -446,12 +446,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
     # since an `sdmxa:obsStatus` Attribute column has been defined.
-    Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
+    Then csvwcheck validation of "bad-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube with a dimension containing URI-unsafe chars can be correctly serialised.
     Given a QbCube named "URI-Unsafe Cube" which has a dimension containing URI-unsafe chars
     When the cube is serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
 
   Scenario: Local Code List Metadata Dependencies are Well Defined
@@ -459,7 +459,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the file at "a-code-list.csv-metadata.json" should exist
     And the file at "d-code-list.csv-metadata.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -477,7 +477,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A QbCube with complex datatypes should validate successfully and contain the expected types
     Given The config json file "v1.0/cube_datatypes.json" and the existing tidy data csv file "v1.0/cube_datatypes.csv"
     When a valid cube is built and serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     # The following checks for the expected datatypes as defined in models.cube.qb.components.constants
     # and declared via v1.0/cube_datatypes.json.
@@ -588,7 +588,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A QbCube configured by convention should contain appropriate datatypes
     Given the existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
     When a valid cube is built and serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
@@ -601,7 +601,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10002.csv" should exist
     And the file at "qb-id-10002.csv-metadata.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     Given the version identifier
     Then the RDF should contain
@@ -621,7 +621,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10003.csv" should exist
     And the file at "qb-id-10003.csv-metadata.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "qb, skos" SPARQL tests
     And the RDF should contain
@@ -700,7 +700,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10004.csv" should exist
     And the file at "qb-id-10004.csv-metadata.json" should exist
-    And csvlint validation of all CSV-Ws should succeed
+    And csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "qb, skos" SPARQL tests
     And the RDF should contain
