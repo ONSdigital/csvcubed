@@ -9,6 +9,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from rdflib import Graph
 
+from csvcubed import feature_flags
 from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -393,9 +394,9 @@ def step_impl(context, file: str):
 
 @When("the cube is serialised to CSV-W")
 def step_impl(context):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
-
     writer.write(temp_dir)
     context.csv_file_name = writer.csv_file_name
 
@@ -900,3 +901,13 @@ def step_impl(context, env_var_name: str, env_var_value: str):
         del os.environ[env_var_name]
 
     context.add_cleanup(_delete_env_var)
+
+
+@Given("the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False")
+def step_impl(context):
+    context.flag = False
+
+
+@Given("the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True")
+def step_impl(context):
+    context.flag = True

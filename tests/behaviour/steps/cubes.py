@@ -10,6 +10,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from pandas.testing import assert_frame_equal
 
+from csvcubed import feature_flags
 from csvcubed.cli.buildcsvw.build import build_csvw as cli_build
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.utils.cache import session
@@ -47,6 +48,7 @@ def step_impl(context, config_file, data_file):
 
 @when("a valid cube is built and serialised to CSV-W")
 def step_impl(context):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     _build_valid_cube(context)
 
 

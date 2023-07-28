@@ -1,0 +1,154 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://purl.org/csv-cubed/resources/measures.json
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      location:
+      - https://purl.org/csv-cubed/resources/measures.json
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://purl.org/csv-cubed/resources/measures.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/measures.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '247'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Fri, 28 Jul 2023 12:50:38 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/measures.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/measures.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA62Wz27bMAzG73mKIOtxrHsr0FcZemBk2tamfxWppEaRdx/tFmvOowwYsCjph88S
+        +Ukfh6M+pwd2C0U8vRxPi0h5GYbfnBN8Rh9znYex4iTw9Dx8jfz5ObFVzzrrY2/tEVkLbRyW6tP8
+        NW7vmXKNKFufzrrvoNSihn/9i+zRTQirktJq2CU4voBrZxqHSpxbdcRDJOSmzR/iI90x/4PgEwsm
+        sUFcblaETyO92xAUsDCNYF8UfUtOTB1QGM8tYHIEHaFJs5Qi1ZmSW6Hk4Pvyr+ilA2bJocduTMHP
+        i7ANUiiXYBRSkJnSTNWo5RlGXAEvVHEm6PJ7jIEYLhia2Q+0DrWIugHV5c5UIU9w8eyFQbJmbDXa
+        xTe1Jf/WCHjxxbiGu4ttSJdjweTJyIs5kWBdoYM9Uiwhr5FUoE+qz7gpc83McCX6E9Q/cO1RWyoM
+        vmUaXbMS2gjquSPYMVK1TEMHE9tS3ufUBbLlaMlFzxU7MviJgN4LOb0GOGMisEOrx6rBbottv044
+        P9J+7KIYJbmqgjpwRKtDLV+0YdwzPYRkuWO87l+3w+3wF/LGyu3aCgAA
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '441'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Cross-Origin-Resource-Policy:
+      - cross-origin
+      Date:
+      - Fri, 28 Jul 2023 12:50:39 GMT
+      ETag:
+      - W/"c1bb72d3cc823d61a0fa32344475b63a715715ffb802d77a25ea2d7d794fe11a"
+      Expires:
+      - Fri, 28 Jul 2023 12:55:39 GMT
+      Source-Age:
+      - '0'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 56552e2f227d4d59d2e792f1e5f61fb029a1fff9
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - D80A:8040:7E60ED:83800B:64C3B99F
+      X-Served-By:
+      - cache-lhr7336-LHR
+      X-Timer:
+      - S1690548639.110250,VS0,VE123
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

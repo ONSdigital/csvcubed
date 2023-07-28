@@ -42,6 +42,7 @@ from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import (
     _get_cube_from_config_json_dict,
     _get_qb_column_from_json,
+    _load_json_config_from_file,
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     _from_column_dict_to_schema_model,
@@ -55,7 +56,12 @@ from tests.unit.test_baseunit import assert_num_validation_errors, get_test_case
 
 from .virtualconfigs import VirtualConfigurations as vc
 
-TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
+TEST_CASE_DIR = (
+    get_test_cases_dir().absolute()
+    / "cli"
+    / "inspect"
+    / "pivoted-multi-measure-dataset"
+)
 SCHEMA_PATH_FILE = Path(
     APP_ROOT_DIR_PATH, "schema", "cube-config", "v1_0", "schema.json"
 )
@@ -144,60 +150,115 @@ def _check_new_dimension_column(
         assert concept.uri_safe_identifier_override is None
 
 
-def test_new_qb_attr_resource(tests_env_vars_setup_and_teardown):
+# config = {
+#     "title": "Cube title",
+#     "columns": {
+#         "Dimension": {"type": "dimension", "code_list": True},
+#         "Value": {
+#             "type": "observations",
+#             "unit": {"label": "Some unit"},
+#             "measure": {"label": "Some measure"},
+#         },
+#         "Attr1": {
+#             "type": "attribute",
+#             "cell_uri_template": "http://example.org/attribute1/{+attr1}",
+#         },
+#         "Attr4": {
+#             "type": "attribute",
+#             "values": True,
+#         },
+#         "Attr5": {
+#             "type": "attribute",
+#             "values": False,
+#         },
+#         "Attr6": {
+#             "type": "attribute",
+#             "values": [
+#                 {"label": "Attribute A"},
+#                 {"label": "Attribute B"},
+#                 {"label": "Attribute C"},
+#             ],
+#         },
+#         "Attr7": {
+#             "type": "attribute",
+#             "from_existing": "http://example.org/attribute7",
+#             "values": True,
+#         },
+#         "Attr9": {
+#             "type": "attribute",
+#             "from_existing": "http://example.org/attribute9",
+#             "values": [
+#                 {"label": "Attribute A"},
+#                 {"label": "Attribute B"},
+#                 {"label": "Attribute C"},
+#             ],
+#         },
+#         "Attr10": {
+#             "type": "attribute",
+#             "from_existing": "http://example.org/attribute10",
+#             "cell_uri_template": "http://example.org/attribute10/{+attr10}",
+#         },
+#     },
+# }
+# data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
+
+
+# config = {
+#     "$schema": "https://purl.org/csv-cubed/qube-config/v1.4",
+#     "title": "Cube title",
+#     "columns": {
+#         "Year": {"type": "dimension", "from_template": "year"},
+#         "Sector": {"type": "dimension"},
+#         "Imports": {
+#             "type": "observations",
+#             "measure": {
+#                 "label": "Imports Monetary Value",
+#                 "from_existing": "http://example.com/measures/monetary-value",
+#             },
+#             "unit": {"label": "Pounds (Millions)"},
+#         },
+#         "Imports Status": {
+#             "type": "attribute",
+#             "describes_observations": "Imports",
+#         },
+#         "Exports": {
+#             "type": "observations",
+#             "measure": {
+#                 "label": "Exports Monetary Value",
+#                 "from_existing": "http://example.com/measures/monetary-value",
+#             },
+#         },
+#         "Exports Status": {
+#             "type": "attribute",
+#             "describes_observations": "Exports",
+#         },
+#         "Exports Unit": {"type": "units", "describes_observations": "Exports"},
+#     },
+# }
+# data = pd.read_csv(
+#     TEST_CASE_DIR / "multi-measure-pivoted-dataset-units-and-attributes.csv"
+# )
+
+
+def test_new_qb_attr_resource():
     config = {
+        "$schema": "https://purl.org/csv-cubed/qube-config/v1.4",
         "title": "Cube title",
         "columns": {
-            "Dimension": {"type": "dimension", "code_list": True},
-            "Value": {
+            "Some Dimension": {"type": "dimension"},
+            "Some Attribute": {"type": "attribute"},
+            "Some Obs Val": {
                 "type": "observations",
-                "unit": {"label": "Some unit"},
                 "measure": {"label": "Some measure"},
             },
-            "Attr1": {
-                "type": "attribute",
-                "cell_uri_template": "http://example.org/attribute1/{+attr1}",
+            "Some Other Obs Val": {
+                "type": "observations",
+                "measure": {"label": "Some other measure"},
             },
-            "Attr4": {
-                "type": "attribute",
-                "values": True,
-            },
-            "Attr5": {
-                "type": "attribute",
-                "values": False,
-            },
-            "Attr6": {
-                "type": "attribute",
-                "values": [
-                    {"label": "Attribute A"},
-                    {"label": "Attribute B"},
-                    {"label": "Attribute C"},
-                ],
-            },
-            "Attr7": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute7",
-                "values": True,
-            },
-            "Attr9": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute9",
-                "values": [
-                    {"label": "Attribute A"},
-                    {"label": "Attribute B"},
-                    {"label": "Attribute C"},
-                ],
-            },
-            "Attr10": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute10",
-                "cell_uri_template": "http://example.org/attribute10/{+attr10}",
-            },
+            "Some Unit": {"type": "units"},
         },
     }
-
-    data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
-
+    data = pd.read_csv(TEST_CASE_DIR / "qb-id-10003.csv")
     cube = _get_cube_from_config_json_dict(data, config, 4)[0]
     components = {
         k: map_column_to_qb_component(k, v, data[k], None, None)
@@ -219,7 +280,7 @@ def test_new_qb_attr_resource(tests_env_vars_setup_and_teardown):
     csvw_cols = qb_writer._generate_csvw_columns_for_cube()
     foreign_keys = qb_writer._get_columns_for_foreign_keys()
     dsd = dsd_helper.generate_data_structure_definitions()
-    # writing = qb_writer.write(Path("."))
+    writing = qb_writer.write(Path("."))
     assert True
 
 
