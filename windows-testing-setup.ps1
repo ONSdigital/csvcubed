@@ -38,6 +38,24 @@ $path += ";$csvLintInstallationFolder"
 
 cd $initialWorkingDir
 
+# Do we need to install csvw-check in a new directory, like csvlint was done previously?
+mkdir csvwcheck
+cd csvwcheck
+
+Write-Output "=== Installing csvw-check ==="
+
+Write-Output "Attempting to download csvw-check-0.0.3.zip"
+Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/csvw-check/releases/download/v0.0.3/csvw-check-0.0.3.zip" -OutFile "csvw-check-0.0.3.zip"
+
+Write-Output "Successfully downloaded csvw-check-0.0.3.zip"
+Expand-Archive -LiteralPath csvw-check-0.0.3.zip -DestinationPath .
+Write-Output "Expanded csvw-check-0.0.3.zip"
+
+# Not sure if this is needed. Rough attempt to add csvw-check to path.
+$csvwCheckBinDir = (Get-Item csvw-check-0.0.3 | Resolve-Path).Path.Substring(38)
+$path += $csvwCheckBinDir
+
+
 Write-Output "=== Installing csv2rdf ==="
 
 Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
