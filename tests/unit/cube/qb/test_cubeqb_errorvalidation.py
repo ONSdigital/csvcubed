@@ -69,7 +69,9 @@ def test_single_measure_qb_definition():
         ),
         QbColumn(
             "Local Dimension",
-            NewQbDimension.from_data("Dimension of letters", data["Local Dimension"]),
+            NewQbDimension.from_data(
+                "Dimension of letters", "Local Dimension", data["Local Dimension"]
+            ),
         ),
         QbColumn(
             "Value",
@@ -201,7 +203,9 @@ def test_multiple_incompatible_unit_definitions():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "Some Dimension", data["Some Dimension"]
+                ),
             ),
             QbColumn("Some Unit", QbMultiUnits.new_units_from_data(data["Some Unit"])),
             QbColumn(
@@ -240,7 +244,9 @@ def test_no_unit_defined():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "Some Dimension", data["Some Dimension"]
+                ),
             ),
             QbColumn(
                 "Value",
@@ -274,7 +280,9 @@ def test_multiple_units_columns():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "Some Dimension", data["Some Dimension"]
+                ),
             ),
             QbColumn("Some Unit", QbMultiUnits.new_units_from_data(data["Some Unit"])),
             QbColumn(
@@ -312,7 +320,9 @@ def test_multi_measure_obs_val_without_measure_dimension():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "Some Dimension", data["Some Dimension"]
+                ),
             ),
             QbColumn(
                 "Value",
@@ -346,7 +356,9 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
         [
             QbColumn(
                 "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "Some Dimension", data["Some Dimension"]
+                ),
             ),
             QbColumn(
                 "Measure Dimension 1",
@@ -619,7 +631,9 @@ def test_code_list_concept_identifier_reserved():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Value",
@@ -655,7 +669,9 @@ def test_conflict_concept_uri_values_error():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Value",
@@ -698,7 +714,9 @@ def test_conflict_new_attribute_value_uri_values_error():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "New Attribute",
@@ -741,7 +759,9 @@ def test_conflict_new_units_uri_values_error():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Units",
@@ -778,7 +798,9 @@ def test_conflict_new_measures_uri_values_error():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Measures",
@@ -815,7 +837,9 @@ def test_pivoted_validation_multiple_measure_columns():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -864,7 +888,9 @@ def test_pivoted_validation_no_measures_defined_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -908,7 +934,9 @@ def test_pivoted_obs_val_col_without_measure_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -951,7 +979,9 @@ def test_pivoted_validation_no_unit_defined_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -993,7 +1023,9 @@ def test_pivoted_validation_attribute_column_not_linked_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -1034,7 +1066,9 @@ def test_pivoted_validation_obs_column_doesnt_exist():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -1080,7 +1114,9 @@ def test_pivoted_validation_link_attribute_to_non_obs_column():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -1125,7 +1161,9 @@ def test_pivoted_validation_measure_dupication():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -1175,7 +1213,9 @@ def test_both_measure_types_defined():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1215,7 +1255,9 @@ def test_erroneous_hybrid_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1257,7 +1299,9 @@ def test_pivoted_validation_unit_column_not_linked_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1297,7 +1341,9 @@ def test_pivoted_validation_link_unit_to_non_obs_column():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1338,7 +1384,9 @@ def test_pivoted_validation_units_linked_obs_column_doesnt_exist():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1382,7 +1430,9 @@ def test_pivoted_multi_obs_and_multi_units_linked_to_obs_with_internal_unit():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1426,7 +1476,9 @@ def test_pivoted_single_obs_and_multi_units_error():
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Obs Val",

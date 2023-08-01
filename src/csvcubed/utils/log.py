@@ -63,7 +63,7 @@ def start_logging(
     )
     file_handler.setLevel(logging_level)
     file_handler.setFormatter(
-        logging.Formatter(f"%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     )
 
     logger.addHandler(console_handler)

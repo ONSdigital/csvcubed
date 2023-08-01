@@ -37,8 +37,8 @@ def assert_component_defined(
 def assert_component_property_defined(
     component: rdf.qb.ComponentSpecification, property_uri: str
 ) -> None:
-    property = first(
+    component_property = first(
         component.componentProperties, lambda x: str(x.uri) == property_uri
     )
-    assert property is not None
-    return property
+    assert component_property is not None
+    return component_property

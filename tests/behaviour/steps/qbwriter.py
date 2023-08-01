@@ -91,8 +91,14 @@ def step_impl(context, cube_name: str):
         }
     )
     columns = [
-        QbColumn("A", NewQbDimension.from_data(label="A", data=data["A"])),
-        QbColumn("D", NewQbDimension.from_data(label="D", data=data["D"])),
+        QbColumn(
+            "A",
+            NewQbDimension.from_data(label="A", csv_column_title="A", data=data["A"]),
+        ),
+        QbColumn(
+            "D",
+            NewQbDimension.from_data(label="D", csv_column_title="D", data=data["D"]),
+        ),
         QbColumn(
             "Marker",
             NewQbAttribute.from_data(
@@ -125,8 +131,14 @@ def step_impl(context, cube_name: str):
         }
     )
     columns = [
-        QbColumn("A", NewQbDimension.from_data(label="A", data=data["A"])),
-        QbColumn("D", NewQbDimension.from_data(label="D", data=data["D"])),
+        QbColumn(
+            "A",
+            NewQbDimension.from_data(label="A", csv_column_title="A", data=data["A"]),
+        ),
+        QbColumn(
+            "D",
+            NewQbDimension.from_data(label="D", csv_column_title="D", data=data["D"]),
+        ),
         QbColumn(
             "Marker",
             NewQbAttribute.from_data(
@@ -155,8 +167,12 @@ def _get_single_measure_cube_with_name_and_id(
     cube_name: str, cube_id: str, uri_style: URIStyle = URIStyle.Standard
 ) -> Cube:
     columns = [
-        QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
-        QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
+        QbColumn(
+            "A", NewQbDimension.from_data("A code list", "A", _standard_data["A"])
+        ),
+        QbColumn(
+            "D", NewQbDimension.from_data("D code list", "D", _standard_data["D"])
+        ),
         QbColumn(
             "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
@@ -199,7 +215,7 @@ def step_impl(context, cube_name: str):
 def step_impl(context, cube_name: str):
     data = pd.DataFrame({"A": ["a", "a"], "Value": [1, 1]})
     columns = [
-        QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
+        QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"])),
         QbColumn(
             "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
@@ -226,7 +242,9 @@ def step_impl(context, cube_name: str):
                 ),
             ),
         ),
-        QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
+        QbColumn(
+            "D", NewQbDimension.from_data("D code list", "D", _standard_data["D"])
+        ),
         QbColumn(
             "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
@@ -252,7 +270,9 @@ def step_impl(context, cube_name: str):
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -279,7 +299,7 @@ def step_impl(context, cube_name: str):
         }
     )
     columns = [
-        QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
+        QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"])),
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
@@ -304,7 +324,7 @@ def step_impl(context, cube_name: str):
         }
     )
     columns = [
-        QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
+        QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"])),
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
@@ -445,7 +465,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
             "First_Captain": ["William Riker", "Carol Freeman"],
         }
     )
-    dim = QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"]))
+    dim = QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"]))
     val = QbColumn(
         "Value",
         QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
@@ -826,7 +846,9 @@ def step_impl(context, identifier: str, cube_name: str):
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",
@@ -873,7 +895,9 @@ def step_impl(context, identifier: str, cube_name: str):
     columns = [
         QbColumn(
             "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            NewQbDimension.from_data(
+                "Some Dimension", "Some Dimension", data["Some Dimension"]
+            ),
         ),
         QbColumn(
             "Some Attribute",

@@ -565,20 +565,20 @@ Feature: cube-config.json
     Then the cube Metadata should match
       """
       {
-        "title": "Uri safe identifier override",
-        "identifier": None,
-        "summary": "Uri safe identifier override summary",
-        "description": "Uri safe identifier override description",
-        "creator_uri": "http://statistics.data.gov.uk",
-        "publisher_uri": "http://statistics.data.gov.uk",
-        "landing_page_uris": [],
-        "theme_uris": [],
-        "keywords": ["Test cube"],
-        "dataset_issued": "2022-04-08",
-        "dataset_modified": None,
-        "license_uri": "https://creativecommons.org/licenses/by/4.0/",
-        "public_contact_point_uri": None,
-        "uri_safe_identifier_override": None
+      "title": "Uri safe identifier override",
+      "identifier": None,
+      "summary": "Uri safe identifier override summary",
+      "description": "Uri safe identifier override description",
+      "creator_uri": "http://statistics.data.gov.uk",
+      "publisher_uri": "http://statistics.data.gov.uk",
+      "landing_page_uris": [],
+      "theme_uris": [],
+      "keywords": ["Test cube"],
+      "dataset_issued": "2022-04-08",
+      "dataset_modified": None,
+      "license_uri": "https://creativecommons.org/licenses/by/4.0/",
+      "public_contact_point_uri": None,
+      "uri_safe_identifier_override": None
       }
       """
     Then the cube Columns should match
@@ -593,36 +593,36 @@ Feature: cube-config.json
     Then the cube data should match
       """
       [
-        {
-          "Dimension": "first",
-          "Value": 0,
-          "Measure": "length",
-          "Unit": "cm",
-          },
-        {
-          "Dimension": "b",
-          "Value": 1,
-          "Measure": "length",
-          "Unit": "cm"
-        },
-        {
-          "Dimension": "c",
-          "Value": 2,
-          "Measure": "length",
-          "Unit": "cm"
-        },
-        {
-          "Dimension": "d",
-          "Value": 3,
-          "Measure": "length",
-          "Unit": "cm"
-        },
-        {
-          "Dimension": "e",
-          "Value": 4,
-          "Measure": "length",
-          "Unit": "cm"
-        }
+      {
+      "Dimension": "first",
+      "Value": 0,
+      "Measure": "length",
+      "Unit": "cm",
+      },
+      {
+      "Dimension": "b",
+      "Value": 1,
+      "Measure": "length",
+      "Unit": "cm"
+      },
+      {
+      "Dimension": "c",
+      "Value": 2,
+      "Measure": "length",
+      "Unit": "cm"
+      },
+      {
+      "Dimension": "d",
+      "Value": 3,
+      "Measure": "length",
+      "Unit": "cm"
+      },
+      {
+      "Dimension": "e",
+      "Value": 4,
+      "Measure": "length",
+      "Unit": "cm"
+      }
       ]
       """
 
@@ -638,25 +638,25 @@ Feature: cube-config.json
     Given the config json file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.json" and the existing tidy data csv file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.csv"
     And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
     When a valid cube is built and serialised to CSV-W
-    Then csvlint validation of all CSV-Ws should succeed
+    Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "qb, skos" SPARQL tests
     And the RDF should contain
-    """
+      """
       @base <{{rdf_input_directory}}/multi-measure-pivoted-dataset-units-and-attributes.csv>.
       @prefix sector: <{{rdf_input_directory}}/sector.csv#>.
       @prefix year: <{{rdf_input_directory}}/year.csv#>.
       @prefix qb: <http://purl.org/linked-data/cube#>.
       @prefix sdmxa: <http://purl.org/linked-data/sdmx/2009/attribute#>.
 
-    <#obs/2021,services@imports-monetary-value> a qb:Observation;
-        <#attribute/imports-status> <#attribute/imports-status/final>;
-        <#dimension/sector> sector:services;
-        <#dimension/year> year:2021;
-        <#measure/imports-monetary-value> 150.0;
-        qb:dataSet <#dataset>;
-        qb:measureType <#measure/imports-monetary-value>;
-        sdmxa:unitMeasure <#unit/pounds-millions> .
+      <#obs/2021,services@imports-monetary-value> a qb:Observation;
+      <#attribute/imports-status> <#attribute/imports-status/final>;
+      <#dimension/sector> sector:services;
+      <#dimension/year> year:2021;
+      <#measure/imports-monetary-value> 150.0;
+      qb:dataSet <#dataset>;
+      qb:measureType <#measure/imports-monetary-value>;
+      sdmxa:unitMeasure <#unit/pounds-millions> .
 
     <#obs/2021,services@exports-monetary-value> a qb:Observation;
         <#attribute/exports-status> <#attribute/exports-status/final>;

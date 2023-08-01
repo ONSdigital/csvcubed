@@ -94,7 +94,7 @@ def test_val_errors_no_measure():
     config = Path(_test_case_dir, "val_errors_no_measure.json")
     csv = Path(_test_case_dir, "val_errors_no_measure.csv")
 
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+    _, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
         config, csv
     )
     _write_errors_to_log(json_schema_validation_errors, validation_errors)

@@ -43,7 +43,7 @@ def map_column_to_qb_component(
             config_path=config_path,
         )
 
-        # If the code list is a CompositeQbCodeList, the uri template needs to be reset to point at the newly
+        # If the code list is a CompositeQbCodeList, the uri template is reset to point at the newly
         # created composite code list
         cell_uri_template = (
             None

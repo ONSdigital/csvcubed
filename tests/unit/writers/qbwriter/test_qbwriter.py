@@ -76,7 +76,9 @@ def test_output_new_code_list_csvws_urls():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "New Dimension", data["New Dimension"]
+                ),
             )
         ],
     )
@@ -89,7 +91,7 @@ def test_output_new_code_list_csvws_urls():
             temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
         )
         assert (
-            URIRef(f"file://relative/some-dimension.csv#code-list"),
+            URIRef("file://relative/some-dimension.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
@@ -144,7 +146,9 @@ def test_output_new_code_list_csws_urls_with_uri_style_without_file_extensions()
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "New Dimension", data["New Dimension"]
+                ),
             )
         ],
         uri_style=URIStyle.WithoutFileExtensions,
@@ -158,7 +162,7 @@ def test_output_new_code_list_csws_urls_with_uri_style_without_file_extensions()
             temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
         )
         assert (
-            URIRef(f"file://relative/some-dimension#code-list"),
+            URIRef("file://relative/some-dimension#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
@@ -265,7 +269,9 @@ def test_csv_col_required_for_pivoted_multi_measure():
         columns=[
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "New Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Units",
@@ -460,7 +466,9 @@ def test_output_integer_obs_val_with_missing_values():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    "Some Dimension", "New Dimension", data["New Dimension"]
+                ),
             ),
             QbColumn(
                 "Value",
