@@ -21,10 +21,6 @@ jobs:
           fetch-depth: 0
 
       # Necessary for running csvlint inside the Windows VM. TODO: REMOVE THIS
-      - uses: ruby/setup-ruby@v1
-        if: inputs.os == 'windows-latest'
-        with:
-          ruby-version: '2.4'
 
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
         id: windows-install

@@ -6,43 +6,11 @@ $path = $env:PATH
 
 $initialWorkingDir = $pwd
 
-Write-Output "=== Installing csvlint ==="
+Write-Output "=== Installing csvw-check ==="
 
-mkdir csvlint
-cd csvlint
-
-Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win64-mingw.zip -OutFile "curl.zip"
-Expand-Archive -LiteralPath curl.zip -DestinationPath .
-cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll
-cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
-
-$curlExe = (Get-Item curl-7.86.0-win64-mingw\bin\curl.exe | Resolve-Path).Path.Substring(38)
-
-
-gem install bundle
-bundle init
-bundle add i18n --version "~> 1.12.0"
-bundle add csvlint --git https://github.com/GSS-Cogs/csvlint.rb --ref v0.6.7
-
-$gemDir = gem environment gemdir
-
-bundle config set bin bin
-bundle config set path "$gemDir"
-bundle install
-
-$csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
-
-Set-Content -Path "$csvLintInstallationFolder\csvlint.bat" -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin\ruby $csvLintInstallationFolder\csvlint %*"
-
-$path += ";$csvLintInstallationFolder"
-
-cd $initialWorkingDir
-
-# Do we need to install csvw-check in a new directory, like csvlint was done previously?
+# Not sure if this is needed, might remove
 mkdir csvwcheck
 cd csvwcheck
-
-Write-Output "=== Installing csvw-check ==="
 
 Write-Output "Attempting to download csvw-check-0.0.3.zip"
 Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/csvw-check/releases/download/v0.0.3/csvw-check-0.0.3.zip" -OutFile "csvw-check-0.0.3.zip"
@@ -51,10 +19,12 @@ Write-Output "Successfully downloaded csvw-check-0.0.3.zip"
 Expand-Archive -LiteralPath csvw-check-0.0.3.zip -DestinationPath .
 Write-Output "Expanded csvw-check-0.0.3.zip"
 
-# Not sure if this is needed. Rough attempt to add csvw-check to path.
-$csvwCheckBinDir = (Get-Item csvw-check-0.0.3 | Resolve-Path).Path.Substring(38)
-$path += $csvwCheckBinDir
+# Rough attempt to add csvw-check to path. TBD if we need this or we just want to expand the archive?
+$csvwCheckInstallationDir = (Get-Item csvw-check-0.0.3/bin | Resolve-Path).Path.Substring(38)
+# Set-Content -Path "$csvwCheckInstallationDir\"
+$path += $csvwCheckInstallationDir
 
+cd $initialWorkingDir
 
 Write-Output "=== Installing csv2rdf ==="
 
