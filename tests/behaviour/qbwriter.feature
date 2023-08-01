@@ -36,7 +36,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Some Qube" with codes not defined in the code-list
     When the cube is serialised to CSV-W (suppressing missing uri value exceptions)
     Then the file at "a-code-list.csv-metadata.json" should exist
-    And csvlint validation of "some-qube.csv-metadata.json" should fail with "unmatched_foreign_key_reference"
+    And csvwcheck validation of "some-qube.csv-metadata.json" should fail with "c"
 
   Scenario: A QbCube with existing dimensions should not do foreign key checks.
     Given a single-measure QbCube named "Some Qube" with existing dimensions
@@ -46,7 +46,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A single-measure QbCube with duplicate rows should fail validation
     Given a single-measure QbCube named "Duplicate Qube" with duplicate rows
     When the cube is serialised to CSV-W
-    Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
+    Then csvwcheck validation of "duplicate-qube.csv-metadata.json" should fail with "key already present - a"
 
   Scenario: A multi-measure QbCube should pass validation
     Given a multi-measure QbCube named "Duplicate Qube"
@@ -56,7 +56,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: A multi-measure QbCube with duplicate rows should fail validation
     Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
     When the cube is serialised to CSV-W
-    Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
+    Then csvwcheck validation of "duplicate-qube.csv-metadata.json" should fail with "key already present - a"
 
   Scenario: QbCube new attribute values and units should be serialised
     Given a single-measure QbCube named "Some Qube" with new attribute values and units
@@ -432,7 +432,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 1"
     When the cube is serialised to CSV-W
     # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
-    Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"
+    Then csvwcheck validation of "bad-qube.csv-metadata.json" should fail with "Column: 3"
 
   Scenario: Observation Values are Optional where an `sdmxa:ObsStatus` Attribute is Present
     Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
