@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Set
 
 import pandas as pd
 
-from csvcubed.inputs import PandasDataTypes
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
@@ -128,11 +128,17 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         observed_value_col_title: Optional[str] = None,
         code_list_uri_style: Optional[URIStyle] = None,
     ) -> "NewQbAttribute":
+        concepts = [
+            c for c in pandas_input_to_columnar_optional_str(data) if c is not None
+        ]
         return NewQbAttribute(
             label=label,
             description=description,
             code_list=NewQbCodeList.from_data(
-                CatalogMetadata(label), data, code_list_uri_style
+                CatalogMetadata(label),
+                csv_column_title=label,
+                data=pd.Series(concepts),
+                uri_style=code_list_uri_style,
             ),
             parent_attribute_uri=parent_attribute_uri,
             source_uri=source_uri,
@@ -151,20 +157,20 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     ) -> List[ValidationError]:
         # 820 TODO L153-155 copied from dimension.py, but self.code_list.validate_data doesn't do anything?
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
-        if isinstance(self.code_list, NewQbCodeList):
-            return self.code_list.validate_data(data, column_csv_title)
-        # if (
-        #     isinstance(self.code_list, NewQbCodeList)
-        #     and len(self.code_list.concepts) > 0
-        # ):
-        #     expected_values = {concept.code for concept in self.code_list.concepts}
-        #     actual_values = {
-        #         uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
-        #     }
-        #     undefined_values = expected_values - actual_values
-        #     if len(undefined_values) > 0:
-        #         return [UndefinedAttributeValueUrisError(self, undefined_values)]
-        # return []
+        # if isinstance(self.code_list, NewQbCodeList):
+        #     return self.code_list.validate_data(data, column_csv_title)
+        if (
+            isinstance(self.code_list, NewQbCodeList)
+            and len(self.code_list.concepts) > 0
+        ):
+            expected_values = {concept.code for concept in self.code_list.concepts}
+            actual_values = {
+                uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
+            }
+            undefined_values = expected_values - actual_values
+            if len(undefined_values) > 0:
+                return [UndefinedAttributeValueUrisError(self, undefined_values)]
+        return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {

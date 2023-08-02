@@ -111,11 +111,17 @@ def test_new_attribute_code_list_csvws_urls():
         [
             QbColumn(
                 "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+                NewQbDimension.from_data(
+                    label="Some Dimension",
+                    csv_column_title="New Dimension",
+                    data=data["New Dimension"],
+                ),
             ),
             QbColumn(
                 "New Attribute",
-                NewQbAttribute.from_data("Some Attribute", data["New Attribute"]),
+                NewQbAttribute.from_data(
+                    label="Some Attribute", data=data["New Attribute"]
+                ),
             ),
         ],
     )

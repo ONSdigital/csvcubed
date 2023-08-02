@@ -8,6 +8,8 @@ from abc import ABC
 from dataclasses import dataclass, field
 from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
+import uritemplate
+
 from csvcubed.inputs import (
     PandasDataTypes,
     pandas_input_to_columnar_optional_str,
@@ -122,17 +124,6 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         uri_style: Optional[URIStyle] = None,
         cell_uri_template: Optional[str] = None,
     ) -> "NewQbCodeList":
-        # 820 TODO Allow optional values for attributes but not dimensions
-        # columnar_data = pandas_input_to_columnar_str(data)
-        # concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-        # return NewQbCodeList(metadata, concepts, uri_style=uri_style)
-
-        # columnar_data = pandas_input_to_columnar_optional_str(data)
-        # concepts = [
-        #     NewQbConcept(c)
-        #     for c in sorted(set([d for d in columnar_data if d is not None]))
-        # ]
-        # return NewQbCodeList(metadata, concepts, uri_style=uri_style)
         columnar_data = pandas_input_to_columnar_str(data)
         csvw_safe_col_name = csvw_column_name_safe(csv_column_title)
         if cell_uri_template:
