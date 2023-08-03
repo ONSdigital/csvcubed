@@ -21,7 +21,7 @@ Write-Output "Expanded csvw-check-0.0.3.zip"
 
 # Rough attempt to add csvw-check to path. TBD if we need this or we just want to expand the archive?
 $csvwCheckInstallationDir = (Get-Item csvw-check-0.0.3/bin | Resolve-Path).Path.Substring(38)
-Set-Content -Path "$csvwCheckInstallationDir\csvw-check.bat"
+# Set-Content -Path "$csvwCheckInstallationDir\csvw-check.bat"
 $path += $csvwCheckInstallationDir
 
 cd $initialWorkingDir
