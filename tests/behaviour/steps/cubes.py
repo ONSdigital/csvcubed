@@ -27,6 +27,7 @@ def step_impl(context, data_file):
     if not data_file.exists():
         raise Exception(f"Could not find test-case file {data_file}")
     context.data_file = data_file
+    context.flag = False
 
 
 @given(
@@ -44,6 +45,7 @@ def step_impl(context, config_file, data_file):
 
     context.config_file = config_file
     context.data_file = data_file
+    context.flag = False
 
 
 @when("a valid cube is built and serialised to CSV-W")

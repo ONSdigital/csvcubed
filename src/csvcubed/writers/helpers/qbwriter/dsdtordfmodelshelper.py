@@ -163,10 +163,7 @@ class DsdToRdfModelsHelper:
         attribute_columns = self.cube.get_columns_of_dsd_type(NewQbAttribute)
         for column in attribute_columns:
             if column.structural_definition.code_list is not None:
-                # if isinstance(column.structural_definition, NewQbAttribute):
                 column_identifier = column.structural_definition.uri_safe_identifier
-                # else:
-                #     column_identifier = column.uri_safe_identifier
 
                 for value in column.structural_definition.code_list.concepts:  # type: ignore
                     assert isinstance(value, NewQbConcept)
@@ -179,9 +176,6 @@ class DsdToRdfModelsHelper:
                     )
                     new_attribute_value_resource.label = value.label
                     new_attribute_value_resource.comment = value.description
-                    # new_attribute_value_resource.source_uri = maybe_existing_resource(
-                    #     value.source_uri
-                    # )
                     new_attribute_value_resource.parent_attribute_value_uri = (
                         maybe_existing_resource(value.parent_code)
                     )

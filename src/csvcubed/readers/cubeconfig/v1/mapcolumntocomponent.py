@@ -109,7 +109,6 @@ def map_column_to_qb_component(
             QbColumn(
                 column_title,
                 schema_mapping.map_to_qb_attribute(data, column_title),
-                # schema_mapping.map_to_existing_qb_attribute(data),
                 csv_column_uri_template=schema_mapping.cell_uri_template,
             ),
             [],

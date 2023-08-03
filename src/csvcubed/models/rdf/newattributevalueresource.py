@@ -38,13 +38,7 @@ class NewAttributeValueResource(NewMetadataResource):
 
 class CodedAttributeProperty(CodedProperty, AttributeProperty):
     """Attribute with code list property - The class of components which represent attributes of observations in the cube,
-    e.g. unit of measurement, which have code lists associated with them"""
-
-    # range: Annotated[
-    #     MaybeResource[rdfs.Class],
-    #     Triple(RDFS.range, PropertyStatus.optional, map_resource_to_uri),
-    # ]
-    """range - the `rdfs:range` associated with this attribute property."""
+    e.g. observation status, which have code lists associated with them"""
 
     def __init__(self, uri: str):
         CodedProperty.__init__(self, uri)

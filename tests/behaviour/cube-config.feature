@@ -658,14 +658,14 @@ Feature: cube-config.json
       qb:measureType <#measure/imports-monetary-value>;
       sdmxa:unitMeasure <#unit/pounds-millions> .
 
-    <#obs/2021,services@exports-monetary-value> a qb:Observation;
-        <#attribute/exports-status> <#attribute/exports-status/final>;
-        <#dimension/sector> sector:services;
-        <#dimension/year> year:2021;
-        <#measure/exports-monetary-value> 80.0;
-        qb:dataSet <#dataset>;
-        qb:measureType <#measure/exports-monetary-value>;
-        sdmxa:unitMeasure <#unit/pounds-millions>.
+      <#obs/2021,services@exports-monetary-value> a qb:Observation;
+      <#attribute/exports-status> <#attribute/exports-status/final>;
+      <#dimension/sector> sector:services;
+      <#dimension/year> year:2021;
+      <#measure/exports-monetary-value> 80.0;
+      qb:dataSet <#dataset>;
+      qb:measureType <#measure/exports-monetary-value>;
+      sdmxa:unitMeasure <#unit/pounds-millions>.
     """
 
   Scenario: Generate a valid multi-measure pivoted data set containing attributes and units columns given ATTRIBUTE_VALUE_CODELISTS is True

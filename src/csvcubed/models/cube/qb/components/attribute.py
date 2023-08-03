@@ -155,7 +155,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        # 820 TODO L153-155 copied from dimension.py, but self.code_list.validate_data doesn't do anything?
+        # 820 TODO L159-161 copied from dimension.py, but self.code_list.validate_data doesn't do anything?
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
         # if isinstance(self.code_list, NewQbCodeList):
         #     return self.code_list.validate_data(data, column_csv_title)

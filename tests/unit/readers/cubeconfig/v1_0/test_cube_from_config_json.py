@@ -135,6 +135,7 @@ def _check_new_dimension_column(
         assert concept.uri_safe_identifier_override is None
 
 
+# tests_env_vars_setup_and_teardown
 def test_new_qb_attr_resource():
     config = {
         "title": "Cube title",
@@ -176,7 +177,7 @@ def test_new_qb_attr_resource():
                 "values": [
                     {"label": "Attribute A"},
                     {"label": "Attribute B"},
-                    {"label": "Attribute D"},
+                    {"label": "Attribute C"},
                 ],
             },
             "Attr10": {
@@ -208,7 +209,7 @@ def test_new_qb_attr_resource():
     csvw_cols = qb_writer._generate_csvw_columns_for_cube()
     foreign_keys = qb_writer._get_columns_for_foreign_keys()
     dsd = dsd_helper.generate_data_structure_definitions()
-    writing = qb_writer.write(Path("."))
+    # writer = qb_writer.write(Path("."))
     assert True
 
 

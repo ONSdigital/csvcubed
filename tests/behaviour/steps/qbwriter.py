@@ -69,6 +69,7 @@ _standard_data = pd.DataFrame(
 @Given('a single-measure QbCube named "{cube_name}"')
 def step_impl(context, cube_name: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
+    context.flag = False
 
 
 @Given('a single-measure QbCube named "{cube_name}" with missing observation values')
@@ -76,8 +77,10 @@ def step_impl(context, cube_name: str):
     cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
     cube.data["Value"] = [1, None, 3]
     context.cube = cube
+    context.flag = False
 
 
+# qbwriter.feature 484
 @Given(
     'a single-measure QbCube named "{cube_name}" with missing observation values and `sdmxa:obsStatus` replacements'
 )
@@ -116,8 +119,10 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
+# qbwriter.feature 492
 @Given(
     'a single-measure QbCube named "{cube_name}" with missing observation values and missing `sdmxa:obsStatus` replacements'
 )
@@ -156,11 +161,13 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given('a single-measure QbCube with identifier "{cube_id}" named "{cube_name}"')
 def step_impl(context, cube_name: str, cube_id: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, cube_id)
+    context.flag = False
 
 
 def _get_single_measure_cube_with_name_and_id(
@@ -209,6 +216,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
     )
+    context.flag = False
 
 
 @Given('a single-measure QbCube named "{cube_name}" with duplicate rows')
@@ -225,6 +233,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given(
@@ -256,6 +265,7 @@ def step_impl(context, cube_name: str):
     )
 
 
+# qbwriter.feature 476
 @Given(
     'a single-measure QbCube named "{cube_name}" with optional attribute values missing'
 )
@@ -312,6 +322,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given('a multi-measure QbCube named "{cube_name}" with duplicate rows')
@@ -337,6 +348,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given(
@@ -402,6 +414,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
     )
+    context.flag = False
 
 
 @Then('turtle should be written to "{file}"')
@@ -431,6 +444,7 @@ def step_impl(context):
 @Step('the CSVqb should fail validation with "{validation_error}"')
 def step_impl(context, validation_error: str):
     cube: Cube = context.cube
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     errors = cube.validate()
     errors += validate_qb_component_constraints(context.cube)
     assert any([e for e in errors if validation_error in e.message]), [
@@ -521,6 +535,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given(
@@ -564,6 +579,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given(
@@ -611,6 +627,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given(
@@ -663,6 +680,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given(
@@ -735,6 +753,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given('a QbCube named "{cube_name}" which has a dimension containing URI-unsafe chars')
@@ -775,6 +794,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Then("some additional turtle is appended to the resulting RDF")
@@ -802,6 +822,7 @@ def step_impl(context, cube_name: str, uri_style: str):
     context.cube = _get_single_measure_cube_with_name_and_id(
         cube_name, None, URIStyle[uri_style]
     )
+    context.flag = False
 
 
 def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
