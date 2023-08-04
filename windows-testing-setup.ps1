@@ -9,8 +9,8 @@ $initialWorkingDir = $pwd
 Write-Output "=== Installing csvw-check ==="
 
 # Not sure if this is needed, might remove
-# mkdir csvwcheck
-# cd csvwcheck
+mkdir csvwcheck
+cd csvwcheck
 
 Write-Output "Attempting to download csvw-check-0.0.3.zip"
 Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/csvw-check/releases/download/v0.0.3/csvw-check-0.0.3.zip" -OutFile "csvw-check-0.0.3.zip"
@@ -24,7 +24,7 @@ $csvwCheckInstallationDir = (Get-Item csvw-check-0.0.3/bin | Resolve-Path).Path.
 Set-Content -Path "$csvwCheckInstallationDir\csvw-check.bat" -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csvw-check at $csvwCheckInstallationDir\csvw-check"
 $path += $csvwCheckInstallationDir
 
-# cd $initialWorkingDir
+cd $initialWorkingDir
 
 Write-Output "=== Installing csv2rdf ==="
 
