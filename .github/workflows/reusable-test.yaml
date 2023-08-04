@@ -20,8 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Necessary for running csvlint inside the Windows VM. TODO: REMOVE THIS
-
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
         id: windows-install
         if: inputs.os == 'windows-latest'
