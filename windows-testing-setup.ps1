@@ -20,9 +20,11 @@ Expand-Archive -LiteralPath csvw-check-0.0.3.zip -DestinationPath .
 Write-Output "Expanded csvw-check-0.0.3.zip"
 
 # Rough attempt to add csvw-check to path. TBD if we need this or we just want to expand the archive?
+Write-Output "Attempting to add csvw-check to path"
 $csvwCheckInstallationDir = (Get-Item csvw-check-0.0.3/bin | Resolve-Path).Path.Substring(38)
 Set-Content -Path "$csvwCheckInstallationDir\csvw-check.bat" -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csvw-check at $csvwCheckInstallationDir\csvw-check"
-$path += $csvwCheckInstallationDir
+$path += ";$csvwCheckInstallationDir"
+Write-Output "Added csvw-check to path"
 
 cd $initialWorkingDir
 
