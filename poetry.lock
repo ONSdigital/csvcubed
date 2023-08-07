@@ -374,7 +374,7 @@ rdflib = ">=6.0.0"
 type = "git"
 url = "https://github.com/GSS-Cogs/csvcubed-devtools.git"
 reference = "NickPapONS-patch-3"
-resolved_reference = "00ceb9b8a9c563b2eedad087740cfd53f34943e8"
+resolved_reference = "574287c79dcca16d48af6c14700ca7c31f7bd59a"
 
 [[package]]
 name = "csvcubed-models"
