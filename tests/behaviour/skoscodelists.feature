@@ -66,7 +66,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
   Scenario: A code list with duplicate notations fails validation.
     Given a NewQbCodeList named "Contains Duplicates" containing duplicates
     When the code list is serialised to CSV-W
-    Then csvwcheck validation of "contains-duplicates.csv-metadata.json" should fail with "wrong text"
+    Then csvwcheck validation of "contains-duplicates.csv-metadata.json" should fail with "key already present - 1st concept"
 
   Scenario: A composite code list can be serialised to a valid CSV-W described in SKOS.
     Given a CompositeQbCodeList named "Composite Code List"
