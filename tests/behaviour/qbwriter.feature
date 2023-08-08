@@ -67,6 +67,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
+      this will break this step
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
       @prefix qudt: <http://qudt.org/schema/qudt/>.
       @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
