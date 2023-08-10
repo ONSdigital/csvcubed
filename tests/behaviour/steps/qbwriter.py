@@ -451,7 +451,6 @@ def step_impl(context):
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)
-    # writer.write(Path("./out"))
     context.csv_file_name = writer.csv_file_name
 
 

@@ -135,82 +135,82 @@ def _check_new_dimension_column(
         assert concept.uri_safe_identifier_override is None
 
 
-# tests_env_vars_setup_and_teardown
-def test_new_qb_attr_resource():
-    config = {
-        "title": "Cube title",
-        "columns": {
-            "Dimension": {"type": "dimension", "code_list": True},
-            "Value": {
-                "type": "observations",
-                "unit": {"label": "Some unit"},
-                "measure": {"label": "Some measure"},
-            },
-            "Attr1": {
-                "type": "attribute",
-                "cell_uri_template": "http://example.org/attribute1/{+attr1}",
-            },
-            "Attr4": {
-                "type": "attribute",
-                "values": True,
-            },
-            "Attr5": {
-                "type": "attribute",
-                "values": False,
-            },
-            "Attr6": {
-                "type": "attribute",
-                "values": [
-                    {"label": "Attribute A"},
-                    {"label": "Attribute B"},
-                    {"label": "Attribute C"},
-                ],
-            },
-            "Attr7": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute7",
-                "values": True,
-            },
-            "Attr9": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute9",
-                "values": [
-                    {"label": "Attribute A"},
-                    {"label": "Attribute B"},
-                    {"label": "Attribute C"},
-                ],
-            },
-            "Attr10": {
-                "type": "attribute",
-                "from_existing": "http://example.org/attribute10",
-                "cell_uri_template": "http://example.org/attribute10/{+attr10}",
-            },
-        },
-    }
-    data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
-    cube = _get_cube_from_config_json_dict(data, config, 4)[0]
-    components = {
-        k: map_column_to_qb_component(k, v, data[k], 4)
-        for k, v in config["columns"].items()
-    }
-    structural_definitions = [
-        col[0].structural_definition for title, col in components.items()
-    ]
-    uris = [
-        UriHelper(cube).get_default_property_value_uris_for_column(col)
-        for col in cube.columns
-    ]
-    uri_helper = UriHelper(cube)
-    dsd_helper = DsdToRdfModelsHelper(cube, uri_helper)
-    qb_writer = QbWriter(cube)
-    csv_col_defs = [
-        qb_writer._generate_csvw_column_definition(col) for col in cube.columns
-    ]
-    csvw_cols = qb_writer._generate_csvw_columns_for_cube()
-    foreign_keys = qb_writer._get_columns_for_foreign_keys()
-    dsd = dsd_helper.generate_data_structure_definitions()
-    # writer = qb_writer.write(Path("."))
-    assert True
+# # tests_env_vars_setup_and_teardown
+# def test_new_qb_attr_resource():
+#     config = {
+#         "title": "Cube title",
+#         "columns": {
+#             "Dimension": {"type": "dimension", "code_list": True},
+#             "Value": {
+#                 "type": "observations",
+#                 "unit": {"label": "Some unit"},
+#                 "measure": {"label": "Some measure"},
+#             },
+#             "Attr1": {
+#                 "type": "attribute",
+#                 "cell_uri_template": "http://example.org/attribute1/{+attr1}",
+#             },
+#             "Attr4": {
+#                 "type": "attribute",
+#                 "values": True,
+#             },
+#             "Attr5": {
+#                 "type": "attribute",
+#                 "values": False,
+#             },
+#             "Attr6": {
+#                 "type": "attribute",
+#                 "values": [
+#                     {"label": "Attribute A"},
+#                     {"label": "Attribute B"},
+#                     {"label": "Attribute C"},
+#                 ],
+#             },
+#             "Attr7": {
+#                 "type": "attribute",
+#                 "from_existing": "http://example.org/attribute7",
+#                 "values": True,
+#             },
+#             "Attr9": {
+#                 "type": "attribute",
+#                 "from_existing": "http://example.org/attribute9",
+#                 "values": [
+#                     {"label": "Attribute A"},
+#                     {"label": "Attribute B"},
+#                     {"label": "Attribute C"},
+#                 ],
+#             },
+#             "Attr10": {
+#                 "type": "attribute",
+#                 "from_existing": "http://example.org/attribute10",
+#                 "cell_uri_template": "http://example.org/attribute10/{+attr10}",
+#             },
+#         },
+#     }
+#     data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
+#     cube = _get_cube_from_config_json_dict(data, config, 4)[0]
+#     components = {
+#         k: map_column_to_qb_component(k, v, data[k], 4)
+#         for k, v in config["columns"].items()
+#     }
+#     structural_definitions = [
+#         col[0].structural_definition for title, col in components.items()
+#     ]
+#     uris = [
+#         UriHelper(cube).get_default_property_value_uris_for_column(col)
+#         for col in cube.columns
+#     ]
+#     uri_helper = UriHelper(cube)
+#     dsd_helper = DsdToRdfModelsHelper(cube, uri_helper)
+#     qb_writer = QbWriter(cube)
+#     csv_col_defs = [
+#         qb_writer._generate_csvw_column_definition(col) for col in cube.columns
+#     ]
+#     csvw_cols = qb_writer._generate_csvw_columns_for_cube()
+#     foreign_keys = qb_writer._get_columns_for_foreign_keys()
+#     dsd = dsd_helper.generate_data_structure_definitions()
+#     # writer = qb_writer.write(Path("."))
+#     assert True
 
 
 @pytest.mark.vcr

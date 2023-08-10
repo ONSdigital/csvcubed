@@ -62,7 +62,5 @@ def pandas_input_to_columnar_str(
         maybe_columnar_data, allow_no_data_at_all
     ):
         if value is None:
-            raise ValueError(
-                "Missing value found in column %s.", maybe_columnar_data.name
-            )
+            raise ValueError("Missing value found in data.")
         yield value

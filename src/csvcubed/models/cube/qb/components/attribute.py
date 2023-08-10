@@ -159,7 +159,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
                 description=description,
                 code_list=NewQbCodeList(
                     CatalogMetadata(label),
-                    values,
+                    values,  # type: ignore
                 ),
                 parent_attribute_uri=parent_attribute_uri,
                 source_uri=source_uri,
