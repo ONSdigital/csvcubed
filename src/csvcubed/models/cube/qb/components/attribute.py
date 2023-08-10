@@ -11,9 +11,11 @@ from typing import Dict, List, Optional, Set
 
 import pandas as pd
 
-from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
+from csvcubed import feature_flags
+from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedAttributeValueUrisError,
@@ -118,7 +120,9 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     @staticmethod
     def from_data(
         label: str,
+        csv_column_title: str,
         data: PandasDataTypes,
+        values: Optional[List[NewQbConcept]] = None,
         description: Optional[str] = None,
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
@@ -128,25 +132,38 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         observed_value_col_title: Optional[str] = None,
         code_list_uri_style: Optional[URIStyle] = None,
     ) -> "NewQbAttribute":
-        concepts = [
-            c for c in pandas_input_to_columnar_optional_str(data) if c is not None
-        ]
-        return NewQbAttribute(
-            label=label,
-            description=description,
-            code_list=NewQbCodeList.from_data(
-                CatalogMetadata(label),
-                csv_column_title=label,
-                data=pd.Series(concepts),
-                uri_style=code_list_uri_style,
-            ),
-            parent_attribute_uri=parent_attribute_uri,
-            source_uri=source_uri,
-            is_required=is_required,
-            uri_safe_identifier_override=uri_safe_identifier_override,
-            arbitrary_rdf=arbitrary_rdf,
-            observed_value_col_title=observed_value_col_title,
-        )
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            return NewQbAttribute(
+                label=label,
+                description=description,
+                code_list=NewQbCodeList.from_data(
+                    CatalogMetadata(label),
+                    csv_column_title=csv_column_title,
+                    data=data,
+                    uri_style=code_list_uri_style,
+                ),
+                parent_attribute_uri=parent_attribute_uri,
+                source_uri=source_uri,
+                is_required=is_required,
+                uri_safe_identifier_override=uri_safe_identifier_override,
+                arbitrary_rdf=arbitrary_rdf,
+                observed_value_col_title=observed_value_col_title,
+            )
+        else:
+            return NewQbAttribute(
+                label=label,
+                description=description,
+                code_list=NewQbCodeList(
+                    CatalogMetadata(label),
+                    values,
+                ),
+                parent_attribute_uri=parent_attribute_uri,
+                source_uri=source_uri,
+                is_required=is_required,
+                uri_safe_identifier_override=uri_safe_identifier_override,
+                arbitrary_rdf=arbitrary_rdf,
+                observed_value_col_title=observed_value_col_title,
+            )
 
     def validate_data(
         self,
@@ -155,7 +172,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        # 820 TODO L159-161 copied from dimension.py, but self.code_list.validate_data doesn't do anything?
+        # 820 TODO L176-178 copied from dimension.py, but self.code_list.validate_data doesn't do anything?
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
         # if isinstance(self.code_list, NewQbCodeList):
         #     return self.code_list.validate_data(data, column_csv_title)

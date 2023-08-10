@@ -22,6 +22,7 @@ from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
     QbAttribute,
 )
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.dimension import (
     ExistingQbDimension,
     NewQbDimension,
@@ -97,7 +98,9 @@ def test_output_new_code_list_csvws_urls():
         ) in graph
 
 
-def test_new_attribute_code_list_csvws_urls():
+def test_new_attribute_code_list_csvws_urls_codelist_true(
+    tests_env_vars_setup_and_teardown,
+):
     data = pd.DataFrame(
         {
             "New Dimension": ["A", "B", "C"],
@@ -120,7 +123,55 @@ def test_new_attribute_code_list_csvws_urls():
             QbColumn(
                 "New Attribute",
                 NewQbAttribute.from_data(
-                    label="Some Attribute", data=data["New Attribute"]
+                    label="Some Attribute",
+                    csv_column_title="New Attribute",
+                    data=data["New Attribute"],
+                ),
+            ),
+        ],
+    )
+    qb_writer = QbWriter(cube)
+    with TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        qb_writer._output_new_attribute_code_list_csvws(temp_dir)
+        graph = Graph()
+        graph.parse(
+            temp_dir / "some-attribute.csv-metadata.json", publicID="file://relative/"
+        )
+        assert (
+            URIRef(f"file://relative/some-attribute.csv#code-list"),
+            URIRef("http://www.w3.org/ns/csvw#url"),
+            Literal("some-attribute.csv", datatype=XSD.anyURI),
+        ) in graph
+
+
+def test_new_attribute_code_list_csvws_urls_codelist_false():
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B", "C"],
+            "New Attribute": ["D", "E", "F"],
+            "Value": [1, 2, 3],
+        }
+    )
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data(
+                    label="Some Dimension",
+                    csv_column_title="New Dimension",
+                    data=data["New Dimension"],
+                ),
+            ),
+            QbColumn(
+                "New Attribute",
+                NewQbAttribute.from_data(
+                    label="Some Attribute",
+                    csv_column_title="New Attribute",
+                    data=data["New Attribute"],
+                    values=[NewQbConcept("D"), NewQbConcept("E"), NewQbConcept("F")],
                 ),
             ),
         ],

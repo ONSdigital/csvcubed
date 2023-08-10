@@ -59,8 +59,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
   Scenario: QbCube new attribute values and units should be serialised given ATTRIBUTE_VALUE_CODELISTS is False
-    Given a single-measure QbCube named "Some Qube" with new attribute values and units
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Some Qube" with new attribute values and units
     When the cube is serialised to CSV-W
     Then the file at "some-qube.csv" should exist
     And the file at "some-qube.csv-metadata.json" should exist
@@ -90,8 +90,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
 
   Scenario: QbCube new attribute values and units should be serialised given ATTRIBUTE_VALUE_CODELISTS is True
-    Given a single-measure QbCube named "Some Qube" with new attribute values and units
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure QbCube named "Some Qube" with new attribute values and units
     When the cube is serialised to CSV-W
     Then the file at "some-qube.csv" should exist
     And the file at "some-qube.csv-metadata.json" should exist
@@ -291,14 +291,14 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
   # through Jenkins to pick up PMD-specific augmentation.
 
-  Scenario: A locally defined single-measure dataset (with code-lists) can be serialised to a standard CSV-qb
+  Scenario: A locally defined single-measure dataset with code-lists can be serialised to a standard CSV-qb.
     Given a single-measure QbCube named "single-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "single-measure-qube-with-new-definitions.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
 
-  Scenario: A locally defined multi-measure dataset (with code-lists) can be serialised to a standard CSV-qb
+  Scenario: A locally defined multi-measure dataset with code-lists can be serialised to a standard CSV-qb.
     Given a multi-measure QbCube named "multi-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "multi-measure-qube-with-new-definitions.csv-metadata.json" should succeed
@@ -450,22 +450,22 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should pass "skos, qb" SPARQL tests
 
   Scenario: A cube with an optional attribute which has missing data values should validate successfully given ATTRIBUTE_VALUE_CODELISTS is False
-    Given a single-measure QbCube named "Some Qube" with optional attribute values missing
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvwcheck validation of all CSV-Ws should succeed
 
   Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is False
-    Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "good-qube.csv-metadata.json" should succeed
 
   Scenario: Observation Values are Required where an 'sdmxa:ObsStatus' Attribute Column is present but no value is set given ATTRIBUTE_VALUE_CODELISTS is False.
-    Given a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
     Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
     When the cube is serialised to CSV-W
     # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
@@ -474,24 +474,24 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
 # TODO 820 Fix this test
   Scenario: A cube with an optional attribute which has missing data values should validate successfully given ATTRIBUTE_VALUE_CODELISTS is True
-    Given a single-measure QbCube named "Some Qube" with optional attribute values missing
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
-    Then csvwcheck validation of all CSV-Ws should succeed
+    Then csvlint validation of all CSV-Ws should succeed
 
 # TODO 820 Fix this test
   Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is True
-    Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "good-qube.csv-metadata.json" should succeed
 
 # TODO 820 Fix this test
   Scenario: Observation Values are Required where an 'sdmxa:ObsStatus' Attribute Column is present but no value is set given ATTRIBUTE_VALUE_CODELISTS is True.
-    Given a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
     Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
     When the cube is serialised to CSV-W
     # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
@@ -515,26 +515,20 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
       """
 
-  Scenario: Observation Values are Required where no 'sdmxa:ObsStatus' Attribute Column is Present
-    Given a single-measure QbCube named "Bad Qube" with missing observation values
+  Scenario: Observation Values are Required where no 'sdmxa:ObsStatus' Attribute Column is Present given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Bad Qube" with missing observation values
     Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 1"
     When the cube is serialised to CSV-W
     # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"
 
-  Scenario: Observation Values are Optional where an `sdmxa:ObsStatus` Attribute is Present
-    Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
+  Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "good-qube.csv-metadata.json" should succeed
-
-  Scenario: Observation Values are Required where an 'sdmxa:ObsStatus' Attribute Column is present but no value is set.
-    Given a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
-    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
-    When the cube is serialised to CSV-W
-    # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
-    # since an `sdmxa:obsStatus` Attribute column has been defined.
-    Then csvwcheck validation of "bad-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube with a dimension containing URI-unsafe chars can be correctly serialised.
     Given a QbCube named "URI-Unsafe Cube" which has a dimension containing URI-unsafe chars
@@ -704,8 +698,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
 
   Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is False
-    Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10003.csv" should exist
@@ -784,8 +778,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
 
   Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is True
-    Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10003.csv" should exist
@@ -864,8 +858,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
 
   Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is False
-    Given a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10004.csv" should exist
@@ -919,8 +913,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
 
   Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is True
-    Given a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
-    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10004.csv" should exist

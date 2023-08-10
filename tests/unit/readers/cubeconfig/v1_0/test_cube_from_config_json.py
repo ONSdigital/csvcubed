@@ -190,7 +190,7 @@ def test_new_qb_attr_resource():
     data = pd.read_csv(TEST_CASE_DIR / "attribute_value_codelists.csv")
     cube = _get_cube_from_config_json_dict(data, config, 4)[0]
     components = {
-        k: map_column_to_qb_component(k, v, data[k], None, None)
+        k: map_column_to_qb_component(k, v, data[k], 4)
         for k, v in config["columns"].items()
     }
     structural_definitions = [

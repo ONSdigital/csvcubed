@@ -84,7 +84,6 @@ class NewDimension(SchemaBaseClass):
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
     ) -> Tuple[NewQbDimension, List[JsonSchemaValidationError]]:
-
         if self.cell_uri_template and self.code_list:
             # Checking to see if the code_list provided is a code-list-config.json.
             # If so, then the code_list provided is not a boolean value or looks like an uri.
@@ -324,14 +323,18 @@ class ExistingAttributeResource(SchemaBaseClass):
         else:
             if isinstance(self.values, bool) and not self.values:
                 raise ValueError(
-                    "Values should be set to `true` or `cell_uri_template` should be provided for %s",
+                    "`values` should be set to `true` or defined inline, or `cell_uri_template` should be provided for %s",
                     column_title,
                 )
             # `values` defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column data
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=column_title,
+                    csv_column_title=column_title,
                     data=data,
+                    values=_get_new_attribute_values(
+                        data=data, new_attribute_values=self.values
+                    ),
                     parent_attribute_uri=self.from_existing,
                     is_required=self.required,
                     observed_value_col_title=self.describes_observations,
@@ -342,7 +345,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                     label=column_title,
                     code_list=NewQbCodeList(
                         CatalogMetadata(column_title),
-                        concepts=_get_new_attribute_values(self.values),
+                        concepts=_get_new_attribute_values(data, self.values),
                     ),
                     parent_attribute_uri=self.from_existing,
                     is_required=self.required,
@@ -378,10 +381,10 @@ class NewAttributeLiteral(SchemaBaseClass):
 class NewAttributeResource(SchemaBaseClass):
     label: Optional[str] = None
     description: Optional[str] = None
-    from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
-    required: bool = False
+    from_existing: Optional[str] = None
     values: Union[bool, List[AttributeValue]] = True
+    required: bool = False
     cell_uri_template: Optional[str] = None
     describes_observations: Optional[str] = None
 
@@ -410,34 +413,34 @@ class NewAttributeResource(SchemaBaseClass):
                 column_title,
             )
         else:
-            if isinstance(self.values, bool):
-                if self.values:
-                    return NewQbAttribute.from_data(
-                        label=label,
-                        data=data,
-                        description=self.description,
-                        parent_attribute_uri=self.from_existing,
-                        source_uri=self.definition_uri,
-                        is_required=self.required,
-                        observed_value_col_title=self.describes_observations,
-                    )
-                else:
-                    return NewQbAttribute(
-                        label=label,
-                        description=self.description,
-                        parent_attribute_uri=self.from_existing,
-                        source_uri=self.definition_uri,
-                        is_required=self.required,
-                        observed_value_col_title=self.describes_observations,
-                    )
+            if isinstance(self.values, bool) and not self.values:
+                raise ValueError(
+                    "`values` should be set to `true` or defined inline, or `cell_uri_template` should be provided for %s",
+                    column_title,
+                )
+            # `values` defaults to `true` so if it isn't defined in the column config, an NewAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column data
+            elif isinstance(self.values, bool) and self.values:
+                return NewQbAttribute.from_data(
+                    label=label,
+                    csv_column_title=column_title,
+                    data=data,
+                    values=_get_new_attribute_values(
+                        data=data, new_attribute_values=self.values
+                    ),
+                    description=self.description,
+                    parent_attribute_uri=self.from_existing,
+                    source_uri=self.definition_uri,
+                    is_required=self.required,
+                    observed_value_col_title=self.describes_observations,
+                )
             else:
-                # 820 TODO - raise ValidationError if the CSV file contains attribute values that don't appear in the `values` config and vice versa
+                # `values` is a list of AttributeValue objects
                 return NewQbAttribute(
                     label=label,
                     description=self.description,
                     code_list=NewQbCodeList(
                         CatalogMetadata(label),
-                        concepts=_get_new_attribute_values(self.values),
+                        concepts=_get_new_attribute_values(data, self.values),
                     ),
                     parent_attribute_uri=self.from_existing,
                     source_uri=self.definition_uri,
@@ -627,13 +630,9 @@ def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
         return unit.scaling_factor
 
 
-def _get_new_attribute_values(
+def _map_attribute_values(
     new_attribute_values_from_schema: List[AttributeValue],
 ) -> List[NewQbConcept]:
-    """
-    Returns a list of NewQbConcept objects from a list of AttributeValue objects
-    """
-
     new_attribute_values = []
     for attr_val in new_attribute_values_from_schema:
         if not isinstance(attr_val, AttributeValue):
@@ -643,8 +642,49 @@ def _get_new_attribute_values(
             NewQbConcept(
                 label=attr_val.label,
                 description=attr_val.description,
-                parent_code=attr_val.from_existing
+                parent_code=attr_val.from_existing,
                 # attr_val.definition_uri unused here
             )
         )
     return new_attribute_values
+
+
+def _get_new_attribute_values(
+    data: PandasDataTypes,
+    new_attribute_values: Union[bool, List[AttributeValue]],
+) -> List[NewQbConcept]:
+    """
+    Returns a list of NewQbConcept objects from a list of AttributeValue objects. If new_attribute_values is True, then the list is created with
+    the list comprehension. If new_attribute_values is a list object
+    then use _map_attribute_values.
+    """
+
+    # new_attribute_values = []
+    # for attr_val in new_attribute_values:
+    #     if not isinstance(attr_val, AttributeValue):
+    #         raise ValueError(f"Found unexpected attribute value {attr_val}")
+
+    #     new_attribute_values.append(
+    #         NewQbConcept(
+    #             label=attr_val.label,
+    #             description=attr_val.description,
+    #             parent_code=attr_val.from_existing
+    #             # attr_val.definition_uri unused here
+    #         )
+    #     )
+    # return new_attribute_values
+
+    if isinstance(new_attribute_values, bool):
+        if new_attribute_values:
+            columnar_data: List[str] = [
+                v for v in pandas_input_to_columnar_optional_str(data) if v is not None
+            ]
+            return [NewQbConcept(v) for v in sorted(set(columnar_data))]
+
+        return []
+    elif isinstance(new_attribute_values, list):
+        return _map_attribute_values(new_attribute_values)
+
+    raise ValueError(
+        f"Unexpected value for 'newAttributeValues': {new_attribute_values}"
+    )
