@@ -14,7 +14,11 @@ import pandas as pd
 from csvcubed import feature_flags
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
+from csvcubed.models.cube.qb.components.codelist import (
+    NewQbCodeList,
+    QbCodeList,
+    TNewQbConcept,
+)
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.cube.qb.components.validationerrors import (
@@ -122,7 +126,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         label: str,
         csv_column_title: str,
         data: PandasDataTypes,
-        values: Optional[List[NewQbConcept]] = None,
+        values: Optional[List[TNewQbConcept]] = None,
         description: Optional[str] = None,
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
