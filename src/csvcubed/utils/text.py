@@ -17,6 +17,7 @@ def truncate(message: str, message_truncate_at: int) -> str:
         return message[:message_truncate_at] + "…"
 
 
+# Mapping of strings to bools for str_to_bool function to work
 valid_bool_values: Dict[str, bool] = {
     "true": True,
     "1": True,

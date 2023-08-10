@@ -14,11 +14,7 @@ import pandas as pd
 from csvcubed import feature_flags
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components.codelist import (
-    NewQbCodeList,
-    QbCodeList,
-    TNewQbConcept,
-)
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.cube.qb.components.validationerrors import (
@@ -126,7 +122,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         label: str,
         csv_column_title: str,
         data: PandasDataTypes,
-        values: Optional[List[TNewQbConcept]] = None,
+        values: Optional[List[NewQbConcept]] = None,
         description: Optional[str] = None,
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
@@ -137,6 +133,8 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         code_list_uri_style: Optional[URIStyle] = None,
     ) -> "NewQbAttribute":
         if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            # If ATTRIBUTE_VALUE_CODELISTS is True, the codelist should be created from the data in the CSV via the NewQbCodelist.from_data() method
+            # This will throw an error if any column cells are empty
             return NewQbAttribute(
                 label=label,
                 description=description,
@@ -154,11 +152,13 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
                 observed_value_col_title=observed_value_col_title,
             )
         else:
+            # If ATTRIBUTE_VALUE_CODELISTS is False, we still need to generate a codelist, but allow for missing values by passing a list of the concepts directly to the class
             return NewQbAttribute(
                 label=label,
                 description=description,
                 code_list=NewQbCodeList(
                     CatalogMetadata(label),
+                    # TODO 820 Pyright failing as NewQbCodelist.concepts is required but `values` is an optional parameter
                     values,  # type: ignore
                 ),
                 parent_attribute_uri=parent_attribute_uri,
@@ -176,10 +176,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        # 820 TODO L176-178 copied from dimension.py, but self.code_list.validate_data doesn't do anything?
-        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
-        # if isinstance(self.code_list, NewQbCodeList):
-        #     return self.code_list.validate_data(data, column_csv_title)
         if (
             isinstance(self.code_list, NewQbCodeList)
             and len(self.code_list.concepts) > 0

@@ -10,11 +10,7 @@ from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
 import uritemplate
 
-from csvcubed.inputs import (
-    PandasDataTypes,
-    pandas_input_to_columnar_optional_str,
-    pandas_input_to_columnar_str,
-)
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import (

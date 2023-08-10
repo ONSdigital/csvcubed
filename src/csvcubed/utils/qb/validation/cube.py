@@ -66,7 +66,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                         CsvColumnLiteralWithUriTemplate(
                             c.csv_column_title,
                             f"{c.structural_definition.__class__.__name__} "
-                            + "cannot have a uri_tempate as it holds literal values",
+                            + "cannot have a uri_template as it holds literal values",
                         )
                     )
             # Not a QbAttributeLiteral
@@ -78,7 +78,4 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                             f"{c.structural_definition.__class__.__name__} using existing attribute values",
                         )
                     )
-            else:
-                # 820 TODO Validate ExistingQbAttribute?
-                pass
     return errors

@@ -139,7 +139,7 @@ def test_new_attribute_code_list_csvws_urls_codelist_true(
             temp_dir / "some-attribute.csv-metadata.json", publicID="file://relative/"
         )
         assert (
-            URIRef(f"file://relative/some-attribute.csv#code-list"),
+            URIRef("file://relative/some-attribute.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-attribute.csv", datatype=XSD.anyURI),
         ) in graph
@@ -185,7 +185,7 @@ def test_new_attribute_code_list_csvws_urls_codelist_false():
             temp_dir / "some-attribute.csv-metadata.json", publicID="file://relative/"
         )
         assert (
-            URIRef(f"file://relative/some-attribute.csv#code-list"),
+            URIRef("file://relative/some-attribute.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-attribute.csv", datatype=XSD.anyURI),
         ) in graph

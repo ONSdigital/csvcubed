@@ -326,7 +326,7 @@ class ExistingAttributeResource(SchemaBaseClass):
                     "`values` should be set to `true` or defined inline, or `cell_uri_template` should be provided for %s",
                     column_title,
                 )
-            # `values` defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column data
+            # `values` defaults to `true` so if it isn't defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a codelist generated from the column data
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=column_title,
@@ -418,7 +418,7 @@ class NewAttributeResource(SchemaBaseClass):
                     "`values` should be set to `true` or defined inline, or `cell_uri_template` should be provided for %s",
                     column_title,
                 )
-            # `values` defaults to `true` so if it isn't defined in the column config, an NewAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column data
+            # `values` defaults to `true` so if it isn't defined in the column config, an NewAttributeResource is mapped to a NewQbAttribute with a codelist generated from the column data
             elif isinstance(self.values, bool) and self.values:
                 return NewQbAttribute.from_data(
                     label=label,
@@ -655,25 +655,8 @@ def _get_new_attribute_values(
 ) -> List[NewQbConcept]:
     """
     Returns a list of NewQbConcept objects from a list of AttributeValue objects. If new_attribute_values is True, then the list is created with
-    the list comprehension. If new_attribute_values is a list object
-    then use _map_attribute_values.
+    the list comprehension. If new_attribute_values is a list object then use _map_attribute_values.
     """
-
-    # new_attribute_values = []
-    # for attr_val in new_attribute_values:
-    #     if not isinstance(attr_val, AttributeValue):
-    #         raise ValueError(f"Found unexpected attribute value {attr_val}")
-
-    #     new_attribute_values.append(
-    #         NewQbConcept(
-    #             label=attr_val.label,
-    #             description=attr_val.description,
-    #             parent_code=attr_val.from_existing
-    #             # attr_val.definition_uri unused here
-    #         )
-    #     )
-    # return new_attribute_values
-
     if isinstance(new_attribute_values, bool):
         if new_attribute_values:
             columnar_data: List[str] = [
