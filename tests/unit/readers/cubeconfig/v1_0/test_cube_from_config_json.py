@@ -37,11 +37,17 @@ from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import (
+    _get_cube_from_config_json_dict,
+    _get_qb_column_from_json,
+)
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 from csvcubed.utils.uri import uri_safe
+from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
+from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper
+from csvcubed.writers.qbwriter import QbWriter
 from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
 from .virtualconfigs import VirtualConfigurations as vc

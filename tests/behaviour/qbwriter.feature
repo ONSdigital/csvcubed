@@ -472,32 +472,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     # since an `sdmxa:obsStatus` Attribute column has been defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
 
-# TODO 820 Fix this test
-  # Scenario: A cube with an optional attribute which has missing data values should validate successfully given ATTRIBUTE_VALUE_CODELISTS is True
-  #   Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
-  #   And a single-measure QbCube named "Some Qube" with optional attribute values missing
-  #   Then the CSVqb should pass all validations
-  #   When the cube is serialised to CSV-W
-  #   Then csvlint validation of all CSV-Ws should succeed
-
-# TODO 820 Fix this test
-  # Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is True
-  #   Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
-  #   And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
-  #   Then the CSVqb should pass all validations
-  #   When the cube is serialised to CSV-W
-  #   Then csvwcheck validation of "good-qube.csv-metadata.json" should succeed
-
-# TODO 820 Fix this test
-  # Scenario: Observation Values are Required where an 'sdmxa:ObsStatus' Attribute Column is present but no value is set given ATTRIBUTE_VALUE_CODELISTS is True.
-  #   Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
-  #   And a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
-  #   Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
-  #   When the cube is serialised to CSV-W
-  #   # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
-  #   # since an `sdmxa:obsStatus` Attribute column has been defined.
-  #   Then csvwcheck validation of "bad-qube.csv-metadata.json" should succeed
-
   Scenario: Each Observation should have Type http://purl.org/linked-data/cube#Observation and be part of the dataset
     Given a single-measure QbCube named "Some Qube"
     Then the CSVqb should pass all validations

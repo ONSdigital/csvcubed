@@ -152,14 +152,13 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
                 observed_value_col_title=observed_value_col_title,
             )
         else:
-            # If ATTRIBUTE_VALUE_CODELISTS is False, we still need to generate a codelist, but allow for missing values by passing a list of the concepts directly to the class
+            # If ATTRIBUTE_VALUE_CODELISTS is False, we still need to generate a codelist, but allow for missing values by passing a list of the concepts directly to the NewQbAttribute code_list property
             return NewQbAttribute(
                 label=label,
                 description=description,
                 code_list=NewQbCodeList(
-                    CatalogMetadata(label),
-                    # TODO 820 Pyright failing as NewQbCodelist.concepts is required but `values` is an optional parameter
-                    values,  # type: ignore
+                    metadata=CatalogMetadata(label),
+                    concepts=values,  # type: ignore
                 ),
                 parent_attribute_uri=parent_attribute_uri,
                 source_uri=source_uri,
@@ -184,7 +183,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             actual_values = {
                 uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
             }
-            undefined_values = expected_values - actual_values
+            undefined_values = actual_values - expected_values
             if len(undefined_values) > 0:
                 return [UndefinedAttributeValueUrisError(self, undefined_values)]
         return []

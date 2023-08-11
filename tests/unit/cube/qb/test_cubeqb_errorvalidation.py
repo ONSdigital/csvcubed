@@ -10,7 +10,6 @@ from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
     NewQbAttributeLiteral,
 )
-from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.dimension import (
@@ -409,8 +408,10 @@ def test_new_attribute_values_required():
             ),
             QbColumn(
                 "Existing Attribute 1",
-                ExistingQbAttribute("http://example.org/attributes/example"),
-                # ExistingQbAttribute - so csv_column_uri_template is not required
+                ExistingQbAttribute(
+                    attribute_uri="http://example.org/attributes/example"
+                ),
+                csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_attribute}",
             ),
             QbColumn(
                 "New Attribute 2",
@@ -538,7 +539,7 @@ def test_new_qb_attribute_generation_codelist_false():
         label="Status",
         csv_column_title="Marker",
         data=data["Marker"],
-        values=[NewQbConcept("Provisional"), NewQbConcept("Final")],
+        values={NewQbConcept(value) for value in data["Marker"].dropna()},
     )
 
     assert len(marker_attribute.code_list.concepts) == 2
@@ -675,9 +676,8 @@ def test_attribute_numeric_resources_validation_codelist_false():
                     csv_column_title="Some Attribute",
                     data=data["Some Attribute"],
                     values=[
-                        NewQbConcept("1.0"),
-                        NewQbConcept("2.0"),
-                        NewQbConcept("3.0"),
+                        NewQbConcept(str(value))
+                        for value in data["Some Attribute"].dropna()
                     ],
                 ),
             ),
@@ -846,7 +846,7 @@ def test_conflict_new_attribute_value_uri_values_error_codelist_false():
                     "New Attribute",
                     "New Attribute",
                     data["New Attribute"],
-                    [NewQbConcept("A B"), NewQbConcept("A.B")],
+                    [NewQbConcept(value) for value in data["New Attribute"].dropna()],
                 ),
             ),
             QbColumn(
@@ -942,9 +942,7 @@ def test_conflict_new_measures_uri_values_error():
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
 
-def test_pivoted_validation_multiple_measure_columns_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_validation_multiple_measure_columns():
     """
     Tests a multi-measure pivoted shape cube in which each obs val column has a measure linked
     but there also exists a measure column.
@@ -973,6 +971,7 @@ def test_pivoted_validation_multiple_measure_columns_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -998,68 +997,7 @@ def test_pivoted_validation_multiple_measure_columns_codelist_true(
     assert isinstance(error, PivotedShapeMeasureColumnsExistError)
 
 
-def test_pivoted_validation_multiple_measure_columns_codelist_false():
-    """
-    Tests a multi-measure pivoted shape cube in which each obs val column has a measure linked
-    but there also exists a measure column.
-
-    """
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Measure": ["abc", "def", "ghi"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
-            "Some Measure",
-            QbMultiMeasureDimension.new_measures_from_data(data["Some Measure"]),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("A Measure"), NewQbUnit("A Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(
-                NewQbMeasure("Another Measure"), NewQbUnit("Another Unit")
-            ),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, PivotedShapeMeasureColumnsExistError)
-
-
-def test_pivoted_validation_no_measures_defined_error_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_validation_no_measures_defined_error():
     """
     This scenario will test a pivoted cube where no observation column has a measure defined either within
     the column definition or by linking a measure column.
@@ -1086,6 +1024,7 @@ def test_pivoted_validation_no_measures_defined_error_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -1105,60 +1044,7 @@ def test_pivoted_validation_no_measures_defined_error_codelist_true(
     assert isinstance(error, NoMeasuresDefinedError)
 
 
-def test_pivoted_validation_no_measures_defined_error_codelist_false():
-    """
-    This scenario will test a pivoted cube where no observation column has a measure defined either within
-    the column definition or by linking a measure column.
-    """
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(unit=NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(unit=NewQbUnit("Another Unit")),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, NoMeasuresDefinedError)
-
-
-def test_pivoted_obs_val_col_without_measure_error_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_obs_val_col_without_measure_error():
     """
     This scenario will test a pivoted cube where one observation column has a measure defined either within
     the column definition or by linking a measure column but the other has no measure defined using either
@@ -1186,6 +1072,7 @@ def test_pivoted_obs_val_col_without_measure_error_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -1205,61 +1092,7 @@ def test_pivoted_obs_val_col_without_measure_error_codelist_true(
     assert isinstance(error, PivotedObsValColWithoutMeasureError)
 
 
-def test_pivoted_obs_val_col_without_measure_error_codelist_false():
-    """
-    This scenario will test a pivoted cube where one observation column has a measure defined either within
-    the column definition or by linking a measure column but the other has no measure defined using either
-    linking methods.
-    """
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(unit=NewQbUnit("Another Unit")),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, PivotedObsValColWithoutMeasureError)
-
-
-def test_pivoted_validation_no_unit_defined_error_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_validation_no_unit_defined_error():
     """
     This scenario will test a cube that has an observation value column does not
     have a unit defined and there does not exist a units column which is linked to this obs val column
@@ -1286,6 +1119,7 @@ def test_pivoted_validation_no_unit_defined_error_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -1305,104 +1139,7 @@ def test_pivoted_validation_no_unit_defined_error_codelist_true(
     assert isinstance(error, NoUnitsDefinedError)
 
 
-def test_pivoted_validation_no_unit_defined_error_codelist_false():
-    """
-    This scenario will test a cube that has an observation value column does not
-    have a unit defined and there does not exist a units column which is linked to this obs val column
-    """
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(NewQbMeasure("Some Other Measure")),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, NoUnitsDefinedError)
-
-
-def test_pivoted_validation_attribute_column_not_linked_error_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
-    """
-    This scenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
-    """
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute", "Some Attribute", data["Some Attribute"]
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(
-                NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
-            ),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, AttributeNotLinkedError)
-
-
-def test_pivoted_validation_attribute_column_not_linked_error_codelist_false():
+def test_pivoted_validation_attribute_column_not_linked_error():
     """
     This scenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
     """
@@ -1428,11 +1165,7 @@ def test_pivoted_validation_attribute_column_not_linked_error_codelist_false():
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
             ),
         ),
         QbColumn(
@@ -1453,9 +1186,7 @@ def test_pivoted_validation_attribute_column_not_linked_error_codelist_false():
     assert isinstance(error, AttributeNotLinkedError)
 
 
-def test_pivoted_validation_obs_column_doesnt_exist_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_validation_obs_column_doesnt_exist():
     """
     This scenario will test the cube with units or attribute column is defined for which obs val column doesn't appear to exist.
     """
@@ -1482,6 +1213,7 @@ def test_pivoted_validation_obs_column_doesnt_exist_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Doesn't Exist",
             ),
         ),
@@ -1503,62 +1235,7 @@ def test_pivoted_validation_obs_column_doesnt_exist_codelist_true(
     assert isinstance(error, LinkedObsColumnDoesntExistError)
 
 
-def test_pivoted_validation_obs_column_doesnt_exist_codelist_false():
-    """
-    This scenario will test the cube with units or attribute column is defined for which obs val column doesn't appear to exist.
-    """
-
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
-                observed_value_col_title="Doesn't Exist",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(
-                NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
-            ),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, LinkedObsColumnDoesntExistError)
-
-
-def test_pivoted_validation_link_attribute_to_non_obs_column_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_validation_link_attribute_to_non_obs_column():
     """
     This scenario will produce an error where the units or attribute column is defined in which
     the linked obs val column isn't actually an observations column.
@@ -1586,6 +1263,7 @@ def test_pivoted_validation_link_attribute_to_non_obs_column_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Dimension",
             ),
         ),
@@ -1607,63 +1285,7 @@ def test_pivoted_validation_link_attribute_to_non_obs_column_codelist_true(
     assert isinstance(error, LinkedToNonObsColumnError)
 
 
-def test_pivoted_validation_link_attribute_to_non_obs_column_codelist_false():
-    """
-    This scenario will produce an error where the units or attribute column is defined in which
-    the linked obs val column isn't actually an observations column.
-    """
-
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
-                observed_value_col_title="Some Dimension",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(
-                NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
-            ),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, LinkedToNonObsColumnError)
-
-
-def test_pivoted_validation_measure_duplication_codelist_true(
-    tests_env_vars_setup_and_teardown,
-):
+def test_pivoted_validation_measure_duplication():
     """
     This scenario will produce an error Each pivoted multi-measure observation column has a unique measure.
      i.e. the same measure cannot be used twice in the same data set.
@@ -1690,57 +1312,7 @@ def test_pivoted_validation_measure_duplication_codelist_true(
                 "Some Attribute",
                 "Some Attribute",
                 data["Some Attribute"],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-        QbColumn(
-            "Some Other Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    error = _get_single_validation_error_for_qube(cube)
-
-    assert isinstance(error, DuplicateMeasureError)
-
-
-def test_pivoted_validation_measure_duplication_codelist_false():
-    """
-    This scenario will produce an error Each pivoted multi-measure observation column has a unique measure.
-     i.e. the same measure cannot be used twice in the same data set.
-    """
-    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-            "Some Other Obs Val": [2, 4, 6],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data(
-                "Some Dimension", "Some Dimension", data["Some Dimension"]
-            ),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                "Some Attribute",
-                data["Some Attribute"],
-                [
-                    NewQbConcept("attr-a"),
-                    NewQbConcept("attr-b"),
-                    NewQbConcept("attr-c"),
-                ],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),

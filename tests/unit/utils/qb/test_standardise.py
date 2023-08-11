@@ -175,9 +175,8 @@ def test_convert_data_values_to_uri_safe_values_codelist_false():
                     "Some Resource Attribute",
                     data["Some Resource Attribute"],
                     [
-                        NewQbConcept("Resource A"),
-                        NewQbConcept("Resource B"),
-                        NewQbConcept("Resource C"),
+                        NewQbConcept(value)
+                        for value in data["Some Resource Attribute"].dropna()
                     ],
                 ),
             ),

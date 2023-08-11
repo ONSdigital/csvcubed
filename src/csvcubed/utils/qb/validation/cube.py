@@ -3,6 +3,7 @@ from typing import List
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
+    ExistingQbAttribute,
     NewQbAttribute,
     QbAttribute,
     QbAttributeLiteral,
@@ -76,6 +77,15 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                         NoUriTemplateOrAttrValuesError(
                             c.csv_column_title,
                             f"{c.structural_definition.__class__.__name__} using existing attribute values",
+                        )
+                    )
+            elif isinstance(c, QbColumn) and isinstance(
+                c.structural_definition, ExistingQbAttribute
+            ):
+                if c.csv_column_uri_template is None:
+                    errors.append(
+                        CsvColumnUriTemplateMissingError(
+                            c.csv_column_title, ExistingQbAttribute
                         )
                     )
     return errors

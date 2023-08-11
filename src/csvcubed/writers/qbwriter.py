@@ -112,9 +112,7 @@ class QbWriter(WriterBase):
             "rdfs:seeAlso": self._dsd.generate_data_structure_definitions(),
         }
 
-        self._output_new_dimension_code_list_csvws(output_folder)
-        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
-            self._output_new_attribute_code_list_csvws(output_folder)
+        self._output_new_code_list_csvws(output_folder)
 
         metadata_json_output_path = output_folder / self.csv_metadata_file_name
         with open(metadata_json_output_path, "w+") as f:
@@ -126,7 +124,7 @@ class QbWriter(WriterBase):
             _logger.debug("Writing CSV to %s", csv_output_file_path)
             self.cube.data.to_csv(csv_output_file_path, index=False)
 
-    def _output_new_dimension_code_list_csvws(self, output_folder: Path) -> None:
+    def _output_new_code_list_csvws(self, output_folder: Path) -> None:
         for column in self.cube.get_columns_of_dsd_type(NewQbDimension):
             code_list = column.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
@@ -139,18 +137,18 @@ class QbWriter(WriterBase):
                 code_list_writer = self._get_writer_for_code_list(code_list)
                 code_list_writer.write(output_folder)
 
-    def _output_new_attribute_code_list_csvws(self, output_folder: Path) -> None:
         for column in self.cube.get_columns_of_dsd_type(NewQbAttribute):
-            code_list = column.structural_definition.code_list
-            if isinstance(code_list, NewQbCodeList):
-                _logger.debug(
-                    "Writing attribute code list %s to '%s' directory.",
-                    code_list,
-                    output_folder,
-                )
+            if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+                code_list = column.structural_definition.code_list
+                if isinstance(code_list, NewQbCodeList):
+                    _logger.debug(
+                        "Writing attribute code list %s to '%s' directory.",
+                        code_list,
+                        output_folder,
+                    )
 
-                code_list_writer = self._get_writer_for_code_list(code_list)
-                code_list_writer.write(output_folder)
+                    code_list_writer = self._get_writer_for_code_list(code_list)
+                    code_list_writer.write(output_folder)
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvw_column_definition(c) for c in self.cube.columns]
