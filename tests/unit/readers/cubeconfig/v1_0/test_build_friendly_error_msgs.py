@@ -337,7 +337,7 @@ def test_val_errors_undefined_attr_uri(tests_env_vars_setup_and_teardown):
     assert isinstance(validation_errors[0], UndefinedAttributeValueUrisError)
 
     _assert_in_log(
-        "ERROR - Validation Error: The Attribute URI(s) {'beach-ware'} in the "
+        "ERROR - Validation Error: The Attribute URI(s) {'goods'} in the "
         "NewQbAttribute(label='My best attribute') attribute column have not been defined in the list of "
         "valid attribute values."
     )
