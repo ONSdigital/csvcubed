@@ -267,7 +267,7 @@ class DsdToRdfModelsHelper:
 
     def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
         qb_dataset_with_metadata = QbDataSetInCatalog(self._uris.get_dataset_uri())
-        self.cube.metadata.configure_dcat_dataset(qb_dataset_with_metadata)
+        self.cube.metadata.configure_dcat_distribution(qb_dataset_with_metadata)
         return qb_dataset_with_metadata
 
     def _get_cross_measures_slice_key(self) -> rdf.qb.SliceKey:

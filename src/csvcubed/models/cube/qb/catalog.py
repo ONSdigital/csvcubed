@@ -76,25 +76,79 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.identifier or self.title
 
-    def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
+    def configure_dcat_distribution(self, distribution: dcat.Distribution) -> None:
+        """
+        CatalogMetadata properties not currently populated here
+        identifier
+        creator_uri
+        landing_page_uris
+        theme_uris
+        keywords
+        public_contact_point_uri
+        uri_safe_identifier_override
+        """
         dt_now = datetime.now()
         dt_issued = _convert_date_to_date_time(self.dataset_issued or dt_now)
-
-        dataset.label = dataset.title = self.title
-        dataset.issued = dt_issued
-        dataset.modified = _convert_date_to_date_time(
+        distribution.issued = dt_issued
+        distribution.modified = _convert_date_to_date_time(
             self.dataset_modified or dt_issued
         )
-        dataset.comment = self.summary
-        dataset.description = self.description
-        dataset.license = self.license_uri
-        dataset.creator = self.creator_uri
-        dataset.publisher = self.publisher_uri
-        dataset.landing_page = set(self.landing_page_uris)
-        dataset.themes = set(self.theme_uris)
-        dataset.keywords = set(self.keywords)
-        dataset.contact_point = self.public_contact_point_uri
-        dataset.identifier = self.get_identifier()
+
+        distribution.label = distribution.title = self.title
+        distribution.description = self.description
+        distribution.comment = self.summary
+        distribution.publisher = self.publisher_uri
+        distribution.license = self.license_uri
+        # 831 TODO
+        # Main question - shouldn't Distribution inherit from Resource, not NewMetadataResource?
+        # dcat:Distribution properties not yet used
+        # distribution.is_distribution_of
+        # distribution.access_service
+        # distribution.access_url
+        # distribution.byte_size
+        # distribution.compress_format
+        # distribution.download_url
+        # distribution.media_type
+        # distribution.package_format
+        # distribution.spatial
+        # distribution.spatial_resolution_in_meters
+        # distribution.temporal
+        # distribution.temporal_resolution
+        # distribution.conforms_to
+        # distribution.format
+        # distribution.rights
+        # distribution.has_policy
+
+        # dcat:Dataset properties (most of these were populated via the dcat:Resource parent class)
+        # Direct properties:
+        # distribution
+        # accrual_periodicity
+        # spatial
+        # spatial_resolution_in_meters
+        # temporal
+        # temporal_resolution
+        # Inherited from Resource:
+        # access_rights
+        # contact_point
+        # creator
+        # description
+        # title
+        # issued
+        # modified
+        # language
+        # publisher
+        # identifier
+        # themes
+        # type
+        # relation
+        # qualified_relation
+        # keywords
+        # landing_page
+        # qualified_attribution
+        # license
+        # rights
+        # has_policy
+        # is_referenced_by
 
 
 def _convert_date_to_date_time(dt: Union[datetime, date]) -> datetime:
