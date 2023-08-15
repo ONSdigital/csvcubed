@@ -80,7 +80,6 @@ def step_impl(context, cube_name: str):
     context.cube = cube
 
 
-# qbwriter.feature 484
 @Given(
     'a single-measure QbCube named "{cube_name}" with missing observation values and `sdmxa:obsStatus` replacements'
 )
@@ -124,7 +123,6 @@ def step_impl(context, cube_name: str):
     )
 
 
-# qbwriter.feature 492
 @Given(
     'a single-measure QbCube named "{cube_name}" with missing observation values and missing `sdmxa:obsStatus` replacements'
 )
@@ -269,7 +267,6 @@ def step_impl(context, cube_name: str):
     )
 
 
-# qbwriter.feature 476
 @Given(
     'a single-measure QbCube named "{cube_name}" with optional attribute values missing'
 )
