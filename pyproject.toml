@@ -31,7 +31,7 @@ uritemplate = "^4.1.1"
 # This restraint can be lifted once the fix has been published by removing urllib3 as it is a dependency of other packages.
 urllib3 = "^1.0.0"
 python-dateutil = "^2.8.2"
-csvcubed-models = "0.1.6"
+csvcubed-models = { git = "https://github.com/GSS-Cogs/csvcubed-models.git", branch = "Distribution-inheritance-from-Resource"}
 platformdirs = "^3.5.0"
 
 [tool.poetry.dev-dependencies]

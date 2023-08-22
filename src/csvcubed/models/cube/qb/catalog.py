@@ -99,6 +99,13 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         distribution.comment = self.summary
         distribution.publisher = self.publisher_uri
         distribution.license = self.license_uri
+        distribution.keywords = self.keywords
+        distribution.identifier = self.identifier
+        distribution.creator = self.creator_uri
+        distribution.landing_page = self.landing_page_uris
+        distribution.themes = self.theme_uris
+        distribution.keywords = self.keywords
+
         # 831 TODO
         # Main question - shouldn't Distribution inherit from Resource, not NewMetadataResource?
         # dcat:Distribution properties not yet used
