@@ -70,7 +70,7 @@ def test_connection_error_url():
 
     assert (
         str(err.value)
-        == "URL 'https://purl.org/csv-cubed/qube-config/produces404' produced a invalid response and a local copy could not be found."
+        == "URL 'https://purl.archive.org/csv-cubed/qube-config/produces404' produced a invalid response and a local copy could not be found."
     )
 
 
