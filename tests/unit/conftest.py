@@ -53,7 +53,7 @@ def dummy_mapped_url():
         / "v1_3"
         / "schema.json",
         # When this URL is used in a test, a response will successfully be returned as purl.org exists, but the resource (/badinput) cannot be found.
-        "//purl.org/csv-cubed/qube-config/badinput": APP_ROOT_DIR_PATH
+        "//purl.archive.org/csv-cubed/qube-config/badinput": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
         / "v1_3"
