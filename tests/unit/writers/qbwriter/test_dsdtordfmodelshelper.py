@@ -247,6 +247,7 @@ def test_arbitrary_rdf_serialisation_new_attribute():
                 "Existing Attribute",
                 NewQbAttribute.from_data(
                     "New Attribute",
+                    "New Attribute",
                     data["New Attribute"],
                     arbitrary_rdf=[
                         TripleFragment(RDFS.label, "New Attribute Property"),

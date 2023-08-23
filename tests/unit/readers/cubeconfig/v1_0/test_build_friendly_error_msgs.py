@@ -319,7 +319,7 @@ def test_val_errors_more_than_one_measure():
     )
 
 
-def test_val_errors_undefined_attr_uri():
+def test_val_errors_undefined_attr_uri(tests_env_vars_setup_and_teardown):
     """
     Test for:-
         UndefinedAttributeValueUrisError
@@ -337,7 +337,7 @@ def test_val_errors_undefined_attr_uri():
     assert isinstance(validation_errors[0], UndefinedAttributeValueUrisError)
 
     _assert_in_log(
-        "ERROR - Validation Error: The Attribute URI(s) {'beach-ware'} in the "
+        "ERROR - Validation Error: The Attribute URI(s) {'goods'} in the "
         "NewQbAttribute(label='My best attribute') attribute column have not been defined in the list of "
         "valid attribute values."
     )
@@ -473,7 +473,7 @@ def test_val_errors_uri_conflict():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
     _assert_in_log(
-        "ERROR - Validation Error: A URI collision has been detected in an attribute column."
+        "ERROR - Validation Error: A URI collision has been detected in a code list."
     )
     _assert_in_log(
         "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"

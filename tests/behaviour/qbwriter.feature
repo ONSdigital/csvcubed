@@ -58,8 +58,9 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
-  Scenario: QbCube new attribute values and units should be serialised
-    Given a single-measure QbCube named "Some Qube" with new attribute values and units
+  Scenario: QbCube new attribute values and units should be serialised given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Some Qube" with new attribute values and units
     When the cube is serialised to CSV-W
     Then the file at "some-qube.csv" should exist
     And the file at "some-qube.csv-metadata.json" should exist
@@ -82,6 +83,50 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <{{rdf_input_directory}}/some-qube.csv#attribute/new-attribute/in-review>
       a rdfs:Resource;
       rdfs:label "in-review"@en.
+
+      <{{rdf_input_directory}}/some-qube.csv#unit/some-unit>
+      a qudt:Unit, om2:Unit;
+      rdfs:label "Some Unit"@en.
+      """
+
+  Scenario: QbCube new attribute values and units should be serialised given ATTRIBUTE_VALUE_CODELISTS is True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure QbCube named "Some Qube" with new attribute values and units
+    When the cube is serialised to CSV-W
+    Then the file at "some-qube.csv" should exist
+    And the file at "some-qube.csv-metadata.json" should exist
+    And the file at "new-attribute.csv" should exist
+    And the file at "new-attribute.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should contain
+      """
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix qudt: <http://qudt.org/schema/qudt/>.
+      @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+      @prefix ui: <http://www.w3.org/ns/ui#>.
+
+      <{{rdf_input_directory}}/new-attribute.csv#final>
+      a skos:Concept;
+      rdfs:label "final";
+      skos:inScheme <{{rdf_input_directory}}/new-attribute.csv#code-list>;
+      skos:notation "final";
+      ui:sortPriority 0.
+
+      <{{rdf_input_directory}}/new-attribute.csv#in-review>
+      a skos:Concept;
+      rdfs:label "in-review";
+      skos:inScheme <{{rdf_input_directory}}/new-attribute.csv#code-list>;
+      skos:notation "in-review";
+      ui:sortPriority 1.
+
+      <{{rdf_input_directory}}/new-attribute.csv#pending>
+      a skos:Concept;
+      rdfs:label "pending";
+      skos:inScheme <{{rdf_input_directory}}/new-attribute.csv#code-list>;
+      skos:notation "pending";
+      ui:sortPriority 2.
 
       <{{rdf_input_directory}}/some-qube.csv#unit/some-unit>
       a qudt:Unit, om2:Unit;
@@ -246,14 +291,14 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
   # through Jenkins to pick up PMD-specific augmentation.
 
-  Scenario: A locally defined single-measure dataset (with code-lists) can be serialised to a standard CSV-qb
+  Scenario: A locally defined single-measure dataset with code-lists can be serialised to a standard CSV-qb.
     Given a single-measure QbCube named "single-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "single-measure-qube-with-new-definitions.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
 
-  Scenario: A locally defined multi-measure dataset (with code-lists) can be serialised to a standard CSV-qb
+  Scenario: A locally defined multi-measure dataset with code-lists can be serialised to a standard CSV-qb.
     Given a multi-measure QbCube named "multi-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "multi-measure-qube-with-new-definitions.csv-metadata.json" should succeed
@@ -404,11 +449,28 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
     And the RDF should pass "skos, qb" SPARQL tests
 
-  Scenario: A cube with an option attribute which has missing data values should validate successfully
-    Given a single-measure QbCube named "Some Qube" with optional attribute values missing
+  Scenario: A cube with an optional attribute which has missing data values should validate successfully given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvwcheck validation of all CSV-Ws should succeed
+
+  Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "good-qube.csv-metadata.json" should succeed
+
+  Scenario: Observation Values are Required where an 'sdmxa:ObsStatus' Attribute Column is present but no value is set given ATTRIBUTE_VALUE_CODELISTS is False.
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
+    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
+    When the cube is serialised to CSV-W
+    # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
+    # since an `sdmxa:obsStatus` Attribute column has been defined.
+    Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
 
   Scenario: Each Observation should have Type http://purl.org/linked-data/cube#Observation and be part of the dataset
     Given a single-measure QbCube named "Some Qube"
@@ -427,26 +489,20 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
       """
 
-  Scenario: Observation Values are Required where no `sdmxa:ObsStatus` Attribute Column is Present
-    Given a single-measure QbCube named "Bad Qube" with missing observation values
+  Scenario: Observation Values are Required where no 'sdmxa:ObsStatus' Attribute Column is Present given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Bad Qube" with missing observation values
     Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 1"
     When the cube is serialised to CSV-W
     # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"
 
-  Scenario: Observation Values are Optional where an `sdmxa:ObsStatus` Attribute is Present
-    Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
+  Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvwcheck validation of "good-qube.csv-metadata.json" should succeed
-
-  Scenario: Observation Values are Required where an `sdmxa:ObsStatus` Attribute Column is present but no value is set.
-    Given a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
-    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
-    When the cube is serialised to CSV-W
-    # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
-    # since an `sdmxa:obsStatus` Attribute column has been defined.
-    Then csvwcheck validation of "bad-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube with a dimension containing URI-unsafe chars can be correctly serialised.
     Given a QbCube named "URI-Unsafe Cube" which has a dimension containing URI-unsafe chars
@@ -615,8 +671,9 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       prov:used <{{csvcubed_version_identifier}}>.
       """
 
-  Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs
-    Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
+  Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10003.csv" should exist
@@ -694,8 +751,89 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       rdfs:range xsd:decimal .
       """
 
-  Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs
-    Given a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
+  Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "qb-id-10003.csv" should exist
+    And the file at "qb-id-10003.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+      """
+      @prefix cube: <http://purl.org/linked-data/cube#> .
+      @prefix measure: <{{rdf_input_directory}}/qb-id-10003.csv#measure/> .
+      @prefix dimension: <{{rdf_input_directory}}/qb-id-10003.csv#dimension/> .
+      @prefix attribute: <{{rdf_input_directory}}/qb-id-10003.csv#attribute/> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-other-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-other-measure 4.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-other-measure 6.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#slice/a> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#slice/b> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#slice/c> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-a> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-measure 1.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-b> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-c> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-measure 3.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      measure:some-measure a cube:ComponentProperty,
+      cube:MeasureProperty,
+      rdf:Property,
+      rdfs:Resource ;
+      rdfs:label "Some Measure"@en ;
+      rdfs:range xsd:decimal .
+
+      measure:some-other-measure a cube:ComponentProperty,
+      cube:MeasureProperty,
+      rdf:Property,
+      rdfs:Resource ;
+      rdfs:label "Some Other Measure"@en ;
+      rdfs:range xsd:decimal .
+      """
+
+  Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is False
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
+    And a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "qb-id-10004.csv" should exist
@@ -735,6 +873,61 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
       <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-c> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-measure 3.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      measure:some-measure a cube:ComponentProperty,
+      cube:MeasureProperty,
+      rdf:Property,
+      rdfs:Resource ;
+      rdfs:label "Some Measure"@en ;
+      rdfs:range xsd:decimal .
+      """
+
+  Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs given ATTRIBUTE_VALUE_CODELISTS is True
+    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    And a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "qb-id-10004.csv" should exist
+    And the file at "qb-id-10004.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+      """
+      @prefix cube: <http://purl.org/linked-data/cube#> .
+      @prefix measure: <{{rdf_input_directory}}/qb-id-10004.csv#measure/> .
+      @prefix dimension: <{{rdf_input_directory}}/qb-id-10004.csv#dimension/> .
+      @prefix attribute: <{{rdf_input_directory}}/qb-id-10004.csv#attribute/> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#slice/a> cube:observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#slice/b> cube:observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#slice/c> cube:observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-a> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-measure 1.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-b> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-c> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-measure 3.0 ;
       cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;

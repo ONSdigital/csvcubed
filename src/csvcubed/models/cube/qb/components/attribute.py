@@ -7,26 +7,29 @@ Represent Attributes in an RDF Data Cube.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, TypeVar
+from typing import Dict, List, Optional, Set
 
 import pandas as pd
 
-from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
+from csvcubed import feature_flags
+from csvcubed.inputs import PandasDataTypes
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList, QbCodeList
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
+from csvcubed.models.cube.qb.components.validationerrors import (
+    UndefinedAttributeValueUrisError,
+)
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
-from csvcubed.models.validationerror import (
-    ValidateModelPropertiesError,
-    ValidationError,
-)
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
-from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.uri import uri_safe
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
 from .datastructuredefinition import QbColumnStructuralDefinition
-from .validationerrors import UndefinedAttributeValueUrisError
 
 
 @dataclass
@@ -36,40 +39,13 @@ class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
         pass
 
     @abstractmethod
-    def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
-        pass
-
-    @abstractmethod
     def get_observed_value_col_title(self) -> Optional[str]:
         pass
-
-    def _validate_data_new_attribute_values(
-        self, data: pd.Series
-    ) -> List[ValidationError]:
-        """
-        Validate that all of the values in :obj`data` are defined in :attr:`new_attribute_values` if values are defined.
-        """
-        if len(self.new_attribute_values) > 0:  # type: ignore
-            expected_values = {
-                av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
-            }
-            actual_values = {
-                uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
-            }
-            undefined_values = expected_values - actual_values
-
-            if len(undefined_values) > 0:
-                return [UndefinedAttributeValueUrisError(self, undefined_values)]
-
-        return []
 
 
 @dataclass
 class ExistingQbAttribute(QbAttribute):
     attribute_uri: str
-    new_attribute_values: List[NewQbAttributeValue] = field(
-        default_factory=list, repr=False
-    )
     is_required: bool = field(default=False, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
     observed_value_col_title: Optional[str] = field(default=None, repr=False)
@@ -82,9 +58,6 @@ class ExistingQbAttribute(QbAttribute):
 
     def get_is_required(self) -> bool:
         return self.is_required
-
-    def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
-        return self.new_attribute_values
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
@@ -99,42 +72,23 @@ class ExistingQbAttribute(QbAttribute):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        return self._validate_data_new_attribute_values(data)
+        # No validation possible since we don't have the attribute's code-list locally.
+        return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "attribute_uri": v.uri,
-            "new_attribute_values": v.all_of(
-                v.list(v.validated_model(NewQbAttributeValue)),
-                self._validate_attribute_values_non_conflicting,
-            ),
             "is_required": v.boolean,
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": v.optional(v.string),
         }
-
-    @staticmethod
-    def _validate_attribute_values_non_conflicting(
-        new_attribute_values: List[NewQbAttributeValue], property_path: List[str]
-    ) -> List[ValidateModelPropertiesError]:
-        """
-        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
-        """
-        return ensure_no_uri_safe_conflicts(
-            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
-            ExistingQbAttribute,
-            property_path,
-            new_attribute_values,
-        )
 
 
 @dataclass
 class NewQbAttribute(QbAttribute, UriIdentifiable):
     label: str
     description: Optional[str] = field(default=None, repr=False)
-    new_attribute_values: List[NewQbAttributeValue] = field(
-        default_factory=list, repr=False
-    )
+    code_list: Optional[QbCodeList] = field(default=None, repr=False)
     parent_attribute_uri: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
     is_required: bool = field(default=False, repr=False)
@@ -151,9 +105,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     def get_is_required(self) -> bool:
         return self.is_required
 
-    def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
-        return self.new_attribute_values
-
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Property
 
@@ -169,7 +120,9 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     @staticmethod
     def from_data(
         label: str,
+        csv_column_title: str,
         data: PandasDataTypes,
+        values: Optional[List[NewQbConcept]] = None,
         description: Optional[str] = None,
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
@@ -177,24 +130,43 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = list(),
         observed_value_col_title: Optional[str] = None,
+        code_list_uri_style: Optional[URIStyle] = None,
     ) -> "NewQbAttribute":
-        columnar_data = pandas_input_to_columnar_optional_str(data)
-        new_attribute_values_from_column = [
-            NewQbAttributeValue(v)
-            for v in sorted(set([d for d in columnar_data if d is not None]))
-        ]
-
-        return NewQbAttribute(
-            label=label,
-            description=description,
-            new_attribute_values=new_attribute_values_from_column,
-            parent_attribute_uri=parent_attribute_uri,
-            source_uri=source_uri,
-            is_required=is_required,
-            uri_safe_identifier_override=uri_safe_identifier_override,
-            arbitrary_rdf=arbitrary_rdf,
-            observed_value_col_title=observed_value_col_title,
-        )
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            # If ATTRIBUTE_VALUE_CODELISTS is True, the codelist should be created from the data in the CSV via the NewQbCodelist.from_data() method
+            # This will throw an error if any column cells are empty
+            return NewQbAttribute(
+                label=label,
+                description=description,
+                code_list=NewQbCodeList.from_data(
+                    CatalogMetadata(label),
+                    csv_column_title=csv_column_title,
+                    data=data,
+                    uri_style=code_list_uri_style,
+                ),
+                parent_attribute_uri=parent_attribute_uri,
+                source_uri=source_uri,
+                is_required=is_required,
+                uri_safe_identifier_override=uri_safe_identifier_override,
+                arbitrary_rdf=arbitrary_rdf,
+                observed_value_col_title=observed_value_col_title,
+            )
+        else:
+            # If ATTRIBUTE_VALUE_CODELISTS is False, we still need to generate a codelist, but allow for missing values by passing a list of the concepts directly to the NewQbAttribute code_list property
+            return NewQbAttribute(
+                label=label,
+                description=description,
+                code_list=NewQbCodeList(
+                    metadata=CatalogMetadata(label),
+                    concepts=values,  # type: ignore
+                ),
+                parent_attribute_uri=parent_attribute_uri,
+                source_uri=source_uri,
+                is_required=is_required,
+                uri_safe_identifier_override=uri_safe_identifier_override,
+                arbitrary_rdf=arbitrary_rdf,
+                observed_value_col_title=observed_value_col_title,
+            )
 
     def validate_data(
         self,
@@ -203,16 +175,24 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        return self._validate_data_new_attribute_values(data)
+        if (
+            isinstance(self.code_list, NewQbCodeList)
+            and len(self.code_list.concepts) > 0
+        ):
+            expected_values = {concept.code for concept in self.code_list.concepts}
+            actual_values = {
+                uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
+            }
+            undefined_values = actual_values - expected_values
+            if len(undefined_values) > 0:
+                return [UndefinedAttributeValueUrisError(self, undefined_values)]
+        return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "label": v.string,
             "description": v.optional(v.string),
-            "new_attribute_values": v.all_of(
-                v.list(v.validated_model(NewQbAttributeValue)),
-                self._validate_concepts_non_conflicting,
-            ),
+            "code_list": v.optional(v.validated_model(QbCodeList)),
             "parent_attribute_uri": v.optional(v.uri),
             "source_uri": v.optional(v.uri),
             "is_required": v.boolean,
@@ -220,20 +200,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": v.optional(v.string),
         }
-
-    @staticmethod
-    def _validate_concepts_non_conflicting(
-        new_attribute_values: List[NewQbAttributeValue], property_path: List[str]
-    ) -> List[ValidateModelPropertiesError]:
-        """
-        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
-        """
-        return ensure_no_uri_safe_conflicts(
-            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
-            NewQbAttribute,
-            property_path,
-            new_attribute_values,
-        )
 
 
 @dataclass

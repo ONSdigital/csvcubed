@@ -9,15 +9,20 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, Union
 
 import pandas as pd
 
+from csvcubed import feature_flags
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    QbAttribute,
+    QbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension, QbDimension
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
@@ -100,14 +105,14 @@ class QbWriter(WriterBase):
 
         tables += self._get_table_references_needed_for_foreign_keys()
 
-        self._output_new_code_list_csvws(output_folder)
-
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._uris.get_dataset_uri(),
             "tables": tables,
             "rdfs:seeAlso": self._dsd.generate_data_structure_definitions(),
         }
+
+        self._output_new_code_list_csvws(output_folder)
 
         metadata_json_output_path = output_folder / self.csv_metadata_file_name
         with open(metadata_json_output_path, "w+") as f:
@@ -124,11 +129,26 @@ class QbWriter(WriterBase):
             code_list = column.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
                 _logger.debug(
-                    "Writing code list %s to '%s' directory.", code_list, output_folder
+                    "Writing dimension code list %s to '%s' directory.",
+                    code_list,
+                    output_folder,
                 )
 
                 code_list_writer = self._get_writer_for_code_list(code_list)
                 code_list_writer.write(output_folder)
+
+        for column in self.cube.get_columns_of_dsd_type(NewQbAttribute):
+            if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+                code_list = column.structural_definition.code_list
+                if isinstance(code_list, NewQbCodeList):
+                    _logger.debug(
+                        "Writing attribute code list %s to '%s' directory.",
+                        code_list,
+                        output_folder,
+                    )
+
+                    code_list_writer = self._get_writer_for_code_list(code_list)
+                    code_list_writer.write(output_folder)
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvw_column_definition(c) for c in self.cube.columns]
@@ -142,14 +162,21 @@ class QbWriter(WriterBase):
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
 
-    def _get_columns_for_foreign_keys(self) -> List[QbColumn[NewQbDimension]]:
+    def _get_columns_for_foreign_keys(
+        self,
+    ) -> List[QbColumn[Union[NewQbDimension, NewQbAttribute]]]:
         columns = []
         for col in self.cube.get_columns_of_dsd_type(NewQbDimension):
             if col.structural_definition.code_list is not None and isinstance(
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            for col in self.cube.get_columns_of_dsd_type(NewQbAttribute):
+                if col.structural_definition.code_list is not None and isinstance(
+                    col.structural_definition.code_list, NewQbCodeList
+                ):
+                    columns.append(col)
         return columns
 
     def _get_table_references_needed_for_foreign_keys(self) -> List[dict]:

@@ -1,15 +1,24 @@
 import logging
+import os
 import shutil
 from pathlib import Path
 
 import pytest
 from platformdirs import PlatformDirs
 
+from csvcubed import feature_flags
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.utils.createlocalcopyresponse import map_url_to_file_path
 from csvcubed.utils.log import start_logging
 
 _user_log_dir = Path(PlatformDirs("csvcubed_testing", "csvcubed").user_log_dir)
+
+
+@pytest.fixture
+def tests_env_vars_setup_and_teardown():
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = True
+    yield
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = False
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -44,7 +53,7 @@ def dummy_mapped_url():
         / "v1_3"
         / "schema.json",
         # When this URL is used in a test, a response will successfully be returned as purl.org exists, but the resource (/badinput) cannot be found.
-        "//purl.org/csv-cubed/qube-config/badinput": APP_ROOT_DIR_PATH
+        "//purl.archive.org/csv-cubed/qube-config/badinput": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
         / "v1_3"
