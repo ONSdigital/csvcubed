@@ -10,8 +10,8 @@ from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
     NewQbAttributeLiteral,
 )
-from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.dimension import (
     ExistingQbDimension,
     NewQbDimension,
@@ -384,17 +384,16 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
     assert error.actual_number == 2
 
 
-def test_existing_attribute_csv_column_uri_template_required():
+def test_new_attribute_values_required():
     """
-    An ExistingQbAttribute using Existing Attribute Values must have an csv_column_uri_template defined by the user,
+    An NewQbAttribute using Existing Attribute Values must have an list of values defined by the user,
      if not it's an error
     """
-
     data = pd.DataFrame(
         {
             "Existing Dimension": ["A", "B", "C"],
             "Existing Attribute 1": ["Val1", "Val2", "Val3"],
-            "Existing Attribute 2": ["Val4", "Val5", "Val6"],
+            "New Attribute 2": ["Val4", "Val5", "Val6"],
             "Obs": [6, 7, 8],
         }
     )
@@ -409,20 +408,17 @@ def test_existing_attribute_csv_column_uri_template_required():
             ),
             QbColumn(
                 "Existing Attribute 1",
-                ExistingQbAttribute("http://example.org/attributes/example"),
-                # No NewQbAttributeValues - so csv_column_uri_template is *required*
+                ExistingQbAttribute(
+                    attribute_uri="http://example.org/attributes/example"
+                ),
+                csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_attribute}",
             ),
             QbColumn(
-                "Existing Attribute 2",
-                ExistingQbAttribute(
+                "New Attribute 2",
+                NewQbAttribute(
                     "http://example.org/attributes/example",
-                    new_attribute_values=[
-                        NewQbAttributeValue("Val4"),
-                        NewQbAttributeValue("Val5"),
-                        NewQbAttributeValue("Val6"),
-                    ],
                 ),
-                # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
+                # NewQbAttribute so csv_column_uri_template or list of Attribute Values is **required**
             ),
             QbColumn(
                 "Obs",
@@ -436,13 +432,13 @@ def test_existing_attribute_csv_column_uri_template_required():
 
     error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, NoUriTemplateOrAttrValuesError)
-    assert error.csv_column_name == "Existing Attribute 1"
-    assert error.component_type == "ExistingQbAttribute using existing attribute values"
+    assert error.csv_column_name == "New Attribute 2"
+    assert error.component_type == "NewQbAttribute using existing attribute values"
 
 
 def test_new_attribute_csv_column_uri_template_required():
     """
-    A NewQbAttribute using existing attribute vluaes must have an csv_column_uri_template defined by the user,
+    A NewQbAttribute using existing attribute values must have an csv_column_uri_template defined by the user,
      if not it's an error
     """
 
@@ -466,19 +462,22 @@ def test_new_attribute_csv_column_uri_template_required():
             QbColumn(
                 "New Attribute 1",
                 NewQbAttribute("Some New Attribute 1"),
-                # No NewQbAttributeValues - so csv_column_uri_template is *required*
+                # No NewQbCodeList - so csv_column_uri_template is *required*
             ),
             QbColumn(
                 "New Attribute 2",
                 NewQbAttribute(
                     "Some New Attribute 2",
-                    new_attribute_values=[
-                        NewQbAttributeValue("Val4"),
-                        NewQbAttributeValue("Val5"),
-                        NewQbAttributeValue("Val6"),
-                    ],
+                    code_list=NewQbCodeList(
+                        metadata=CatalogMetadata("Some New Attribute 2"),
+                        concepts=[
+                            NewQbConcept("Val4"),
+                            NewQbConcept("Val5"),
+                            NewQbConcept("Val6"),
+                        ],
+                    ),
                 ),
-                # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
+                # NewQbCodeList defined - so csv_column_uri_template is **not** required
             ),
             QbColumn(
                 "Obs",
@@ -496,7 +495,7 @@ def test_new_attribute_csv_column_uri_template_required():
     assert error.component_type == "NewQbAttribute using existing attribute values"
 
 
-def test_new_qb_attribute_generation():
+def test_new_qb_attribute_generation_codelist_true(tests_env_vars_setup_and_teardown):
     """
     When a new attribute value is defined from the dataframe, ensure that only unique attribute values are generated.
     """
@@ -509,13 +508,45 @@ def test_new_qb_attribute_generation():
         }
     )
 
-    marker_attribute = NewQbAttribute.from_data(label="Status", data=data["Marker"])
+    marker_attribute = NewQbAttribute.from_data(
+        label="Status", csv_column_title="Marker", data=data["Marker"]
+    )
 
-    assert len(marker_attribute.new_attribute_values) == 2
+    assert len(marker_attribute.code_list.concepts) == 2
 
     new_value_set = {
         new_attribute_value.label
-        for new_attribute_value in marker_attribute.new_attribute_values
+        for new_attribute_value in marker_attribute.code_list.concepts
+    }
+
+    assert new_value_set == {"Provisional", "Final"}
+
+
+def test_new_qb_attribute_generation_codelist_false():
+    """
+    When a new attribute value is defined from the dataframe, ensure that only unique attribute values are generated.
+    """
+
+    data = pd.DataFrame(
+        {
+            "Year": [2020, 2019, 2018],
+            "Value": [5.6, 2.8, 4.4],
+            "Marker": ["Provisional", "Final", "Final"],
+        }
+    )
+
+    marker_attribute = NewQbAttribute.from_data(
+        label="Status",
+        csv_column_title="Marker",
+        data=data["Marker"],
+        values={NewQbConcept(value) for value in data["Marker"].dropna()},
+    )
+
+    assert len(marker_attribute.code_list.concepts) == 2
+
+    new_value_set = {
+        new_attribute_value.label
+        for new_attribute_value in marker_attribute.code_list.concepts
     }
 
     assert new_value_set == {"Provisional", "Final"}
@@ -584,7 +615,9 @@ def test_existing_qb_attribute_literal_date():
     assert_num_validation_errors(qube.validate(), 0)
 
 
-def test_attribute_numeric_resources_validation():
+def test_attribute_numeric_resources_validation_codelist_true(
+    tests_env_vars_setup_and_teardown,
+):
     """
     Ensuring that we can define a :class:`~csvcubed.models.cube.qb.components.attribute.NewQbAttribute` column
     holding :class:`~csvcubed.models.cube.qb.components.attribute.NewQbAttributeValue` instances defined by
@@ -606,7 +639,46 @@ def test_attribute_numeric_resources_validation():
             QbColumn(
                 "Some Attribute",
                 NewQbAttribute.from_data(
-                    label="Some Attribute", data=data["Some Attribute"]
+                    label="Some Attribute",
+                    csv_column_title="Some Attribute",
+                    data=data["Some Attribute"],
+                ),
+            ),
+        ],
+    )
+    errors = qube.validate()
+    assert_num_validation_errors(errors, 0)
+
+
+def test_attribute_numeric_resources_validation_codelist_false():
+    """
+    Ensuring that we can define a :class:`~csvcubed.models.cube.qb.components.attribute.NewQbAttribute` column
+    holding :class:`~csvcubed.models.cube.qb.components.attribute.NewQbAttributeValue` instances defined by
+    numeric (float) values.
+    """
+    data = _create_simple_frame_with_literals("float")
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
+            QbColumn(
+                "Values",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+            QbColumn(
+                "Some Attribute",
+                NewQbAttribute.from_data(
+                    label="Some Attribute",
+                    csv_column_title="Some Attribute",
+                    data=data["Some Attribute"],
+                    values=[
+                        NewQbConcept(str(value))
+                        for value in data["Some Attribute"].dropna()
+                    ],
                 ),
             ),
         ],
@@ -697,7 +769,9 @@ def test_conflict_concept_uri_values_error():
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
 
-def test_conflict_new_attribute_value_uri_values_error():
+def test_conflict_new_attribute_value_uri_values_error_codelist_true(
+    tests_env_vars_setup_and_teardown,
+):
     """
     Test that a validation error is raised when the user defines new attribute value labels (on a new attribute)
      which are distinct but map to the same URI-safe value.
@@ -724,6 +798,7 @@ def test_conflict_new_attribute_value_uri_values_error():
                 "New Attribute",
                 NewQbAttribute.from_data(
                     "New Attribute",
+                    "New Attribute",
                     data["New Attribute"],
                 ),
             ),
@@ -738,19 +813,19 @@ def test_conflict_new_attribute_value_uri_values_error():
     )
     error = _get_single_validation_error_for_qube(qube)
     assert isinstance(error, ConflictingUriSafeValuesError)
-    assert error.component_type == NewQbAttribute
+    assert error.component_type == NewQbCodeList
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
 
-def test_conflict_existing_attribute_value_uri_values_error():
+def test_conflict_new_attribute_value_uri_values_error_codelist_false():
     """
-    Test that a validation error is raised when the user defines new attribute value labels (on an existing attribute)
+    Test that a validation error is raised when the user defines new attribute value labels (on a new attribute)
      which are distinct but map to the same URI-safe value.
     """
     data = pd.DataFrame(
         {
             "New Dimension": ["A", "B"],
-            "Existing Attribute": ["A B", "A.B"],
+            "New Attribute": ["A B", "A.B"],
             "Value": [2, 2],
         }
     )
@@ -766,10 +841,12 @@ def test_conflict_existing_attribute_value_uri_values_error():
                 ),
             ),
             QbColumn(
-                "Existing Attribute",
-                ExistingQbAttribute(
-                    "http://example.com/attributes/existing-attribute",
-                    [NewQbAttributeValue("A B"), NewQbAttributeValue("A.B")],
+                "New Attribute",
+                NewQbAttribute.from_data(
+                    "New Attribute",
+                    "New Attribute",
+                    data["New Attribute"],
+                    [NewQbConcept(value) for value in data["New Attribute"].dropna()],
                 ),
             ),
             QbColumn(
@@ -783,7 +860,7 @@ def test_conflict_existing_attribute_value_uri_values_error():
     )
     error = _get_single_validation_error_for_qube(qube)
     assert isinstance(error, ConflictingUriSafeValuesError)
-    assert error.component_type == ExistingQbAttribute
+    assert error.component_type == NewQbCodeList
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
 
@@ -892,7 +969,9 @@ def test_pivoted_validation_multiple_measure_columns():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -943,7 +1022,9 @@ def test_pivoted_validation_no_measures_defined_error():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -989,7 +1070,9 @@ def test_pivoted_obs_val_col_without_measure_error():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -1034,7 +1117,9 @@ def test_pivoted_validation_no_unit_defined_error():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -1076,7 +1161,12 @@ def test_pivoted_validation_attribute_column_not_linked_error():
         ),
         QbColumn(
             "Some Attribute",
-            NewQbAttribute.from_data("Some Attribute", data["Some Attribute"]),
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                "Some Attribute",
+                data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1121,7 +1211,9 @@ def test_pivoted_validation_obs_column_doesnt_exist():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Doesn't Exist",
             ),
         ),
@@ -1169,7 +1261,9 @@ def test_pivoted_validation_link_attribute_to_non_obs_column():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Dimension",
             ),
         ),
@@ -1191,8 +1285,7 @@ def test_pivoted_validation_link_attribute_to_non_obs_column():
     assert isinstance(error, LinkedToNonObsColumnError)
 
 
-def test_pivoted_validation_measure_dupication():
-
+def test_pivoted_validation_measure_duplication():
     """
     This scenario will produce an error Each pivoted multi-measure observation column has a unique measure.
      i.e. the same measure cannot be used twice in the same data set.
@@ -1217,7 +1310,9 @@ def test_pivoted_validation_measure_dupication():
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),

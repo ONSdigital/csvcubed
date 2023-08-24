@@ -3,6 +3,7 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
+from csvcubed import feature_flags
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.cube import QbColumnarDsdType, QbCube
@@ -506,31 +507,29 @@ class UriHelper:
         attribute_uri = self.get_attribute_uri(attribute)
 
         if isinstance(attribute, ExistingQbAttribute):
-            if len(attribute.new_attribute_values) > 0:
-                _logger.debug(
-                    "Existing Attribute has new attribute values which define the valueUrl."
-                )
-                # NewQbAttributeValues defined here.
-                value_uri = self._new_resource_uri_generator.get_attribute_value_uri(
-                    column.uri_safe_identifier, column_uri_fragment
-                )
-            else:
-                _logger.debug("Existing Attribute does not have new attribute values.")
-
-            # N.B. We can't do mix-and-match New/Existing attribute values.
-
+            _logger.debug("Existing Attribute does not have new attribute values.")
             return attribute_uri, value_uri
         elif isinstance(attribute, NewQbAttribute):
-            if len(attribute.new_attribute_values) > 0:
+            if attribute.code_list is None:
                 _logger.debug(
-                    "New Attribute has new attribute values which define the valueUrl."
-                )
-                # NewQbAttributeValues defined here.
-                value_uri = self.get_new_attribute_value_uri(
-                    attribute.uri_safe_identifier, column_uri_fragment
+                    "Attribute does not have a code list; valueUrl defaults directly to column value"
                 )
             else:
-                _logger.debug("New Attribute does not have new attribute values.")
+                if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+                    _logger.debug(
+                        "Attribute valueUrl determined by code list %s",
+                        attribute.code_list,
+                    )
+                    value_uri = self._get_default_value_uri_for_code_list_concepts(
+                        column, attribute.code_list
+                    )
+                else:
+                    _logger.debug(
+                        "New Attribute has new attribute values which define the valueUrl."
+                    )
+                    value_uri = self.get_new_attribute_value_uri(
+                        attribute.uri_safe_identifier, column_uri_fragment
+                    )
 
             # N.B. We can't do mix-and-match New/Existing attribute values.
 

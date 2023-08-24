@@ -6,8 +6,7 @@ Represent code lists in an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Dict, Generic, List, Optional, Set, TypeVar
+from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
 import uritemplate
 

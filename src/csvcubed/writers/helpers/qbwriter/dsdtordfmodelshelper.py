@@ -19,6 +19,7 @@ from csvcubedmodels.rdf import (
 )
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 
+from csvcubed import feature_flags
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -26,7 +27,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     NewQbAttribute,
-    NewQbAttributeValue,
     QbAttribute,
     QbAttributeLiteral,
 )
@@ -35,6 +35,7 @@ from csvcubed.models.cube.qb.components.codelist import (
     NewQbCodeList,
     QbCodeList,
 )
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbStructuralDefinition,
 )
@@ -53,7 +54,10 @@ from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit, QbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.rdf import prov
-from csvcubed.models.rdf.newattributevalueresource import NewAttributeValueResource
+from csvcubed.models.rdf.newattributevalueresource import (
+    CodedAttributeProperty,
+    NewAttributeValueResource,
+)
 from csvcubed.models.rdf.newunitresource import NewUnitResource
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
@@ -88,8 +92,10 @@ class DsdToRdfModelsHelper:
         for dependencies in self._get_rdf_file_dependencies():
             see_also += rdf_resource_to_json_ld(dependencies)
 
-        for attribute_value in self._get_new_attribute_value_resources():
-            see_also += rdf_resource_to_json_ld(attribute_value)
+        # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False, generate attribute value resources to be added to rdfs:seeAlso
+        if not feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            for attribute_value in self._get_new_attribute_value_resources():
+                see_also += rdf_resource_to_json_ld(attribute_value)
 
         for unit in self._get_new_unit_resources():
             see_also += rdf_resource_to_json_ld(unit)
@@ -125,7 +131,28 @@ class DsdToRdfModelsHelper:
                 )
 
                 rdf_file_dependencies.append(dependency)
-
+        # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True, include Attribute codelists in the RDF file dependencies
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            attribute_columns = self.cube.get_columns_of_dsd_type(NewQbAttribute)
+            for column in attribute_columns:
+                attribute = column.structural_definition
+                code_list = attribute.code_list
+                if isinstance(code_list, NewQbCodeList):
+                    dependency = RdfGraphDependency(
+                        self._uris.get_void_dataset_dependency_uri(
+                            code_list.metadata.uri_safe_identifier
+                        )
+                    )
+                    code_list_writer = SkosCodeListWriter(
+                        code_list, self.cube.uri_style
+                    )
+                    dependency.uri_space = (
+                        code_list_writer.uri_helper.get_uri_prefix_for_doc()
+                    )
+                    dependency.dependent_rdf_file_location = ExistingResource(
+                        f"./{code_list_writer.csv_metadata_file_name}"
+                    )
+                    rdf_file_dependencies.append(dependency)
         return rdf_file_dependencies
 
     def _get_new_attribute_value_resources(self) -> List[NewAttributeValueResource]:
@@ -133,37 +160,32 @@ class DsdToRdfModelsHelper:
         :return: RDF resource models to define New Attribute Values
         """
         new_attribute_value_resources: List[NewAttributeValueResource] = []
-        attribute_columns = self.cube.get_columns_of_dsd_type(QbAttribute)
+        attribute_columns = self.cube.get_columns_of_dsd_type(NewQbAttribute)
         for column in attribute_columns:
-            if isinstance(column.structural_definition, NewQbAttribute):
+            if column.structural_definition.code_list is not None:
                 column_identifier = column.structural_definition.uri_safe_identifier
-            else:
-                column_identifier = column.uri_safe_identifier
 
-            for value in column.structural_definition.new_attribute_values:  # type: ignore
-                assert isinstance(value, NewQbAttributeValue)
+                for value in column.structural_definition.code_list.concepts:  # type: ignore
+                    assert isinstance(value, NewQbConcept)
 
-                attribute_value_uri = self._uris.get_new_attribute_value_uri(
-                    column_identifier, value.uri_safe_identifier
-                )
-                new_attribute_value_resource = NewAttributeValueResource(
-                    attribute_value_uri
-                )
-                new_attribute_value_resource.label = value.label
-                new_attribute_value_resource.comment = value.description
-                new_attribute_value_resource.source_uri = maybe_existing_resource(
-                    value.source_uri
-                )
-                new_attribute_value_resource.parent_attribute_value_uri = (
-                    maybe_existing_resource(value.parent_attribute_value_uri)
-                )
+                    attribute_value_uri = self._uris.get_new_attribute_value_uri(
+                        column_identifier, value.uri_safe_identifier
+                    )
+                    new_attribute_value_resource = NewAttributeValueResource(
+                        attribute_value_uri
+                    )
+                    new_attribute_value_resource.label = value.label
+                    new_attribute_value_resource.comment = value.description
+                    new_attribute_value_resource.parent_attribute_value_uri = (
+                        maybe_existing_resource(value.parent_code)
+                    )
 
-                _logger.debug(
-                    "Generated New Attribute Value %s.",
-                    new_attribute_value_resource.uri,
-                )
+                    _logger.debug(
+                        "Generated New Attribute Value %s.",
+                        new_attribute_value_resource.uri,
+                    )
 
-                new_attribute_value_resources.append(new_attribute_value_resource)
+                    new_attribute_value_resources.append(new_attribute_value_resource)
 
         return new_attribute_value_resources
 
@@ -506,7 +528,15 @@ class DsdToRdfModelsHelper:
             component = rdf.qb.AttributeComponentSpecification(
                 self._uris.get_component_uri(attribute.uri_safe_identifier)
             )
-            component.attribute = rdf.qb.AttributeProperty(attribute_uri)
+            # If the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True, generate the Attribute codelist resource
+            if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+                component.attribute = CodedAttributeProperty(attribute_uri)
+                if attribute.code_list is not None:
+                    component.attribute.code_list = self._get_code_list_resource(
+                        attribute.code_list
+                    )
+            else:
+                component.attribute = rdf.qb.AttributeProperty(attribute_uri)
             component.attribute.label = attribute.label
             component.attribute.comment = attribute.description
             component.attribute.subPropertyOf = maybe_existing_resource(
