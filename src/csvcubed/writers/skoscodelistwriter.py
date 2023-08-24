@@ -204,7 +204,7 @@ class SkosCodeListWriter(WriterBase):
                 concept_scheme_with_metadata.variant.add(ExistingResource(variant_uri))
 
         self.new_code_list.metadata.configure_dcat_distribution(
-            concept_scheme_with_metadata
+            concept_scheme_with_metadata  # type: ignore
         )
         self.new_code_list.copy_arbitrary_triple_fragments_to_resources(
             {
