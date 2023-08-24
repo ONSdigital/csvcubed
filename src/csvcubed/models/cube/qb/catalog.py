@@ -106,57 +106,6 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         distribution.themes = self.theme_uris
         distribution.keywords = self.keywords
 
-        # 831 TODO
-        # Main question - shouldn't Distribution inherit from Resource, not NewMetadataResource?
-        # dcat:Distribution properties not yet used
-        # distribution.is_distribution_of
-        # distribution.access_service
-        # distribution.access_url
-        # distribution.byte_size
-        # distribution.compress_format
-        # distribution.download_url
-        # distribution.media_type
-        # distribution.package_format
-        # distribution.spatial
-        # distribution.spatial_resolution_in_meters
-        # distribution.temporal
-        # distribution.temporal_resolution
-        # distribution.conforms_to
-        # distribution.format
-        # distribution.rights
-        # distribution.has_policy
-
-        # dcat:Dataset properties (most of these were populated via the dcat:Resource parent class)
-        # Direct properties:
-        # distribution
-        # accrual_periodicity
-        # spatial
-        # spatial_resolution_in_meters
-        # temporal
-        # temporal_resolution
-        # Inherited from Resource:
-        # access_rights
-        # contact_point
-        # creator
-        # description
-        # title
-        # issued
-        # modified
-        # language
-        # publisher
-        # identifier
-        # themes
-        # type
-        # relation
-        # qualified_relation
-        # keywords
-        # landing_page
-        # qualified_attribution
-        # license
-        # rights
-        # has_policy
-        # is_referenced_by
-
 
 def _convert_date_to_date_time(dt: Union[datetime, date]) -> datetime:
     if isinstance(dt, date) and not isinstance(dt, datetime):
