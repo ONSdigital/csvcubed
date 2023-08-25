@@ -11,7 +11,10 @@ from dataclasses import asdict, dataclass, fields
 from textwrap import indent
 from typing import Any, List, Optional, Tuple
 
+import requests
 from jsonschema import RefResolver
+from referencing import Registry, Resource
+from referencing.jsonschema import DRAFT7
 
 from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import looks_like_uri
@@ -138,14 +141,24 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
         self, invidual_message_truncation_at: int, depth_to_display: int
     ):
         ref_resolver = RefResolver.from_schema(self.schema)
+        # New code start
+        resource = Resource(self.schema, DRAFT7)
+        registry = Registry().with_resource(
+            resource.contents["id"],
+            resource,
+        )
+        resolver = registry.resolver(resource.contents["id"])
+        # New code end
         child_error_messages = ""
 
-        for (possible_type, errors) in self.possible_types_with_grouped_errors:
+        for possible_type, errors in self.possible_types_with_grouped_errors:
             description = possible_type.get("description")
 
             if "$ref" in possible_type:
+                # _resolve_reference_in_schema now takes in both the jsonschema.RefResolver and the referencing.Resolver objects
+                # Once investigation is complete and the referencing library has been implemented, ref_resolver should be removed
                 possible_type = self._resolve_reference_in_schema(
-                    ref_resolver, possible_type
+                    ref_resolver, resolver, possible_type
                 )
                 description = possible_type.get("description", description)
 
@@ -174,11 +187,34 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
 
     @staticmethod
     def _resolve_reference_in_schema(
-        ref_resolver: RefResolver, ref_object: dict
+        ref_resolver: RefResolver, resolver: Registry.resolver, ref_object: dict
     ) -> dict:
         ref_value = ref_object["$ref"]
+        # If the ref_value is *not* a URI, this function works fine
+        # There is no direct replacement for `RefResolver.resolve_from_url` in the `referencing` library
+        # The `referencing` library needs the relevant $ref contents to be retrieved via an HTTP request
+        # A Resource can then be generated from the HTTP response
+        # The main issue here is to accommodate different formats when resolving the $ref value
+        # For example, if a codelist is defined inline in the config.json, resource.contents does not have a `uris` value
+        # In this instance, `resource.contents` would be the expected return value
+        # There may be other nuances for the different $ref values that have not yet been explored
         if looks_like_uri(ref_value):
-            return ref_resolver.resolve_from_url(ref_value)
+            response = requests.get(ref_value)
+            resource = Resource.from_contents(response.json(), DRAFT7)
+            return resource.contents["uris"]
+            # return ref_resolver.resolve_from_url(ref_value)
         else:
-            _, referenced_type = ref_resolver.resolve(ref_value)
+            # _, referenced_type = ref_resolver.resolve(ref_value)
+            referenced_type = resolver.lookup(ref_value).contents
             return referenced_type
+
+    # @staticmethod
+    # def _resolve_reference_in_schema(
+    #     ref_resolver: RefResolver, ref_object: dict
+    # ) -> dict:
+    #     ref_value = ref_object["$ref"]
+    #     if looks_like_uri(ref_value):
+    #         return ref_resolver.resolve_from_url(ref_value)
+    #     else:
+    #         _, referenced_type = ref_resolver.resolve(ref_value)
+    #         return referenced_type
