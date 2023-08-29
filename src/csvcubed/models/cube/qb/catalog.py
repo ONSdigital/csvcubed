@@ -119,9 +119,9 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dataset.license = self.license_uri
         dataset.creator = self.creator_uri
         dataset.publisher = self.publisher_uri
-        dataset.landing_page = set(self.landing_page_uris)
-        dataset.themes = set(self.theme_uris)
-        dataset.keywords = set(self.keywords)
+        dataset.landing_page = list(self.landing_page_uris)
+        dataset.themes = list(self.theme_uris)
+        dataset.keywords = list(self.keywords)
         dataset.contact_point = self.public_contact_point_uri
         dataset.identifier = self.get_identifier()
 
