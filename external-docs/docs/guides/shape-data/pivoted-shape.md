@@ -4,6 +4,10 @@
 
 See [Converting to pivoted shape](./shape-conversion.md#converting-to-the-pivoted-shape) for instructions on how to convert the shape of your data in Python and R.
 
+## Observation value column titles
+
+In a pivoted shape data set, the observation value column titles must not be entitled "Value". If you attempt to inspect a data cube built using csvcubed where one or more observation columns are entitled "Value", this will raise an [error](../../guides/errors/inspect-command-errors/invalid-obs-val-col-entitled-value.md).
+
 ## Single Measure
 
 The [standard shape](./standard-shape.md) is flexible but has a lot of redundancy which can often be removed by using the more concise pivoted form. Our data set on the distribution of the number of Arthur's Bakes stores can be expressed in the pivoted shape as follows:
