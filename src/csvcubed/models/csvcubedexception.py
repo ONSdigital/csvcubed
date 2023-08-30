@@ -68,6 +68,8 @@ class CsvcubedExceptionMsges(Enum):
 
     InvalidNumOfDSDComponentsForObsValColTitle = "There should be only 1 component for the observation value column with title '{obs_val_col_title}', but found {num_of_components}."
 
+    InvalidObsValColTitle = "The title of an observation value column in a pivoted shape cube cannot be 'Value'. Please rename the column."
+
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -127,6 +129,7 @@ class CsvcubedExceptionUrls(Enum):
     InvalidNumOfDSDComponentsForObsValColTitle = (
         "http://purl.org/csv-cubed/err/invalid-num-of-dsd-comps-for-obs-val-col"
     )
+    InvalidObsValColTitle = "http://purl.org/csv-cubed/err/obs-val-col-entitled-value"
 
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
@@ -418,3 +421,14 @@ class InvalidNumOfDSDComponentsForObsValColTitleException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.InvalidNumOfDSDComponentsForObsValColTitle.value
+
+
+class InvalidObsValColTitleException(CsvcubedException):
+    """Class representing the InvalidObsValColTitleException model."""
+
+    def __init__(self):
+        super().__init__(CsvcubedExceptionMsges.InvalidObsValColTitle.value)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.InvalidObsValColTitle.value
