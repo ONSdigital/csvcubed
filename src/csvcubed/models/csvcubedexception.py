@@ -129,7 +129,7 @@ class CsvcubedExceptionUrls(Enum):
     InvalidNumOfDSDComponentsForObsValColTitle = (
         "http://purl.org/csv-cubed/err/invalid-num-of-dsd-comps-for-obs-val-col"
     )
-    InvalidObsValColTitle = "http://purl.org/csv-cubed"
+    InvalidObsValColTitle = "http://purl.org/csv-cubed/err/obs-val-col-entitled-value"
 
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
