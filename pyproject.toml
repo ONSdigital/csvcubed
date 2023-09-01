@@ -58,7 +58,7 @@ exclude = [
   "**/tests",
   ".git"
 ]
-pythonVersion = "3.9"
+pythonVersion = "3.11"
 
 [tool.poetry.scripts]
 csvcubed = 'csvcubed.cli.entrypoint:entry_point'

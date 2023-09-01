@@ -5,8 +5,9 @@ Pandas Inputs
 from typing import Any, Iterable, List, Optional, Union
 
 import pandas as pd
+from pandas._typing import ArrayLike
 
-PandasDataTypes = Union[pd.DataFrame, pd.Series, None]
+PandasDataTypes = Union[pd.DataFrame, pd.Series, ArrayLike, None]
 
 
 def pandas_input_to_columnar(
