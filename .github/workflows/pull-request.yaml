@@ -11,7 +11,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         # Version lock pandas until v2.1.0 can be implemented without breaking Pyright
         # pandas-version: ['pandas@latest']
-        pandas-version: ['pandas~=2.0']
+        pandas-version: ['pandas~2.0']
         include:
           # Test in Linux with Python 3.9
           - os: ubuntu-latest
