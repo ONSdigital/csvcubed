@@ -17,7 +17,7 @@ jobs:
           # Testing older pandas version
           - os: ubuntu-latest
             python-version: 3.11
-            pandas-verison: pandas@^1.3
+            pandas-version: pandas@^1.3
       fail-fast: false
 
     uses: ./.github/workflows/reusable-test.yaml
