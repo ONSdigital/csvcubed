@@ -10,7 +10,7 @@ jobs:
         # Test in all supported versions of python in both Windows and Ubuntu.
         python-version: ['3.9', '3.10', '3.11']
         os: [ubuntu-latest, windows-latest]
-        pandas-version: ['pandas@latest']
+        pandas-version: ['pandas~2.0']
         #including a specific test case for testing older pandas version
         include:
           - os: ubuntu-latest
