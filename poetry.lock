@@ -1711,9 +1711,11 @@ files = [
 [package.dependencies]
 pyyaml = "*"
 
+[[package]]
 name = "rdflib"
 version = "6.3.2"
 description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
+category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
