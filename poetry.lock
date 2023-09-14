@@ -360,14 +360,14 @@ rdflib = ">=6.0.0"
 
 [[package]]
 name = "csvcubed-models"
-version = "0.1.6"
+version = "0.1.7"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
-category = "main"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = ">=3.9,<3.12"
 files = [
-    {file = "csvcubed_models-0.1.6-py3-none-any.whl", hash = "sha256:d73bd2a31e106f1671748fa6770eabbcf5b38465c5f60d5c8dee3c55db1c81d8"},
+    {file = "csvcubed_models-0.1.7-py3-none-any.whl", hash = "sha256:a4c248394015192f7b2229b545940611990ab36cc1bb5fa7376713bf1d3c9d1b"},
 ]
+
 
 [package.dependencies]
 python-dateutil = ">=2.8.2,<3.0.0"
