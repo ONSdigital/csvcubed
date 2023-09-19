@@ -22,6 +22,6 @@ def step_impl(context, catalog_metadata_file: str):
 def step_impl(context, dataset_uri: str):
     catalog_metadata: CatalogMetadata = context.catalog_metadata
     dcat_dataset = dcat.Dataset(dataset_uri)
-    catalog_metadata.configure_dcat_distribution(dcat_dataset)
+    catalog_metadata.configure_dcat_dataset(dcat_dataset)
     graph = dcat_dataset.to_graph(Graph())
     context.turtle = graph.serialize(format="ttl")
