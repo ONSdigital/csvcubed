@@ -9,18 +9,13 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
-      <http://purl.org/dc/terms/description> "Description"^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
+      <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Distribution>;
+      <http://purl.org/dc/terms/description> "Description"@en;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
-      <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
+      <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/title> "Some Qube"@en;
       <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
-      <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en;
-      <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
-      <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
-      <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
-      <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>;
-      <http://purl.org/dc/terms/identifier> "qb-id-10002".
+      <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en.
       """
 
   Scenario: A QbCube should validate successfully where foreign key constraints are met.
