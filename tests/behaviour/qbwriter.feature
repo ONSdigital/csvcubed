@@ -10,7 +10,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should contain
       """
       <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Distribution>;
-      <http://purl.org/dc/terms/description> "Description"@en;
+      <http://purl.org/dc/terms/description> "Description"^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/title> "Some Qube"@en;
