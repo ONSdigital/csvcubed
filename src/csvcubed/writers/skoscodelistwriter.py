@@ -203,7 +203,7 @@ class SkosCodeListWriter(WriterBase):
             for variant_uri in self.new_code_list.variant_of_uris:
                 concept_scheme_with_metadata.variant.add(ExistingResource(variant_uri))
 
-        self.new_code_list.metadata.configure_dcat_dataset(  # type: ignore
+        self.new_code_list.metadata.configure_dcat_distribution(  # type: ignore
             concept_scheme_with_metadata
         )
         self.new_code_list.copy_arbitrary_triple_fragments_to_resources(
