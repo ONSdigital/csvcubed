@@ -68,7 +68,7 @@ class CsvcubedExceptionMsges(Enum):
 
     InvalidNumOfDSDComponentsForObsValColTitle = "There should be only 1 component for the observation value column with title '{obs_val_col_title}', but found {num_of_components}."
 
-    InvalidObsValColTitle = "The title of an observation value column in a pivoted shape cube cannot be 'Value'. Please rename the column."
+    InvalidObsValColTitle = "The title of an observation value column in a cube cannot be 'Value'. Please rename the column."
 
 
 class CsvcubedExceptionUrls(Enum):

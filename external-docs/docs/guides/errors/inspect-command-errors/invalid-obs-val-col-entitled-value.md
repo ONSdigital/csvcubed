@@ -2,7 +2,7 @@
 
 ## When it occurs
 
-In a pivoted shape cube, observation value columns may not be entitled "Value".
+When building a cube of either shape, observation value columns may not be entitled "Value".
 
 ## How to fix
 
