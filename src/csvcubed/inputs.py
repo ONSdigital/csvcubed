@@ -4,9 +4,16 @@ Pandas Inputs
 """
 from typing import Any, Iterable, List, Optional, Union
 
+import numpy as np
 import pandas as pd
 
-PandasDataTypes = Union[pd.DataFrame, pd.Series, None]
+PandasDataTypes = Union[
+    pd.DataFrame,
+    pd.Series,
+    np.ndarray,
+    pd.api.extensions.ExtensionArray,
+    None,
+]
 
 
 def pandas_input_to_columnar(

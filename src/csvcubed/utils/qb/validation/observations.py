@@ -1,6 +1,8 @@
 from typing import Dict, List, Union
 
+import pandas as pd
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
+from numpy import isnan
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -130,8 +132,14 @@ def _validate_missing_observation_values(
     if potential_missing_values.size > 0:
         obs_status_columns = get_observation_status_columns(cube)
         for obs_status_column in obs_status_columns:
+            # potential_missing_values = potential_missing_values[
+            #     potential_missing_values[obs_status_column.csv_column_title].isna()
+            # ]
+            potential_missing_obs_status = potential_missing_values[
+                obs_status_column.csv_column_title
+            ]
             potential_missing_values = potential_missing_values[
-                potential_missing_values[obs_status_column.csv_column_title].isna()
+                potential_missing_obs_status.isna()
             ]
 
         if potential_missing_values.size > 0:
@@ -243,7 +251,6 @@ def _ensure_obs_val_col_linked(
     defined_col_names: set[str],
     obs_col_names: List[str],
 ):
-
     if observed_column_title is None:
         errors.append(AttributeNotLinkedError(column.csv_column_title))
     elif observed_column_title not in defined_col_names:

@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 import pytest
 
 from csvcubed.models.cube.cube import Cube
@@ -14,6 +16,7 @@ from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 from csvcubed.utils.qb.validation.observations import (
+    _validate_missing_observation_values,
     get_observation_status_columns,
     validate_observations,
 )
@@ -116,6 +119,39 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
     error = errors[0]
     assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.component_type == ExistingQbMeasure
+
+
+# def test_potential_missing_values():
+#     data = pd.DataFrame(
+#         {
+#             "Dimension": ["Dimension A", "Dimension B", "Dimension C"],
+#             "Values": [1, 2, np.nan],
+#             "Attribute": ["Final", "Estimated", np.nan],
+#         }
+#     )
+#     cube = Cube(
+#         "Some Cube",
+#         data=data,
+#         columns=[
+#             QbColumn("Dimension", NewQbDimension("Some dimension")),
+#             QbColumn(
+#                 "Values",
+#                 QbObservationValue(
+#                     NewQbMeasure("Some measure"), NewQbUnit("Some unit")
+#                 ),
+#             ),
+#             QbColumn(
+#                 "Attribute",
+#                 NewQbAttribute(
+#                     label="Attribute",
+#                     parent_attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+#                     observed_value_col_title="Values",
+#                 ),
+#             ),
+#         ],
+#     )
+#     validation = _validate_missing_observation_values(cube, cube.columns[1])
+#     assert True
 
 
 if __name__ == "__main__":
