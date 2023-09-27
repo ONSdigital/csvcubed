@@ -73,7 +73,7 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
         columns=[
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
-                "Values",
+                "Observation Vals",
                 QbObservationValue(
                     unit=NewQbUnit("Some Unit"),
                 ),
@@ -100,7 +100,7 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
         columns=[
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
-                "Values",
+                "Observation Vals",
                 QbObservationValue(
                     unit=NewQbUnit("Some Unit"),
                 ),

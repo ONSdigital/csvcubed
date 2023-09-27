@@ -307,10 +307,6 @@ def _melt_data_set(
     ]
     id_cols = list(set(data_set.columns) - set(value_cols))
 
-    # # Raise an exception if any observation columns are entitled 'Value'
-    # if "Value" in value_cols:
-    #     raise InvalidObsValColTitleException()
-
     # Melting the data set using pandas melt function.
     return pd.melt(
         data_set,
@@ -411,17 +407,6 @@ def transform_dataset_to_canonical_shape(
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """
     canonical_shape_dataset = dataset.copy()
-
-    # Finding the observation value cols.
-    value_cols = [
-        c.title
-        for measure_component in qube_components
-        for c in measure_component.real_columns_used_in
-    ]
-
-    # Raise an exception if any observation value columns are entitled 'Value'
-    if "Value" in value_cols:
-        raise InvalidObsValColTitleException()
 
     cube_shape = data_cube_repository.get_shape_for_csv(csv_url)
 

@@ -67,7 +67,7 @@
                 ]
             }
         },
-        "Value": {
+        "Val": {
             "type": "observations"
         },
         "Measure": {
