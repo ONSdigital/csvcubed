@@ -130,7 +130,7 @@
             "label": "number attribute",
             "data_type": "number"
         },
-        "Val": {
+        "Value": {
             "type": "observations",
             "data_type": "integer"
         },

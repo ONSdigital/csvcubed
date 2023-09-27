@@ -62,7 +62,7 @@ def get_standard_catalog_metadata_for_name(
 
 
 _standard_data = pd.DataFrame(
-    {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Val": [1, 2, 3]}
+    {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Value": [1, 2, 3]}
 )
 
 
@@ -76,7 +76,7 @@ def step_impl(context, cube_name: str):
 def step_impl(context, cube_name: str):
     feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
-    cube.data["Val"] = [1, None, 3]
+    cube.data["Value"] = [1, None, 3]
     context.cube = cube
 
 
@@ -90,7 +90,7 @@ def step_impl(context, cube_name: str):
             "A": ["a", "b", "c"],
             "D": ["e", "f", "g"],
             "Marker": ["Suppressed", None, None],
-            "Val": [None, 2, 3],
+            "Value": [None, 2, 3],
         }
     )
     columns = [
@@ -113,7 +113,7 @@ def step_impl(context, cube_name: str):
             ),
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -133,7 +133,7 @@ def step_impl(context, cube_name: str):
             "A": ["a", "b", "c"],
             "D": ["e", "f", "g"],
             "Marker": [None, "Provisional", None],
-            "Val": [None, 2, 3],
+            "Value": [None, 2, 3],
         }
     )
     columns = [
@@ -156,7 +156,7 @@ def step_impl(context, cube_name: str):
             ),
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -183,7 +183,7 @@ def _get_single_measure_cube_with_name_and_id(
             "D", NewQbDimension.from_data("D code list", "D", _standard_data["D"])
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -210,7 +210,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://example.org/some/codelist/d",
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -223,11 +223,11 @@ def step_impl(context, cube_name: str):
 
 @Given('a single-measure QbCube named "{cube_name}" with duplicate rows')
 def step_impl(context, cube_name: str):
-    data = pd.DataFrame({"A": ["a", "a"], "Val": [1, 1]})
+    data = pd.DataFrame({"A": ["a", "a"], "Value": [1, 1]})
     columns = [
         QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"])),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -257,7 +257,7 @@ def step_impl(context, cube_name: str):
             "D", NewQbDimension.from_data("D code list", "D", _standard_data["D"])
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -276,7 +276,7 @@ def step_impl(context, cube_name: str):
         {
             "Some Dimension": ["a", "b", "c"],
             "Some Attribute": ["attr-a", float("nan"), "attr-c"],
-            "Val": [1, 2, 3],
+            "Value": [1, 2, 3],
         }
     )
     columns = [
@@ -296,7 +296,7 @@ def step_impl(context, cube_name: str):
             ),
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -312,7 +312,7 @@ def step_impl(context, cube_name: str):
         {
             "A": ["a_height", "a_length"],
             "Measure": ["height", "length"],
-            "Val": [1, 20],
+            "Value": [1, 20],
         }
     )
     columns = [
@@ -321,7 +321,7 @@ def step_impl(context, cube_name: str):
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(unit=NewQbUnit("meters")),
         ),
     ]
@@ -338,7 +338,7 @@ def step_impl(context, cube_name: str):
         {
             "A": ["a_height", "a_height", "a_length"],
             "Measure": ["height", "height", "length"],
-            "Val": [1, 1, 20],
+            "Value": [1, 1, 20],
         }
     )
     columns = [
@@ -347,7 +347,7 @@ def step_impl(context, cube_name: str):
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(unit=NewQbUnit("meters")),
         ),
     ]
@@ -367,7 +367,7 @@ def step_impl(context, cube_name: str):
         {
             "Existing Dimension": ["a", "b", "c"],
             "New Attribute": ["pending", "final", "in-review"],
-            "Val": [2, 2, 2],
+            "Value": [2, 2, 2],
         }
     )
     columns = [
@@ -384,7 +384,7 @@ def step_impl(context, cube_name: str):
             ),
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -410,7 +410,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://example.org/some/codelist/d",
         ),
         QbColumn(
-            "Val",
+            "Value",
             QbObservationValue(
                 NewQbMeasure("Some Measure"),
                 NewQbUnit(
@@ -486,7 +486,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     data = pd.DataFrame(
         {
             "A": ["uss-cerritos", "uss-titan"],
-            "Val": [1, 1],
+            "Value": [1, 1],
             "Reg": [75567, 80102],
             "Appeared": ["2020-08-06", "2020-10-08"],
             "First_Captain": ["William Riker", "Carol Freeman"],
@@ -494,7 +494,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     )
     dim = QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"]))
     val = QbColumn(
-        "Val",
+        "Value",
         QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
     )
     if data_type == "int":
@@ -559,7 +559,7 @@ def step_impl(context, cube_name: str):
         {
             "New Dimension": ["a", "b", "c"],
             "New Attribute": ["university", "students", "masters"],
-            "Observed Val": [1, 2, 3],
+            "Observed Value": [1, 2, 3],
         }
     )
 
@@ -584,7 +584,7 @@ def step_impl(context, cube_name: str):
             ),
         ),
         QbColumn(
-            "Observed Val",
+            "Observed Value",
             QbObservationValue(NewQbMeasure("Part-time"), NewQbUnit("Num of Students")),
         ),
     ]
@@ -608,7 +608,7 @@ def step_impl(context, cube_name: str):
         {
             "New Dimension": ["a", "b", "c"],
             "New Attribute": ["university", "students", "masters"],
-            "Observed Val": [1, 2, 3],
+            "Observed Value": [1, 2, 3],
             "Measure": ["part-time", "full-time", "flex-time"],
         }
     )
@@ -634,7 +634,7 @@ def step_impl(context, cube_name: str):
             ),
         ),
         QbColumn(
-            "Observed Val",
+            "Observed Value",
             QbObservationValue(unit=NewQbUnit("Num of students")),
         ),
         QbColumn(
@@ -662,7 +662,7 @@ def step_impl(context, cube_name: str):
             "Existing Dimension": ["a", "b", "c"],
             "New Dimension": ["d", "e", "f"],
             "Existing Attribute": ["university", "students", "masters"],
-            "Observed Val": [1, 2, 3],
+            "Observed Value": [1, 2, 3],
         }
     )
 
@@ -687,7 +687,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
-            csv_column_title="Observed Val",
+            csv_column_title="Observed Value",
             structural_definition=QbObservationValue(
                 ExistingQbMeasure("http://existing/measure"),
                 ExistingQbUnit("http://exisiting/unit"),
@@ -715,7 +715,7 @@ def step_impl(context, cube_name: str):
             "Existing Dimension": ["a", "b", "c"],
             "New Dimension": ["d", "e", "f"],
             "Existing Attribute": ["university", "students", "masters"],
-            "Observed Val": [1, 2, 3],
+            "Observed Value": [1, 2, 3],
             "Units": ["gbp", "count", "count"],
             "Existing Measures": ["part-time", "full-time", "flex-time"],
         }
@@ -742,7 +742,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
-            "Observed Val",
+            "Observed Value",
             QbObservationValue(data_type="number"),
         ),
         QbColumn(
@@ -789,7 +789,7 @@ def step_impl(context, cube_name: str):
                 "http://example.com/location#cardiff",
             ],
             "Measure": ["A", "A", "A"],
-            "Observed Val": [1, 2, 3],
+            "Observed Value": [1, 2, 3],
         }
     )
 
@@ -804,7 +804,7 @@ def step_impl(context, cube_name: str):
             QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
         ),
         QbColumn(
-            "Observed Val",
+            "Observed Value",
             QbObservationValue(unit=NewQbUnit("Num of students")),
         ),
     ]

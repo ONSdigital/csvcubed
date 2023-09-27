@@ -2,7 +2,6 @@ from typing import Dict, List, Union
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 
-from csvcubed.models.csvcubedexception import InvalidObsValColTitleException
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
@@ -181,9 +180,6 @@ def _validate_observation_value(
     num_obs_val_columns: int,
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
-
-    if "Value" in observation_value.csv_column_title:
-        raise InvalidObsValColTitleException()
 
     if observation_value.structural_definition.unit is None:
         if not any(multi_unit_columns):

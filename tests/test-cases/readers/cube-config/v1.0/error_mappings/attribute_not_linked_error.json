@@ -20,7 +20,7 @@
         "label": "GBP"
       }
     },
-    "Val": {
+    "Value": {
       "type": "observations",
       "measure": {
         "label": "Avarage GDP"

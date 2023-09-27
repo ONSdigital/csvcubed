@@ -179,7 +179,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -189,31 +189,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Val": 0,
+          "Value": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Val": 1,
+          "Value": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Val": 2,
+          "Value": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Val": 3,
+          "Value": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Val": 4,
+          "Value": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -246,7 +246,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -256,31 +256,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Val": 0,
+          "Value": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Val": 1,
+          "Value": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Val": 2,
+          "Value": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Val": 3,
+          "Value": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Val": 4,
+          "Value": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -313,7 +313,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -323,31 +323,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Val": 0,
+          "Value": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Val": 1,
+          "Value": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Val": 2,
+          "Value": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Val": 3,
+          "Value": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Val": 4,
+          "Value": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -380,7 +380,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -390,31 +390,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Val": 0,
+          "Value": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Val": 1,
+          "Value": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Val": 2,
+          "Value": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Val": 3,
+          "Value": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Val": 4,
+          "Value": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -447,7 +447,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -457,31 +457,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Val": 0,
+          "Value": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Val": 1,
+          "Value": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Val": 2,
+          "Value": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Val": 3,
+          "Value": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Val": 4,
+          "Value": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -514,7 +514,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -524,31 +524,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Val": 0,
+          "Value": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Val": 1,
+          "Value": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Val": 2,
+          "Value": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Val": 3,
+          "Value": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Val": 4,
+          "Value": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -585,7 +585,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Val",
+        "Value",
         "Measure",
         "Unit"
       ]
@@ -595,31 +595,31 @@ Feature: cube-config.json
       [
       {
       "Dimension": "first",
-      "Val": 0,
+      "Value": 0,
       "Measure": "length",
       "Unit": "cm",
       },
       {
       "Dimension": "b",
-      "Val": 1,
+      "Value": 1,
       "Measure": "length",
       "Unit": "cm"
       },
       {
       "Dimension": "c",
-      "Val": 2,
+      "Value": 2,
       "Measure": "length",
       "Unit": "cm"
       },
       {
       "Dimension": "d",
-      "Val": 3,
+      "Value": 3,
       "Measure": "length",
       "Unit": "cm"
       },
       {
       "Dimension": "e",
-      "Val": 4,
+      "Value": 4,
       "Measure": "length",
       "Unit": "cm"
       }
