@@ -1,0 +1,4 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description,Original Concept URI
+e12000001,North East,E12000001,,0,,http://statistics.data.gov.uk/id/statistical-geography/E12000001
+k02000001,United Kingdom,K02000001,,5,,http://statistics.data.gov.uk/id/statistical-geography/K02000001
+e92000001,England,E92000001,k02000001,0,,http://statistics.data.gov.uk/id/statistical-geography/E92000001
