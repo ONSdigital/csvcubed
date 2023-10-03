@@ -55,7 +55,7 @@ def test_single_measure_qb_definition():
         {
             "Existing Dimension": ["A", "B", "C"],
             "Local Dimension": ["D", "E", "F"],
-            "Value": [2, 2, 2],
+            "Observation Vals": [2, 2, 2],
         }
     )
 
@@ -73,7 +73,7 @@ def test_single_measure_qb_definition():
             ),
         ),
         QbColumn(
-            "Value",
+            "Observation Vals",
             QbObservationValue(
                 ExistingQbMeasure("http://example.com/measures/existing_measure"),
                 NewQbUnit("some new unit"),
@@ -95,7 +95,7 @@ def test_multi_measure_qb_definition():
     data = pd.DataFrame(
         {
             "Existing Dimension": ["A", "B", "C"],
-            "Value": [2, 2, 2],
+            "Observation Vals": [2, 2, 2],
             "Measure": ["People", "Children", "Adults"],
             "Units": ["Percent", "People", "People"],
         }
@@ -108,7 +108,7 @@ def test_multi_measure_qb_definition():
             ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
             csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
         ),
-        QbColumn("Value", QbObservationValue(data_type="number")),
+        QbColumn("Observation Vals", QbObservationValue(data_type="number")),
         QbColumn(
             "Measure",
             QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
@@ -128,7 +128,9 @@ def test_existing_dimension_csv_column_uri_template():
     An ExistingQbDimension must have an csv_column_uri_template defined by the user if not it's an error
     """
 
-    data = pd.DataFrame({"Existing Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    data = pd.DataFrame(
+        {"Existing Dimension": ["A", "B", "C"], "Observation Vals": [1, 2, 3]}
+    )
     cube = Cube(
         CatalogMetadata("Cube's name"),
         data,
@@ -138,7 +140,7 @@ def test_existing_dimension_csv_column_uri_template():
                 ExistingQbDimension("http://example.org/dimensions/location"),
             ),
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(
                     ExistingQbMeasure("http://some/measure"),
                     ExistingQbUnit("http://some/unit"),
@@ -163,13 +165,13 @@ def test_no_dimensions_validation_error():
     Ensure that we get an error message specifying that at least one dimension must be defined in a cube.
     """
 
-    data = pd.DataFrame({"Value": [1, 2, 3]})
+    data = pd.DataFrame({"Observation Vals": [1, 2, 3]})
     cube = Cube(
         CatalogMetadata("Some Qube"),
         data,
         [
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
@@ -192,7 +194,7 @@ def test_multiple_incompatible_unit_definitions():
         {
             "Some Dimension": ["a", "b", "c"],
             "Some Unit": ["u1", "u2", "u1"],
-            "Value": [1, 2, 3],
+            "Observation Vals": [1, 2, 3],
         }
     )
 
@@ -208,7 +210,7 @@ def test_multiple_incompatible_unit_definitions():
             ),
             QbColumn("Some Unit", QbMultiUnits.new_units_from_data(data["Some Unit"])),
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(
                     NewQbMeasure("Some New Measure"), NewQbUnit("Some New Unit")
                 ),
@@ -233,7 +235,7 @@ def test_no_unit_defined():
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
-            "Value": [1, 2, 3],
+            "Observation Vals": [1, 2, 3],
         }
     )
 
@@ -248,7 +250,7 @@ def test_no_unit_defined():
                 ),
             ),
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(NewQbMeasure("Some New Measure")),
             ),
         ],
@@ -269,7 +271,7 @@ def test_multiple_units_columns():
             "Some Dimension": ["a", "b", "c"],
             "Some Unit": ["u1", "u2", "u1"],
             "Some Other Unit": ["U1", "U2", "U3"],
-            "Value": [1, 2, 3],
+            "Observation Vals": [1, 2, 3],
         }
     )
 
@@ -289,7 +291,7 @@ def test_multiple_units_columns():
                 QbMultiUnits.new_units_from_data(data["Some Other Unit"]),
             ),
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(NewQbMeasure("Some New Measure")),
             ),
         ],
@@ -309,7 +311,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
-            "Value": [1, 2, 3],
+            "Observation Vals": [1, 2, 3],
         }
     )
 
@@ -324,7 +326,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
                 ),
             ),
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(unit=NewQbUnit("Some New Unit 1")),
             ),
         ],
@@ -345,7 +347,7 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
             "Some Dimension": ["a", "b", "c"],
             "Measure Dimension 1": ["A1 Measure", "B1 Measure", "C1 Measure"],
             "Measure Dimension 2": ["A2 Measure", "B2 Measure", "C2 Measure"],
-            "Value": [1, 2, 3],
+            "Observation Vals": [1, 2, 3],
         }
     )
 
@@ -372,7 +374,7 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
                 ),
             ),
             QbColumn(
-                "Value",
+                "Observation Vals",
                 QbObservationValue(unit=NewQbUnit("Some New Unit 1")),
             ),
         ],
@@ -695,7 +697,7 @@ def test_code_list_concept_identifier_reserved():
     data = pd.DataFrame(
         {
             "New Dimension": ["A", "B", "C", "Code List"],
-            "Value": [2, 2, 2, 2],
+            "Obs": [2, 2, 2, 2],
         }
     )
 
@@ -710,7 +712,7 @@ def test_code_list_concept_identifier_reserved():
                 ),
             ),
             QbColumn(
-                "Value",
+                "Obs",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
@@ -733,7 +735,7 @@ def test_conflict_concept_uri_values_error():
     data = pd.DataFrame(
         {
             "New Dimension": ["A B", "A.B"],
-            "Value": [2, 2],
+            "Obs": [2, 2],
         }
     )
 
@@ -748,7 +750,7 @@ def test_conflict_concept_uri_values_error():
                 ),
             ),
             QbColumn(
-                "Value",
+                "Obs",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
@@ -780,7 +782,7 @@ def test_conflict_new_attribute_value_uri_values_error_codelist_true(
         {
             "New Dimension": ["A", "B"],
             "New Attribute": ["A B", "A.B"],
-            "Value": [2, 2],
+            "Obs": [2, 2],
         }
     )
 
@@ -803,7 +805,7 @@ def test_conflict_new_attribute_value_uri_values_error_codelist_true(
                 ),
             ),
             QbColumn(
-                "Value",
+                "Obs",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
@@ -826,7 +828,7 @@ def test_conflict_new_attribute_value_uri_values_error_codelist_false():
         {
             "New Dimension": ["A", "B"],
             "New Attribute": ["A B", "A.B"],
-            "Value": [2, 2],
+            "Obs": [2, 2],
         }
     )
 
@@ -850,7 +852,7 @@ def test_conflict_new_attribute_value_uri_values_error_codelist_false():
                 ),
             ),
             QbColumn(
-                "Value",
+                "Obs",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
@@ -873,7 +875,7 @@ def test_conflict_new_units_uri_values_error():
         {
             "New Dimension": ["A", "B"],
             "Units": ["A B", "A.B"],
-            "Value": [2, 2],
+            "Obs": [2, 2],
         }
     )
 
@@ -892,7 +894,7 @@ def test_conflict_new_units_uri_values_error():
                 QbMultiUnits.new_units_from_data(data["Units"]),
             ),
             QbColumn(
-                "Value",
+                "Obs",
                 QbObservationValue(NewQbMeasure("Some Measure")),
             ),
         ],
@@ -912,7 +914,7 @@ def test_conflict_new_measures_uri_values_error():
         {
             "New Dimension": ["A", "B"],
             "Measures": ["A B", "A.B"],
-            "Value": [2, 2],
+            "Obs": [2, 2],
         }
     )
 
@@ -931,7 +933,7 @@ def test_conflict_new_measures_uri_values_error():
                 QbMultiMeasureDimension.new_measures_from_data(data["Measures"]),
             ),
             QbColumn(
-                "Value",
+                "Obs",
                 QbObservationValue(unit=NewQbUnit("Some Unit")),
             ),
         ],
