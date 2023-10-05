@@ -25,7 +25,7 @@ def test_new_qb_attribute_literal_string_with_template():
         columns=[
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
-                "Values",
+                "Observation Vals",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
@@ -55,7 +55,7 @@ def test_new_qb_attribute_resource_no_values():
         columns=[
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
-                "Values",
+                "Observation Vals",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
@@ -84,7 +84,7 @@ def test_existing_qb_attribute_resource_no_cell_uri_template():
         columns=[
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
-                "Values",
+                "Observation Vals",
                 QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
