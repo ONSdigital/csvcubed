@@ -6,8 +6,11 @@ Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
+import os
+import time
 from dataclasses import InitVar, dataclass, field
 from functools import cache, cached_property
+from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
 
@@ -48,6 +51,7 @@ from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.uri import file_uri_to_path
+from csvcubed.writers.qbwriter import QbWriter
 
 _XSD_BASE_URI: str = XSD[""].toPython()
 
@@ -330,6 +334,7 @@ class DataCubeRepository:
         csv_url: str,
         include_suppressed_cols: bool = True,
         dereference_uris: bool = True,
+        shape_conversion: bool = False,
     ) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         Get the pandas dataframe for the csv url of the cube wishing to be loaded.
@@ -337,6 +342,7 @@ class DataCubeRepository:
         same columns being defined.
         include_suppressed_cols=True means Suppressed columns will be included in the returned dataframe (not dereferenced to labels)
         dereference_uris=True means URIs of column values are converted to their human readable labels.
+        shape_conversion=True means changing the pivoted shape dataframe into a standard shape dataframe
         """
         cols = self.get_column_component_info(csv_url)
         dict_of_types = _get_data_types_of_all_cols(cols)
@@ -356,6 +362,40 @@ class DataCubeRepository:
                                 csv_url, col, col_values.categories, code_lists
                             )
                         )
+        if shape_conversion:
+            from csvcubed.cli.buildcsvw.build import build_csvw
+            from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+            from tests.helpers.repository_cache import get_data_cube_repository
+
+            canonical_shape_dataset = transform_dataset_to_canonical_shape(
+                data_cube_repository=self,
+                dataset=df,
+                csv_url=csv_url,
+                qube_components=self.get_dsd_qube_components_for_csv(
+                    csv_url
+                ).qube_components,
+            )
+            df, measure_col_name, unit_col_name = canonical_shape_dataset
+
+            df.rename(columns={measure_col_name: "Measure"}, inplace=True)
+            df.rename(columns={unit_col_name: "Unit"}, inplace=True)
+            reshaped_df_file_name = "out/standardised-" + str(csv_url)
+            df.to_csv(Path(reshaped_df_file_name), index=False)
+
+            if "Measure" in df.columns and "Unit" in df.columns:
+                build_csvw(Path(reshaped_df_file_name))
+                csvw_metadata_json_path = Path(
+                    str(os.getcwd()) + "/" + reshaped_df_file_name + "-metadata.json"
+                )
+                data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+                csv_url = data_cube_repository.get_primary_csv_url()
+
+                df, _errors = data_cube_repository.get_dataframe(csv_url)
+            else:
+                raise Exception(
+                    "Shape conversion failed. DataFrame is either still in pivoted shape or in niether standard or pivoted forms."
+                )
+
         if not include_suppressed_cols:
             cols_to_drop = [
                 col.column_definition.title
@@ -363,6 +403,7 @@ class DataCubeRepository:
                 if col.column_type.value == "Suppressed"
             ]
             df = df.drop(cols_to_drop, axis=1)
+
         return df, _errors
 
     def _get_new_category_labels_for_col(
