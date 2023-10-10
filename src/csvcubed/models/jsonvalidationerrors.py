@@ -158,7 +158,7 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
                 # _resolve_reference_in_schema now takes in both the jsonschema.RefResolver and the referencing.Resolver objects
                 # Once investigation is complete and the referencing library has been implemented, ref_resolver should be removed
                 possible_type = self._resolve_reference_in_schema(
-                    ref_resolver, resolver, possible_type
+                    ref_resolver, registry, resolver, possible_type
                 )
                 description = possible_type.get("description", description)
 
@@ -187,7 +187,10 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
 
     @staticmethod
     def _resolve_reference_in_schema(
-        ref_resolver: RefResolver, resolver: Registry.resolver, ref_object: dict
+        ref_resolver: RefResolver,
+        registry: Registry,
+        resolver: Registry.resolver,
+        ref_object: dict,
     ) -> dict:
         ref_value = ref_object["$ref"]
         # If the ref_value is *not* a URI, this function works fine
@@ -201,7 +204,16 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
         if looks_like_uri(ref_value):
             response = requests.get(ref_value)
             resource = Resource.from_contents(response.json(), DRAFT7)
+            # x = resource.contents["uris"]["enum"]
+            # Some kind of function here needs to exist to act as a callable for Registry's retrieve argument.
+            # According to the migration guide that is the replacement for RefResolver.resolve_from_url
+            # https://python-jsonschema.readthedocs.io/en/latest/referencing/#migrating-from-refresolver
+            # https://referencing.readthedocs.io/en/stable/api/#referencing.Registry
+            # See section 7.3 https://readthedocs.org/projects/python-jsonschema/downloads/pdf/stable/
+            # in particular page 34
+
             return resource.contents["uris"]
+            # return Registry(retrieve= ).get_or_retrieve()
             # return ref_resolver.resolve_from_url(ref_value)
         else:
             # _, referenced_type = ref_resolver.resolve(ref_value)
