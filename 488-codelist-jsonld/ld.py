@@ -56,4 +56,4 @@ for concept in config["concepts"]:
 context = Context(ctx)
 graph = Graph()
 graph.parse(data=config, format="json-ld")
-print(graph.serialize("488-codelist-jsonld/new/out.jsonld", format="json-ld"))
+print(graph.serialize("488-codelist-jsonld/new/codelist.jsonld", format="json-ld"))
