@@ -1,0 +1,95 @@
+{
+    "@context": {
+        "@language": "en",
+        "dcterms": "http://purl.org/dc/terms/",
+        "dcat": "http://www.w3.org/ns/dcat#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "onsns": "https://example.org/ons/ns#",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "csvw": "http://www.w3.org/ns/csvw#",
+        "qb": "http://purl.org/linked-data/cube#",
+        "identifier": {
+            "@id": "dcterms:identifier",
+            "@language": null
+        },
+        "title": {
+            "@id": "dcterms:title"
+        },
+        "summary": {
+            "@id": "dcterms:abstract"
+        },
+        "description": {
+            "@id": "dcterms:description",
+            "@type": "https://www.iana.org/assignments/media-types/text/markdown"
+        },
+        "creator": {
+            "@id": "dcterms:creator",
+            "@type": "@id",
+            "@context": {
+                "@base": "https://www.gov.uk/government/organisations/"
+            }
+        },
+        "publisher": {
+            "@id": "dcterms:publisher",
+            "@type": "@id",
+            "@context": {
+                "@base": "https://www.gov.uk/government/organisations/"
+            }
+        },
+        "license": {
+            "@id": "dcterms:license",
+            "@type": "@id"
+        },
+        "dataset_issued": {
+            "@id": "dcterms:issued",
+            "@type": "xsd:dateTime"
+        },
+        "dataset_modified": {
+            "@id": "dcterms:modified",
+            "@type": "xsd:dateTime"
+        },
+        "themes": {
+            "@id": "dcat:theme",
+            "@type": "@id",
+            "@context": {
+                "@base": "https://statistics.gov.uk/id/theme/"
+            }
+        },
+        "keywords": {
+            "@id": "dcat:keyword"
+        },
+        "concepts": {
+            "@id": "skos:hasTopConcept",
+            "@type": "skos:Concept",
+            "@container": "@set",
+            "@context": {
+                "label": {
+                    "@id": "rdfs:label",
+                    "@type": "@id"
+                },
+                "notation": {
+                    "@id": "skos:notation",
+                    "@type": "@id"
+                },
+                "description": {
+                    "@id": "rdfs:comment",
+                    "@type": "@id"
+                },
+                "sort_order": {
+                    "@id": "http://www.w3.org/ns/ui#sortPriority",
+                    "@type": "@id"
+                },
+                "exact_match": {
+                    "@id": "skos:exactMatch",
+                    "@type": "@id"
+                },
+                "children": {
+                    "@id": "skos:narrower",
+                    "@type": "skos:Concept",
+                    "@container": "@set"
+                }
+            }
+        }
+    }
+}

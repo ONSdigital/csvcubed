@@ -1,4 +1,5 @@
 {
+    "@context": "https://www.w3.org/ns/csvw.jsonld",
     "$schema": "https://purl.org/csv-cubed/code-list-config/v2",
     "title": "ONS Geography Code List for anxiety.csv",
     "summary": "List of ONS geographical codes",
@@ -7,6 +8,15 @@
     "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "dataset_issued": "2011-12-15",
+    "dataset_modified": "2023-10-03",
+    "themes": [
+        "Theme 1",
+        "Theme 2"
+    ],
+    "keywords": [
+        "Keyword 1",
+        "Keyword 2"
+    ],
     "@type": "dcat:Dataset",
     "sort": {
         "by": "label",
@@ -16,12 +26,15 @@
         {
             "label": "United Kingdom",
             "notation": "K02000001",
-            "sort_order": 5,
+            "description": "United Kingdom (K02000001)",
+            "sort_order": 0,
             "exact_match": "http://statistics.data.gov.uk/id/statistical-geography/K02000001",
-            "concepts": [
+            "children": [
                 {
                     "label": "England",
                     "notation": "E92000001",
+                    "description": "Country: England (E92000001)",
+                    "sort_order": 1,
                     "exact_match": "http://statistics.data.gov.uk/id/statistical-geography/E92000001",
                     "rdfs:label": {
                         "@value": "Lloeger",
@@ -33,7 +46,9 @@
         {
             "label": "North East",
             "notation": "E12000001",
-            "same_as": "http://statistics.data.gov.uk/id/statistical-geography/E12000001"
+            "description": "Region: North East (E12000001)",
+            "exact_match": "http://statistics.data.gov.uk/id/statistical-geography/E12000001",
+            "sort_order": 2
         }
     ]
 }

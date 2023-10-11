@@ -1,0 +1,160 @@
+[
+    {
+        "@type": [
+            "http://www.w3.org/ns/dcat#Dataset",
+            "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+        ],
+        "http://www.w3.org/2004/02/skos/core#hasTopConcept": [
+            {
+                "http://www.w3.org/2004/02/skos/core#narrower": [
+                    {
+                        "http://www.w3.org/2000/01/rdf-schema#comment": [
+                            {
+                                "@id": "Country: England (E92000001)"
+                            }
+                        ],
+                        "http://www.w3.org/2004/02/skos/core#exactMatch": [
+                            {
+                                "@id": "http://statistics.data.gov.uk/id/statistical-geography/E92000001"
+                            }
+                        ],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [
+                            {
+                                "@id": "England"
+                            },
+                            {
+                                "@language": "cy",
+                                "@value": "Lloeger"
+                            }
+                        ],
+                        "http://www.w3.org/2004/02/skos/core#notation": [
+                            {
+                                "@id": "E92000001"
+                            }
+                        ],
+                        "http://www.w3.org/ns/ui#sortPriority": [
+                            {
+                                "@value": 1
+                            }
+                        ]
+                    }
+                ],
+                "http://www.w3.org/2000/01/rdf-schema#comment": [
+                    {
+                        "@id": "United Kingdom (K02000001)"
+                    }
+                ],
+                "http://www.w3.org/2004/02/skos/core#exactMatch": [
+                    {
+                        "@id": "http://statistics.data.gov.uk/id/statistical-geography/K02000001"
+                    }
+                ],
+                "http://www.w3.org/2000/01/rdf-schema#label": [
+                    {
+                        "@id": "United Kingdom"
+                    }
+                ],
+                "http://www.w3.org/2004/02/skos/core#notation": [
+                    {
+                        "@id": "K02000001"
+                    }
+                ],
+                "http://www.w3.org/ns/ui#sortPriority": [
+                    {
+                        "@value": 0
+                    }
+                ]
+            },
+            {
+                "http://www.w3.org/2000/01/rdf-schema#comment": [
+                    {
+                        "@id": "Region: North East (E12000001)"
+                    }
+                ],
+                "http://www.w3.org/2004/02/skos/core#exactMatch": [
+                    {
+                        "@id": "http://statistics.data.gov.uk/id/statistical-geography/E12000001"
+                    }
+                ],
+                "http://www.w3.org/2000/01/rdf-schema#label": [
+                    {
+                        "@id": "North East"
+                    }
+                ],
+                "http://www.w3.org/2004/02/skos/core#notation": [
+                    {
+                        "@id": "E12000001"
+                    }
+                ],
+                "http://www.w3.org/ns/ui#sortPriority": [
+                    {
+                        "@value": 2
+                    }
+                ]
+            }
+        ],
+        "http://purl.org/dc/terms/creator": [
+            {
+                "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics"
+            }
+        ],
+        "http://purl.org/dc/terms/issued": [
+            {
+                "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                "@value": "2011-12-15"
+            }
+        ],
+        "http://purl.org/dc/terms/modified": [
+            {
+                "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                "@value": "2023-10-03"
+            }
+        ],
+        "http://purl.org/dc/terms/description": [
+            {
+                "@type": "https://www.iana.org/assignments/media-types/text/markdown",
+                "@value": "Automated non-hierarchical geography code list"
+            }
+        ],
+        "http://www.w3.org/ns/dcat#keyword": [
+            {
+                "@language": "en",
+                "@value": "Keyword 1"
+            },
+            {
+                "@language": "en",
+                "@value": "Keyword 2"
+            }
+        ],
+        "http://purl.org/dc/terms/license": [
+            {
+                "@id": "https://creativecommons.org/licenses/by/4.0/"
+            }
+        ],
+        "http://purl.org/dc/terms/publisher": [
+            {
+                "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics"
+            }
+        ],
+        "http://purl.org/dc/terms/abstract": [
+            {
+                "@language": "en",
+                "@value": "List of ONS geographical codes"
+            }
+        ],
+        "http://www.w3.org/ns/dcat#theme": [
+            {
+                "@id": "https://statistics.gov.uk/id/theme/Theme 1"
+            },
+            {
+                "@id": "https://statistics.gov.uk/id/theme/Theme 2"
+            }
+        ],
+        "http://purl.org/dc/terms/title": [
+            {
+                "@language": "en",
+                "@value": "ONS Geography Codelist"
+            }
+        ]
+    }
+]

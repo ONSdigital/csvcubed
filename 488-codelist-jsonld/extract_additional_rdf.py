@@ -7,7 +7,7 @@ from csvcubedmodels.rdf import RDF, SKOS
 
 # code_list_json_path = Path("488-codelist-jsonld/json-ld/config-context-dict.json")
 
-code_list_json_path = Path("488-codelist-jsonld/json-ld/config-context-str.json")
+code_list_json_path = Path("488-codelist-jsonld/new/codelist_config.jsonld")
 
 # code_list_json_path = Path("488-codelist-jsonld/json-ld/config-context-list.json")
 
@@ -107,7 +107,7 @@ def _set_concept_identifiers(concept: dict) -> None:
         "http://example.com/concept-scheme/this-one/concepts/" + concept["notation"]
     )
     _add_type_to_node(concept, "skos:Concept")
-    for child_concept in concept.get("concepts", []):
+    for child_concept in concept.get("children", []):
         _set_concept_identifiers(child_concept)
 
 

@@ -1,0 +1,179 @@
+[
+  {
+    "@id": "http://example.com/concept-scheme/this-one/concepts/K02000001",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": [
+      {
+        "@id": "file:///workspaces/csvcubed/"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@id": "file:///workspaces/csvcubed/"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#exactMatch": [
+      {
+        "@id": "http://statistics.data.gov.uk/id/statistical-geography/K02000001"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#narrower": [
+      {
+        "@id": "http://example.com/concept-scheme/this-one/concepts/E92000001"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#notation": [
+      {
+        "@id": "file:///workspaces/csvcubed/K02000001"
+      }
+    ],
+    "http://www.w3.org/ns/ui#sortPriority": [
+      {
+        "@value": 0
+      }
+    ]
+  },
+  {
+    "@id": "http://example.com/concept-scheme/this-one/concepts/E12000001",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": [
+      {
+        "@id": "file:///workspaces/csvcubed/"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@id": "file:///workspaces/csvcubed/"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#exactMatch": [
+      {
+        "@id": "http://statistics.data.gov.uk/id/statistical-geography/E12000001"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#notation": [
+      {
+        "@id": "file:///workspaces/csvcubed/E12000001"
+      }
+    ],
+    "http://www.w3.org/ns/ui#sortPriority": [
+      {
+        "@value": 2
+      }
+    ]
+  },
+  {
+    "@id": "file:///workspaces/csvcubed/ons-geography-codelist#code-list",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset",
+      "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+    ],
+    "http://purl.org/dc/terms/abstract": [
+      {
+        "@language": "en",
+        "@value": "List of ONS geographical codes"
+      }
+    ],
+    "http://purl.org/dc/terms/creator": [
+      {
+        "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics"
+      }
+    ],
+    "http://purl.org/dc/terms/description": [
+      {
+        "@type": "https://www.iana.org/assignments/media-types/text/markdown",
+        "@value": "Automated non-hierarchical geography code list"
+      }
+    ],
+    "http://purl.org/dc/terms/issued": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2011-12-15T00:07:00+00:00"
+      }
+    ],
+    "http://purl.org/dc/terms/license": [
+      {
+        "@id": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2023-10-03T00:07:00+00:00"
+      }
+    ],
+    "http://purl.org/dc/terms/publisher": [
+      {
+        "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "en",
+        "@value": "ONS Geography Codelist"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#hasTopConcept": [
+      {
+        "@id": "http://example.com/concept-scheme/this-one/concepts/K02000001"
+      },
+      {
+        "@id": "http://example.com/concept-scheme/this-one/concepts/E12000001"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#keyword": [
+      {
+        "@language": "en",
+        "@value": "Keyword 1"
+      },
+      {
+        "@language": "en",
+        "@value": "Keyword 2"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#theme": [
+      {
+        "@id": "https://statistics.gov.uk/id/theme/"
+      }
+    ]
+  },
+  {
+    "@id": "http://example.com/concept-scheme/this-one/concepts/E92000001",
+    "@type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#comment": [
+      {
+        "@id": "file:///workspaces/csvcubed/"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@id": "file:///workspaces/csvcubed/England"
+      },
+      {
+        "@language": "cy",
+        "@value": "Lloeger"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#exactMatch": [
+      {
+        "@id": "http://statistics.data.gov.uk/id/statistical-geography/E92000001"
+      }
+    ],
+    "http://www.w3.org/2004/02/skos/core#notation": [
+      {
+        "@id": "file:///workspaces/csvcubed/E92000001"
+      }
+    ],
+    "http://www.w3.org/ns/ui#sortPriority": [
+      {
+        "@value": 1
+      }
+    ]
+  }
+]
