@@ -138,12 +138,13 @@ class UriHelper:
 
     def get_attribute_uri(self, attribute: QbAttribute) -> str:
         if isinstance(attribute, NewQbAttribute):
-            _logger.debug("The attribute is a new attribute")
+            _logger.debug("The attribute %s is a new attribute", attribute.label)
             attribute_uri = self._new_resource_uri_generator.get_attribute_uri(
                 attribute.uri_safe_identifier
             )
             _logger.debug(
-                "The attribute is a new attribute with uri '%s'",
+                "The attribute %s is a new attribute with uri '%s'",
+                attribute.label,
                 attribute_uri,
             )
             return attribute_uri
@@ -164,7 +165,7 @@ class UriHelper:
             else self._get_observation_uri_for_standard_shape_data_set()
         )
 
-        _logger.debug("About url template is %s", about_url_template)
+        _logger.debug("aboutUrl template is %s", about_url_template)
         return about_url_template
 
     def get_about_url_for_csvw_col_in_pivoted_shape_cube(
@@ -172,25 +173,27 @@ class UriHelper:
     ) -> Optional[str]:
         obs_val_cols = self.cube.get_columns_of_dsd_type(QbObservationValue)
         _logger.debug(
-            "Getting about url for column with title '%s'", column.csv_column_title
+            "Getting aboutUrl for column with title '%s'", column.csv_column_title
         )
 
         obs_val_col: Optional[QbColumn[QbObservationValue]]
         # If the column represents a QbObservationValue, then simply assign the obs_val_column to this column.
         if isinstance(column.structural_definition, QbObservationValue):
-            _logger.debug("Column is a observation value column")
+            _logger.debug(
+                "Column %s is a observation value column", column.csv_column_title
+            )
             obs_val_col = column
         elif isinstance(column.structural_definition, QbAttribute):
             # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_title
             # function
-            _logger.debug("Column is a an attribute column")
+            _logger.debug("Column %s is an attribute column", column.csv_column_title)
             col_title = column.structural_definition.get_observed_value_col_title()
             obs_val_col = self._get_obs_val_col_described_by_csv_col(
                 col_title, obs_val_cols
             )
         # If the column represents units, set the valueUrl using the _get_observation_value_col_for_title function
         elif isinstance(column.structural_definition, QbMultiUnits):
-            _logger.debug("Column is a a multi-units column")
+            _logger.debug("Column %s is a multi-units column", column.csv_column_title)
             col_title = column.structural_definition.observed_value_col_title
             obs_val_col = self._get_obs_val_col_described_by_csv_col(
                 col_title, obs_val_cols
@@ -214,24 +217,28 @@ class UriHelper:
         the column.
         """
         _logger.debug(
-            "Getting default property value uris for column with title '%s'",
+            "Getting default propertyUrl and valueUrl for column with title '%s'",
             column.csv_column_title,
         )
 
         if isinstance(column.structural_definition, QbDimension):
-            _logger.debug("Column is a dimension column")
+            _logger.debug("Column %s is a dimension column", column.csv_column_title)
             return self._get_default_property_value_uris_for_dimension(column)
         elif isinstance(column.structural_definition, QbAttribute):
-            _logger.debug("Column is an attribute column")
+            _logger.debug("Column %s is an attribute column", column.csv_column_title)
             return self._get_default_property_value_uris_for_attribute(column)
         elif isinstance(column.structural_definition, QbMultiUnits):
-            _logger.debug("Column is a multi-units column")
+            _logger.debug("Column %s is a multi-units column", column.csv_column_title)
             return self._get_default_property_value_uris_for_multi_units(column)
         elif isinstance(column.structural_definition, QbMultiMeasureDimension):
-            _logger.debug("Column is a multi-measure dimension column")
+            _logger.debug(
+                "Column %s is a multi-measure dimension column", column.csv_column_title
+            )
             return self._get_default_property_value_uris_for_multi_measure(column)
         elif isinstance(column.structural_definition, QbObservationValue):
-            _logger.debug("Column is an observation value column")
+            _logger.debug(
+                "Column %s is an observation value column", column.csv_column_title
+            )
             return self._get_default_property_value_uris_for_observation_value(
                 column.structural_definition
             )
@@ -266,7 +273,7 @@ class UriHelper:
 
         obs_val_measure = obs_val_column.structural_definition.measure
         assert obs_val_measure is not None
-        _logger.debug("Observation value column has a measure")
+        _logger.debug("Observation value column has a measure %s.", obs_val_measure)
 
         if isinstance(obs_val_measure, NewQbMeasure):
             measure_id = obs_val_measure.uri_safe_identifier
@@ -406,10 +413,10 @@ class UriHelper:
 
         if len(obs_val_cols) == 1:
             # Only one obs val column so it's clear which one our column describes.
-            _logger.debug("The cube has a single obs val column.")
+            _logger.debug("The cube has a single obs val column %s.", obs_val_cols[0])
             obs_val_col = obs_val_cols[0]
         else:
-            _logger.debug("The cube has multiple obs val columns.")
+            _logger.debug("The cube has multiple obs val columns %s.", obs_val_cols)
             if col_title is not None:
                 obs_val_col = self._get_observation_value_col_for_title(col_title)
 
@@ -483,11 +490,13 @@ class UriHelper:
             value_uri = self._get_column_uri_template_fragment(column)
             if dimension.code_list is None:
                 _logger.debug(
-                    "Dimension does not have code list; valueUrl defaults directly to column's value."
+                    "Dimension %s does not have code list; valueUrl defaults directly to column's value.",
+                    dimension.label,
                 )
             else:
                 _logger.debug(
-                    "Dimension valueUrl determined by code list %s.",
+                    "Dimension %s valueUrl determined by code list %s.",
+                    dimension.label,
                     dimension.code_list,
                 )
                 value_uri = self._get_default_value_uri_for_code_list_concepts(
@@ -507,17 +516,22 @@ class UriHelper:
         attribute_uri = self.get_attribute_uri(attribute)
 
         if isinstance(attribute, ExistingQbAttribute):
-            _logger.debug("Existing Attribute does not have new attribute values.")
+            _logger.debug(
+                "Existing Attribute %s does not have new attribute values.",
+                column.csv_column_title,
+            )
             return attribute_uri, value_uri
         elif isinstance(attribute, NewQbAttribute):
             if attribute.code_list is None:
                 _logger.debug(
-                    "Attribute does not have a code list; valueUrl defaults directly to column value"
+                    "New Attribute %s does not have a code list; valueUrl defaults directly to column value",
+                    column.csv_column_title,
                 )
             else:
                 if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
                     _logger.debug(
-                        "Attribute valueUrl determined by code list %s",
+                        "Attribute %s valueUrl determined by code list %s",
+                        column.csv_column_title,
                         attribute.code_list,
                     )
                     value_uri = self._get_default_value_uri_for_code_list_concepts(
@@ -525,7 +539,8 @@ class UriHelper:
                     )
                 else:
                     _logger.debug(
-                        "New Attribute has new attribute values which define the valueUrl."
+                        "New Attribute %s has new attribute values which define the valueUrl.",
+                        column.csv_column_title,
                     )
                     value_uri = self.get_new_attribute_value_uri(
                         attribute.uri_safe_identifier, column_uri_fragment
@@ -594,7 +609,10 @@ class UriHelper:
         )
         unit_value_uri: str
         if all_units_new:
-            _logger.debug("All units are new; they define the column's valueUrl.")
+            _logger.debug(
+                "All units are new; they define the %s column's valueUrl.",
+                column.csv_column_title,
+            )
             unit_value_uri = self._new_resource_uri_generator.get_unit_uri(
                 column_template_fragment
             )
@@ -623,7 +641,10 @@ class UriHelper:
 
         column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
-            _logger.debug("All measures are new; they define the column's valueUrl.")
+            _logger.debug(
+                "All measures are new; they define the %s column's valueUrl.",
+                column.csv_column_title,
+            )
             return self._new_resource_uri_generator.get_measure_uri(
                 column_template_fragment
             )
