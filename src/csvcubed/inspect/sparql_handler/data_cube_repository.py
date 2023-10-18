@@ -364,23 +364,43 @@ class DataCubeRepository:
                         )
         if shape_conversion:
             from csvcubed.cli.buildcsvw.build import build_csvw
-            from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+            from csvcubed.utils.csvdataset import _melt_pivoted_shape
             from tests.helpers.repository_cache import get_data_cube_repository
 
-            canonical_shape_dataset = transform_dataset_to_canonical_shape(
-                data_cube_repository=self,
-                dataset=df,
-                csv_url=csv_url,
-                qube_components=self.get_dsd_qube_components_for_csv(
-                    csv_url
-                ).qube_components,
-            )
-            df, measure_col_name, unit_col_name = canonical_shape_dataset
+            cube_shape = self.get_shape_for_csv(csv_url)
 
-            df.rename(columns={measure_col_name: "Measure"}, inplace=True)
-            df.rename(columns={unit_col_name: "Unit"}, inplace=True)
-            reshaped_df_file_name = "out/standardised-" + str(csv_url)
-            df.to_csv(Path(reshaped_df_file_name), index=False)
+            if cube_shape == CubeShape.Standard:
+                # index = List[Dimension column title(s) and Attribute column title(s)]
+
+                # pivoted_df = df.pivot(
+                #         index=index,
+                #         columns="Measure column title",
+                #         values="Observations column title"
+                # )
+
+                # pivoted_df.rename(
+                #         columns={
+                #                 "Some Measure 1": "Some Measure 1 (Unit for Measure 1)",
+                #                 "Some Measure 2": "Some Measure 2 (Unit for Measure 2)",
+                #                 ...
+                #         }
+                # )
+                pass
+            elif cube_shape == CubeShape.Pivoted:
+                df, measure_col_name, unit_col_name = _melt_pivoted_shape(
+                    data_cube_repository=self,
+                    canonical_shape_dataset=df,
+                    csv_url=csv_url,
+                    qube_components=self.get_dsd_qube_components_for_csv(
+                        csv_url
+                    ).qube_components,
+                )
+                df.rename(columns={measure_col_name: "Measure"}, inplace=True)
+                df.rename(columns={unit_col_name: "Unit"}, inplace=True)
+                reshaped_df_file_name = "out/standardised-" + str(csv_url)
+                df.to_csv(Path(reshaped_df_file_name), index=False)
+            else:
+                raise Exception("Unable to dectect what shape the cube is in.")
 
             if "Measure" in df.columns and "Unit" in df.columns:
                 build_csvw(Path(reshaped_df_file_name))
@@ -393,7 +413,7 @@ class DataCubeRepository:
                 df, _errors = data_cube_repository.get_dataframe(csv_url)
             else:
                 raise Exception(
-                    "Shape conversion failed. DataFrame is either still in pivoted shape or in niether standard or pivoted forms."
+                    "Shape conversion failed. DataFrame either remained in pivoted shape, or hasn't correctly coverted to standard from."
                 )
 
         if not include_suppressed_cols:
