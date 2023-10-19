@@ -132,14 +132,14 @@ def _validate_missing_observation_values(
         obs_status_columns = get_observation_status_columns(cube)
         for obs_status_column in obs_status_columns:
             potential_missing_values = potential_missing_values[
-                potential_missing_values[obs_status_column.csv_column_title].isna()
+                potential_missing_values[obs_status_column.csv_column_title].isna()  # type: ignore
             ]
 
         if potential_missing_values.size > 0:
             return [
                 ObservationValuesMissing(
                     csv_column_title=observed_value_column.csv_column_title,
-                    row_numbers=set(potential_missing_values.index),
+                    row_numbers=set(potential_missing_values.index),  # type: ignore
                 )
             ]
 
