@@ -142,7 +142,7 @@ class SkosCodeListWriter(WriterBase):
             self.new_code_list, CompositeQbCodeList
         ) or self.has_duplicated_qb_concepts(self.new_code_list):
             _logger.debug(
-                "Code list is composite has a duplicated concept. Linking to original concept URIs."
+                "Code list is composite and has duplicated concepts. Linking to original concept URIs."
             )
 
             csvw_columns.append(

@@ -6,6 +6,10 @@ The standard shape extends the [common structure](./index.md#common-structure) b
 
 The standard shape is most appropriate where you have a [sparse](../../glossary/index.md#sparse-data) data cube, i.e. there are a large number of possible combinations of dimension values, but very few of them have observed values recorded. If your data cube is [dense](../../glossary/index.md#dense-data), then consider using the [pivoted shape](./pivoted-shape.md). See [Converting to standard shape](./shape-conversion.md#converting-to-the-standard-shape) for instructions on how to convert the shape of your data in Python and R.
 
+## Observation value column titles
+
+The observation value column titles must not be entitled "Value". If you attempt to inspect a data cube built using csvcubed where one or more observation columns are entitled "Value", this will raise an [error](../../guides/errors/inspect-command-errors/invalid-obs-val-col-entitled-value.md).
+
 ## Single Measure
 
 In our example, the single measure observed is `Number of Arthur's Bakes` and the corresponding unit is `Count`.

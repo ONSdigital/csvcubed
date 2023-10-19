@@ -307,10 +307,6 @@ def _melt_data_set(
     ]
     id_cols = list(set(data_set.columns) - set(value_cols))
 
-    # Raise an exception if any observation columns are entitled 'Value'
-    if "Value" in value_cols:
-        raise InvalidObsValColTitleException()
-
     # Melting the data set using pandas melt function.
     return pd.melt(
         data_set,
