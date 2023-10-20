@@ -7,7 +7,6 @@ one of more data cubes.
 """
 
 import os
-import time
 from dataclasses import InitVar, dataclass, field
 from functools import cache, cached_property
 from pathlib import Path
@@ -51,7 +50,6 @@ from csvcubed.utils.iterables import first, group_by, single
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.uri import file_uri_to_path
-from csvcubed.writers.qbwriter import QbWriter
 
 _XSD_BASE_URI: str = XSD[""].toPython()
 
@@ -399,22 +397,27 @@ class DataCubeRepository:
                 df.rename(columns={unit_col_name: "Unit"}, inplace=True)
                 reshaped_df_file_name = "out/standardised-" + str(csv_url)
                 df.to_csv(Path(reshaped_df_file_name), index=False)
+
+                if "Measure" in df.columns and "Unit" in df.columns:
+                    build_csvw(Path(reshaped_df_file_name))
+                    csvw_metadata_json_path = Path(
+                        str(os.getcwd())
+                        + "/"
+                        + reshaped_df_file_name
+                        + "-metadata.json"
+                    )
+                    data_cube_repository = get_data_cube_repository(
+                        csvw_metadata_json_path
+                    )
+                    csv_url = data_cube_repository.get_primary_csv_url()
+
+                    df, _errors = data_cube_repository.get_dataframe(csv_url)
+                else:
+                    raise Exception(
+                        "Shape conversion failed. DataFrame either remained in pivoted shape, or hasn't correctly coverted to standard from."
+                    )
             else:
                 raise Exception("Unable to dectect what shape the cube is in.")
-
-            if "Measure" in df.columns and "Unit" in df.columns:
-                build_csvw(Path(reshaped_df_file_name))
-                csvw_metadata_json_path = Path(
-                    str(os.getcwd()) + "/" + reshaped_df_file_name + "-metadata.json"
-                )
-                data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
-                csv_url = data_cube_repository.get_primary_csv_url()
-
-                df, _errors = data_cube_repository.get_dataframe(csv_url)
-            else:
-                raise Exception(
-                    "Shape conversion failed. DataFrame either remained in pivoted shape, or hasn't correctly coverted to standard from."
-                )
 
         if not include_suppressed_cols:
             cols_to_drop = [
