@@ -179,7 +179,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -189,31 +189,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Value": 0,
+          "Val": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Value": 1,
+          "Val": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Value": 2,
+          "Val": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Value": 3,
+          "Val": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Value": 4,
+          "Val": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -246,7 +246,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -256,31 +256,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Value": 0,
+          "Val": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Value": 1,
+          "Val": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Value": 2,
+          "Val": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Value": 3,
+          "Val": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Value": 4,
+          "Val": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -313,7 +313,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -323,31 +323,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Value": 0,
+          "Val": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Value": 1,
+          "Val": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Value": 2,
+          "Val": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Value": 3,
+          "Val": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Value": 4,
+          "Val": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -380,7 +380,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -390,31 +390,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Value": 0,
+          "Val": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Value": 1,
+          "Val": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Value": 2,
+          "Val": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Value": 3,
+          "Val": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Value": 4,
+          "Val": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -447,7 +447,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -457,31 +457,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Value": 0,
+          "Val": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Value": 1,
+          "Val": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Value": 2,
+          "Val": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Value": 3,
+          "Val": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Value": 4,
+          "Val": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -514,7 +514,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -524,31 +524,31 @@ Feature: cube-config.json
       [
         {
           "Dimension": "a",
-          "Value": 0,
+          "Val": 0,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "b",
-          "Value": 1,
+          "Val": 1,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "c",
-          "Value": 2,
+          "Val": 2,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "d",
-          "Value": 3,
+          "Val": 3,
           "Measure": "length",
           "Unit": "cm"
         },
         {
           "Dimension": "e",
-          "Value": 4,
+          "Val": 4,
           "Measure": "length",
           "Unit": "cm"
         }
@@ -585,7 +585,7 @@ Feature: cube-config.json
       """
       [
         "Dimension",
-        "Value",
+        "Val",
         "Measure",
         "Unit"
       ]
@@ -595,31 +595,31 @@ Feature: cube-config.json
       [
       {
       "Dimension": "first",
-      "Value": 0,
+      "Val": 0,
       "Measure": "length",
       "Unit": "cm",
       },
       {
       "Dimension": "b",
-      "Value": 1,
+      "Val": 1,
       "Measure": "length",
       "Unit": "cm"
       },
       {
       "Dimension": "c",
-      "Value": 2,
+      "Val": 2,
       "Measure": "length",
       "Unit": "cm"
       },
       {
       "Dimension": "d",
-      "Value": 3,
+      "Val": 3,
       "Measure": "length",
       "Unit": "cm"
       },
       {
       "Dimension": "e",
-      "Value": 4,
+      "Val": 4,
       "Measure": "length",
       "Unit": "cm"
       }
@@ -634,8 +634,9 @@ Feature: cube-config.json
     Given the config json file "v1.4/basic-test.json" and the existing tidy data csv file "v1.4/basic-test.csv"
     Then a valid cube can be built and serialised to CSV-W
 
-  Scenario: Generate a valid multi-measure pivoted data set containing attributes and units columns
+  Scenario: Generate a valid multi-measure pivoted data set containing attributes and units columns given ATTRIBUTE_VALUE_CODELISTS is False
     Given the config json file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.json" and the existing tidy data csv file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.csv"
+    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
     When a valid cube is built and serialised to CSV-W
     Then csvwcheck validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -665,4 +666,39 @@ Feature: cube-config.json
       qb:dataSet <#dataset>;
       qb:measureType <#measure/exports-monetary-value>;
       sdmxa:unitMeasure <#unit/pounds-millions>.
-      """
+    """
+
+  Scenario: Generate a valid multi-measure pivoted data set containing attributes and units columns given ATTRIBUTE_VALUE_CODELISTS is True
+    Given the config json file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.json" and the existing tidy data csv file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.csv"
+    And the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True
+    When a valid cube is built and serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+    """
+      @base <{{rdf_input_directory}}/multi-measure-pivoted-dataset-units-and-attributes.csv>.
+      @prefix sector: <{{rdf_input_directory}}/sector.csv#>.
+      @prefix year: <{{rdf_input_directory}}/year.csv#>.
+      @prefix attribute: <{{rdf_input_directory}}/multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/>.
+      @prefix qb: <http://purl.org/linked-data/cube#>.
+      @prefix sdmxa: <http://purl.org/linked-data/sdmx/2009/attribute#>.
+
+    <#obs/2021,services@imports-monetary-value> a qb:Observation;
+        attribute:imports-status <{{rdf_input_directory}}/imports-status.csv#final>;
+        <#dimension/sector> sector:services;
+        <#dimension/year> year:2021;
+        <#measure/imports-monetary-value> 150.0;
+        qb:dataSet <#dataset>;
+        qb:measureType <#measure/imports-monetary-value>;
+        sdmxa:unitMeasure <#unit/pounds-millions> .
+
+    <#obs/2021,services@exports-monetary-value> a qb:Observation;
+        attribute:exports-status <{{rdf_input_directory}}/exports-status.csv#final>;
+        <#dimension/sector> sector:services;
+        <#dimension/year> year:2021;
+        <#measure/exports-monetary-value> 80.0;
+        qb:dataSet <#dataset>;
+        qb:measureType <#measure/exports-monetary-value>;
+        sdmxa:unitMeasure <#unit/pounds-millions>.
+    """

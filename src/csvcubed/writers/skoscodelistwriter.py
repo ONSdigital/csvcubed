@@ -142,7 +142,7 @@ class SkosCodeListWriter(WriterBase):
             self.new_code_list, CompositeQbCodeList
         ) or self.has_duplicated_qb_concepts(self.new_code_list):
             _logger.debug(
-                "Code list is composite has a duplicated concept. Linking to original concept URIs."
+                "Code list is composite and has duplicated concepts. Linking to original concept URIs."
             )
 
             csvw_columns.append(
@@ -203,7 +203,9 @@ class SkosCodeListWriter(WriterBase):
             for variant_uri in self.new_code_list.variant_of_uris:
                 concept_scheme_with_metadata.variant.add(ExistingResource(variant_uri))
 
-        self.new_code_list.metadata.configure_dcat_dataset(concept_scheme_with_metadata)
+        self.new_code_list.metadata.configure_dcat_dataset(
+            concept_scheme_with_metadata  # type: ignore
+        )
         self.new_code_list.copy_arbitrary_triple_fragments_to_resources(
             {
                 RdfSerialisationHint.CatalogDataset: concept_scheme_with_metadata,

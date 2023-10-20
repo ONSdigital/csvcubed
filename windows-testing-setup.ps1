@@ -11,12 +11,12 @@ Write-Output "=== Installing csvlint ==="
 mkdir csvlint
 cd csvlint
 
-Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win64-mingw.zip -OutFile "curl.zip"
+Invoke-WebRequest -Uri https://curl.se/windows/dl-8.2.1_11/curl-8.2.1_11-win64-mingw.zip -OutFile "curl.zip"
 Expand-Archive -LiteralPath curl.zip -DestinationPath .
-cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll
-cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+cp curl-8.2.1_11-win64-mingw\bin\libcurl-x64.dll curl-8.2.1_11-win64-mingw\bin\libcurl.dll
+cp curl-8.2.1_11-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
-$curlExe = (Get-Item curl-7.86.0-win64-mingw\bin\curl.exe | Resolve-Path).Path.Substring(38)
+$curlExe = (Get-Item curl-8.2.1_11-win64-mingw\bin\curl.exe | Resolve-Path).Path.Substring(38)
 
 
 gem install bundle

@@ -9,6 +9,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from rdflib import Graph
 
+from csvcubed import feature_flags
 from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -61,19 +62,21 @@ def get_standard_catalog_metadata_for_name(
 
 
 _standard_data = pd.DataFrame(
-    {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Value": [1, 2, 3]}
+    {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Val": [1, 2, 3]}
 )
 
 
 @Given('a single-measure QbCube named "{cube_name}"')
 def step_impl(context, cube_name: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
+    context.flag = False
 
 
 @Given('a single-measure QbCube named "{cube_name}" with missing observation values')
 def step_impl(context, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
-    cube.data["Value"] = [1, None, 3]
+    cube.data["Val"] = [1, None, 3]
     context.cube = cube
 
 
@@ -81,12 +84,13 @@ def step_impl(context, cube_name: str):
     'a single-measure QbCube named "{cube_name}" with missing observation values and `sdmxa:obsStatus` replacements'
 )
 def step_impl(context, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     data = pd.DataFrame(
         {
             "A": ["a", "b", "c"],
             "D": ["e", "f", "g"],
             "Marker": ["Suppressed", None, None],
-            "Value": [None, 2, 3],
+            "Val": [None, 2, 3],
         }
     )
     columns = [
@@ -102,12 +106,14 @@ def step_impl(context, cube_name: str):
             "Marker",
             NewQbAttribute.from_data(
                 "Marker",
+                "Marker",
                 data["Marker"],
+                [NewQbConcept(value) for value in data["Marker"].dropna()],
                 parent_attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
             ),
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -121,12 +127,13 @@ def step_impl(context, cube_name: str):
     'a single-measure QbCube named "{cube_name}" with missing observation values and missing `sdmxa:obsStatus` replacements'
 )
 def step_impl(context, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     data = pd.DataFrame(
         {
             "A": ["a", "b", "c"],
             "D": ["e", "f", "g"],
             "Marker": [None, "Provisional", None],
-            "Value": [None, 2, 3],
+            "Val": [None, 2, 3],
         }
     )
     columns = [
@@ -142,12 +149,14 @@ def step_impl(context, cube_name: str):
             "Marker",
             NewQbAttribute.from_data(
                 "Marker",
+                "Marker",
                 data["Marker"],
+                [NewQbConcept(value) for value in data["Marker"].dropna()],
                 parent_attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
             ),
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -160,6 +169,7 @@ def step_impl(context, cube_name: str):
 @Given('a single-measure QbCube with identifier "{cube_id}" named "{cube_name}"')
 def step_impl(context, cube_name: str, cube_id: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, cube_id)
+    context.flag = False
 
 
 def _get_single_measure_cube_with_name_and_id(
@@ -173,7 +183,7 @@ def _get_single_measure_cube_with_name_and_id(
             "D", NewQbDimension.from_data("D code list", "D", _standard_data["D"])
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -200,7 +210,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://example.org/some/codelist/d",
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -208,15 +218,16 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
     )
+    context.flag = False
 
 
 @Given('a single-measure QbCube named "{cube_name}" with duplicate rows')
 def step_impl(context, cube_name: str):
-    data = pd.DataFrame({"A": ["a", "a"], "Value": [1, 1]})
+    data = pd.DataFrame({"A": ["a", "a"], "Val": [1, 1]})
     columns = [
         QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"])),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -224,6 +235,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given(
@@ -245,7 +257,7 @@ def step_impl(context, cube_name: str):
             "D", NewQbDimension.from_data("D code list", "D", _standard_data["D"])
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -259,11 +271,12 @@ def step_impl(context, cube_name: str):
     'a single-measure QbCube named "{cube_name}" with optional attribute values missing'
 )
 def step_impl(context, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
             "Some Attribute": ["attr-a", float("nan"), "attr-c"],
-            "Value": [1, 2, 3],
+            "Val": [1, 2, 3],
         }
     )
     columns = [
@@ -275,10 +288,15 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Some Attribute",
-            NewQbAttribute.from_data("Some Attribute", data["Some Attribute"]),
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                "Some Attribute",
+                data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
+            ),
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -294,7 +312,7 @@ def step_impl(context, cube_name: str):
         {
             "A": ["a_height", "a_length"],
             "Measure": ["height", "length"],
-            "Value": [1, 20],
+            "Val": [1, 20],
         }
     )
     columns = [
@@ -303,7 +321,7 @@ def step_impl(context, cube_name: str):
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(unit=NewQbUnit("meters")),
         ),
     ]
@@ -311,6 +329,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given('a multi-measure QbCube named "{cube_name}" with duplicate rows')
@@ -319,7 +338,7 @@ def step_impl(context, cube_name: str):
         {
             "A": ["a_height", "a_height", "a_length"],
             "Measure": ["height", "height", "length"],
-            "Value": [1, 1, 20],
+            "Val": [1, 1, 20],
         }
     )
     columns = [
@@ -328,7 +347,7 @@ def step_impl(context, cube_name: str):
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(unit=NewQbUnit("meters")),
         ),
     ]
@@ -336,17 +355,19 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given(
     'a single-measure QbCube named "{cube_name}" with new attribute values and units'
 )
 def step_impl(context, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     data = pd.DataFrame(
         {
             "Existing Dimension": ["a", "b", "c"],
             "New Attribute": ["pending", "final", "in-review"],
-            "Value": [2, 2, 2],
+            "Val": [2, 2, 2],
         }
     )
     columns = [
@@ -355,10 +376,15 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "New Attribute",
-            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+            NewQbAttribute.from_data(
+                "New Attribute",
+                "New Attribute",
+                data["New Attribute"],
+                [NewQbConcept(value) for value in data["New Attribute"].dropna()],
+            ),
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
@@ -384,7 +410,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://example.org/some/codelist/d",
         ),
         QbColumn(
-            "Value",
+            "Val",
             QbObservationValue(
                 NewQbMeasure("Some Measure"),
                 NewQbUnit(
@@ -401,6 +427,7 @@ def step_impl(context, cube_name: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
     )
+    context.flag = False
 
 
 @Then('turtle should be written to "{file}"')
@@ -413,9 +440,9 @@ def step_impl(context, file: str):
 
 @When("the cube is serialised to CSV-W")
 def step_impl(context):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
-
     writer.write(temp_dir)
     context.csv_file_name = writer.csv_file_name
 
@@ -430,6 +457,7 @@ def step_impl(context):
 @Step('the CSVqb should fail validation with "{validation_error}"')
 def step_impl(context, validation_error: str):
     cube: Cube = context.cube
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     errors = cube.validate()
     errors += validate_qb_component_constraints(context.cube)
     assert any([e for e in errors if validation_error in e.message]), [
@@ -458,7 +486,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     data = pd.DataFrame(
         {
             "A": ["uss-cerritos", "uss-titan"],
-            "Value": [1, 1],
+            "Val": [1, 1],
             "Reg": [75567, 80102],
             "Appeared": ["2020-08-06", "2020-10-08"],
             "First_Captain": ["William Riker", "Carol Freeman"],
@@ -466,7 +494,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     )
     dim = QbColumn("A", NewQbDimension.from_data("A Dimension", "A", data["A"]))
     val = QbColumn(
-        "Value",
+        "Val",
         QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
     )
     if data_type == "int":
@@ -520,6 +548,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+    context.flag = False
 
 
 @Given(
@@ -530,7 +559,7 @@ def step_impl(context, cube_name: str):
         {
             "New Dimension": ["a", "b", "c"],
             "New Attribute": ["university", "students", "masters"],
-            "Observed Value": [1, 2, 3],
+            "Observed Val": [1, 2, 3],
         }
     )
 
@@ -547,10 +576,15 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "New Attribute",
-            NewQbAttribute.from_data("new_Qb_attribute", data["New Attribute"]),
+            NewQbAttribute.from_data(
+                "new_Qb_attribute",
+                "New Attribute",
+                data["New Attribute"],
+                [NewQbConcept(value) for value in data["New Attribute"].dropna()],
+            ),
         ),
         QbColumn(
-            "Observed Value",
+            "Observed Val",
             QbObservationValue(NewQbMeasure("Part-time"), NewQbUnit("Num of Students")),
         ),
     ]
@@ -563,6 +597,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given(
@@ -573,7 +608,7 @@ def step_impl(context, cube_name: str):
         {
             "New Dimension": ["a", "b", "c"],
             "New Attribute": ["university", "students", "masters"],
-            "Observed Value": [1, 2, 3],
+            "Observed Val": [1, 2, 3],
             "Measure": ["part-time", "full-time", "flex-time"],
         }
     )
@@ -591,10 +626,15 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "New Attribute",
-            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+            NewQbAttribute.from_data(
+                "New Attribute",
+                "New Attribute",
+                data["New Attribute"],
+                [NewQbConcept(value) for value in data["New Attribute"].dropna()],
+            ),
         ),
         QbColumn(
-            "Observed Value",
+            "Observed Val",
             QbObservationValue(unit=NewQbUnit("Num of students")),
         ),
         QbColumn(
@@ -610,6 +650,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given(
@@ -621,7 +662,7 @@ def step_impl(context, cube_name: str):
             "Existing Dimension": ["a", "b", "c"],
             "New Dimension": ["d", "e", "f"],
             "Existing Attribute": ["university", "students", "masters"],
-            "Observed Value": [1, 2, 3],
+            "Observed Val": [1, 2, 3],
         }
     )
 
@@ -646,7 +687,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
-            csv_column_title="Observed Value",
+            csv_column_title="Observed Val",
             structural_definition=QbObservationValue(
                 ExistingQbMeasure("http://existing/measure"),
                 ExistingQbUnit("http://exisiting/unit"),
@@ -662,6 +703,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given(
@@ -673,7 +715,7 @@ def step_impl(context, cube_name: str):
             "Existing Dimension": ["a", "b", "c"],
             "New Dimension": ["d", "e", "f"],
             "Existing Attribute": ["university", "students", "masters"],
-            "Observed Value": [1, 2, 3],
+            "Observed Val": [1, 2, 3],
             "Units": ["gbp", "count", "count"],
             "Existing Measures": ["part-time", "full-time", "flex-time"],
         }
@@ -700,7 +742,7 @@ def step_impl(context, cube_name: str):
             csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
-            "Observed Value",
+            "Observed Val",
             QbObservationValue(data_type="number"),
         ),
         QbColumn(
@@ -734,6 +776,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Given('a QbCube named "{cube_name}" which has a dimension containing URI-unsafe chars')
@@ -746,7 +789,7 @@ def step_impl(context, cube_name: str):
                 "http://example.com/location#cardiff",
             ],
             "Measure": ["A", "A", "A"],
-            "Observed Value": [1, 2, 3],
+            "Observed Val": [1, 2, 3],
         }
     )
 
@@ -761,7 +804,7 @@ def step_impl(context, cube_name: str):
             QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
         ),
         QbColumn(
-            "Observed Value",
+            "Observed Val",
             QbObservationValue(unit=NewQbUnit("Num of students")),
         ),
     ]
@@ -774,6 +817,7 @@ def step_impl(context, cube_name: str):
     assert len(errors) == 0, [e.message for e in errors]
 
     context.cube = cube
+    context.flag = False
 
 
 @Then("some additional turtle is appended to the resulting RDF")
@@ -801,6 +845,7 @@ def step_impl(context, cube_name: str, uri_style: str):
     context.cube = _get_single_measure_cube_with_name_and_id(
         cube_name, None, URIStyle[uri_style]
     )
+    context.flag = False
 
 
 def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
@@ -832,6 +877,7 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
     'a multi-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
 )
 def step_impl(context, identifier: str, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
         {
@@ -853,7 +899,9 @@ def step_impl(context, identifier: str, cube_name: str):
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -883,6 +931,7 @@ def step_impl(context, identifier: str, cube_name: str):
     'a single-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
 )
 def step_impl(context, identifier: str, cube_name: str):
+    feature_flags.ATTRIBUTE_VALUE_CODELISTS = context.flag
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
         {
@@ -902,7 +951,9 @@ def step_impl(context, identifier: str, cube_name: str):
             "Some Attribute",
             NewQbAttribute.from_data(
                 "Some Attribute",
+                "Some Attribute",
                 data["Some Attribute"],
+                [NewQbConcept(value) for value in data["Some Attribute"].dropna()],
                 observed_value_col_title="Some Obs Val",
             ),
         ),
@@ -924,3 +975,13 @@ def step_impl(context, env_var_name: str, env_var_value: str):
         del os.environ[env_var_name]
 
     context.add_cleanup(_delete_env_var)
+
+
+@Given("the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False")
+def step_impl(context):
+    context.flag = False
+
+
+@Given("the ATTRIBUTE_VALUE_CODELISTS feature flag is set to True")
+def step_impl(context):
+    context.flag = True

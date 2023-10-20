@@ -33,7 +33,7 @@ csvcubed has extensive user documentation which tracks the release of csvcubed w
 
 ## Developer Documentation
 
-More detailed developer documentation for this project can be found [here](./docs/developer.md).
+More detailed developer documentation for this project can be found [here](https://github.com/GSS-Cogs/csvcubed/blob/main/docs/developer.md).
 
 ## How to report bugs
 

@@ -51,7 +51,9 @@ def test_qbcube_data_is_categorical():
             QbColumn(
                 "Some Resource Attribute",
                 NewQbAttribute.from_data(
-                    "Some Resource Attribute", data["Some Resource Attribute"]
+                    "Some Resource Attribute",
+                    "Some Resource Attribute",
+                    data["Some Resource Attribute"],
                 ),
             ),
             QbColumn(
@@ -87,7 +89,9 @@ def test_qbcube_data_is_categorical():
         assert not isinstance(values, Categorical)
 
 
-def test_convert_data_values_to_uri_safe_values():
+def test_convert_data_values_to_uri_safe_values_codelist_true(
+    tests_env_vars_setup_and_teardown,
+):
     """
     Ensure that substituting labels with uri-safe-values works for all known components with appropriate mappings
     defined.
@@ -114,7 +118,66 @@ def test_convert_data_values_to_uri_safe_values():
             QbColumn(
                 "Some Resource Attribute",
                 NewQbAttribute.from_data(
-                    "Some Resource Attribute", data["Some Resource Attribute"]
+                    "Some Resource Attribute",
+                    "Some Resource Attribute",
+                    data["Some Resource Attribute"],
+                ),
+            ),
+            QbColumn(
+                "Measure",
+                QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
+            ),
+            QbColumn("Unit", QbMultiUnits.new_units_from_data(data["Unit"])),
+            QbColumn("Observed Value", QbObservationValue()),
+        ],
+    )
+
+    convert_data_values_to_uri_safe_values(cube)
+
+    map_col_to_expected_values = {
+        "Some Dimension": ["value-a", "value-b", "value-c"],
+        "Some Resource Attribute": ["resource-a", "resource-b", "resource-c"],
+        "Measure": ["measure-a", "measure-b", "measure-c"],
+        "Unit": ["unit-a", "unit-b", "unit-c"],
+    }
+
+    _assert_values_in_column(cube, map_col_to_expected_values)
+
+
+def test_convert_data_values_to_uri_safe_values_codelist_false():
+    """
+    Ensure that substituting labels with uri-safe-values works for all known components with appropriate mappings
+    defined.
+    """
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["Value A", "Value B", "Value C"],
+            "Some Resource Attribute": ["Resource A", "Resource B", "Resource C"],
+            "Measure": ["Measure A", "Measure B", "Measure C"],
+            "Unit": ["Unit A", "Unit B", "Unit C"],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+    cube = Cube(
+        CatalogMetadata("Some Qube"),
+        data,
+        [
+            QbColumn(
+                "Some Dimension",
+                NewQbDimension.from_data(
+                    "Some Dimension", "Some Dimension", data["Some Dimension"]
+                ),
+            ),
+            QbColumn(
+                "Some Resource Attribute",
+                NewQbAttribute.from_data(
+                    "Some Resource Attribute",
+                    "Some Resource Attribute",
+                    data["Some Resource Attribute"],
+                    [
+                        NewQbConcept(value)
+                        for value in data["Some Resource Attribute"].dropna()
+                    ],
                 ),
             ),
             QbColumn(

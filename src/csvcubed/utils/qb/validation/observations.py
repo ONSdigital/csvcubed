@@ -2,6 +2,7 @@ from typing import Dict, List, Union
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 
+from csvcubed.models.csvcubedexception import InvalidObsValColTitleException
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
@@ -131,14 +132,14 @@ def _validate_missing_observation_values(
         obs_status_columns = get_observation_status_columns(cube)
         for obs_status_column in obs_status_columns:
             potential_missing_values = potential_missing_values[
-                potential_missing_values[obs_status_column.csv_column_title].isna()
+                potential_missing_values[obs_status_column.csv_column_title].isna()  # type: ignore
             ]
 
         if potential_missing_values.size > 0:
             return [
                 ObservationValuesMissing(
                     csv_column_title=observed_value_column.csv_column_title,
-                    row_numbers=set(potential_missing_values.index),
+                    row_numbers=set(potential_missing_values.index),  # type: ignore
                 )
             ]
 
@@ -180,6 +181,9 @@ def _validate_observation_value(
     num_obs_val_columns: int,
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
+
+    if "Value" in observation_value.csv_column_title:
+        raise InvalidObsValColTitleException()
 
     if observation_value.structural_definition.unit is None:
         if not any(multi_unit_columns):

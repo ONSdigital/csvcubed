@@ -9,15 +9,20 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, Union
 
 import pandas as pd
 
+from csvcubed import feature_flags
 from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    QbAttribute,
+    QbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension, QbDimension
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
@@ -100,14 +105,14 @@ class QbWriter(WriterBase):
 
         tables += self._get_table_references_needed_for_foreign_keys()
 
-        self._output_new_code_list_csvws(output_folder)
-
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._uris.get_dataset_uri(),
             "tables": tables,
             "rdfs:seeAlso": self._dsd.generate_data_structure_definitions(),
         }
+
+        self._output_new_code_list_csvws(output_folder)
 
         metadata_json_output_path = output_folder / self.csv_metadata_file_name
         with open(metadata_json_output_path, "w+") as f:
@@ -124,11 +129,26 @@ class QbWriter(WriterBase):
             code_list = column.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
                 _logger.debug(
-                    "Writing code list %s to '%s' directory.", code_list, output_folder
+                    "Writing dimension code list %s to '%s' directory.",
+                    code_list,
+                    output_folder,
                 )
 
                 code_list_writer = self._get_writer_for_code_list(code_list)
                 code_list_writer.write(output_folder)
+
+        for column in self.cube.get_columns_of_dsd_type(NewQbAttribute):
+            if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+                code_list = column.structural_definition.code_list
+                if isinstance(code_list, NewQbCodeList):
+                    _logger.debug(
+                        "Writing attribute code list %s to '%s' directory.",
+                        code_list,
+                        output_folder,
+                    )
+
+                    code_list_writer = self._get_writer_for_code_list(code_list)
+                    code_list_writer.write(output_folder)
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvw_column_definition(c) for c in self.cube.columns]
@@ -142,14 +162,21 @@ class QbWriter(WriterBase):
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
 
-    def _get_columns_for_foreign_keys(self) -> List[QbColumn[NewQbDimension]]:
+    def _get_columns_for_foreign_keys(
+        self,
+    ) -> List[QbColumn[Union[NewQbDimension, NewQbAttribute]]]:
         columns = []
         for col in self.cube.get_columns_of_dsd_type(NewQbDimension):
             if col.structural_definition.code_list is not None and isinstance(
                 col.structural_definition.code_list, NewQbCodeList
             ):
                 columns.append(col)
-
+        if feature_flags.ATTRIBUTE_VALUE_CODELISTS:
+            for col in self.cube.get_columns_of_dsd_type(NewQbAttribute):
+                if col.structural_definition.code_list is not None and isinstance(
+                    col.structural_definition.code_list, NewQbCodeList
+                ):
+                    columns.append(col)
         return columns
 
     def _get_table_references_needed_for_foreign_keys(self) -> List[dict]:
@@ -260,8 +287,9 @@ class QbWriter(WriterBase):
 
             if dimension_col.csv_column_uri_template is not None:
                 _logger.debug(
-                    "Dimension column with title '%s'has a csv column uri template defined",
+                    "Dimension column with title '%s'has a csv column uri template '%s' defined",
                     dimension_col.csv_column_title,
+                    dimension_col.csv_column_uri_template,
                 )
                 value_url = dimension_col.csv_column_uri_template
 
@@ -372,7 +400,7 @@ class QbWriter(WriterBase):
         ]
         unit = obs_val.unit
         if unit is not None:
-            _logger.debug("Adding virtual unit column.")
+            _logger.debug("Adding virtual unit column for '%s'.", unit)
             virtual_columns.append(
                 {
                     "name": VIRT_UNIT_COLUMN_NAME,
@@ -424,9 +452,9 @@ class QbWriter(WriterBase):
                 column
             )
             _logger.debug(
-                "About url for column with tile '%s' is '%s'",
-                about_url,
+                "aboutUrl for column with title '%s' is '%s'",
                 column.csv_column_title,
+                about_url,
             )
             if about_url is not None:
                 csvw_col["aboutUrl"] = about_url
@@ -437,7 +465,8 @@ class QbWriter(WriterBase):
         ) = self._uris.get_default_property_value_uris_for_column(column)
 
         _logger.debug(
-            "Column has default propertyUrl '%s' and default valueUrl '%s'.",
+            "Column '%s' has default propertyUrl '%s' and default valueUrl '%s'.",
+            column.csv_column_title,
             property_url,
             default_value_url,
         )
@@ -449,26 +478,33 @@ class QbWriter(WriterBase):
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.csv_column_uri_template
         elif isinstance(column.structural_definition, QbAttributeLiteral):
-            _logger.debug("Column is Attribute Literal; valueUrl is left unset.")
+            _logger.debug(
+                "Column '%s' is Attribute Literal; valueUrl is left unset.",
+                column.csv_column_title,
+            )
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
         if isinstance(column.structural_definition, QbObservationValue):
             _logger.debug(
-                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+                "Setting CSV-W datatype for %s to %s.",
+                column.csv_column_title,
+                column.structural_definition.data_type,
             )
             csvw_col["datatype"] = column.structural_definition.data_type
         elif isinstance(column.structural_definition, QbAttributeLiteral):
             _logger.debug(
-                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+                "Setting CSV-W datatype for %s to %s.",
+                column.csv_column_title,
+                column.structural_definition.data_type,
             )
             csvw_col["datatype"] = column.structural_definition.data_type
 
         is_required = self._determine_whether_column_is_required(column)
         if is_required:
-            _logger.debug("Column is required.")
+            _logger.debug("Column %s is required.", column.csv_column_title)
         else:
-            _logger.debug("Column is not required.")
+            _logger.debug("Column %s is not required.", column.csv_column_title)
 
         csvw_col["required"] = is_required
 

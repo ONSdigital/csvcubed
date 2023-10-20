@@ -14,3 +14,4 @@
 * [An Error Occurred When Processing Dataframe](./error-processing-dataframe)
 * [Failed to Convert Dataframe to String](./dataframe-to-string-convert-failed.md)
 * [Feature Not Yet Supported](./feature-not-supported.md)
+* [Invalid Observation Value Column Entitled "Value"](./invalid-obs-val-col-entitled-value.md)

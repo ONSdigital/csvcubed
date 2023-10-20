@@ -18,7 +18,6 @@ from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
     NewQbAttributeLiteral,
 )
-from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
     ExistingQbCodeList,
@@ -38,11 +37,17 @@ from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import (
+    _get_cube_from_config_json_dict,
+    _get_qb_column_from_json,
+)
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 from csvcubed.utils.uri import uri_safe
+from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
+from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper
+from csvcubed.writers.qbwriter import QbWriter
 from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
 from .virtualconfigs import VirtualConfigurations as vc
@@ -51,22 +56,6 @@ TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v
 SCHEMA_PATH_FILE = Path(
     APP_ROOT_DIR_PATH, "schema", "cube-config", "v1_0", "schema.json"
 )
-
-
-@pytest.mark.vcr
-def test_build():
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
-        output = temp_dir / "out"
-        csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
-        cli_build(
-            config_path=config,
-            output_directory=output,
-            csv_path=csv,
-            fail_when_validation_error_occurs=True,
-            validation_errors_file_name="validation_errors.json",
-        )
 
 
 def _check_new_attribute_column(
@@ -88,14 +77,15 @@ def _check_new_attribute_column(
     assert sd.parent_attribute_uri == column_config.get("from_existing")
     assert sd.source_uri == column_config.get("definition_uri")
     assert isinstance(sd.arbitrary_rdf, list)
-    assert isinstance(sd.new_attribute_values, list)
-    for av in sd.new_attribute_values:
-        assert isinstance(av, NewQbAttributeValue)
-        assert hasattr(av, "label")
-        if isinstance(column_config["values"], bool):
-            assert av.label in column_data
-        else:
-            assert av.label in [v["label"] for v in column_config["values"]]
+    if sd.code_list is not None:
+        assert isinstance(sd.code_list, NewQbCodeList)
+        for av in sd.code_list.concepts:
+            assert isinstance(av, NewQbConcept)
+            assert hasattr(av, "label")
+            if isinstance(column_config["values"], bool):
+                assert av.label in column_data
+            else:
+                assert av.label in [v["label"] for v in column_config["values"]]
 
 
 def _check_new_dimension_column(
@@ -139,6 +129,22 @@ def _check_new_dimension_column(
         assert concept.sort_order is None
         assert concept.uri_safe_identifier == uri_safe(concept.label)
         assert concept.uri_safe_identifier_override is None
+
+
+@pytest.mark.vcr
+def test_build():
+    with TemporaryDirectory() as temp_dir_path:
+        temp_dir = Path(temp_dir_path)
+        config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
+        output = temp_dir / "out"
+        csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
+        cli_build(
+            config_path=config,
+            output_directory=output,
+            csv_path=csv,
+            fail_when_validation_error_occurs=True,
+            validation_errors_file_name="validation_errors.json",
+        )
 
 
 @pytest.mark.vcr
@@ -200,9 +206,9 @@ def test_build_config_ok():
 
     col_attr_1 = cube.columns[3]
     assert isinstance(col_attr_1.structural_definition, NewQbAttribute)
-    assert isinstance(col_attr_1.structural_definition.new_attribute_values, list)
+    assert isinstance(col_attr_1.structural_definition.code_list, NewQbCodeList)
     assert isinstance(
-        col_attr_1.structural_definition.new_attribute_values[0], NewQbAttributeValue
+        col_attr_1.structural_definition.code_list.concepts[0], NewQbConcept
     )
 
     col_observation = cube.columns[4]
@@ -362,6 +368,7 @@ def test_attribute_existing_resource():
     Populates options for an Existing Attribute resource, checking all properties are mapped
     through correctly
     """
+
     column_data = ["a", "b", "c", "a"]
     column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")
@@ -369,15 +376,29 @@ def test_attribute_existing_resource():
     (column, _) = map_column_to_qb_component(
         "Existing Resource Attribute", column_config, data, cube_config_minor_version=0
     )
+    concepts = {
+        concept.label for concept in column.structural_definition.code_list.concepts
+    }
+    concepts_from_column_data = set(column_data)
+
+    # `values` defaults to `true` so if not defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
     assert hasattr(column, "type") is False
 
     # And the Column is of the expected type
-    assert isinstance(column.structural_definition, ExistingQbAttribute)
-    assert not hasattr(column.structural_definition, "code_list")
-    assert column.structural_definition.attribute_uri == column_config["from_existing"]
+    assert isinstance(column.structural_definition, NewQbAttribute)
+    assert hasattr(column.structural_definition, "code_list")
+    assert concepts == concepts_from_column_data
+    assert (
+        column.structural_definition.parent_attribute_uri
+        == column_config["from_existing"]
+    )
+    assert (
+        column.structural_definition.uri_safe_identifier
+        == "existing-resource-attribute"
+    )
     assert isinstance(column.structural_definition.arbitrary_rdf, list)
     assert column.structural_definition.arbitrary_rdf == []
 
@@ -403,12 +424,12 @@ def test_attribute_existing_cell_uri_template():
     assert hasattr(column, "type") is False
 
     # And the Column is of the expected type
+    assert column.csv_column_uri_template == column_config["cell_uri_template"]
     assert isinstance(column.structural_definition, ExistingQbAttribute)
     assert not hasattr(column.structural_definition, "code_list")
     assert column.structural_definition.attribute_uri == column_config["from_existing"]
     assert isinstance(column.structural_definition.arbitrary_rdf, list)
     assert column.structural_definition.arbitrary_rdf == []
-    assert column.structural_definition.new_attribute_values == []
     assert column.structural_definition.is_required == False
 
 
@@ -468,14 +489,15 @@ def test_attribute_existing_resource_has_values():
         "Existing Attribute", column_config, data, cube_config_minor_version=0
     )
 
+    # `values` defaults to `true` so if not defined in the column config, an ExistingAttributeResource is mapped to a NewQbAttribute with a code_list generated from the column values
+
     assert isinstance(column, QbColumn)
     assert hasattr(column, "type") is False
 
     sd = column.structural_definition
-    assert isinstance(sd, ExistingQbAttribute)
-    assert not hasattr(sd, "code_list")
-    # assert sd.definition_uri == column_config.get('from_existing')
-    assert sd.attribute_uri == column_config.get("from_existing", "")
+    assert isinstance(sd, NewQbAttribute)
+    assert hasattr(sd, "code_list")
+    assert sd.parent_attribute_uri == column_config.get("from_existing", "")
     assert sd.is_required == column_config.get("required")
     assert isinstance(sd.arbitrary_rdf, list)
     assert sd.arbitrary_rdf == []
@@ -483,8 +505,8 @@ def test_attribute_existing_resource_has_values():
         data_vals = set(column_data)
     else:
         data_vals = set([v for v in column_data if v])
-    assert len(sd.new_attribute_values) == len(list(data_vals))
-    for value in sd.new_attribute_values:
+    assert len(sd.code_list.concepts) == len(list(data_vals))
+    for value in sd.code_list.concepts:
         assert hasattr(value, "label")
         assert value.label in data_vals
 

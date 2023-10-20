@@ -15,7 +15,7 @@
             "type": "dimension",
             "code_list": "../../code-list-config/v1.0/code_list_config_with_concepts_defined_elsewhere.json"
         },
-        "Value": {
+        "Val": {
             "type": "observations"
         },
         "Measure": {
