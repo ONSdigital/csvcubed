@@ -383,7 +383,9 @@ class DataCubeRepository:
                 #                 ...
                 #         }
                 # )
-                pass
+                raise Exception(
+                    "This feature is currently unsupported. Please pass in only a pivoted dataset to convert to standard."
+                )
             elif cube_shape == CubeShape.Pivoted:
                 df, measure_col_name, unit_col_name = _melt_pivoted_shape(
                     data_cube_repository=self,
@@ -395,7 +397,9 @@ class DataCubeRepository:
                 )
                 df.rename(columns={measure_col_name: "Measure"}, inplace=True)
                 df.rename(columns={unit_col_name: "Unit"}, inplace=True)
-                reshaped_df_file_name = "out/standardised-" + str(csv_url)
+                df.rename(columns={"Value": "Observations"}, inplace=True)
+
+                reshaped_df_file_name = "out/unpivoted-" + str(csv_url)
                 df.to_csv(Path(reshaped_df_file_name), index=False)
 
                 if "Measure" in df.columns and "Unit" in df.columns:
