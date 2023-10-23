@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from typing import List
 
 import pandas as pd
@@ -5,6 +7,14 @@ import pytest
 from pandas.testing import assert_frame_equal
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
+from csvcubed.inspect.inspectorcolumns import (
+    DimensionColumn,
+    MeasuresColumn,
+    StandardShapeObservationsColumn,
+    UnitsColumn,
+)
+from csvcubed.inspect.inspectorcomponents import LocalDimension
+from csvcubed.inspect.inspectortable import Inspector
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspect.sparqlresults import (
     CodelistResult,
@@ -1357,3 +1367,207 @@ def test_load_pandas_df_pivoted_shape_without_suppressed_columns():
     )
     assert_frame_equal(dataframe, expected_df)
     assert not any(validation_errors)
+
+
+def test_shape_conversion_on_pivoted_multi_measure_dataset():
+    """
+    Testing that a dataframe with columns represented in the correct data types
+    can be loaded from a standard shape CSVW and that a distinction is made between
+    attribute resource and attribute literal columns.
+    MULTI MEASURE
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, shape_conversion=True
+    )
+
+    assert os.path.exists(
+        "/workspaces/csvcubed/out/unpivoted-qb-id-10003.csv-metadata.json"
+    )
+    assert os.path.exists("/workspaces/csvcubed/out/unpivoted-qb-id-10003.csv")
+    assert isinstance(dataframe, pd.DataFrame)
+    assert "Unit" in dataframe.columns
+    assert "Measure" in dataframe.columns
+    assert not any(validation_errors)
+
+    inspector = Inspector(
+        "/workspaces/csvcubed/out/unpivoted-qb-id-10003.csv-metadata.json"
+    )
+    inspector_tables = inspector.tables
+
+    dimension_column = inspector_tables[0].columns["Some Dimension"]
+    assert isinstance(dimension_column, DimensionColumn)
+    assert isinstance(dimension_column.dimension, LocalDimension)
+
+    assert dimension_column.csv_column_title == "Some Dimension"
+    assert dimension_column.cell_uri_template == "some-dimension.csv#{+some_dimension}"
+    assert (
+        dimension_column.dimension.dimension_uri
+        == "unpivoted-qb-id-10003.csv#dimension/some-dimension"
+    )
+    assert dimension_column.dimension.label == "Some Dimension"
+
+    observation_column = inspector_tables[0].columns["Observation"]
+    assert isinstance(observation_column, StandardShapeObservationsColumn)
+    assert observation_column.csv_column_title == "Observation"
+    assert observation_column.cell_uri_template == None
+
+    measures_column = inspector_tables[0].columns["Measure"]
+    assert isinstance(measures_column, MeasuresColumn)
+    assert measures_column.csv_column_title == "Measure"
+    assert (
+        measures_column.cell_uri_template
+        == "unpivoted-qb-id-10003.csv#measure/{+measure}"
+    )
+
+    units_column = inspector_tables[0].columns["Unit"]
+    assert isinstance(units_column, UnitsColumn)
+    assert units_column.csv_column_title == "Unit"
+    assert units_column.cell_uri_template == "unpivoted-qb-id-10003.csv#unit/{+unit}"
+
+    os.remove("out/unpivoted-qb-id-10003.csv")
+    os.remove("out/unpivoted-qb-id-10003.csv-metadata.json")
+
+
+def test_shape_conversion_on_pivoted_single_measure_dataset():
+    """
+    No uuids amd user friendly column names apear instead
+    SINGLE MEASURE
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, shape_conversion=True
+    )
+
+    assert os.path.exists(
+        "/workspaces/csvcubed/out/unpivoted-qb-id-10004.csv-metadata.json"
+    )
+    assert os.path.exists("/workspaces/csvcubed/out/unpivoted-qb-id-10004.csv")
+    assert isinstance(dataframe, pd.DataFrame)
+    assert "Unit" in dataframe.columns
+    assert "Measure" in dataframe.columns
+    assert not any(validation_errors)
+
+    inspector = Inspector(
+        "/workspaces/csvcubed/out/unpivoted-qb-id-10004.csv-metadata.json"
+    )
+    inspector_tables = inspector.tables
+
+    dimension_column = inspector_tables[0].columns["Some Dimension"]
+    assert isinstance(dimension_column, DimensionColumn)
+    assert isinstance(dimension_column.dimension, LocalDimension)
+
+    assert dimension_column.csv_column_title == "Some Dimension"
+    assert dimension_column.cell_uri_template == "some-dimension.csv#{+some_dimension}"
+    assert (
+        dimension_column.dimension.dimension_uri
+        == "unpivoted-qb-id-10004.csv#dimension/some-dimension"
+    )
+    assert dimension_column.dimension.label == "Some Dimension"
+
+    observation_column = inspector_tables[0].columns["Observation"]
+    assert isinstance(observation_column, StandardShapeObservationsColumn)
+    assert observation_column.csv_column_title == "Observation"
+    assert observation_column.cell_uri_template == None
+
+    measures_column = inspector_tables[0].columns["Measure"]
+    assert isinstance(measures_column, MeasuresColumn)
+    assert measures_column.csv_column_title == "Measure"
+    assert (
+        measures_column.cell_uri_template
+        == "unpivoted-qb-id-10004.csv#measure/{+measure}"
+    )
+
+    units_column = inspector_tables[0].columns["Unit"]
+    assert isinstance(units_column, UnitsColumn)
+    assert units_column.csv_column_title == "Unit"
+    assert units_column.cell_uri_template == "unpivoted-qb-id-10004.csv#unit/{+unit}"
+
+    os.remove("out/unpivoted-qb-id-10004.csv")
+    os.remove("out/unpivoted-qb-id-10004.csv-metadata.json")
+
+
+def test_shape_conversion_on_pivoted_multi_measure_single_unit_component():
+    """
+    No uuids amd user friendly column names apear instead
+    SINGLE MEASURE
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-single-unit-component"
+        / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )
+    data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
+    csv_url = data_cube_repository.get_primary_csv_url()
+
+    dataframe, validation_errors = data_cube_repository.get_dataframe(
+        csv_url, shape_conversion=True
+    )
+
+    assert os.path.exists(
+        "/workspaces/csvcubed/out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )
+    assert os.path.exists(
+        "/workspaces/csvcubed/out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv"
+    )
+    assert isinstance(dataframe, pd.DataFrame)
+    assert "Unit" in dataframe.columns
+    assert "Measure" in dataframe.columns
+    assert not any(validation_errors)
+
+    inspector = Inspector(
+        "/workspaces/csvcubed/out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )
+    inspector_tables = inspector.tables
+
+    dimension_column = inspector_tables[0].columns["Year"]
+    assert isinstance(dimension_column, DimensionColumn)
+    assert isinstance(dimension_column.dimension, LocalDimension)
+
+    assert dimension_column.csv_column_title == "Year"
+    assert dimension_column.cell_uri_template == "year.csv#{+year}"
+    assert (
+        dimension_column.dimension.dimension_uri
+        == "unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year"
+    )
+    assert dimension_column.dimension.label == "Year"
+
+    observation_column = inspector_tables[0].columns["Observation"]
+    assert isinstance(observation_column, StandardShapeObservationsColumn)
+    assert observation_column.csv_column_title == "Observation"
+    assert observation_column.cell_uri_template == None
+
+    measures_column = inspector_tables[0].columns["Measure"]
+    assert isinstance(measures_column, MeasuresColumn)
+    assert measures_column.csv_column_title == "Measure"
+    assert (
+        measures_column.cell_uri_template
+        == "unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv#measure/{+measure}"
+    )
+
+    units_column = inspector_tables[0].columns["Unit"]
+    assert isinstance(units_column, UnitsColumn)
+    assert units_column.csv_column_title == "Unit"
+    assert (
+        units_column.cell_uri_template
+        == "unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv#unit/{+unit}"
+    )
+
+    os.remove("out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv")
+    os.remove(
+        "out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )

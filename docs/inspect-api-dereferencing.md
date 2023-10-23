@@ -6,7 +6,7 @@ note: this document is temporarily being placed in the root docs folder while th
 
 ## The get_dataframe function
 
-This `get_dataframe` function is used to get a pandas DataFrame from the CSV URL from the currently loaded data cube. It is part of the `DataCubeInspector` class, and is used by providing a `csv_url` as well as setting the `dereference_uris` parameter. It is set to `True` by default. This means the column values of the input CSV will be altered to contain their human readable labels rather than the fragment of the URI.
+This `get_dataframe` function is used to get a pandas DataFrame from the CSV URL from the currently loaded data cube. It is part of the `DataCubeRepository` class, and is used by providing a `csv_url` as well as setting the `dereference_uris` parameter. It is set to `True` by default. This means the column values of the input CSV will be altered to contain their human readable labels rather than the fragment of the URI.
 
 The example below shows the get_dataframe function being used on a CSV input from a cube that contains locally defined code lists, attribute resource values, multiple units and multiple measures.
 
@@ -18,7 +18,7 @@ Here is the example data set:
 | something-2 | something-else-2 | 2022 | provisional  | -80         | some-unit-2 | some-measure-2 | 227 |
 | something-3 | something-else-3 | 2023 | estimated    | -70         | some-unit-3 | some-measure-3 | 327 |
 
-Assuming the CSV URL that is to be used as input has been assigned to a variable called `csv_url`, and that a `DataCubeInspector` object exists, the `get_dataframe` function can be used with the `dereference_uris` parameter set to `True` like so:
+Assuming the CSV URL that is to be used as input has been assigned to a variable called `csv_url`, and that a `DataCubeRepository` object exists, the `get_dataframe` function can be used with the `dereference_uris` parameter set to `True` like so:
 
 ```python
     dataframe, validation_errors = data_cube_inspector.get_dataframe(
