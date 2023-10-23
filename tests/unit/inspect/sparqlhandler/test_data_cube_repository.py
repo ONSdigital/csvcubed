@@ -1388,10 +1388,10 @@ def test_shape_conversion_on_pivoted_multi_measure_dataset():
         csv_url, shape_conversion=True
     )
 
-    assert Path(
+    assert os.path.exists(
         "/workspaces/csvcubed/out/unpivoted-qb-id-10003.csv-metadata.json"
-    ).exists
-    assert Path("/workspaces/csvcubed/out/unpivoted-qb-id-10003.csv").exists
+    )
+    assert os.path.exists("/workspaces/csvcubed/out/unpivoted-qb-id-10003.csv")
     assert isinstance(dataframe, pd.DataFrame)
     assert "Unit" in dataframe.columns
     assert "Measure" in dataframe.columns
@@ -1453,10 +1453,10 @@ def test_shape_conversion_on_pivoted_single_measure_dataset():
         csv_url, shape_conversion=True
     )
 
-    assert Path(
+    assert os.path.exists(
         "/workspaces/csvcubed/out/unpivoted-qb-id-10004.csv-metadata.json"
-    ).exists
-    assert Path("/workspaces/csvcubed/out/unpivoted-qb-id-10004.csv").exists
+    )
+    assert os.path.exists("/workspaces/csvcubed/out/unpivoted-qb-id-10004.csv")
     assert isinstance(dataframe, pd.DataFrame)
     assert "Unit" in dataframe.columns
     assert "Measure" in dataframe.columns
@@ -1518,12 +1518,12 @@ def test_shape_conversion_on_pivoted_multi_measure_single_unit_component():
         csv_url, shape_conversion=True
     )
 
-    assert Path(
+    assert os.path.exists(
         "/workspaces/csvcubed/out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
-    ).exists
-    assert Path(
+    )
+    assert os.path.exists(
         "/workspaces/csvcubed/out/unpivoted-multi-measure-pivoted-dataset-units-and-attributes.csv"
-    ).exists
+    )
     assert isinstance(dataframe, pd.DataFrame)
     assert "Unit" in dataframe.columns
     assert "Measure" in dataframe.columns
