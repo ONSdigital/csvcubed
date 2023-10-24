@@ -15,7 +15,7 @@
             "type": "dimension",
             "code_list": "../../code-list-config/v1.0/code_list_config_hierarchical.json"
         },
-        "Value": {
+        "Val": {
             "type": "observations"
         },
         "Measure": {

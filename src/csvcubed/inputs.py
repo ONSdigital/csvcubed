@@ -6,6 +6,7 @@ from typing import Any, Iterable, List, Optional, Union
 
 import numpy as np
 import pandas as pd
+from pandas._typing import ArrayLike
 
 PandasDataTypes = Union[
     pd.DataFrame,

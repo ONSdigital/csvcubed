@@ -4,6 +4,7 @@ import pandas as pd
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 from numpy import isnan
 
+from csvcubed.models.csvcubedexception import InvalidObsValColTitleException
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
@@ -163,7 +164,6 @@ def _validate_missing_observation_values(
             raise ValueError(
                 f"More than one obs status column associated with obs val column {observed_value_column.csv_column_title}"
             )
-
     return []
 
 
@@ -202,6 +202,9 @@ def _validate_observation_value(
     num_obs_val_columns: int,
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
+
+    if "Value" in observation_value.csv_column_title:
+        raise InvalidObsValColTitleException()
 
     if observation_value.structural_definition.unit is None:
         if not any(multi_unit_columns):

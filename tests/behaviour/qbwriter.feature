@@ -9,19 +9,13 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
+      <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Distribution>;
       <http://purl.org/dc/terms/description> "Description"^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
-      <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/title> "Some Qube"@en;
       <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
-      <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en;
-      <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
-      <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
-      <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
-      <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>;
-      <http://purl.org/dc/terms/identifier> "qb-id-10002".
+      <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en.
       """
 
   Scenario: A QbCube should validate successfully where foreign key constraints are met.
@@ -466,7 +460,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: Observation Values are Required where an 'sdmxa:ObsStatus' Attribute Column is present but no value is set given ATTRIBUTE_VALUE_CODELISTS is False.
     Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
     And a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
-    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
+    Then the CSVqb should fail validation with "Missing value(s) found for 'Val' in row(s) 0"
     When the cube is serialised to CSV-W
     # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
     # since an `sdmxa:obsStatus` Attribute column has been defined.
@@ -492,7 +486,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
   Scenario: Observation Values are Required where no 'sdmxa:ObsStatus' Attribute Column is Present given ATTRIBUTE_VALUE_CODELISTS is False
     Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
     And a single-measure QbCube named "Bad Qube" with missing observation values
-    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 1"
+    Then the CSVqb should fail validation with "Missing value(s) found for 'Val' in row(s) 1"
     When the cube is serialised to CSV-W
     # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"

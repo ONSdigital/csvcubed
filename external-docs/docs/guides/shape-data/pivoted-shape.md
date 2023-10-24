@@ -6,7 +6,7 @@ See [Converting to pivoted shape](./shape-conversion.md#converting-to-the-pivote
 
 ## Observation value column titles
 
-In a pivoted shape data set, the observation value column titles must not be entitled "Value". If you attempt to inspect a data cube built using csvcubed where one or more observation columns are entitled "Value", this will raise an [error](../../guides/errors/inspect-command-errors/invalid-obs-val-col-entitled-value.md).
+The observation value column titles must not be entitled "Value". If you attempt to inspect a data cube built using csvcubed where one or more observation columns are entitled "Value", this will raise an [error](../../guides/errors/inspect-command-errors/invalid-obs-val-col-entitled-value.md).
 
 ## Single Measure
 

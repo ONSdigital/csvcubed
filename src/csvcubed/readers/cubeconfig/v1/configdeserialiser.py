@@ -7,7 +7,7 @@ A loader for the v1.* config.json.
 import logging
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Set
+from typing import Callable, Dict, List, Optional, Set, Tuple
 
 import pandas as pd
 
@@ -16,9 +16,9 @@ from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.jsonvalidationerrors import (
+    AnyOneOfJsonSchemaValidationError,
     GenericJsonSchemaValidationError,
     JsonSchemaValidationError,
-    AnyOneOfJsonSchemaValidationError,
 )
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
@@ -66,10 +66,10 @@ _map_column_type_to_schema_type_refs: Dict[str, Set[str]] = {
 """
 Maps $.column.* `type` properties to the list of qube-config.json schema types valid for that `type`.
 
-This helps us filter down the typically long list of column schema validation errors to just the ones which are 
-relevant for the `type` they specified.  
+This helps us filter down the typically long list of column schema validation errors to just the ones which are
+relevant for the `type` they specified.
 
-See Issue #715. 
+See Issue #715.
 """
 
 
@@ -355,7 +355,7 @@ def _get_conventional_column_definition_for_title(column_title: str) -> dict:
     elif column_type == "observations":
         return {
             "type": column_type,
-            "value": column_title,
+            "val": column_title,
             "datatype": "decimal",
         }
 

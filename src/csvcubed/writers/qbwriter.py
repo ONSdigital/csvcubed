@@ -287,8 +287,9 @@ class QbWriter(WriterBase):
 
             if dimension_col.csv_column_uri_template is not None:
                 _logger.debug(
-                    "Dimension column with title '%s'has a csv column uri template defined",
+                    "Dimension column with title '%s'has a csv column uri template '%s' defined",
                     dimension_col.csv_column_title,
+                    dimension_col.csv_column_uri_template,
                 )
                 value_url = dimension_col.csv_column_uri_template
 
@@ -399,7 +400,7 @@ class QbWriter(WriterBase):
         ]
         unit = obs_val.unit
         if unit is not None:
-            _logger.debug("Adding virtual unit column.")
+            _logger.debug("Adding virtual unit column for '%s'.", unit)
             virtual_columns.append(
                 {
                     "name": VIRT_UNIT_COLUMN_NAME,
@@ -451,9 +452,9 @@ class QbWriter(WriterBase):
                 column
             )
             _logger.debug(
-                "About url for column with tile '%s' is '%s'",
-                about_url,
+                "aboutUrl for column with title '%s' is '%s'",
                 column.csv_column_title,
+                about_url,
             )
             if about_url is not None:
                 csvw_col["aboutUrl"] = about_url
@@ -464,7 +465,8 @@ class QbWriter(WriterBase):
         ) = self._uris.get_default_property_value_uris_for_column(column)
 
         _logger.debug(
-            "Column has default propertyUrl '%s' and default valueUrl '%s'.",
+            "Column '%s' has default propertyUrl '%s' and default valueUrl '%s'.",
+            column.csv_column_title,
             property_url,
             default_value_url,
         )
@@ -476,26 +478,33 @@ class QbWriter(WriterBase):
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.csv_column_uri_template
         elif isinstance(column.structural_definition, QbAttributeLiteral):
-            _logger.debug("Column is Attribute Literal; valueUrl is left unset.")
+            _logger.debug(
+                "Column '%s' is Attribute Literal; valueUrl is left unset.",
+                column.csv_column_title,
+            )
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
         if isinstance(column.structural_definition, QbObservationValue):
             _logger.debug(
-                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+                "Setting CSV-W datatype for %s to %s.",
+                column.csv_column_title,
+                column.structural_definition.data_type,
             )
             csvw_col["datatype"] = column.structural_definition.data_type
         elif isinstance(column.structural_definition, QbAttributeLiteral):
             _logger.debug(
-                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+                "Setting CSV-W datatype for %s to %s.",
+                column.csv_column_title,
+                column.structural_definition.data_type,
             )
             csvw_col["datatype"] = column.structural_definition.data_type
 
         is_required = self._determine_whether_column_is_required(column)
         if is_required:
-            _logger.debug("Column is required.")
+            _logger.debug("Column %s is required.", column.csv_column_title)
         else:
-            _logger.debug("Column is not required.")
+            _logger.debug("Column %s is not required.", column.csv_column_title)
 
         csvw_col["required"] = is_required
 
