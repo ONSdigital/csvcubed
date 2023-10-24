@@ -4,10 +4,17 @@ Pandas Inputs
 """
 from typing import Any, Iterable, List, Optional, Union
 
+import numpy as np
 import pandas as pd
 from pandas._typing import ArrayLike
 
-PandasDataTypes = Union[pd.DataFrame, pd.Series, ArrayLike, None]
+PandasDataTypes = Union[
+    pd.DataFrame,
+    pd.Series,
+    np.ndarray,
+    pd.api.extensions.ExtensionArray,
+    None,
+]
 
 
 def pandas_input_to_columnar(

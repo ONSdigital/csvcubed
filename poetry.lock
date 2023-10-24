@@ -4,6 +4,7 @@
 name = "alabaster"
 version = "0.7.13"
 description = "A configurable sidebar-enabled Sphinx theme"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -15,6 +16,7 @@ files = [
 name = "appdirs"
 version = "1.4.4"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -26,6 +28,7 @@ files = [
 name = "attrs"
 version = "23.1.0"
 description = "Classes Without Boilerplate"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -44,6 +47,7 @@ tests-no-zope = ["cloudpickle", "hypothesis", "mypy (>=1.1.1)", "pympler", "pyte
 name = "babel"
 version = "2.13.0"
 description = "Internationalization utilities"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -58,6 +62,7 @@ dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 name = "beautifulsoup4"
 version = "4.12.2"
 description = "Screen-scraping library"
+category = "dev"
 optional = false
 python-versions = ">=3.6.0"
 files = [
@@ -76,6 +81,7 @@ lxml = ["lxml"]
 name = "behave"
 version = "1.2.6"
 description = "behave is behaviour-driven development, Python style"
+category = "dev"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
@@ -96,6 +102,7 @@ docs = ["sphinx (>=1.6)", "sphinx-bootstrap-theme (>=0.6)"]
 name = "black"
 version = "23.9.1"
 description = "The uncompromising code formatter."
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -142,6 +149,7 @@ uvloop = ["uvloop (>=0.15.2)"]
 name = "cattrs"
 version = "23.1.2"
 description = "Composable complex class support for attrs and dataclasses."
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -167,6 +175,7 @@ ujson = ["ujson (>=5.4.0,<6.0.0)"]
 name = "certifi"
 version = "2023.7.22"
 description = "Python package for providing Mozilla's CA Bundle."
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -178,6 +187,7 @@ files = [
 name = "chardet"
 version = "5.2.0"
 description = "Universal encoding detector for Python 3"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -189,6 +199,7 @@ files = [
 name = "charset-normalizer"
 version = "3.3.0"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
+category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
@@ -288,6 +299,7 @@ files = [
 name = "click"
 version = "8.1.7"
 description = "Composable command line interface toolkit"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -302,6 +314,7 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
@@ -313,6 +326,7 @@ files = [
 name = "contourpy"
 version = "1.1.1"
 description = "Python library for calculating contours of 2D quadrilateral grids"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -384,6 +398,7 @@ test-no-images = ["pytest", "pytest-cov", "wurlitzer"]
 name = "csvcubed-devtools"
 version = "0.2.0"
 description = "Development tools and dependencies for use in the csvcubed tooling."
+category = "dev"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
@@ -406,6 +421,7 @@ rdflib = ">=6.0.0"
 name = "csvcubed-models"
 version = "0.1.9"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
+category = "main"
 optional = false
 python-versions = ">=3.9,<3.12"
 files = [
@@ -421,6 +437,7 @@ unidecode = "*"
 name = "csvw"
 version = "3.1.3"
 description = "Python library to work with CSVW described tabular data"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -450,6 +467,7 @@ test = ["frictionless", "pytest (>=5)", "pytest-cov", "pytest-mock", "requests-m
 name = "cycler"
 version = "0.12.1"
 description = "Composable style cycles"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -465,6 +483,7 @@ tests = ["pytest", "pytest-cov", "pytest-xdist"]
 name = "docker"
 version = "6.1.3"
 description = "A Python library for the Docker Engine API."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -486,6 +505,7 @@ ssh = ["paramiko (>=2.4.3)"]
 name = "docutils"
 version = "0.19"
 description = "Docutils -- Python Documentation Utilities"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -497,6 +517,7 @@ files = [
 name = "editorconfig"
 version = "0.12.3"
 description = "EditorConfig File Locator and Interpreter for Python"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -508,6 +529,7 @@ files = [
 name = "exceptiongroup"
 version = "1.1.3"
 description = "Backport of PEP 654 (exception groups)"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -522,6 +544,7 @@ test = ["pytest (>=6)"]
 name = "fonttools"
 version = "4.43.1"
 description = "Tools to manipulate font files"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -587,6 +610,7 @@ woff = ["brotli (>=1.0.1)", "brotlicffi (>=0.8.0)", "zopfli (>=0.1.4)"]
 name = "ghp-import"
 version = "2.1.0"
 description = "Copy your docs directly to the gh-pages branch."
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -604,6 +628,7 @@ dev = ["flake8", "markdown", "twine", "wheel"]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -615,6 +640,7 @@ files = [
 name = "imagesize"
 version = "1.4.1"
 description = "Getting image size from png/jpeg/jpeg2000/gif file"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
@@ -626,6 +652,7 @@ files = [
 name = "importlib-metadata"
 version = "6.8.0"
 description = "Read metadata from Python packages"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -645,6 +672,7 @@ testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs
 name = "importlib-resources"
 version = "6.1.0"
 description = "Read resources from Python packages"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -663,6 +691,7 @@ testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)",
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -674,6 +703,7 @@ files = [
 name = "isodate"
 version = "0.6.1"
 description = "An ISO 8601 date/time/duration parser and formatter"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -688,6 +718,7 @@ six = "*"
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -705,6 +736,7 @@ i18n = ["Babel (>=2.7)"]
 name = "jsbeautifier"
 version = "1.14.9"
 description = "JavaScript unobfuscator and beautifier."
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -719,6 +751,7 @@ six = ">=1.13.0"
 name = "jsonschema"
 version = "4.17.3"
 description = "An implementation of JSON Schema validation for Python"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -738,6 +771,7 @@ format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 name = "kiwisolver"
 version = "1.4.5"
 description = "A fast implementation of the Cassowary constraint solver"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -851,6 +885,7 @@ files = [
 name = "language-tags"
 version = "1.2.0"
 description = "This project is a Python version of the language-tags Javascript project."
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -862,6 +897,7 @@ files = [
 name = "markdown"
 version = "3.3.7"
 description = "Python implementation of Markdown."
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -879,6 +915,7 @@ testing = ["coverage", "pyyaml"]
 name = "markupsafe"
 version = "2.1.3"
 description = "Safely add untrusted strings to HTML/XML markup."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -948,6 +985,7 @@ files = [
 name = "matplotlib"
 version = "3.8.0"
 description = "Python plotting package"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
@@ -998,6 +1036,7 @@ setuptools_scm = ">=7"
 name = "memory-profiler"
 version = "0.61.0"
 description = "A module for monitoring memory usage of a python program"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -1012,6 +1051,7 @@ psutil = "*"
 name = "mergedeep"
 version = "1.3.4"
 description = "A deep merge function for 🐍."
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -1023,6 +1063,7 @@ files = [
 name = "mkdocs"
 version = "1.4.2"
 description = "Project documentation with Markdown."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1051,6 +1092,7 @@ min-versions = ["babel (==2.9.0)", "click (==7.0)", "colorama (==0.4)", "ghp-imp
 name = "mkdocs-material"
 version = "9.1.3"
 description = "Documentation that simply works"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1073,6 +1115,7 @@ requests = ">=2.26"
 name = "mkdocs-material-extensions"
 version = "1.2"
 description = "Extension pack for Python Markdown and MkDocs Material."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1084,6 +1127,7 @@ files = [
 name = "mkdocs-mermaid2-plugin"
 version = "0.6.0"
 description = "A MkDocs plugin for including mermaid graphs in markdown sources"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -1105,6 +1149,7 @@ setuptools = ">=18.5"
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1188,6 +1233,7 @@ files = [
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -1199,6 +1245,7 @@ files = [
 name = "numpy"
 version = "1.26.0"
 description = "Fundamental package for array computing in Python"
+category = "main"
 optional = false
 python-versions = "<3.13,>=3.9"
 files = [
@@ -1240,6 +1287,7 @@ files = [
 name = "packaging"
 version = "23.2"
 description = "Core utilities for Python packages"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1249,37 +1297,43 @@ files = [
 
 [[package]]
 name = "pandas"
-version = "2.1.0"
+version = "2.1.1"
 description = "Powerful data structures for data analysis, time series, and statistics"
+category = "main"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pandas-2.1.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:40dd20439ff94f1b2ed55b393ecee9cb6f3b08104c2c40b0cb7186a2f0046242"},
-    {file = "pandas-2.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:d4f38e4fedeba580285eaac7ede4f686c6701a9e618d8a857b138a126d067f2f"},
-    {file = "pandas-2.1.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6e6a0fe052cf27ceb29be9429428b4918f3740e37ff185658f40d8702f0b3e09"},
-    {file = "pandas-2.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9d81e1813191070440d4c7a413cb673052b3b4a984ffd86b8dd468c45742d3cc"},
-    {file = "pandas-2.1.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:eb20252720b1cc1b7d0b2879ffc7e0542dd568f24d7c4b2347cb035206936421"},
-    {file = "pandas-2.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:38f74ef7ebc0ffb43b3d633e23d74882bce7e27bfa09607f3c5d3e03ffd9a4a5"},
-    {file = "pandas-2.1.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:cda72cc8c4761c8f1d97b169661f23a86b16fdb240bdc341173aee17e4d6cedd"},
-    {file = "pandas-2.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:d97daeac0db8c993420b10da4f5f5b39b01fc9ca689a17844e07c0a35ac96b4b"},
-    {file = "pandas-2.1.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d8c58b1113892e0c8078f006a167cc210a92bdae23322bb4614f2f0b7a4b510f"},
-    {file = "pandas-2.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:629124923bcf798965b054a540f9ccdfd60f71361255c81fa1ecd94a904b9dd3"},
-    {file = "pandas-2.1.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:70cf866af3ab346a10debba8ea78077cf3a8cd14bd5e4bed3d41555a3280041c"},
-    {file = "pandas-2.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:d53c8c1001f6a192ff1de1efe03b31a423d0eee2e9e855e69d004308e046e694"},
-    {file = "pandas-2.1.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:86f100b3876b8c6d1a2c66207288ead435dc71041ee4aea789e55ef0e06408cb"},
-    {file = "pandas-2.1.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:28f330845ad21c11db51e02d8d69acc9035edfd1116926ff7245c7215db57957"},
-    {file = "pandas-2.1.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b9a6ccf0963db88f9b12df6720e55f337447aea217f426a22d71f4213a3099a6"},
-    {file = "pandas-2.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d99e678180bc59b0c9443314297bddce4ad35727a1a2656dbe585fd78710b3b9"},
-    {file = "pandas-2.1.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:b31da36d376d50a1a492efb18097b9101bdbd8b3fbb3f49006e02d4495d4c644"},
-    {file = "pandas-2.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:0164b85937707ec7f70b34a6c3a578dbf0f50787f910f21ca3b26a7fd3363437"},
-    {file = "pandas-2.1.0.tar.gz", hash = "sha256:62c24c7fc59e42b775ce0679cfa7b14a5f9bfb7643cfbe708c960699e05fb918"},
+    {file = "pandas-2.1.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:58d997dbee0d4b64f3cb881a24f918b5f25dd64ddf31f467bb9b67ae4c63a1e4"},
+    {file = "pandas-2.1.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:02304e11582c5d090e5a52aec726f31fe3f42895d6bfc1f28738f9b64b6f0614"},
+    {file = "pandas-2.1.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ffa8f0966de2c22de408d0e322db2faed6f6e74265aa0856f3824813cf124363"},
+    {file = "pandas-2.1.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c1f84c144dee086fe4f04a472b5cd51e680f061adf75c1ae4fc3a9275560f8f4"},
+    {file = "pandas-2.1.1-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:75ce97667d06d69396d72be074f0556698c7f662029322027c226fd7a26965cb"},
+    {file = "pandas-2.1.1-cp310-cp310-win_amd64.whl", hash = "sha256:4c3f32fd7c4dccd035f71734df39231ac1a6ff95e8bdab8d891167197b7018d2"},
+    {file = "pandas-2.1.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:9e2959720b70e106bb1d8b6eadd8ecd7c8e99ccdbe03ee03260877184bb2877d"},
+    {file = "pandas-2.1.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:25e8474a8eb258e391e30c288eecec565bfed3e026f312b0cbd709a63906b6f8"},
+    {file = "pandas-2.1.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b8bd1685556f3374520466998929bade3076aeae77c3e67ada5ed2b90b4de7f0"},
+    {file = "pandas-2.1.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dc3657869c7902810f32bd072f0740487f9e030c1a3ab03e0af093db35a9d14e"},
+    {file = "pandas-2.1.1-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:05674536bd477af36aa2effd4ec8f71b92234ce0cc174de34fd21e2ee99adbc2"},
+    {file = "pandas-2.1.1-cp311-cp311-win_amd64.whl", hash = "sha256:b407381258a667df49d58a1b637be33e514b07f9285feb27769cedb3ab3d0b3a"},
+    {file = "pandas-2.1.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:c747793c4e9dcece7bb20156179529898abf505fe32cb40c4052107a3c620b49"},
+    {file = "pandas-2.1.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:3bcad1e6fb34b727b016775bea407311f7721db87e5b409e6542f4546a4951ea"},
+    {file = "pandas-2.1.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f5ec7740f9ccb90aec64edd71434711f58ee0ea7f5ed4ac48be11cfa9abf7317"},
+    {file = "pandas-2.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:29deb61de5a8a93bdd033df328441a79fcf8dd3c12d5ed0b41a395eef9cd76f0"},
+    {file = "pandas-2.1.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:4f99bebf19b7e03cf80a4e770a3e65eee9dd4e2679039f542d7c1ace7b7b1daa"},
+    {file = "pandas-2.1.1-cp312-cp312-win_amd64.whl", hash = "sha256:84e7e910096416adec68075dc87b986ff202920fb8704e6d9c8c9897fe7332d6"},
+    {file = "pandas-2.1.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:366da7b0e540d1b908886d4feb3d951f2f1e572e655c1160f5fde28ad4abb750"},
+    {file = "pandas-2.1.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:9e50e72b667415a816ac27dfcfe686dc5a0b02202e06196b943d54c4f9c7693e"},
+    {file = "pandas-2.1.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cc1ab6a25da197f03ebe6d8fa17273126120874386b4ac11c1d687df288542dd"},
+    {file = "pandas-2.1.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a0dbfea0dd3901ad4ce2306575c54348d98499c95be01b8d885a2737fe4d7a98"},
+    {file = "pandas-2.1.1-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:0489b0e6aa3d907e909aef92975edae89b1ee1654db5eafb9be633b0124abe97"},
+    {file = "pandas-2.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:4cdb0fab0400c2cb46dafcf1a0fe084c8bb2480a1fa8d81e19d15e12e6d4ded2"},
+    {file = "pandas-2.1.1.tar.gz", hash = "sha256:fecb198dc389429be557cde50a2d46da8434a17fe37d7d41ff102e3987fd947b"},
 ]
 
 [package.dependencies]
 numpy = [
     {version = ">=1.22.4", markers = "python_version < \"3.11\""},
-    {version = ">=1.23.2", markers = "python_version >= \"3.11\""},
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
+    {version = ">=1.23.2", markers = "python_version == \"3.11\""},
 ]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
@@ -1313,6 +1367,7 @@ xml = ["lxml (>=4.8.0)"]
 name = "parse"
 version = "1.19.1"
 description = "parse() is the opposite of format()"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -1324,6 +1379,7 @@ files = [
 name = "parse-type"
 version = "0.6.2"
 description = "Simplifies to build parse types based on the parse module"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*"
 files = [
@@ -1344,6 +1400,7 @@ testing = ["pytest (<5.0)", "pytest (>=5.0)", "pytest-html (>=1.19.0)"]
 name = "pathspec"
 version = "0.11.2"
 description = "Utility library for gitignore style pattern matching of file paths."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1355,6 +1412,7 @@ files = [
 name = "pillow"
 version = "10.0.1"
 description = "Python Imaging Library (Fork)"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1422,6 +1480,7 @@ tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "pa
 name = "platformdirs"
 version = "3.11.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1437,6 +1496,7 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4)", "pytest-co
 name = "pluggy"
 version = "1.3.0"
 description = "plugin and hook calling mechanisms for python"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1452,6 +1512,7 @@ testing = ["pytest", "pytest-benchmark"]
 name = "psutil"
 version = "5.9.5"
 description = "Cross-platform lib for process and system monitoring in Python."
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
@@ -1478,6 +1539,7 @@ test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
 name = "py-spy"
 version = "0.3.14"
 description = "Sampling profiler for Python programs"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -1494,6 +1556,7 @@ files = [
 name = "pygments"
 version = "2.16.1"
 description = "Pygments is a syntax highlighting package written in Python."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1508,6 +1571,7 @@ plugins = ["importlib-metadata"]
 name = "pymdown-extensions"
 version = "10.3"
 description = "Extension pack for Python Markdown."
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1526,6 +1590,7 @@ extra = ["pygments (>=2.12)"]
 name = "pyparsing"
 version = "3.1.1"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
+category = "main"
 optional = false
 python-versions = ">=3.6.8"
 files = [
@@ -1540,6 +1605,7 @@ diagrams = ["jinja2", "railroad-diagrams"]
 name = "pyrsistent"
 version = "0.19.3"
 description = "Persistent/Functional/Immutable data structures"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1576,6 +1642,7 @@ files = [
 name = "pytest"
 version = "7.4.2"
 description = "pytest: simple powerful testing with Python"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1598,6 +1665,7 @@ testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "no
 name = "pytest-timeout"
 version = "2.2.0"
 description = "pytest plugin to abort hanging tests"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1612,6 +1680,7 @@ pytest = ">=5.0.0"
 name = "pytest-vcr"
 version = "1.0.2"
 description = "Plugin for managing VCR.py cassettes"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -1627,6 +1696,7 @@ vcrpy = "*"
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 files = [
@@ -1641,6 +1711,7 @@ six = ">=1.5"
 name = "python-docs-theme"
 version = "2023.9"
 description = "The Sphinx theme for the CPython docs and related projects"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1652,6 +1723,7 @@ files = [
 name = "pytz"
 version = "2023.3.post1"
 description = "World timezone definitions, modern and historical"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -1663,6 +1735,7 @@ files = [
 name = "pywin32"
 version = "306"
 description = "Python for Window Extensions"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -1686,6 +1759,7 @@ files = [
 name = "pyyaml"
 version = "6.0.1"
 description = "YAML parser and emitter for Python"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -1745,6 +1819,7 @@ files = [
 name = "pyyaml-env-tag"
 version = "0.1"
 description = "A custom YAML tag for referencing environment variables in YAML files. "
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -1759,6 +1834,7 @@ pyyaml = "*"
 name = "rdflib"
 version = "7.0.0"
 description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
+category = "main"
 optional = false
 python-versions = ">=3.8.1,<4.0.0"
 files = [
@@ -1780,6 +1856,7 @@ networkx = ["networkx (>=2.0.0,<3.0.0)"]
 name = "regex"
 version = "2023.10.3"
 description = "Alternative regular expression module, to replace re."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1877,6 +1954,7 @@ files = [
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1898,6 +1976,7 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 name = "requests-cache"
 version = "0.9.8"
 description = "A transparent persistent cache for the requests library"
+category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
@@ -1928,6 +2007,7 @@ yaml = ["pyyaml (>=5.4)"]
 name = "requests-mock"
 version = "1.9.3"
 description = "Mock out responses from the requests package"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -1947,6 +2027,7 @@ test = ["fixtures", "mock", "purl", "pytest", "sphinx", "testrepository (>=0.0.1
 name = "rfc3986"
 version = "1.5.0"
 description = "Validating URI References per RFC 3986"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -1961,6 +2042,7 @@ idna2008 = ["idna"]
 name = "setuptools"
 version = "68.2.2"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1977,6 +2059,7 @@ testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jar
 name = "setuptools-scm"
 version = "8.0.4"
 description = "the blessed package to manage your versions by scm tags"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1999,6 +2082,7 @@ test = ["build", "pytest", "rich", "wheel"]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
@@ -2010,6 +2094,7 @@ files = [
 name = "snowballstemmer"
 version = "2.2.0"
 description = "This package provides 29 stemmers for 28 languages generated from Snowball algorithms."
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -2021,6 +2106,7 @@ files = [
 name = "soupsieve"
 version = "2.5"
 description = "A modern CSS selector implementation for Beautiful Soup."
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -2032,6 +2118,7 @@ files = [
 name = "sphinx"
 version = "6.2.1"
 description = "Python documentation generator"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -2067,6 +2154,7 @@ test = ["cython", "filelock", "html5lib", "pytest (>=4.6)"]
 name = "sphinxcontrib-applehelp"
 version = "1.0.7"
 description = "sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
@@ -2085,6 +2173,7 @@ test = ["pytest"]
 name = "sphinxcontrib-devhelp"
 version = "1.0.5"
 description = "sphinxcontrib-devhelp is a sphinx extension which outputs Devhelp documents"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
@@ -2103,6 +2192,7 @@ test = ["pytest"]
 name = "sphinxcontrib-htmlhelp"
 version = "2.0.4"
 description = "sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
@@ -2121,6 +2211,7 @@ test = ["html5lib", "pytest"]
 name = "sphinxcontrib-jsmath"
 version = "1.0.1"
 description = "A sphinx extension which renders display math in HTML via JavaScript"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -2135,6 +2226,7 @@ test = ["flake8", "mypy", "pytest"]
 name = "sphinxcontrib-qthelp"
 version = "1.0.6"
 description = "sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp documents"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
@@ -2153,6 +2245,7 @@ test = ["pytest"]
 name = "sphinxcontrib-serializinghtml"
 version = "1.1.9"
 description = "sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
@@ -2171,6 +2264,7 @@ test = ["pytest"]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2182,6 +2276,7 @@ files = [
 name = "treelib"
 version = "1.7.0"
 description = "A Python implementation of tree structure."
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -2207,6 +2302,7 @@ files = [
 name = "tzdata"
 version = "2023.3"
 description = "Provider of IANA time zone data"
+category = "main"
 optional = false
 python-versions = ">=2"
 files = [
@@ -2218,6 +2314,7 @@ files = [
 name = "unidecode"
 version = "1.3.7"
 description = "ASCII transliterations of Unicode text"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -2229,6 +2326,7 @@ files = [
 name = "uritemplate"
 version = "4.1.1"
 description = "Implementation of RFC 6570 URI Templates"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -2240,6 +2338,7 @@ files = [
 name = "url-normalize"
 version = "1.4.3"
 description = "URL normalization for Python"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
@@ -2254,6 +2353,7 @@ six = "*"
 name = "urllib3"
 version = "1.26.17"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
@@ -2270,6 +2370,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 name = "vcrpy"
 version = "5.1.0"
 description = "Automatically mock your HTTP interactions to simplify and speed up testing"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -2287,6 +2388,7 @@ yarl = "*"
 name = "watchdog"
 version = "3.0.0"
 description = "Filesystem events monitoring"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2326,6 +2428,7 @@ watchmedo = ["PyYAML (>=3.10)"]
 name = "websocket-client"
 version = "1.6.4"
 description = "WebSocket client for Python with low level API options"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -2342,6 +2445,7 @@ test = ["websockets"]
 name = "wrapt"
 version = "1.15.0"
 description = "Module for decorators, wrappers and monkey patching."
+category = "dev"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 files = [
@@ -2426,6 +2530,7 @@ files = [
 name = "yarl"
 version = "1.9.2"
 description = "Yet another URL library"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2513,6 +2618,7 @@ multidict = ">=4.0"
 name = "zipp"
 version = "3.17.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [

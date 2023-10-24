@@ -491,13 +491,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"
 
-  Scenario: Observation Values are Optional where an 'sdmxa:ObsStatus' Attribute is Present given ATTRIBUTE_VALUE_CODELISTS is False
-    Given the ATTRIBUTE_VALUE_CODELISTS feature flag is set to False
-    And a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
-    Then the CSVqb should pass all validations
-    When the cube is serialised to CSV-W
-    Then csvwcheck validation of "good-qube.csv-metadata.json" should succeed
-
   Scenario: A QbCube with a dimension containing URI-unsafe chars can be correctly serialised.
     Given a QbCube named "URI-Unsafe Cube" which has a dimension containing URI-unsafe chars
     When the cube is serialised to CSV-W

@@ -17,7 +17,7 @@ from csvcubed.models.validationerror import ValidationError
 _logger = logging.getLogger(__name__)
 
 # Values used in place of NA in dataframe reads
-specified_na_values = [
+SPECIFIED_NA_VALUES = [
     "",
 ]
 
@@ -25,7 +25,7 @@ specified_na_values = [
 def read_csv(
     csv_path_or_url: Union[Path, str],
     keep_default_na: bool = False,
-    na_values: list[str] = specified_na_values,
+    na_values: Sequence[str] = SPECIFIED_NA_VALUES,
     dtype: Optional[Dict] = None,
     usecols: Optional[List[str]] = None,
 ) -> Tuple[pd.DataFrame, List[ValidationError]]:
