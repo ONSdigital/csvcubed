@@ -109,7 +109,8 @@ def _validate_against_shape_related_errors(
         )
 
     # But we know there is a least one obs val column defined, so no need for an else here
-    errors += _validate_missing_observation_values(cube, observed_value_columns[0])
+    for col in observed_value_columns:
+        errors += _validate_missing_observation_values(cube, col)
 
     return errors
 
@@ -125,30 +126,43 @@ def _validate_missing_observation_values(
     if cube.data is None:
         return []
 
-    potential_missing_values = cube.data[
+    # Extract only row(s) with missing values for the given observed value column title
+    potential_missing_obs_values = cube.data[
         cube.data[observed_value_column.csv_column_title].isna()
     ]
 
-    if potential_missing_values.size > 0:
-        obs_status_columns = get_observation_status_columns(cube)
-        for obs_status_column in obs_status_columns:
-            # potential_missing_values = potential_missing_values[
-            #     potential_missing_values[obs_status_column.csv_column_title].isna()
-            # ]
-            potential_missing_obs_status = potential_missing_values[
-                obs_status_column.csv_column_title
-            ]
-            potential_missing_values = potential_missing_values[
-                potential_missing_obs_status.isna()
-            ]
+    # If there is at least one row in potential_missing_obs_values, get the obs status column associated with the given obs val column
+    if potential_missing_obs_values.size > 0:
+        observation_status_columns = [
+            col
+            for col in get_observation_status_columns(cube)
+            if col.structural_definition.get_observed_value_col_title()
+            == observed_value_column.csv_column_title
+        ]
+        if len(observation_status_columns) == 1:
+            obs_status_column = observation_status_columns[0]
 
-        if potential_missing_values.size > 0:
-            return [
-                ObservationValuesMissing(
-                    csv_column_title=observed_value_column.csv_column_title,
-                    row_numbers=set(potential_missing_values.index),
-                )
-            ]
+            # Check if rows with missing observation values have an observation status recorded against each missing observation value
+            missing_obs_status = potential_missing_obs_values[
+                obs_status_column.csv_column_title
+            ].isna()
+            actual_missing_obs_values = potential_missing_obs_values[missing_obs_status]
+            # If observation values are missing, and are not qualified with an associated observation status, return a Validation Error
+            if len(actual_missing_obs_values) > 0:
+                return [
+                    ObservationValuesMissing(
+                        csv_column_title=observed_value_column.csv_column_title,
+                        row_numbers=set(actual_missing_obs_values.index),
+                    )
+                ]
+        elif len(observation_status_columns) == 0:
+            raise ValueError(
+                f"No obs status column associated with obs val column {observed_value_column.csv_column_title}"
+            )
+        else:
+            raise ValueError(
+                f"More than one obs status column associated with obs val column {observed_value_column.csv_column_title}"
+            )
 
     return []
 
@@ -438,8 +452,18 @@ def _validate_standard_shape_cube(
     num_obs_val_columns: int,
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
-
     obs_val_column = obs_val_columns_without_measure[0]
+    obs_status_columns = [
+        col
+        for col in cube.get_columns_of_dsd_type(QbAttribute)
+        if _attribute_represents_observation_status(col.structural_definition)
+    ]
+    for col in obs_status_columns:
+        if col.structural_definition.get_observed_value_col_title() is None:
+            col.structural_definition.observed_value_col_title = (
+                obs_val_column.csv_column_title
+            )
+
     errors += _validate_observation_value(
         obs_val_column, multi_units_columns, num_obs_val_columns
     )
