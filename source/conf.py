@@ -8,7 +8,7 @@
 from csvcubed import __version__
 
 project = "csvcubed"
-author = "Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"
+author = "Integrated Data Service - Dissemination <IDPS.Dissemination@ons.gov.uk>"
 version = __version__
 release = __version__
 license = "Apache-2.0"

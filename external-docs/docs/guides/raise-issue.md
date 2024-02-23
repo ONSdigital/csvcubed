@@ -16,7 +16,7 @@ Well written bug reports are very helpful. See this [Stackoverflow article](http
     5. Any additional information
     6. Version information + Operating system
 
-In the event that your issue can only be reproduced using sensitive information, please send your report to [csvcubed@gsscogs.uk](mailto:csvcubed@gsscogs.uk) and try to follow the template detailed above as closely as possible.
+In the event that your issue can only be reproduced using sensitive information, please send your report to [IDPS.Dissemination@ons.gov.uk](mailto:IDPS.Dissemination@ons.gov.uk) and try to follow the template detailed above as closely as possible.
 
 ## Obtaining Error Logs
 

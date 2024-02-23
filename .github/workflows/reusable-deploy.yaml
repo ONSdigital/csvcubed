@@ -33,7 +33,7 @@ jobs:
         # todo: Put this back in before merging PR in.
         # if: steps.is-final-release.outcome == 'success' && startsWith(github.ref, 'refs/tags/v')
         run: |
-          git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
+          git config --global user.email "IDPS.Dissemination@ons.gov.uk" && git config --global user.name "csvcubed"
 
           git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1 --branch gh-pages-test
           cd csvcubed-docs

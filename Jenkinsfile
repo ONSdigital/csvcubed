@@ -101,7 +101,7 @@ pipeline {
                         withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
                             sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
                             dir ('csvcubed-docs') {
-                                sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
+                                sh 'git config --global user.email "IDPS.Dissemination@ons.gov.uk" && git config --global user.name "csvcubed"'
                                 
                                 if (fileExists("external")) {
                                     sh 'git rm -rf external'
