@@ -4,6 +4,7 @@ QB DSD Helper
 
 Help Generate the DSD necessary for an RDF Data Cube.
 """
+
 import logging
 from dataclasses import dataclass, field
 from typing import Iterable, List, Set
@@ -88,6 +89,8 @@ class DsdToRdfModelsHelper:
         :return: the additional RDF metadata to be serialised in the CSV-W.
         """
         see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
+
+        see_also += rdf_resource_to_json_ld(self._generate_dcat_dataset())
 
         for dependencies in self._get_rdf_file_dependencies():
             see_also += rdf_resource_to_json_ld(dependencies)
@@ -255,13 +258,14 @@ class DsdToRdfModelsHelper:
         return new_unit_resources
 
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
-        dataset = self._get_qb_dataset_with_catalog_metadata()
-
+        qb_dataset = self._generate_qb_dataset()
+        dcat_dataset = self._generate_dcat_dataset()
         generation_activity = prov.Activity(self._uris.get_build_activity_uri())
         generation_activity.used = ExistingResource(get_csvcubed_version_uri())
-        dataset.was_generated_by = generation_activity
-
-        dataset.structure = rdf.qb.DataStructureDefinition(
+        # Add title to activity - csvcubed version (human readable)
+        qb_dataset.was_generated_by = generation_activity
+        qb_dataset.is_distribution_of = dcat_dataset.uri
+        qb_dataset.structure = rdf.qb.DataStructureDefinition(
             self._uris.get_structure_uri()
         )
         component_ordinal = 1
@@ -273,22 +277,34 @@ class DsdToRdfModelsHelper:
                 component_properties_for_col = [
                     p for s in component_specs_for_col for p in s.componentProperties
                 ]
-                dataset.structure.componentProperties |= set(
+                qb_dataset.structure.componentProperties |= set(
                     component_properties_for_col
                 )
                 for component in component_specs_for_col:
                     component.order = component_ordinal
                     component_ordinal += 1
 
-                dataset.structure.components |= set(component_specs_for_col)
+                qb_dataset.structure.components |= set(component_specs_for_col)
 
         if self.cube.is_pivoted_shape:
-            dataset.structure.sliceKey.add(self._get_cross_measures_slice_key())
+            qb_dataset.structure.sliceKey.add(self._get_cross_measures_slice_key())
+        return qb_dataset
 
-        return dataset
+    def _generate_dcat_dataset(self) -> rdf.dcat.Dataset:
+        dcat_dataset = self._get_dcat_dataset_with_catalog_metadata()
+        return dcat_dataset
 
-    def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
-        qb_dataset_with_metadata = QbDataSetInCatalog(self._uris.get_dataset_uri())
+    def _generate_qb_dataset(self) -> QbDataSetInCatalog:
+        qb_dataset = self._get_qb_dataset_with_metadata()
+        return qb_dataset
+
+    def _get_dcat_dataset_with_catalog_metadata(self) -> rdf.dcat.Dataset:
+        dcat_dataset_with_metadata = rdf.dcat.Dataset(self._uris.get_dataset_uri())
+        self.cube.metadata.configure_dcat_dataset(dcat_dataset_with_metadata)
+        return dcat_dataset_with_metadata
+
+    def _get_qb_dataset_with_metadata(self) -> QbDataSetInCatalog:
+        qb_dataset_with_metadata = QbDataSetInCatalog(self._uris.get_distribution_uri())
         self.cube.metadata.configure_dcat_distribution(qb_dataset_with_metadata)
         return qb_dataset_with_metadata
 
