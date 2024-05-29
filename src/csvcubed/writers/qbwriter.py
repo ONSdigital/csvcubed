@@ -323,7 +323,7 @@ class QbWriter(WriterBase):
                 "virtual": True,
                 "aboutUrl": observation_uri,
                 "propertyUrl": "qb:dataSet",
-                "valueUrl": self._uris.get_dataset_uri(),
+                "valueUrl": self._uris.get_distribution_uri(),
             }
         )
 

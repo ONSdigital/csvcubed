@@ -232,7 +232,7 @@ def map_catalog_metadata_results(
         result_dict = row.asdict()
 
         result = CatalogMetadataResult(
-            graph_uri=str(result_dict["graph"]),
+            # graph_uri=str(result_dict["graph"]),
             dataset_uri=str(result_dict["dataset"]),
             title=str(result_dict["title"]),
             label=str(result_dict["label"]),
