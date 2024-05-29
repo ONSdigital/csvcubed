@@ -88,17 +88,12 @@ class DsdToRdfModelsHelper:
         """
         :return: the additional RDF metadata to be serialised in the CSV-W.
         """
-        # dcat_dataset = self._get_dcat_dataset_with_catalog_metadata()
-        # see_also = rdf_resource_to_json_ld(dcat_dataset)
 
-        # generation_entity = self._get_generation_entity()
-        # see_also += rdf_resource_to_json_ld(generation_entity)
+        see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
 
-        # generation_activity = self._get_generation_activity(generation_entity)
-        # see_also += rdf_resource_to_json_ld(generation_activity)
-
-        qb_dataset = self._generate_qb_dataset_dsd_definitions()
-        see_also = rdf_resource_to_json_ld(qb_dataset)
+        see_also += rdf_resource_to_json_ld(
+            self._get_dcat_dataset_with_catalog_metadata()
+        )
 
         for dependencies in self._get_rdf_file_dependencies():
             see_also += rdf_resource_to_json_ld(dependencies)
@@ -277,7 +272,7 @@ class DsdToRdfModelsHelper:
         generation_activity = prov.Activity(self._uris.get_build_activity_uri())
         generation_activity.used = ExistingResource(get_csvcubed_version_uri())
         qb_dataset.was_generated_by = generation_activity.uri
-        qb_dataset.was_derived_from = ExistingResource(get_csvcubed_version_uri()).uri
+        qb_dataset.was_derived_from = generation_activity.used.uri
 
         # Add title to prov.Entity - csvcubed version (human readable)
         # Add prov.hasPrimarySource to prov.Entity - csvcubed pypi URL
