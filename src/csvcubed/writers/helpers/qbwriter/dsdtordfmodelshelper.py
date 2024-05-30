@@ -95,6 +95,10 @@ class DsdToRdfModelsHelper:
             self._get_dcat_dataset_with_catalog_metadata()
         )
 
+        see_also += rdf_resource_to_json_ld(self._get_generation_activity())
+
+        see_also += rdf_resource_to_json_ld(self._get_generation_entity())
+
         for dependencies in self._get_rdf_file_dependencies():
             see_also += rdf_resource_to_json_ld(dependencies)
 
@@ -283,9 +287,11 @@ class DsdToRdfModelsHelper:
         # qb_dataset.media_type = "str"
         # qb_dataset.described_by = "str"
         # qb_dataset.checksum = "str"
+
         qb_dataset.structure = rdf.qb.DataStructureDefinition(
             self._uris.get_structure_uri()
         )
+
         component_ordinal = 1
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
@@ -319,6 +325,18 @@ class DsdToRdfModelsHelper:
         self.cube.metadata.configure_dcat_dataset(dcat_dataset_with_metadata)
         dcat_dataset_with_metadata.distribution = self._uris.get_distribution_uri()
         return dcat_dataset_with_metadata
+
+    def _get_generation_activity(self) -> prov.Activity:
+        generation_activity = prov.Activity(self._uris.get_build_activity_uri())
+        generation_activity.used = ExistingResource(get_csvcubed_version_uri())
+        return generation_activity
+
+    def _get_generation_entity(self) -> prov.Entity:
+        generation_entity = prov.Entity(get_csvcubed_version_uri())
+        generation_entity.was_generated_by = ExistingResource(
+            self._uris.get_build_activity_uri()
+        )
+        return generation_entity
 
     def _get_cross_measures_slice_key(self) -> rdf.qb.SliceKey:
         # Setting up Slice Key for slices which range over measures.

@@ -243,9 +243,9 @@ def map_catalog_metadata_results(
             license=none_or_map(result_dict.get("license"), str) or "None",
             creator=none_or_map(result_dict.get("creator"), str) or "None",
             publisher=none_or_map(result_dict.get("publisher"), str) or "None",
-            landing_pages=str(result_dict["landingPages"]).split("|"),
+            # landing_pages=str(result_dict["landingPages"]).split("|"),
             themes=str(result_dict["themes"]).split("|"),
-            keywords=str(result_dict["keywords"]).split("|"),
+            # keywords=str(result_dict["keywords"]).split("|"),
             contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
             identifier=none_or_map(result_dict.get("identifier"), str) or "None",
         )
