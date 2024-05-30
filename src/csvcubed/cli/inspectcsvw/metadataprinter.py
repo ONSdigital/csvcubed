@@ -102,7 +102,7 @@ class MetadataPrinter:
         primary_metadata = self.state.csvw_repository.get_primary_catalog_metadata()
         if isinstance(self.state, DataCubeRepository):
             return self.state.get_cube_identifiers_for_data_set(
-                primary_metadata.dataset_uri
+                primary_metadata.distribution_uri
             ).csv_url
         elif isinstance(self.state, CodeListRepository):
             return self.state.get_table_identifiers_for_concept_scheme(
@@ -149,9 +149,11 @@ class MetadataPrinter:
         self.result_dataset_observations_info = get_dataset_observations_info(
             self.dataset,
             csvw_type,
-            self.state.get_shape_for_csv(self.primary_csv_url)
-            if isinstance(self.state, DataCubeRepository)
-            else None,
+            (
+                self.state.get_shape_for_csv(self.primary_csv_url)
+                if isinstance(self.state, DataCubeRepository)
+                else None
+            ),
         )
 
     def get_datacube_results(self):
@@ -242,14 +244,16 @@ class MetadataPrinter:
                 "Type": c.column_type.name,
                 "Required": c.column_definition.required,
                 "Property URL": c.column_definition.property_url,
-                "Observations Column Titles": ""
-                if c.component is None
-                else ", ".join(
-                    [
-                        c.title
-                        for c in c.component.used_by_observed_value_columns
-                        if c.title is not None
-                    ]
+                "Observations Column Titles": (
+                    ""
+                    if c.component is None
+                    else ", ".join(
+                        [
+                            c.title
+                            for c in c.component.used_by_observed_value_columns
+                            if c.title is not None
+                        ]
+                    )
                 ),
             }
             for c in column_component_infos
