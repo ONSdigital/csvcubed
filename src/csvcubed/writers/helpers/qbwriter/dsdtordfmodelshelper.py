@@ -63,7 +63,11 @@ from csvcubed.models.rdf.newunitresource import NewUnitResource
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.uri import get_data_type_uri_from_str, get_last_uri_part
-from csvcubed.utils.version import get_csvcubed_version_uri
+from csvcubed.utils.version import (
+    get_csvcubed_version_string,
+    get_csvcubed_version_uri,
+    get_pypi_release_url,
+)
 from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
     NewResourceUriGenerator as SkosCodeListNewResourceUriGenerator,
 )
@@ -273,17 +277,15 @@ class DsdToRdfModelsHelper:
             self._uris.get_dataset_uri()
         ).uri
 
-        generation_activity = prov.Activity(self._uris.get_build_activity_uri())
-        generation_activity.used = ExistingResource(get_csvcubed_version_uri())
+        generation_activity = ExistingResource(self._uris.get_build_activity_uri())
+        generation_entity = ExistingResource(get_csvcubed_version_uri())
         qb_dataset.was_generated_by = generation_activity.uri
-        qb_dataset.was_derived_from = generation_activity.used.uri
+        qb_dataset.was_derived_from = generation_entity.uri
 
-        # Add title to prov.Entity - csvcubed version (human readable)
-        # Add prov.hasPrimarySource to prov.Entity - csvcubed pypi URL
-        # Created == issued?
-        qb_dataset.created = qb_dataset.issued
+        # TODO update qube-config to be able to serialise following properties
+        # qb_dataset.created = "datetime"
         # qb_dataset.download_url = "str"
-        # qb_dataset.byte_size = "float"
+        # qb_dataset.byte_size = "integer"
         # qb_dataset.media_type = "str"
         # qb_dataset.described_by = "str"
         # qb_dataset.checksum = "str"
@@ -336,6 +338,8 @@ class DsdToRdfModelsHelper:
         generation_entity.was_generated_by = ExistingResource(
             self._uris.get_build_activity_uri()
         )
+        generation_entity.title = get_csvcubed_version_string()
+        generation_entity.has_primary_source = ExistingResource(get_pypi_release_url())
         return generation_entity
 
     def _get_cross_measures_slice_key(self) -> rdf.qb.SliceKey:

@@ -322,7 +322,7 @@ class DataCubeRepository:
         """
         primary_catalog_metadata = self.csvw_repository.get_primary_catalog_metadata()
         return self.get_cube_identifiers_for_data_set(
-            primary_catalog_metadata.dataset_uri
+            primary_catalog_metadata.distribution_uri
         ).csv_url
 
     def get_dataframe(

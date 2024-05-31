@@ -80,35 +80,10 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     def configure_dcat_distribution(self, distribution: dcat.Distribution) -> None:
         dt_now = datetime.now()
         dt_issued = _convert_date_to_date_time(self.dataset_issued or dt_now)
+        distribution.issued = dt_issued
         distribution.label = distribution.title = self.title
         distribution.identifier = self.get_identifier()
         distribution.creator = self.creator_uri
-        distribution.issued = dt_issued
-
-        # TODO: Check these are populated from dcat.Distribution
-        # distribution.download_url
-        # distribution.byte_size
-        # distribution.media_type
-
-        # TODO: Populate properties below from config?
-        # distribution.created
-        # distribution.was_derived_from
-        # distribution.was_generated_by
-        # distribution.described_by
-        # distribution.checksum
-
-        # TODO: Remove properties below?
-        # distribution.modified = _convert_date_to_date_time(
-        #     self.dataset_modified or dt_issued
-        # )
-        # distribution.description = self.description
-        # distribution.comment = self.summary
-        # distribution.publisher = self.publisher_uri
-        # distribution.license = self.license_uri
-        # distribution.keywords = set(self.keywords)
-        # distribution.landing_page = set(self.landing_page_uris)
-        # distribution.themes = set(self.theme_uris)
-        # distribution.keywords = set(self.keywords)
 
     def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
         dt_now = datetime.now()
