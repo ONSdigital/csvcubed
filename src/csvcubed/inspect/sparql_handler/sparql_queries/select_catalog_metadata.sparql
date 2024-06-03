@@ -17,11 +17,10 @@ WHERE {
 
     GRAPH ?graph {
         ?dataset dcterms:title ?title;
-            dcat:distribution ?distribution;
             rdfs:label ?label;
             dcterms:issued ?issued;
             dcterms:modified ?modified.
-
+        OPTIONAL { ?dataset dcat:distribution ?distribution }.
         OPTIONAL { ?dataset rdfs:comment ?comment }.
         OPTIONAL { ?dataset dcterms:description ?description }.
         OPTIONAL { ?dataset dcterms:license ?license }.

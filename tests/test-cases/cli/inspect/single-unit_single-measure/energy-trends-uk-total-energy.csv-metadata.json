@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "energy-trends-uk-total-energy.csv#dataset",
+    "@id": "energy-trends-uk-total-energy.csv#csvqb",
     "tables": [
         {
             "url": "energy-trends-uk-total-energy.csv",
@@ -58,7 +58,7 @@
                         "name": "virt_dataset",
                         "virtual": true,
                         "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
-                        "valueUrl": "energy-trends-uk-total-energy.csv#dataset"
+                        "valueUrl": "energy-trends-uk-total-energy.csv#csvqb"
                     }
                 ],
                 "foreignKeys": [],
@@ -76,9 +76,7 @@
         {
             "@id": "energy-trends-uk-total-energy.csv#dataset",
             "@type": [
-                "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DataSet",
                 "http://www.w3.org/ns/dcat#Resource",
                 "http://www.w3.org/ns/dcat#Dataset"
             ],
@@ -146,6 +144,54 @@
             "http://www.w3.org/ns/dcat#theme": [
                 {
                     "@id": "http://gss-data.org.uk/def/gdp#climate-change"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#distribution": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#csvqb"
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#csvqb",
+            "@type": [
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/ns/dcat#Distribution",
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/dc/terms/created": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2013-06-27T08:30:00+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "energy-trends-uk-total-energy"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Energy Trends: UK total energy"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2013-06-27T08:30:00+00:00"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#structure"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#isDistributionOf": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#dataset"
                 }
             ]
         },

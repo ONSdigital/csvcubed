@@ -286,6 +286,12 @@
                     "@value": "qb-id-10004"
                 }
             ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Pivoted Shape Cube"
+                }
+            ],
             "http://purl.org/dc/terms/issued": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",

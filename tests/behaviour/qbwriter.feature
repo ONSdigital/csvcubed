@@ -9,7 +9,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Distribution>;
+      <{{rdf_input_directory}}/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
       <http://purl.org/dc/terms/description> "Description"^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -466,7 +466,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     # since an `sdmxa:obsStatus` Attribute column has been defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
 
-  Scenario: Each Observation should have Type http://purl.org/linked-data/cube#Observation and be part of the dataset
+  Scenario: Each Observation should have Type http://purl.org/linked-data/cube#Observation and be part of the distribution
     Given a single-measure QbCube named "Some Qube"
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
@@ -476,11 +476,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       @prefix qb: <http://purl.org/linked-data/cube#>.
 
       <{{rdf_input_directory}}/some-qube.csv#obs/a,e@some-measure> a qb:Observation;
-      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
+      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#csvqb>.
       <{{rdf_input_directory}}/some-qube.csv#obs/b,f@some-measure> a qb:Observation;
-      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
+      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#csvqb>.
       <{{rdf_input_directory}}/some-qube.csv#obs/c,g@some-measure> a qb:Observation;
-      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
+      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#csvqb>.
       """
 
   Scenario: Observation Values are Required where no 'sdmxa:ObsStatus' Attribute Column is Present given ATTRIBUTE_VALUE_CODELISTS is False
@@ -688,19 +688,19 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-other-measure 2.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-other-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-other-measure 4.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-other-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-other-measure 6.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-other-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#slice/a> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> .
@@ -713,21 +713,21 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-a> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-measure 1.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-b> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-measure 2.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-c> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-measure 3.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       measure:some-measure a cube:ComponentProperty,
@@ -768,19 +768,19 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-other-measure 2.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-other-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-other-measure 4.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-other-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-other-measure 6.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-other-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#slice/a> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> .
@@ -793,21 +793,21 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-a> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-measure 1.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-b> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-measure 2.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-c> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-measure 3.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       measure:some-measure a cube:ComponentProperty,
@@ -855,21 +855,21 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-a> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-measure 1.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-b> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-measure 2.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-c> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-measure 3.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       measure:some-measure a cube:ComponentProperty,
@@ -910,21 +910,21 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-a> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-measure 1.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-b> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-measure 2.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
       attribute:some-attribute <{{rdf_input_directory}}/some-attribute.csv#attr-c> ;
       dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-measure 3.0 ;
-      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#csvqb> ;
       cube:measureType measure:some-measure .
 
       measure:some-measure a cube:ComponentProperty,

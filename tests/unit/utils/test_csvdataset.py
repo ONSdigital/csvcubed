@@ -667,7 +667,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
     )
     csv_url = data_cube_repository.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
+        primary_catalog_metadata.distribution_uri
     ).csv_url
 
     measure_uris = {
@@ -724,7 +724,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         csvw_rdf_manager.csvw_repository.get_primary_catalog_metadata()
     )
     csv_url = data_cube_repository.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
+        primary_catalog_metadata.distribution_uri
     ).csv_url
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
@@ -780,7 +780,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
     data_cube_repository = get_data_cube_repository(csvw_metadata_json_path)
 
     csv_url = data_cube_repository.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
+        primary_catalog_metadata.distribution_uri
     ).csv_url
 
     column_definitions = (
