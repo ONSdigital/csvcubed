@@ -101,7 +101,7 @@ class MetadataPrinter:
         """Return the csv_url for the primary table in the graph."""
         primary_metadata = self.state.csvw_repository.get_primary_catalog_metadata()
         if isinstance(self.state, DataCubeRepository):
-            return self.state.get_cube_identifiers_for_data_set(
+            return self.state.get_cube_identifiers_for_dataset(
                 primary_metadata.distribution_uri
             ).csv_url
         elif isinstance(self.state, CodeListRepository):
