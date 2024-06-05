@@ -98,6 +98,7 @@ class MetadataPrinter:
             raise InputNotSupportedException()
 
     def get_build_minor_version(self) -> int:
+        """Return the minor version of csvcubed used to build the cube."""
         # TODO Create a class to store csvcubed version information similar to readers/cubeconfig/schema_versions.py
         build_info = self.state.csvw_repository.get_build_information()[0]
         csvcubed_version = build_info.github_url.split("/")[-1]
@@ -109,6 +110,7 @@ class MetadataPrinter:
         """Return the csv_url for the primary table in the graph."""
         primary_metadata = self.state.csvw_repository.get_primary_catalog_metadata()
         if isinstance(self.state, DataCubeRepository):
+            # Get csv_url based on whether cube identifiers are recorded against the dataset or the distribution
             if self.result_build_minor_version >= 5:
                 return self.state.get_cube_identifiers_for_dataset(
                     primary_metadata.distribution_uri

@@ -227,22 +227,6 @@ class CsvcubedVersionResult:
     github_url: str
 
 
-def map_build_activity_results(
-    sparql_results: List[ResultRow],
-) -> List[CsvcubedVersionResult]:
-    results: List[CsvcubedVersionResult] = []
-    for row in sparql_results:
-        result_dict = row.asdict()
-
-        result = CsvcubedVersionResult(
-            dataset_url=str(result_dict["dataset"]),
-            build_activity=str(result_dict["buildActivity"]),
-            github_url=str(result_dict["csvcubedVersion"]),
-        )
-        results.append(result)
-    return results
-
-
 def map_catalog_metadata_results(
     sparql_results: List[ResultRow],
 ) -> List[CatalogMetadataResult]:
@@ -613,7 +597,6 @@ def map_labels_for_resource_uris(
     """
     Maps resource value uris to labels
     """
-
     results: Dict[str, str] = {}
     for row in sparql_results:
         if str(row["resourceValUri"]) in results:
@@ -645,3 +628,22 @@ def map_column_definition_results(
         )
 
     return [map_row(row.asdict()) for row in sparql_results]
+
+
+def map_build_activity_results(
+    sparql_results: List[ResultRow],
+) -> List[CsvcubedVersionResult]:
+    """
+    Map SPARQL query results to `CsvcubedVersionResult`s
+    """
+    results: List[CsvcubedVersionResult] = []
+    for row in sparql_results:
+        result_dict = row.asdict()
+
+        result = CsvcubedVersionResult(
+            dataset_url=str(result_dict["dataset"]),
+            build_activity=str(result_dict["buildActivity"]),
+            github_url=str(result_dict["csvcubedVersion"]),
+        )
+        results.append(result)
+    return results

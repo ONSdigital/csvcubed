@@ -103,15 +103,11 @@ class CsvWRepository:
 
     @cached_property
     def build_information(self) -> List[CsvcubedVersionResult]:
+        """
+        Cached property for the select_build_information query.
+        """
         results = select_build_information(self.rdf_graph)
-        # results_dict: Dict[str, CsvcubedVersionResult] = {}
-        # for result in results:
-        #     results_dict[result.dataset_url] = result
-        # return results_dict
         return results
-
-    def get_build_information(self) -> CsvcubedVersionResult:
-        return self.build_information
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
@@ -142,4 +138,11 @@ class CsvWRepository:
         result: TableSchemaPropertiesResult = get_from_dict_ensure_exists(
             self._table_schema_properties, csv_url
         )
+        return result
+
+    def get_build_information(self) -> List[CsvcubedVersionResult]:
+        """
+        Returns the csvcubed build activity and GitHub version used to build a given cube.
+        """
+        result: List[CsvcubedVersionResult] = self.build_information
         return result

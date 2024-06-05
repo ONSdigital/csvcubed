@@ -125,13 +125,6 @@ def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
         ) from ex
 
 
-def select_build_information(rdf_graph: rdflib.Graph) -> List[CsvcubedVersionResult]:
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_BUILD_INFORMATION), rdf_graph
-    )
-    return map_build_activity_results(results)
-
-
 def ask_is_csvw_code_list(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a code list (i.e. skos:ConceptScheme).
@@ -410,3 +403,13 @@ def select_column_definitions(
     )
 
     return map_column_definition_results(results)
+
+
+def select_build_information(rdf_graph: rdflib.Graph) -> List[CsvcubedVersionResult]:
+    """
+    Selects the csvcubed build activity and GitHub version used to build a given cube.
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_BUILD_INFORMATION), rdf_graph
+    )
+    return map_build_activity_results(results)
