@@ -1,9 +1,10 @@
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 
 SELECT ?graph ?dataset ?distribution ?title ?label ?issued ?modified ?comment ?description
-    ?license ?creator ?publisher ?landingPages ?themes ?keywords ?contactPoint
+    ?license ?creator ?publisher ?landingPages ?themes ?keywords ?contactPoint ?buildActivity
     ?identifier
 WHERE {
     {
@@ -28,6 +29,7 @@ WHERE {
         OPTIONAL { ?dataset dcterms:publisher ?publisher }.
         OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }.
         OPTIONAL { ?dataset dcterms:identifier ?identifier }.
+        OPTIONAL { ?dataset prov:wasGeneratedBy ?buildActivity }.
     }
 
     {

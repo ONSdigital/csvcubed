@@ -17,6 +17,7 @@ from csvcubed.inspect.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.inspect.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
+    select_build_information,
     select_column_definitions,
     select_csvw_catalog_metadata,
     select_table_schema_properties,
@@ -25,6 +26,7 @@ from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.inspect.sparqlresults import (
     CatalogMetadataResult,
     ColumnDefinition,
+    CsvcubedVersionResult,
     TableSchemaPropertiesResult,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
@@ -98,6 +100,18 @@ class CsvWRepository:
         for result in results:
             results_dict[result.csv_url] = result
         return results_dict
+
+    @cached_property
+    def build_information(self) -> List[CsvcubedVersionResult]:
+        results = select_build_information(self.rdf_graph)
+        # results_dict: Dict[str, CsvcubedVersionResult] = {}
+        # for result in results:
+        #     results_dict[result.dataset_url] = result
+        # return results_dict
+        return results
+
+    def get_build_information(self) -> CsvcubedVersionResult:
+        return self.build_information
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """

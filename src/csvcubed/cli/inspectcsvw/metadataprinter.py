@@ -64,7 +64,7 @@ class MetadataPrinter:
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
     dataset: DataFrame = field(init=False)
-
+    result_build_minor_version: int = field(init=False)
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_column_component_infos: List[ColumnComponentInfo] = field(init=False)
     primary_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
@@ -97,13 +97,26 @@ class MetadataPrinter:
         else:
             raise InputNotSupportedException()
 
+    def get_build_minor_version(self) -> int:
+        # TODO Create a class to store csvcubed version information similar to readers/cubeconfig/schema_versions.py
+        build_info = self.state.csvw_repository.get_build_information()[0]
+        csvcubed_version = build_info.github_url.split("/")[-1]
+        csvcubed_version_parts = csvcubed_version.split(".")
+        csvcubed_minor_version = int(csvcubed_version_parts[1])
+        return csvcubed_minor_version
+
     def get_primary_csv_url(self) -> str:
         """Return the csv_url for the primary table in the graph."""
         primary_metadata = self.state.csvw_repository.get_primary_catalog_metadata()
         if isinstance(self.state, DataCubeRepository):
-            return self.state.get_cube_identifiers_for_dataset(
-                primary_metadata.distribution_uri
-            ).csv_url
+            if self.result_build_minor_version >= 5:
+                return self.state.get_cube_identifiers_for_dataset(
+                    primary_metadata.distribution_uri
+                ).csv_url
+            else:
+                return self.state.get_cube_identifiers_for_dataset(
+                    primary_metadata.dataset_uri
+                ).csv_url
         elif isinstance(self.state, CodeListRepository):
             return self.state.get_table_identifiers_for_concept_scheme(
                 primary_metadata.dataset_uri
@@ -142,6 +155,8 @@ class MetadataPrinter:
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
         self.result_catalog_metadata = csvw_repository.get_primary_catalog_metadata()
+        if isinstance(self.state, DataCubeRepository):
+            self.result_build_minor_version = self.get_build_minor_version()
         self.primary_csv_url = self.get_primary_csv_url()
         self.dataset = load_csv_to_dataframe(
             csvw_repository.csvw_json_path, Path(self.primary_csv_url)

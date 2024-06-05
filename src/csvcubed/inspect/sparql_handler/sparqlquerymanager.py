@@ -26,6 +26,7 @@ from csvcubed.models.inspect.sparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
     ColumnDefinition,
+    CsvcubedVersionResult,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
     IsPivotedShapeResult,
@@ -34,6 +35,7 @@ from csvcubed.models.inspect.sparqlresults import (
     QubeComponentsResult,
     TableSchemaPropertiesResult,
     UnitResult,
+    map_build_activity_results,
     map_catalog_metadata_results,
     map_codelists_sparql_result,
     map_column_definition_results,
@@ -89,6 +91,8 @@ class SPARQLQueryName(Enum):
 
     SELECT_LABELS_FOR_RESOURCE_URIS = "select_labels_for_resource_uris"
 
+    SELECT_BUILD_INFORMATION = "select_build_information"
+
 
 def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
     """
@@ -119,6 +123,13 @@ def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
         raise FailedToReadSparqlQueryException(
             sparql_file_path=file_path.absolute()
         ) from ex
+
+
+def select_build_information(rdf_graph: rdflib.Graph) -> List[CsvcubedVersionResult]:
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_BUILD_INFORMATION), rdf_graph
+    )
+    return map_build_activity_results(results)
 
 
 def ask_is_csvw_code_list(rdf_graph: rdflib.Graph) -> bool:
@@ -169,7 +180,7 @@ def select_csvw_catalog_metadata(
     return map_catalog_metadata_results(results)
 
 
-def select_data_set_dsd_and_csv_url(
+def select_dataset_dsd_and_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph,
 ) -> List[CubeTableIdentifiers]:
     """
@@ -251,7 +262,7 @@ def _cube_table_identifiers_to_values_binding(
         rows=[
             [
                 Literal(uris.csv_url, datatype=XSD.anyURI),
-                URIRef(uris.data_set_url),
+                URIRef(uris.dataset_url),
                 URIRef(uris.dsd_uri),
             ]
             for uris in csv_dsd_dataset_uris
