@@ -280,7 +280,7 @@ class DsdToRdfModelsHelper:
         generation_activity = ExistingResource(self._uris.get_build_activity_uri())
         generation_entity = ExistingResource(get_csvcubed_version_uri())
         qb_dataset.was_generated_by = generation_activity.uri
-        qb_dataset.was_derived_from = generation_entity.uri
+        qb_dataset.was_derived_from.add(generation_entity.uri)
 
         # TODO update qube-config to be able to serialise following properties
         # qb_dataset.created = "datetime"
@@ -325,7 +325,9 @@ class DsdToRdfModelsHelper:
     def _get_dcat_dataset_with_catalog_metadata(self) -> rdf.dcat.Dataset:
         dcat_dataset_with_metadata = rdf.dcat.Dataset(self._uris.get_dataset_uri())
         self.cube.metadata.configure_dcat_dataset(dcat_dataset_with_metadata)
-        dcat_dataset_with_metadata.distribution = self._uris.get_distribution_uri()
+        dcat_dataset_with_metadata.distribution.add(
+            rdf.dcat.Distribution(self._uris.get_distribution_uri())
+        )
         return dcat_dataset_with_metadata
 
     def _get_generation_activity(self) -> prov.Activity:

@@ -420,7 +420,7 @@ unidecode = "*"
 type = "git"
 url = "https://github.com/GSS-Cogs/csvcubed-models"
 reference = "dcat-distribution-fix"
-resolved_reference = "eba5c2351104f46817fbfb42f36c01df82f40536"
+resolved_reference = "9e0e1cc2d250e9a473c1b3e0a2db3d75cedb9038"
 
 [[package]]
 name = "csvw"

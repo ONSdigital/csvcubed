@@ -248,7 +248,8 @@ def map_catalog_metadata_results(
             label=str(result_dict["label"]),
             issued=str(result_dict["issued"]),
             modified=str(result_dict["modified"]),
-            distribution_uri=none_or_map(result_dict.get("distribution"), str) or None,
+            distribution_uri=none_or_map(result_dict.get("distribution"), str)
+            or "None",
             comment=none_or_map(result_dict.get("comment"), str) or "None",
             description=none_or_map(result_dict.get("description"), str) or "None",
             license=none_or_map(result_dict.get("license"), str) or "None",
