@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "qb-id-10004.csv#csvqb",
+    "@id": "qb-id-10004.csv#qbDataSet",
     "tables": [
         {
             "url": "qb-id-10004.csv",
@@ -80,7 +80,7 @@
                         "virtual": true,
                         "aboutUrl": "qb-id-10004.csv#obs/{some_dimension}@some-measure",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "qb-id-10004.csv#csvqb"
+                        "valueUrl": "qb-id-10004.csv#qbDataSet"
                     },
                     {
                         "name": "virt_suppressed_test",
@@ -262,12 +262,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "qb-id-10004.csv#csvqb"
+                    "@id": "qb-id-10004.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "qb-id-10004.csv#csvqb",
+            "@id": "qb-id-10004.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#DataSet",
                 "http://www.w3.org/ns/dcat#Distribution",

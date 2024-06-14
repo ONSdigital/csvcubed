@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "multi-unit-single-measure-dataset.csv#csvqb",
+    "@id": "multi-unit-single-measure-dataset.csv#qbDataSet",
     "tables": [
         {
             "url": "multi-unit-single-measure-dataset.csv",
@@ -51,7 +51,7 @@
                         "name": "virt_dataset",
                         "virtual": true,
                         "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
-                        "valueUrl": "multi-unit-single-measure-dataset.csv#csvqb"
+                        "valueUrl": "multi-unit-single-measure-dataset.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -186,12 +186,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "multi-unit-single-measure-dataset.csv#csvqb"
+                    "@id": "multi-unit-single-measure-dataset.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "multi-unit-single-measure-dataset.csv#csvqb",
+            "@id": "multi-unit-single-measure-dataset.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",

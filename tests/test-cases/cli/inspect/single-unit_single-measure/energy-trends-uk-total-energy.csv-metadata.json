@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "energy-trends-uk-total-energy.csv#csvqb",
+    "@id": "energy-trends-uk-total-energy.csv#qbDataSet",
     "tables": [
         {
             "url": "energy-trends-uk-total-energy.csv",
@@ -58,7 +58,7 @@
                         "name": "virt_dataset",
                         "virtual": true,
                         "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
-                        "valueUrl": "energy-trends-uk-total-energy.csv#csvqb"
+                        "valueUrl": "energy-trends-uk-total-energy.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [],
@@ -148,12 +148,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "energy-trends-uk-total-energy.csv#csvqb"
+                    "@id": "energy-trends-uk-total-energy.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "energy-trends-uk-total-energy.csv#csvqb",
+            "@id": "energy-trends-uk-total-energy.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#DataSet",
                 "http://www.w3.org/ns/dcat#Distribution",

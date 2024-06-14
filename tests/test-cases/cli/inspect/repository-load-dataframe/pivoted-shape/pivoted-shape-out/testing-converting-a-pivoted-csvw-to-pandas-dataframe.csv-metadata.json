@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#csvqb",
+    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#qbDataSet",
     "tables": [
         {
             "url": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv",
@@ -147,7 +147,7 @@
                         "virtual": true,
                         "aboutUrl": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#obs/{dim1},{dim2}@another-measure",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#csvqb"
+                        "valueUrl": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -366,12 +366,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#csvqb"
+                    "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#csvqb",
+            "@id": "testing-converting-a-pivoted-csvw-to-pandas-dataframe.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",

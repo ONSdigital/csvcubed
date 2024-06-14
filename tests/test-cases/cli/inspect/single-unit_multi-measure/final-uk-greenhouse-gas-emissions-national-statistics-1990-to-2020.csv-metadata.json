@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#csvqb",
+    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#qbDataSet",
     "tables": [
         {
             "url": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv",
@@ -107,7 +107,7 @@
                         "name": "virt_dataset",
                         "virtual": true,
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#csvqb"
+                        "valueUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#qbDataSet"
                     },
                     {
                         "name": "virt_unit",
@@ -710,12 +710,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#csvqb"
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#csvqb",
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",

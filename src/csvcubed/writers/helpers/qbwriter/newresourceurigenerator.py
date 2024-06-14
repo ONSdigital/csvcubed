@@ -87,7 +87,7 @@ class NewResourceUriGenerator:
         return self._uri_in_doc("dataset")
 
     def get_distribution_uri(self) -> str:
-        return self._uri_in_doc("csvqb")
+        return self._uri_in_doc("qbDataSet")
 
     def get_void_dataset_dependency_uri(self, identifier: str) -> str:
         return self._uri_in_doc(f"dependency/{identifier}")

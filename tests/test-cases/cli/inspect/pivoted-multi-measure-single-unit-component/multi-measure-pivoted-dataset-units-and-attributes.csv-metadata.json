@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvqb",
+    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#qbDataSet",
     "tables": [
         {
             "url": "multi-measure-pivoted-dataset-units-and-attributes.csv",
@@ -118,7 +118,7 @@
                         "virtual": true,
                         "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvqb"
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#qbDataSet"
                     },
                     {
                         "name": "virt_obs_exports",
@@ -159,7 +159,7 @@
                         "virtual": true,
                         "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvqb"
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -268,12 +268,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvqb"
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvqb",
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",

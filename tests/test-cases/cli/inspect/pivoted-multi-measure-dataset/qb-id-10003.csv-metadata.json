@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "qb-id-10003.csv#csvqb",
+    "@id": "qb-id-10003.csv#qbDataSet",
     "tables": [
         {
             "url": "qb-id-10003.csv",
@@ -96,7 +96,7 @@
                         "virtual": true,
                         "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-measure",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "qb-id-10003.csv#csvqb"
+                        "valueUrl": "qb-id-10003.csv#qbDataSet"
                     },
                     {
                         "name": "virt_obs_some_other_obs_val",
@@ -130,7 +130,7 @@
                         "virtual": true,
                         "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-other-measure",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "qb-id-10003.csv#csvqb"
+                        "valueUrl": "qb-id-10003.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -198,12 +198,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "qb-id-10003.csv#csvqb"
+                    "@id": "qb-id-10003.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "qb-id-10003.csv#csvqb",
+            "@id": "qb-id-10003.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#DataSet",
                 "http://www.w3.org/ns/dcat#Distribution",

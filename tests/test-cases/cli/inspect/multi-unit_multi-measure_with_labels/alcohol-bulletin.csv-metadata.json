@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "alcohol-bulletin.csv#csvqb",
+    "@id": "alcohol-bulletin.csv#qbDataSet",
     "tables": [
         {
             "url": "alcohol-bulletin.csv",
@@ -79,7 +79,7 @@
                         "name": "virt_dataset",
                         "virtual": true,
                         "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
-                        "valueUrl": "alcohol-bulletin.csv#csvqb"
+                        "valueUrl": "alcohol-bulletin.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -494,12 +494,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "alcohol-bulletin.csv#csvqb"
+                    "@id": "alcohol-bulletin.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "alcohol-bulletin.csv#csvqb",
+            "@id": "alcohol-bulletin.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",

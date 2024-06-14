@@ -129,7 +129,7 @@ def test_get_cube_identifiers_for_csv():
 
     assert result is not None
     assert result.csv_url == "qb-id-10004.csv"
-    assert result.dataset_url == "qb-id-10004.csv#csvqb"
+    assert result.dataset_url == "qb-id-10004.csv#qbDataSet"
     assert result.dsd_uri == "qb-id-10004.csv#structure"
 
 

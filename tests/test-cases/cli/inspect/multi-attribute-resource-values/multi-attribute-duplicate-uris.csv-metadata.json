@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "multi-attribute.csv#csvqb",
+    "@id": "multi-attribute.csv#qbDataSet",
     "tables": [
         {
             "url": "multi-attribute.csv",
@@ -110,7 +110,7 @@
                         "virtual": true,
                         "aboutUrl": "multi-attribute.csv#obs/{year},{sector}@imports-monetary-value",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "multi-attribute.csv#csvqb"
+                        "valueUrl": "multi-attribute.csv#qbDataSet"
                     },
                     {
                         "name": "virt_obs_exports",
@@ -158,7 +158,7 @@
                         "virtual": true,
                         "aboutUrl": "multi-attribute.csv#obs/{year},{sector}@exports-monetary-value",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "multi-attribute.csv#csvqb"
+                        "valueUrl": "multi-attribute.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -366,12 +366,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "multi-attribute.csv#csvqb"
+                    "@id": "multi-attribute.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "multi-attribute.csv#csvqb",
+            "@id": "multi-attribute.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",

@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
-    "@id": "suppressed-data-example.csv#csvqb",
+    "@id": "suppressed-data-example.csv#qbDataSet",
     "tables": [
         {
             "url": "suppressed-data-example.csv",
@@ -77,7 +77,7 @@
                         "virtual": true,
                         "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
                         "propertyUrl": "qb:dataSet",
-                        "valueUrl": "suppressed-data-example.csv#csvqb"
+                        "valueUrl": "suppressed-data-example.csv#qbDataSet"
                     }
                 ],
                 "foreignKeys": [
@@ -244,12 +244,12 @@
             ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
-                    "@id": "suppressed-data-example.csv#csvqb"
+                    "@id": "suppressed-data-example.csv#qbDataSet"
                 }
             ]
         },
         {
-            "@id": "suppressed-data-example.csv#csvqb",
+            "@id": "suppressed-data-example.csv#qbDataSet",
             "@type": [
                 "http://purl.org/linked-data/cube#Attachable",
                 "http://www.w3.org/ns/dcat#Distribution",
