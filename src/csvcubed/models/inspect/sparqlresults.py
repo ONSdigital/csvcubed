@@ -32,7 +32,7 @@ class CatalogMetadataResult:
     """
 
     dataset_uri: str
-    """`dataset` here doesn't necessarily mean the dcat:DataSet. It means either the dcat:DataSet or the skos:ConceptScheme."""
+    """`dataset` here doesn't necessarily mean the dcat:DataSet. It means either the dcat:DataSet or the skos:ConceptScheme (which is also a dcat:Dataset)."""
     graph_uri: str
     """URI representing the graph in which the Catalog Metadata was found."""
     distribution_uri: str

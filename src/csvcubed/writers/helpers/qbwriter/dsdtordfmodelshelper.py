@@ -277,10 +277,9 @@ class DsdToRdfModelsHelper:
             self._uris.get_dataset_uri()
         ).uri
 
-        generation_activity = ExistingResource(self._uris.get_build_activity_uri())
-        generation_entity = ExistingResource(get_csvcubed_version_uri())
-        qb_dataset.was_generated_by = generation_activity.uri
-        qb_dataset.was_derived_from.add(generation_entity.uri)
+        qb_dataset.was_generated_by = ExistingResource(
+            self._uris.get_build_activity_uri()
+        ).uri
 
         # TODO update qube-config to be able to serialise following properties
         # qb_dataset.created = "datetime"
@@ -337,9 +336,6 @@ class DsdToRdfModelsHelper:
 
     def _get_generation_entity(self) -> prov.Entity:
         generation_entity = prov.Entity(get_csvcubed_version_uri())
-        generation_entity.was_generated_by = ExistingResource(
-            self._uris.get_build_activity_uri()
-        )
         generation_entity.title = get_csvcubed_version_string()
         generation_entity.has_primary_source = ExistingResource(get_pypi_release_url())
         return generation_entity

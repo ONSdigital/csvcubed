@@ -91,7 +91,7 @@ class DataCubeRepository:
     @cached_property
     def _cube_table_identifiers(self) -> Dict[str, CubeTableIdentifiers]:
         """
-        Identifiers linking a given qb:Dataset with a csvw table (identified by the csvw:url).
+        Identifiers linking a given qb:DataSet with a csvw table (identified by the csvw:url).
 
         Maps from csv_url to the identifiers.
         """

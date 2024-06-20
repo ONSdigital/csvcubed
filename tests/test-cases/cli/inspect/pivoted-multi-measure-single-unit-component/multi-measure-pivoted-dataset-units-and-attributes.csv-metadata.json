@@ -261,11 +261,6 @@
                     "@value": "Multi Measure Pivoted Dataset Units And Attributes"
                 }
             ],
-            "http://www.w3.org/ns/prov#wasGeneratedBy": [
-                {
-                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvcubed-build-activity"
-                }
-            ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
                     "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#qbDataSet"
@@ -313,11 +308,6 @@
                     "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dataset"
                 }
             ],
-            "http://www.w3.org/ns/prov#wasDerivedFrom": [
-                {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
-                }
-            ],
             "http://www.w3.org/ns/prov#wasGeneratedBy": [
                 {
                     "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvcubed-build-activity"
@@ -351,11 +341,6 @@
             "http://www.w3.org/ns/prov#hasPrimarySource": [
                 {
                     "@id": "https://pypi.org/project/csvcubed/0.1.0.dev0/"
-                }
-            ],
-            "http://www.w3.org/ns/prov#wasGeneratedBy": [
-                {
-                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvcubed-build-activity"
                 }
             ]
         },
@@ -455,18 +440,6 @@
             "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
                     "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#class/sector"
-                }
-            ]
-        },
-        {
-            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvcubed-build-activity",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/ns/prov#Activity"
-            ],
-            "http://www.w3.org/ns/prov#used": [
-                {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
                 }
             ]
         },

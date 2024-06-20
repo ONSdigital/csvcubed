@@ -551,11 +551,6 @@
                     "@id": "alcohol-bulletin.csv#dataset"
                 }
             ],
-            "http://www.w3.org/ns/prov#wasDerivedFrom": [
-                {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.5.0"
-                }
-            ],
             "http://www.w3.org/ns/prov#wasGeneratedBy": [
                 {
                     "@id": "alcohol-bulletin.csv#csvcubed-build-activity"
@@ -589,11 +584,6 @@
             "http://www.w3.org/ns/prov#hasPrimarySource": [
                 {
                     "@id": "https://pypi.org/project/csvcubed/0.5.0/"
-                }
-            ],
-            "http://www.w3.org/ns/prov#wasGeneratedBy": [
-                {
-                    "@id": "alcohol-bulletin.csv#csvcubed-build-activity"
                 }
             ]
         },

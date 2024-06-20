@@ -713,11 +713,6 @@
                     "@value": "Multi Attribute In"
                 }
             ],
-            "http://www.w3.org/ns/prov#wasGeneratedBy": [
-                {
-                    "@id": "multi-attribute.csv#csvcubed-build-activity"
-                }
-            ],
             "http://www.w3.org/ns/dcat#distribution": [
                 {
                     "@id": "multi-attribute.csv#qbDataSet"
@@ -765,11 +760,6 @@
                     "@id": "multi-attribute.csv#dataset"
                 }
             ],
-            "http://www.w3.org/ns/prov#wasDerivedFrom": [
-                {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
-                }
-            ],
             "http://www.w3.org/ns/prov#wasGeneratedBy": [
                 {
                     "@id": "multi-attribute.csv#csvcubed-build-activity"
@@ -803,11 +793,6 @@
             "http://www.w3.org/ns/prov#hasPrimarySource": [
                 {
                     "@id": "https://pypi.org/project/csvcubed/0.1.0.dev0/"
-                }
-            ],
-            "http://www.w3.org/ns/prov#wasGeneratedBy": [
-                {
-                    "@id": "multi-attribute.csv#csvcubed-build-activity"
                 }
             ]
         },
