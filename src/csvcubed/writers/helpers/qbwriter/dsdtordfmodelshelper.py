@@ -272,7 +272,6 @@ class DsdToRdfModelsHelper:
         self,
     ) -> QbDataSetInCatalog:
         qb_dataset = self._get_qb_dataset()
-
         qb_dataset.is_distribution_of = ExistingResource(
             self._uris.get_dataset_uri()
         ).uri
