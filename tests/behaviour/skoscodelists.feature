@@ -51,6 +51,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       prov:wasGeneratedBy basicCodeList:csvcubed-build-activity.
 
       basicCodeList:csvcubed-build-activity a prov:Activity.
+
       """
     Given the version identifier
     Then the RDF should contain
@@ -117,4 +118,5 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       <http://www.w3.org/2004/02/skos/core#notation> "england";
       <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;
       <http://www.w3.org/ns/ui#sortPriority> 2.
+
       """

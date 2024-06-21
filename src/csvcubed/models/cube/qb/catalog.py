@@ -7,7 +7,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
 from pathlib import Path
-from typing import Dict, Optional, Set, Union
+from typing import Dict, Optional, Union
 
 from csvcubedmodels.rdf import dcat
 
@@ -88,6 +88,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
         dt_now = datetime.now()
         dt_issued = _convert_date_to_date_time(self.dataset_issued or dt_now)
+
         dataset.label = dataset.title = self.title
         dataset.issued = dt_issued
         dataset.modified = _convert_date_to_date_time(
