@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
 from pathlib import Path
-from typing import Dict, Optional, Set, Union
+from typing import Dict, Optional, Union
 
 from csvcubedmodels.rdf import dcat
 
@@ -76,39 +76,10 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.identifier or self.title
 
-    def configure_dcat_distribution(self, distribution: dcat.Distribution) -> None:
-        """
-        CatalogMetadata properties not currently populated here
-        identifier
-        creator_uri
-        landing_page_uris
-        theme_uris
-        keywords
-        public_contact_point_uri
-        uri_safe_identifier_override
-        """
-        dt_now = datetime.now()
-        dt_issued = _convert_date_to_date_time(self.dataset_issued or dt_now)
-        distribution.issued = dt_issued
-        distribution.modified = _convert_date_to_date_time(
-            self.dataset_modified or dt_issued
-        )
-
-        distribution.label = distribution.title = self.title
-        distribution.description = self.description
-        distribution.comment = self.summary
-        distribution.publisher = self.publisher_uri
-        distribution.license = self.license_uri
-        distribution.keywords = set(self.keywords)
-        distribution.identifier = self.get_identifier()
-        distribution.creator = self.creator_uri
-        distribution.landing_page = set(self.landing_page_uris)
-        distribution.themes = set(self.theme_uris)
-        distribution.keywords = set(self.keywords)
-
     def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
         dt_now = datetime.now()
         dt_issued = _convert_date_to_date_time(self.dataset_issued or dt_now)
+
         dataset.label = dataset.title = self.title
         dataset.issued = dt_issued
         dataset.modified = _convert_date_to_date_time(
