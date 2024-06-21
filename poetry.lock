@@ -400,12 +400,12 @@ rdflib = ">=6.0.0"
 
 [[package]]
 name = "csvcubed-models"
-version = "0.1.10"
+version = "0.1.9"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
 optional = false
-python-versions = "<3.12,>=3.9"
+python-versions = ">=3.9,<3.12"
 files = [
-    {file = "csvcubed_models-0.1.10-py3-none-any.whl", hash = "sha256:7936cdec095dc8da132ad4b48dbe4e1c3c68bbe73df4944736828d928feda023"},
+    {file = "csvcubed_models-0.1.9-py3-none-any.whl", hash = "sha256:cef8d05dcf81b7ce72848dc68913957e7887023cc5d614ffe208b656f9fe9461"},
 ]
 
 [package.dependencies]
@@ -2539,4 +2539,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "795aef7c96f3066ea09a07552ffc1af36676b47e3b872cdfa04d8a83e7ee32b2"
+content-hash = "43ba4aee96968a8c13b168826087546e6c76eda5114423435094a1f9165e0dca"
