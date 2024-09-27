@@ -16,27 +16,27 @@ pip install csvcubed
 
 From there you'll have access to the `csvcubed` command line tool which features sub commands `build` and `inspect` to create CSV-Ws from CSV and inspect CSV-Ws.
 
-Become well acquainted to csvcubed with our [quick start](https://gss-cogs.github.io/csvcubed-docs/external/quick-start/), which includes written instructions as well as transcribed videos.
+Become well acquainted to csvcubed with our [quick start](https://github.com/ONSdigital/csvcubed/blob/main/external-docs/docs/quick-start/index.md), which includes written instructions as well as transcribed videos.
 
 ## User Documentation
 
-csvcubed has extensive user documentation which tracks the release of csvcubed while it is in its beta phase. Our [documentation](https://gss-cogs.github.io/csvcubed-docs/external/) can always be improved, so treat bad docs as a bug report.
+csvcubed has extensive user documentation which tracks the release of csvcubed while it is in its beta phase. Our [documentation](https://github.com/ONSdigital/csvcubed/blob/main/external-docs/docs/) can always be improved, so treat bad docs as a bug report.
 
 ## Related Packages
 
 | Name                                                               | Description                                                                                    |
 | :----------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
 | [csvcubed](./README.md)                                            | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.                  |
-| [csvcubed-models](https://github.com/gss-Cogs/csvcubed-models)     | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
-| [csvcubed-pmd](https://github.com/gss-Cogs/csvcubed-pmd)           | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
-| [csvcubed-devtools](https://github.com/gss-Cogs/csvcubed-devtools) | Shared test functionality & dev dependencies which are commonly required.                      |
+| [csvcubed-models](https://github.com/ONSdigital/csvcubed-models)     | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
+| [csvcubed-pmd](https://github.com/ONSdigital/csvcubed-pmd)           | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
+| [csvcubed-devtools](https://github.com/ONSdigital/csvcubed-devtools) | Shared test functionality & dev dependencies which are commonly required.                      |
 
 ## Developer Documentation
 
-More detailed developer documentation for this project can be found [here](https://github.com/GSS-Cogs/csvcubed/blob/main/docs/developer.md).
+More detailed developer documentation for this project can be found [here](https://github.com/ONSdigital/csvcubed/blob/main/docs/developer.md).
 
 ## How to report bugs
 
-We welcome and appreciate bug reports. As we are trying to make this tool useful for all levels of experience, any level of bug or improvement helps others. To contribute to making csvcubed better, check out our [bug reporting instructions](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/).
+We welcome and appreciate bug reports. As we are trying to make this tool useful for all levels of experience, any level of bug or improvement helps others. To contribute to making csvcubed better, check out our [bug reporting instructions](https://github.com/ONSdigital/csvcubed/blob/main/external-docs/docs/guides/raise-issue.md).
 
 Copyright 2024 Office for National Statistics, under Crown Copyright 
