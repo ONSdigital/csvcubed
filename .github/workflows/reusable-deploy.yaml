@@ -35,7 +35,7 @@ jobs:
         run: |
           git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
 
-          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1 --branch gh-pages-test
+          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/ONSDigital/csvcubed-docs.git' --depth 1 --branch gh-pages-test
           cd csvcubed-docs
 
           git rm -rf . --ignore-unmatch

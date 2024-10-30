@@ -1,7 +1,7 @@
 site_name: csvcubed
-site_url: https://gss-cogs.github.io/csvcubed-docs/external
-repo_url: https://github.com/GSS-Cogs/csvcubed
-repo_name: GSS-Cogs/csvcubed
+site_url: https://onsdigital.github.io/csvcubed-docs/external
+repo_url: https://github.com/ONSdigital/csvcubed
+repo_name: ONSdigital/csvcubed
 nav:
   - Home:
       - index.md

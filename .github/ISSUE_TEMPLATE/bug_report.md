@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Thank you for taking the time to file a bug report. Before creating a new issue, please ensure you have read [our bug reporting guidelines](https://gsscogs.github.io/csvcubeddocs/external/guides/raise-issue/#report-bugs) as well as checking the open issues for existing issues regarding your bug.
+Thank you for taking the time to file a bug report. Before creating a new issue, please ensure you have read [our bug reporting guidelines](https://onsdigital.github.io/csvcubeddocs/external/guides/raise-issue/#report-bugs) as well as checking the open issues for existing issues regarding your bug.
 
 **Describe the issue:**
 Please briefly describe the issue.
@@ -16,7 +16,7 @@ Please briefly describe the issue.
 Please provide a minimal, self-contained and reproducible example or example steps which demonstrates the issue.
 
 **Error message obtained / Resulting behaviour:**
-Include the full error message, if any. Detailed error logging can be obtained by following [this guide](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/#obtaining-error-logs).
+Include the full error message, if any. Detailed error logging can be obtained by following [this guide](https://onsdigital.github.io/csvcubed-docs/external/guides/raise-issue/#obtaining-error-logs).
 
 **Expected behaviour:**
 Describe the expected outcome of the issue causing action.

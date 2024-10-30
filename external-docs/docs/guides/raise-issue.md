@@ -31,4 +31,4 @@ Feel free to consult these for more detailed retrospective debugging.
 
 ## Requesting Further Guidance
 
-If you are having difficulties using csvcubed, please do not hesitate to submit a ticket to the issue tracker in the same manner as you would submit a bug report. A template has been put in place for this purpose. Before submitting a new ticket, please ensure you have read [our documentation guides](https://gss-cogs.github.io/csvcubed-docs/external/guides/) as well as checked the open issues, just in case your problem is bug related.
+If you are having difficulties using csvcubed, please do not hesitate to submit a ticket to the issue tracker in the same manner as you would submit a bug report. A template has been put in place for this purpose. Before submitting a new ticket, please ensure you have read [our documentation guides](https://onsdigital.github.io/csvcubed-docs/external/guides/) as well as checked the open issues, just in case your problem is bug related.

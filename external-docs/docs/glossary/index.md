@@ -84,7 +84,7 @@ Examples:
 
 * `http://some-uri`
 * `http://base-uri/concept-scheme/this-concept-scheme-name`
-* `https://gss-cogs.github.io/csvcubed-docs/external/glossary/`
+* `https://onsdigital.github.io/csvcubed-docs/external/glossary/`
 * `ftp://example.example/example/example.txt`
 * `mailto:example@example.example`
 

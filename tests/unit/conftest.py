@@ -59,7 +59,7 @@ def dummy_mapped_url():
         / "v1_3"
         / "schema.json",
         # When used in tests while online, this URL has the correct suffix to request template files and get a response, but this template doesn't exist/can't be found.
-        "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-hourx.json": APP_ROOT_DIR_PATH
+        "//raw.githubusercontent.com/ONSdigital/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-hourx.json": APP_ROOT_DIR_PATH
         / "readers"
         / "cubeconfig"
         / "v1_0"

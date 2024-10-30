@@ -8,7 +8,7 @@ This page is designed to help you build a CSV-W from a properly structured CSV f
 
 ## Prerequisites
 
-This page assumes that you have already [installed csvcubed](./installation.md) and have [designed your CSV input](./designing-csv.md). We suggest you follow along with the [example dataset](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv). Save this file to your terminal's current working directory.
+This page assumes that you have already [installed csvcubed](./installation.md) and have [designed your CSV input](./designing-csv.md). We suggest you follow along with the [example dataset](https://raw.githubusercontent.com/ONSdigital/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv). Save this file to your terminal's current working directory.
 
 ## Building a CSV-W
 

@@ -15,7 +15,7 @@ csvcubed makes it straightforward to describe your data. Important information t
 
 This document assumes you have an existing CSV such as the `sweden_at_eurovision_no_missing.csv` data set created as in the [quick start build](./build.md) and have csvcubed installed.
 
-If you don't have the example data set, you can download it [here](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv).
+If you don't have the example data set, you can download it [here](https://raw.githubusercontent.com/ONSdigital/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv).
 
 ## Describing your data set
 
