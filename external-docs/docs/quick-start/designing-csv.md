@@ -61,7 +61,7 @@ Year,Entrant,Song,Language,Value,Measure,Unit
 2008,Charlotte Perrelli,Hero,English,47,Final Points,Unitless
 ```
 
-You can [download the full CSV](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv) from GitHub.
+You can [download the full CSV](https://raw.githubusercontent.com/ONSdigital/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv) from GitHub.
 
 ## Next
 

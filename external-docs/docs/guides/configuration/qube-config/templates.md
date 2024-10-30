@@ -39,7 +39,7 @@ In the above example, we have reused the `year` template, but given the dimensio
 
 ## Available templates
 
-The templates are currently in version 1.0; with future development planned. You can see the entire list of the templates inline below or on [csvcubed GitHub](https://github.com/GSS-Cogs/csvcubed/tree/main/src/csvcubed/readers/cubeconfig/v1_0/templates). The `from_template` functionality fetches the most recent version of our templates from the web.
+The templates are currently in version 1.0; with future development planned. You can see the entire list of the templates inline below or on [csvcubed GitHub](https://github.com/ONSdigital/csvcubed/tree/main/src/csvcubed/readers/cubeconfig/v1_0/templates). The `from_template` functionality fetches the most recent version of our templates from the web.
 
 ### Date/Time period template
 

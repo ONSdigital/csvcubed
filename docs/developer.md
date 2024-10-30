@@ -159,7 +159,7 @@ Below we'll explore how we're using some of these libraries along with some key 
 
 Python's [dataclasses module](https://docs.python.org/3/library/dataclasses.html) was added to python 3.7 as per [PEP557](https://www.python.org/dev/peps/pep-0557/). It provides some key functionality that reduces the amount of boiler-plate code that it is necessary to write when defining a class. If you annotate a class as a `@dataclass`, then you only have to define the below code and you no longer need to write an `__init__` function and get free sensible defaults for `__eq__`, `__str__` and `__repr__` too (among others). Importantly, the functionality brings with it the ability to more easily reflect over the fields defined inside a class which makes it easier to do things like serialising to/from JSON.
 
-If we write the following class using the `@dataclass` decorator and extending from [sharedmodels.dataclassbase.DataClassBase](https://github.com/GSS-Cogs/csvwlib/blob/main/sharedmodels/sharedmodels/dataclassbase.py):
+If we write the following class using the `@dataclass` decorator and extending from [sharedmodels.dataclassbase.DataClassBase](https://github.com/ONSdigital/csvwlib/blob/main/sharedmodels/sharedmodels/dataclassbase.py):
 
 ```python
 from dataclasses import dataclass
@@ -211,7 +211,7 @@ class NewResourceWithLabel(NewResource):
 
 Here we see that the `label` property is mapped to the `rdfs:label` predicate which means that when serialised we get a triple of the form `<http://uri/of/this/entity> rdfs:label "The label's value for this entity"@en`
 
-When you inherit from [sharedmodels.models.resource.NewResource](https://github.com/GSS-Cogs/csvwlib/blob/main/sharedmodels/sharedmodels/rdf/resource.py), you gain the functionality to easily serialise your model into an rdflib graph:
+When you inherit from [sharedmodels.models.resource.NewResource](https://github.com/ONSdigital/csvwlib/blob/main/sharedmodels/sharedmodels/rdf/resource.py), you gain the functionality to easily serialise your model into an rdflib graph:
 
 ```python
 thing = NewResourceWithLabel("http://uri/of/this/entity")

@@ -96,7 +96,7 @@ def _get_url_to_file_path_map() -> Dict[str, Path]:
     for template_file in template_files:
         relative_file_path = str(template_file.relative_to(templates_dir))
         github_uri = (
-            "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"
+            "//raw.githubusercontent.com/ONSdigital/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"
             + relative_file_path
         )
         map_uri_to_file_path[github_uri] = template_file

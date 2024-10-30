@@ -104,15 +104,15 @@ The `definition_uri` fields allows you to refer to external resources that furth
             "values": [
                 {
                     "label": "confidential",
-                    "definition_uri": "https://github.com/GSS-Cogs/reusable-rdf-resources/blob/main/rdf-definitions/attributes/analyst-function-obs-marker.csv"
+                    "definition_uri": "https://github.com/ONSdigital/reusable-rdf-resources/blob/main/rdf-definitions/attributes/analyst-function-obs-marker.csv"
                 },
                 {
                     "label": "estimated",
-                    "definition_uri": "https://github.com/GSS-Cogs/reusable-rdf-resources/blob/main/rdf-definitions/attributes/analyst-function-obs-marker.csv"
+                    "definition_uri": "https://github.com/ONSdigital/reusable-rdf-resources/blob/main/rdf-definitions/attributes/analyst-function-obs-marker.csv"
                 },
                 {
                     "label": "forecast",
-                    "definition_uri": "https://github.com/GSS-Cogs/reusable-rdf-resources/blob/main/rdf-definitions/attributes/analyst-function-obs-marker.csv"
+                    "definition_uri": "https://github.com/ONSdigital/reusable-rdf-resources/blob/main/rdf-definitions/attributes/analyst-function-obs-marker.csv"
                 }
             ]
         }

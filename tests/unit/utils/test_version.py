@@ -10,5 +10,5 @@ def test_get_csvcubed_version():
     version_number = get_csvcubed_version_uri()
 
     assert (
-        "https://github.com/GSS-Cogs/csvcubed/releases/tag/v" in version_number
+        "https://github.com/ONSdigital/csvcubed/releases/tag/v" in version_number
     ), f"{version_number} does not appear to be a release tag URL"
