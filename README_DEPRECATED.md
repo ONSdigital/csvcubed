@@ -1,5 +1,11 @@
+# DEPRECATED
+
+## Notice
+
+Please note that at present the Office for National Statistics is no longer actively working on the csvcubed project. There are no planned updates to this repository and tool.
+
+
 # csvcubed
-This is a change.
 
 csvcubed project provides a command line tool which make it straightforward to turn a CSV into 5-star linked data (CSV-W)
 
