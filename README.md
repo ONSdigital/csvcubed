@@ -1,4 +1,5 @@
 # csvcubed
+This is a change.
 
 csvcubed project provides a command line tool which make it straightforward to turn a CSV into 5-star linked data (CSV-W)
 
@@ -25,7 +26,7 @@ csvcubed has extensive user documentation which tracks the release of csvcubed w
 ## Related Packages
 
 | Name                                                               | Description                                                                                    |
-| :----------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+|:-------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|
 | [csvcubed](./README.md)                                            | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.                  |
 | [csvcubed-models](https://github.com/gss-Cogs/csvcubed-models)     | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
 | [csvcubed-pmd](https://github.com/gss-Cogs/csvcubed-pmd)           | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
@@ -39,4 +40,4 @@ More detailed developer documentation for this project can be found [here](https
 
 We welcome and appreciate bug reports. As we are trying to make this tool useful for all levels of experience, any level of bug or improvement helps others. To contribute to making csvcubed better, check out our [bug reporting instructions](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/).
 
-Copyright 2024 Office for National Statistics, under Crown Copyright 
+Copyright 2024 Office for National Statistics, under Crown Copyright
