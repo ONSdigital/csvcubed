@@ -1,3 +1,9 @@
+# DEPRECATED
+
+## Notice
+
+Please note that at present the Office for National Statistics is no longer actively working on the csvcubed project. There are no planned updates to this repository and tool.
+
 # Developer Documentation
 
 This document hopes to provide a central reference point for developers who plan to contribute towards the csvqubed project.
